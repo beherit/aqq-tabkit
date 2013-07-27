@@ -237,6 +237,8 @@ DWORD ReplyListID = 0;
 bool LoadExecuted = false;
 //Gdy zostalo uruchomione wyladowanie wtyczki
 bool UnloadExecuted = false;
+//Gdy zostalo uruchomione wyladowanie wtyczki wraz z zamknieciem komunikatora
+bool ForceUnloadExecuted = false;
 //THEME-CHANGING-------------------------------------------------------------
 bool ThemeChanging = false;
 //UCHWTY-DO-OKIEN------------------------------------------------------------
@@ -8904,6 +8906,8 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	hFrmMain = NULL;
 	//Usuniecie uchwytu do pseudo okna kontaktow
 	hFrmMainL = NULL;
+	//Info o rozpoczeciu procedury zamykania komunikatora
+	ForceUnloadExecuted = true;
   }
 
   //Otwarcie okna rozmowy
@@ -10806,7 +10810,8 @@ extern "C" int __declspec(dllexport) __stdcall Unload()
 	SetFrmMainPos();
   }
   //Odswiezenie listy kontaktow - przywrocenie nie skroconych odnosnikow na liscie kontaktow
-  if(ShortenLinksChk) PluginLink.CallService(AQQ_SYSTEM_RUNACTION,0,(LPARAM)L"aRefresh");
+  if((ShortenLinksChk)&&(!ForceUnloadExecuted))
+   PluginLink.CallService(AQQ_SYSTEM_RUNACTION,0,(LPARAM)L"aRefresh");
   //Usuniecie wskaznikow do zmiennych
   delete ClosedTabsList;
   delete ClosedTabsTimeList;
@@ -10873,7 +10878,7 @@ extern "C" __declspec(dllexport) PPluginInfo __stdcall AQQPluginInfo(DWORD AQQVe
 {
   PluginInfo.cbSize = sizeof(TPluginInfo);
   PluginInfo.ShortName = L"TabKit";
-  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,4,3,0);
+  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,4,4,0);
   PluginInfo.Description = L"Wtyczka oferuje masê funkcjonalnoœci usprawniaj¹cych korzystanie z komunikatora - np. zapamiêtywanie zamkniêtych zak³adek, inteligentne prze³¹czanie, zapamiêtywanie sesji.";
   PluginInfo.Author = L"Krzysztof Grochocki (Beherit)";
   PluginInfo.AuthorMail = L"kontakt@beherit.pl";
