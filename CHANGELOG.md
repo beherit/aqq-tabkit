@@ -1,3 +1,7 @@
+1.4.4.0
+-----
+* Nieodœwie¿anie listy kontaktów przy zamykaniu komunikatora.
+
 1.4.3.0
 -----
 * Odœwie¿anie listy kontaktów po zmianie opcji skracania odnoœników.
