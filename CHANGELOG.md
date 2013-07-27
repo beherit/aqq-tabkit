@@ -1,3 +1,8 @@
+1.6.1.4
+-----
+* Poprawiono przywracanie okna kontaktów z zasobnika systemowego.
+* Aktualizacja komponentów AlphaControls do najnowszej dostêpnej wersji (8.10).
+
 1.6.1.2
 -----
 * Poprawki w zawijaniu przes³anych obrazków do formy za³¹cznika.
