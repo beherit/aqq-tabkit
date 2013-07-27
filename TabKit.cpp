@@ -6753,8 +6753,8 @@ int __stdcall OnAddLine(WPARAM wParam, LPARAM lParam)
 		  BodyTmp = BodyTmp.Delete(1,BodyTmp.Pos("<A HREF")-1);
 		  BodyTmp = BodyTmp.Delete(BodyTmp.Pos("</A>")+4,BodyTmp.Length());
 		  Body = StringReplace(Body, BodyTmp, "[AQQCACHEITEM"+IntToStr(ItemsCount)+"]", TReplaceFlags());
-		  //Definiowanie stylu formy zalacznika
-		  UnicodeString BodyStyle = "<SPAN id=\"icon\">CC_ATTACH_ICON</SPAN> <SPAN id=\"caption\">CC_ATTACH_CAPTION</SPAN>: <SPAN class=\"attachment aqqcacheitem\" id=\"title\" onClick=\"document.getElementById('frmSend').style.overflowY='scroll';\">CC_ATTACH_SHORT</SPAN>";
+		   //Definiowanie stylu formy zalacznika
+		  UnicodeString BodyStyle = "<SPAN id=\"icon\">CC_ATTACH_ICON</SPAN> <SPAN id=\"caption\">CC_ATTACH_CAPTION</SPAN>: <SPAN class=\"attach attachment aqqcacheitem\" id=\"title\" onClick=\"document.getElementById('frmSend').style.overflowY='scroll';\">CC_ATTACH_SHORT</SPAN>";
 		  //Generowanie ID sesji
 		  UnicodeString Session = (wchar_t*)PluginLink.CallService(AQQ_FUNCTION_GETSTRID,0,0);
 		  //Pobranie adresu URL obrazka
@@ -6783,7 +6783,7 @@ int __stdcall OnAddLine(WPARAM wParam, LPARAM lParam)
 	    }
 	    //Zamienianie tagow na wlasciwa tresc
 	    for(int Count=0;Count<ItemsCount+1;Count++)
-	     Body = StringReplace(Body, "[AQQCACHEITEM"+IntToStr(Count)+"]", NewBody[Count], TReplaceFlags());
+		 Body = StringReplace(Body, "[AQQCACHEITEM"+IntToStr(Count)+"]", NewBody[Count], TReplaceFlags());
 	    //Zmienianie tresci wiadomosci w notyfikacji
 		AddLineMessage->Body = Body.w_str();
 		lParam = (LPARAM)AddLineMessage;
@@ -11608,7 +11608,7 @@ extern "C" __declspec(dllexport) PPluginInfo __stdcall AQQPluginInfo(DWORD AQQVe
 {
   PluginInfo.cbSize = sizeof(TPluginInfo);
   PluginInfo.ShortName = L"TabKit";
-  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,6,1,0);
+  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,6,1,2);
   PluginInfo.Description = L"Wtyczka oferuje masê funkcjonalnoœci usprawniaj¹cych korzystanie z komunikatora - np. zapamiêtywanie zamkniêtych zak³adek, inteligentne prze³¹czanie, zapamiêtywanie sesji.";
   PluginInfo.Author = L"Krzysztof Grochocki (Beherit)";
   PluginInfo.AuthorMail = L"kontakt@beherit.pl";

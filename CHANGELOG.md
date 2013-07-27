@@ -1,3 +1,7 @@
+1.6.1.2
+-----
+* Poprawki w zawijaniu przes³anych obrazków do formy za³¹cznika.
+
 1.6.1.0
 -----
 * Opcja nieustanawiania mini awatara na przypiêtych zak³adkach.
