@@ -4,9 +4,9 @@
 #include "SettingsFrm.h"
 #include <gdiplus.h>
 #include <inifiles.hpp>
+#include <XMLDoc.hpp>
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
-#pragma link "GdiPlus.lib"
 #pragma link "sBevel"
 #pragma link "sButton"
 #pragma link "sCheckBox"
@@ -26,6 +26,7 @@ TSettingsForm *SettingsForm;
 __declspec(dllimport)UnicodeString GetPluginUserDir();
 __declspec(dllimport)UnicodeString GetPluginUserDirW();
 __declspec(dllimport)UnicodeString GetThemeSkinDir();
+__declspec(dllimport)UnicodeString NormalizeChannel(UnicodeString Channel);
 __declspec(dllimport)bool ChkSkinEnabled();
 __declspec(dllimport)bool ChkNativeEnabled();
 __declspec(dllimport)void LoadSettings();
@@ -47,9 +48,7 @@ __declspec(dllimport)void MinimizeRestoreFrmSendExecute();
 __declspec(dllimport)void MinimizeRestoreFrmMainExecute();
 __declspec(dllimport)void DestroyStayOnTop();
 __declspec(dllimport)void BuildStayOnTop();
-__declspec(dllimport)void CheckHideStatusBar();
 __declspec(dllimport)void ShowToolBar();
-__declspec(dllimport)void CheckHideTabListButton();
 __declspec(dllimport)void CheckHideScrollTabButtons();
 //---------------------------------------------------------------------------
 bool pHideTabCloseButtonChk;
@@ -392,11 +391,9 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   MinimizeRestoreCheckBox->Checked = Ini->ReadBool("Other","MinimizeRestore",false);
   MinimizeRestoreHotKey->HotKey = Ini->ReadInteger("Other","MinimizeRestoreHotKey",24689);
   StayOnTopCheckBox->Checked = Ini->ReadBool("Other","StayOnTop",false);
-  HideStatusBarCheckBox->Checked = Ini->ReadBool("Other","HideStatusBar",false);
   HideToolBarCheckBox->Checked = Ini->ReadBool("Other","HideToolBar",false);
   HideTabCloseButtonCheckBox->Checked = Ini->ReadBool("Other","HideTabCloseButton",false);
   pHideTabCloseButtonChk = HideTabCloseButtonCheckBox->Checked;
-  HideTabListButtonCheckBox->Checked = Ini->ReadBool("Other"," HideTabListButton",false);
   HideScrollTabButtonsCheckBox->Checked = Ini->ReadBool("Other","HideScrollTabButtons",false);
   CloseBy2xLPMCheckBox->Checked = Ini->ReadBool("Other","CloseBy2xLPM",false);
   EmuTabsWCheckBox->Checked = Ini->ReadBool("Other","EmuTabsW",false);
@@ -613,10 +610,8 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
   Ini->WriteBool("Other","MinimizeRestore",MinimizeRestoreCheckBox->Checked);
   Ini->WriteInteger("Other","MinimizeRestoreHotKey",MinimizeRestoreHotKey->HotKey);
   Ini->WriteBool("Other","StayOnTop",StayOnTopCheckBox->Checked);
-  Ini->WriteBool("Other","HideStatusBar",HideStatusBarCheckBox->Checked);
   Ini->WriteBool("Other","HideToolBar",HideToolBarCheckBox->Checked);
   Ini->WriteBool("Other","HideTabCloseButton",HideTabCloseButtonCheckBox->Checked);
-  Ini->WriteBool("Other","HideTabListButton",HideTabListButtonCheckBox->Checked);
   Ini->WriteBool("Other","HideScrollTabButtons",HideScrollTabButtonsCheckBox->Checked);
   Ini->WriteBool("Other","CloseBy2xLPM",CloseBy2xLPMCheckBox->Checked);
   Ini->WriteBool("Other","EmuTabsW",EmuTabsWCheckBox->Checked);
@@ -650,9 +645,7 @@ void __fastcall TSettingsForm::aSaveSettingsWExecute(TObject *Sender)
   //Zmiana tekstu na pasku tytulowym okna kontaktow
   ChangeFrmMainTitlebar();
   //Ukrywanie/pokazywanie elementow okna rozmowy
-  CheckHideStatusBar();
   ShowToolBar();
-  CheckHideTabListButton();
   CheckHideScrollTabButtons();
   //Odswiezenie wszystkich zakladek
   if((pMiniAvatarsClipTabsChk!=NoMiniAvatarsClipTabsCheckBox->Checked)
@@ -1360,5 +1353,39 @@ void __fastcall TSettingsForm::NewMsgTabSheetShow(TObject *Sender)
    TaskbarPenCheckBox->Enabled = false;
   else
    TaskbarPenCheckBox->Enabled = true;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TSettingsForm::IdThreadComponentRun(TIdThreadComponent *Sender)
+{
+  //Odczyt pakietu XML
+  XML = UTF8ToUnicodeString(XML.w_str());
+  _di_IXMLDocument XMLDoc = LoadXMLData(XML);
+  _di_IXMLNode Nodes = XMLDoc->DocumentElement;
+  Nodes = Nodes->ChildNodes->GetNode(0);
+  int ItemsCount = Nodes->ChildNodes->GetCount();
+  TIniFile *Ini = new TIniFile(GetPluginUserDir() + "\\\\TabKit\\\\Session.ini");
+  for(int Count=0;Count<ItemsCount;Count++)
+  {
+	//Parsowanie XML
+	_di_IXMLNode ChildNodes = Nodes->ChildNodes->GetNode(Count);
+	UnicodeString JID = ChildNodes->Attributes["jid"];
+	UnicodeString Channel = ChildNodes->Attributes["name"];
+	Channel = Channel.Delete(Channel.LastDelimiter("("),Channel.Length());
+	Channel = Channel.Trim();
+	//Kodowanie HTML
+	Channel = StringReplace(Channel, "&quot;", '"', TReplaceFlags() << rfReplaceAll);
+	Channel = StringReplace(Channel, "&apos;", "'", TReplaceFlags() << rfReplaceAll);
+	Channel = StringReplace(Channel, "&amp;", "&", TReplaceFlags() << rfReplaceAll);
+	Channel = StringReplace(Channel, "&lt;", "<", TReplaceFlags() << rfReplaceAll);
+	Channel = StringReplace(Channel, "&gt;", ">", TReplaceFlags() << rfReplaceAll);
+	//Normalizacja nazw kanalow
+	Channel = NormalizeChannel(Channel);
+	//Zapisywanie nazwy kanalu
+	Ini->WriteString("Channels",JID,Channel);
+  }
+  delete Ini;
+  //Wylaczenie watku
+  IdThreadComponent->Stop();
 }
 //---------------------------------------------------------------------------

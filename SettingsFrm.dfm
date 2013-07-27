@@ -2021,11 +2021,11 @@ object SettingsForm: TSettingsForm
       end
       object CloseBy2xLPMCheckBox: TsCheckBox
         Left = 12
-        Top = 292
+        Top = 240
         Width = 262
         Height = 20
         Caption = 'Zamykaj zak'#322'adki poprzez dwukrotne klikni'#281'cie LPM'
-        TabOrder = 12
+        TabOrder = 10
         OnClick = aOtherChkExecute
         SkinData.SkinSection = 'CHECKBOX'
         ImgChecked = 0
@@ -2047,23 +2047,11 @@ object SettingsForm: TSettingsForm
       end
       object EmuTabsWCheckBox: TsCheckBox
         Left = 12
-        Top = 318
+        Top = 266
         Width = 295
         Height = 20
         Caption = 'Ostrzegaj przed zamykaniem wielu zak'#322'adek jednocze'#347'nie'
-        TabOrder = 13
-        OnClick = aOtherChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-      end
-      object HideStatusBarCheckBox: TsCheckBox
-        Left = 12
-        Top = 162
-        Width = 170
-        Height = 20
-        Caption = 'Ukryj dolny pasek informacyjny'
-        TabOrder = 7
+        TabOrder = 11
         OnClick = aOtherChkExecute
         SkinData.SkinSection = 'CHECKBOX'
         ImgChecked = 0
@@ -2071,11 +2059,11 @@ object SettingsForm: TSettingsForm
       end
       object HideTabCloseButtonCheckBox: TsCheckBox
         Left = 12
-        Top = 214
+        Top = 188
         Width = 233
         Height = 20
         Caption = 'Nie wy'#347'wietlaj przycisku zamykania zak'#322'adek'
-        TabOrder = 9
+        TabOrder = 8
         OnClick = aOtherChkExecute
         SkinData.SkinSection = 'CHECKBOX'
         ImgChecked = 0
@@ -2083,11 +2071,11 @@ object SettingsForm: TSettingsForm
       end
       object HideToolBarCheckBox: TsCheckBox
         Left = 12
-        Top = 188
+        Top = 162
         Width = 215
         Height = 20
         Caption = 'Automatyczne ukrywanie paska narz'#281'dzi'
-        TabOrder = 8
+        TabOrder = 7
         OnClick = aOtherChkExecute
         SkinData.SkinSection = 'CHECKBOX'
         ImgChecked = 0
@@ -2240,52 +2228,39 @@ object SettingsForm: TSettingsForm
             'Tak')
         end
       end
-      object HideTabListButtonCheckBox: TsCheckBox
-        Left = 12
-        Top = 240
-        Width = 230
-        Height = 20
-        Caption = 'Ukrywaj przycisk z list'#261' aktywnych zak'#322'adek'
-        TabOrder = 10
-        OnClick = aOtherChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-      end
       object HideScrollTabButtonsCheckBox: TsCheckBox
         Left = 12
-        Top = 266
+        Top = 214
         Width = 219
         Height = 20
         Caption = 'Ukrywaj przyciski do przewijania zak'#322'adek'
-        TabOrder = 11
+        TabOrder = 9
         OnClick = aOtherChkExecute
         SkinData.SkinSection = 'CHECKBOX'
         ImgChecked = 0
         ImgUnchecked = 0
       end
       object SearchOnListCheckBox: TsCheckBox
-        Left = 357
-        Top = 255
+        Left = 12
+        Top = 292
         Width = 230
         Height = 20
         Caption = 'Wy'#322#261'cz funkcj'#281' szukania na li'#347'cie kontakt'#243'w'
-        TabOrder = 16
+        TabOrder = 12
         OnClick = aOtherChkExecute
         SkinData.SkinSection = 'CHECKBOX'
         ImgChecked = 0
         ImgUnchecked = 0
       end
       object ShortenLinksCheckBox: TsCheckBox
-        Left = 357
-        Top = 281
-        Width = 188
-        Height = 28
+        Left = 12
+        Top = 318
+        Width = 295
+        Height = 20
         Caption = 'Skracaj wy'#347'wietlanie odno'#347'nik'#243'w do wygodniejszej formy'
-        AutoSize = False
         Checked = True
         State = cbChecked
-        TabOrder = 17
+        TabOrder = 13
         OnClick = aOtherChkExecute
         SkinData.SkinSection = 'CHECKBOX'
         ImgChecked = 0
@@ -5141,6 +5116,15 @@ object SettingsForm: TSettingsForm
     Interval = 10
     OnTimer = RefreshTimerTimer
     Left = 160
+    Top = 368
+  end
+  object IdThreadComponent: TIdThreadComponent
+    Active = False
+    Loop = False
+    Priority = tpNormal
+    StopMode = smTerminate
+    OnRun = IdThreadComponentRun
+    Left = 192
     Top = 368
   end
 end

@@ -28,6 +28,7 @@
 #include <Vcl.Forms.hpp>
 #include <Vcl.StdCtrls.hpp>
 #include "acPNG.hpp"
+#include <IdThreadComponent.hpp>
 //---------------------------------------------------------------------------
 class TSettingsForm : public TForm
 {
@@ -110,7 +111,6 @@ __published:	// IDE-managed Components
 	TsCheckBox *ChatStateNotiferNewMsgCheckBox;
 	TsCheckBox *AntiSpimCheckBox;
 	TsCheckBox *OnlyConversationTabsCheckBox;
-	TsCheckBox *HideStatusBarCheckBox;
 	TsCheckBox *HideToolBarCheckBox;
 	TIdDecoderMIME *IdDecoderMIME;
 	TCategoryPanel *ClipTabsCategoryPanel;
@@ -219,7 +219,6 @@ __published:	// IDE-managed Components
 	TsRadioButton *FrmMainEdgeTopRadioButton;
 	TsRadioButton *FrmSendEdgeTopRadioButton;
 	TsRadioButton *FrmSendEdgeBottomRadioButton;
-	TsCheckBox *HideTabListButtonCheckBox;
 	TsCheckBox *HideScrollTabButtonsCheckBox;
 	TsCheckBox *NewMgsHoyKeyCheckBox;
 	TsCheckBox *TaskbarPenCheckBox;
@@ -234,6 +233,7 @@ __published:	// IDE-managed Components
 	TImage *StarImage;
 	TsWebLabel *StarWebLabel;
 	TsCheckBox *NoMiniAvatarsClipTabsCheckBox;
+	TIdThreadComponent *IdThreadComponent;
 	void __fastcall UnsentMsgTrayIconClick(TObject *Sender);
 	void __fastcall aExitExecute(TObject *Sender);
 	void __fastcall CancelButtonClick(TObject *Sender);
@@ -282,8 +282,10 @@ __published:	// IDE-managed Components
 	void __fastcall PayPalImageClick(TObject *Sender);
 	void __fastcall NewMsgTabSheetShow(TObject *Sender);
 	void __fastcall aRefreshPanelsExecute(TObject *Sender);
+	void __fastcall IdThreadComponentRun(TIdThreadComponent *Sender);
 private:	// User declarations
 public:		// User declarations
+	UnicodeString XML;
 	__fastcall TSettingsForm(TComponent* Owner);
 	void WMHotKey(TMessage& Msg);
 	BEGIN_MESSAGE_MAP
