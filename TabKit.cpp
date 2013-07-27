@@ -422,7 +422,7 @@ bool CloseBy2xLPMChk;
 bool EmuTabsWChk;
 int CloudTimeOut;
 bool CloudTickModeChk;
-bool ShortenLinksChk;
+bool ShortenLinksChk = true;
 //FORWARD-AQQ-HOOKS----------------------------------------------------------
 int __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam);
 int __stdcall OnAddLine(WPARAM wParam, LPARAM lParam);
@@ -2818,6 +2818,55 @@ void CheckHideScrollTabButtons()
 }
 //---------------------------------------------------------------------------
 
+//Skracanie wyswietlania odnosnikow
+UnicodeString TrimBodyLinks(UnicodeString Body)
+{
+  //Dodawanie specjalnego tagu do wszystkich linkow
+  Body = StringReplace(Body, "</A>", "[CC_LINK_END]</A>", TReplaceFlags() << rfReplaceAll);
+  //Formatowanie tresci wiadomosci
+  while(Body.Pos("[CC_LINK_END]"))
+  {
+	//Link with [CC_LINK_END] tag
+	UnicodeString URL_WithTag = Body;
+	URL_WithTag.Delete(URL_WithTag.Pos("[CC_LINK_END]")+13,URL_WithTag.Length());
+	while(URL_WithTag.Pos("\">")) URL_WithTag.Delete(1,URL_WithTag.Pos("\">")+1);
+	//Link without [CC_LINK_END] tag
+	UnicodeString URL_WithOutTag = URL_WithTag;
+	URL_WithOutTag.Delete(URL_WithOutTag.Pos("[CC_LINK_END]"),URL_WithOutTag.Length());
+	//Wycinanie domeny z adresow URL
+	UnicodeString URL_OnlyDomain = URL_WithOutTag;
+	if(URL_OnlyDomain.LowerCase().Pos("www."))
+	{
+	  URL_OnlyDomain.Delete(1,URL_OnlyDomain.LowerCase().Pos("www.")+3);
+	  if(URL_OnlyDomain.Pos("/"))
+	   URL_OnlyDomain.Delete(URL_OnlyDomain.Pos("/"),URL_OnlyDomain.Length());
+	  //Formatowanie linku
+	  Body = StringReplace(Body, URL_WithOutTag + "\">" + URL_WithTag, URL_WithOutTag + "\" title=\"" + URL_WithOutTag.Trim() + "\">["+ URL_OnlyDomain + "]", TReplaceFlags());
+	}
+	else if(URL_OnlyDomain.LowerCase().Pos("http://"))
+	{
+	  URL_OnlyDomain.Delete(1,URL_OnlyDomain.LowerCase().Pos("http://")+6);
+	  if(URL_OnlyDomain.Pos("/"))
+	   URL_OnlyDomain.Delete(URL_OnlyDomain.Pos("/"),URL_OnlyDomain.Length());
+	  //Formatowanie linku
+	  Body = StringReplace(Body, URL_WithOutTag + "\">" + URL_WithTag, URL_WithOutTag + "\" title=\"" + URL_WithOutTag.Trim() + "\">["+ URL_OnlyDomain + "]", TReplaceFlags());
+	}
+	else if(URL_OnlyDomain.LowerCase().Pos("https://"))
+	{
+	  URL_OnlyDomain.Delete(1,URL_OnlyDomain.LowerCase().Pos("https://")+7);
+	  if(URL_OnlyDomain.Pos("/"))
+	   URL_OnlyDomain.Delete(URL_OnlyDomain.Pos("/"),URL_OnlyDomain.Length());
+	  //Formatowanie linku
+	  Body = StringReplace(Body, URL_WithOutTag + "\">" + URL_WithTag, URL_WithOutTag + "\" title=\"" + URL_WithOutTag.Trim() + "\">["+ URL_OnlyDomain + "]", TReplaceFlags());
+	}
+	//Niestandardowy odnosnik
+	else
+	 Body = StringReplace(Body, "[CC_LINK_END]", "", TReplaceFlags());
+  }
+  return Body;
+}
+//---------------------------------------------------------------------------
+
 //Serwis szybkiego dostepu do ustawien wtyczki
 int __stdcall ServiceTabKitFastSettingsItem(WPARAM, LPARAM)
 {
@@ -3541,7 +3590,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	  GetWindowThreadProcessId(hCurActiveFrm, &PID);
 	  //Gdy kursor znajduje sie w obrebie menu z okna aplikacji
 	  if(((UnicodeString)WClassName=="#32768")&&(PID==ProcessPID))
-	   hPopupMenu = hCurActiveFrm;	
+	   hPopupMenu = hCurActiveFrm;
 	}
 	//FrmSendSlideOut (part I)
 	else if(wParam==TIMER_PREFRMSENDSLIDEOUT)
@@ -6543,59 +6592,27 @@ int __stdcall OnAddLine(WPARAM wParam, LPARAM lParam)
   if(ShortenLinksChk)
   {
 	//Pobieranie danych kontatku
-	Contact = (PPluginContact)wParam;
-	//Pobieranie identyfikatora kontatku
-	UnicodeString ContactJID = (wchar_t*)Contact->JID;
-	//Kontakt nie jest botem Blip
-	if((ContactJID!="blip@blip.pl")&&(ContactJID.Pos("202@plugin.gg")!=1))
-	{
+    Contact = (PPluginContact)wParam;
+    //Pobieranie identyfikatora kontatku
+    UnicodeString ContactJID = (wchar_t*)Contact->JID;
+    //Kontakt nie jest botem Blip
+    if((ContactJID!="blip@blip.pl")&&(ContactJID.Pos("202@plugin.gg")!=1))
+    {
+	  //Pobieranie danych wiadomosci
 	  Message = (PPluginMessage)lParam;
+	  //Pobieranie sformatowanej tresci wiadomosci
 	  UnicodeString Body = (wchar_t*)Message->Body;
-	  //Dodawanie specjalnego tagu do wszystkich linkow
-	  Body = StringReplace(Body, "</A>", "[CC_LINK_END]</A>", TReplaceFlags() << rfReplaceAll);
-	  while(Body.Pos("[CC_LINK_END]"))
-	  {
-		//Link with [CC_LINK_END] tag
-		UnicodeString URL_WithTag = Body;
-		URL_WithTag.Delete(URL_WithTag.Pos("[CC_LINK_END]")+13,URL_WithTag.Length());
-		while(URL_WithTag.Pos("\">")) URL_WithTag.Delete(1,URL_WithTag.Pos("\">")+1);
-		//Link without [CC_LINK_END] tag
-		UnicodeString URL_WithOutTag = URL_WithTag;
-		URL_WithOutTag.Delete(URL_WithOutTag.Pos("[CC_LINK_END]"),URL_WithOutTag.Length());
-		//Wycinanie domeny z adresow URL
-		UnicodeString URL_OnlyDomain = URL_WithOutTag;
-		if(URL_OnlyDomain.LowerCase().Pos("www."))
-		{
-		  URL_OnlyDomain.Delete(1,URL_OnlyDomain.LowerCase().Pos("www.")+3);
-		  if(URL_OnlyDomain.Pos("/"))
-		   URL_OnlyDomain.Delete(URL_OnlyDomain.Pos("/"),URL_OnlyDomain.Length());
-		  //Formatowanie linku
-		  Body = StringReplace(Body, URL_WithOutTag + "\">" + URL_WithTag, URL_WithOutTag + "\" title=\"" + URL_WithOutTag.Trim() + "\">["+ URL_OnlyDomain + "]", TReplaceFlags());
-		}
-		else if(URL_OnlyDomain.LowerCase().Pos("http://"))
-		{
-		  URL_OnlyDomain.Delete(1,URL_OnlyDomain.LowerCase().Pos("http://")+6);
-		  if(URL_OnlyDomain.Pos("/"))
-		   URL_OnlyDomain.Delete(URL_OnlyDomain.Pos("/"),URL_OnlyDomain.Length());
-		  //Formatowanie linku
-		  Body = StringReplace(Body, URL_WithOutTag + "\">" + URL_WithTag, URL_WithOutTag + "\" title=\"" + URL_WithOutTag.Trim() + "\">["+ URL_OnlyDomain + "]", TReplaceFlags());
-		}
-		else if(URL_OnlyDomain.LowerCase().Pos("https://"))
-		{
-		  URL_OnlyDomain.Delete(1,URL_OnlyDomain.LowerCase().Pos("https://")+7);
-		  if(URL_OnlyDomain.Pos("/"))
-		   URL_OnlyDomain.Delete(URL_OnlyDomain.Pos("/"),URL_OnlyDomain.Length());
-		  //Formatowanie linku
-		  Body = StringReplace(Body, URL_WithOutTag + "\">" + URL_WithTag, URL_WithOutTag + "\" title=\"" + URL_WithOutTag.Trim() + "\">["+ URL_OnlyDomain + "]", TReplaceFlags());
-		}
-		//Niestandardowy odnosnik
-		else
-		 Body = StringReplace(Body, "[CC_LINK_END]", "", TReplaceFlags());
+	  //Zapisywanie oryginalnej tresci wiadomosci
+	  UnicodeString BodyOrg = Body;
+	  //Skracanie wyswietlania odnosnikow
+	  Body = TrimBodyLinks(Body);
+	  //Zmienianie tresci wiadomosci
+	  if(Body!=BodyOrg)
+ 	  {
+	    Message->Body = Body.w_str();
+	    lParam = (LPARAM)Message;
+	    return 2;
 	  }
-	  //Zmienianie tresci wiadomosci w notyfikacji
-	  Message->Body = Body.w_str();
-	  lParam = (LPARAM)Message;
-	  return 2;
 	}
   }
 
@@ -8048,59 +8065,18 @@ int __stdcall OnSetHTMLStatus(WPARAM wParam, LPARAM lParam)
   if(ShortenLinksChk)
   {
 	//Pobieranie sformatowanego opisu
-	UnicodeString Body = (wchar_t*)lParam;
-	//Jezeli opis cos zawiera
-	if(!Body.IsEmpty())
-	{
+    UnicodeString Body = (wchar_t*)lParam;
+    //Jezeli opis cos zawiera
+    if(!Body.IsEmpty())
+    {
 	  //Zapisywanie oryginalnego opisu
 	  UnicodeString BodyOrg = Body;
-	  //Dodawanie specjalnego tagu do wszystkich linkow
-	  Body = StringReplace(Body, "</A>", "[CC_LINK_END]</A>", TReplaceFlags() << rfReplaceAll);
-	  while(Body.Pos("[CC_LINK_END]"))
-	  {
-		//Link with [CC_LINK_END] tag
-		UnicodeString URL_WithTag = Body;
-		URL_WithTag.Delete(URL_WithTag.Pos("[CC_LINK_END]")+13,URL_WithTag.Length());
-		while(URL_WithTag.Pos("\">")) URL_WithTag.Delete(1,URL_WithTag.Pos("\">")+1);
-		//Link without [CC_LINK_END] tag
-		UnicodeString URL_WithOutTag = URL_WithTag;
-		URL_WithOutTag.Delete(URL_WithOutTag.Pos("[CC_LINK_END]"),URL_WithOutTag.Length());
-		//Wycinanie domeny z adresow URL
-		UnicodeString URL_OnlyDomain = URL_WithOutTag;
-		if(URL_OnlyDomain.LowerCase().Pos("www."))
-		{
-		  URL_OnlyDomain.Delete(1,URL_OnlyDomain.LowerCase().Pos("www.")+3);
-		  if(URL_OnlyDomain.Pos("/"))
-		   URL_OnlyDomain.Delete(URL_OnlyDomain.Pos("/"),URL_OnlyDomain.Length());
-		  //Formatowanie linku
-		  Body = StringReplace(Body, URL_WithOutTag + "\">" + URL_WithTag, URL_WithOutTag + "\" title=\"" + URL_WithOutTag.Trim() + "\">["+ URL_OnlyDomain + "]", TReplaceFlags());
-		}
-		else if(URL_OnlyDomain.LowerCase().Pos("http://"))
-		{
-		  URL_OnlyDomain.Delete(1,URL_OnlyDomain.LowerCase().Pos("http://")+6);
-		  if(URL_OnlyDomain.Pos("/"))
-		   URL_OnlyDomain.Delete(URL_OnlyDomain.Pos("/"),URL_OnlyDomain.Length());
-		  //Formatowanie linku
-		  Body = StringReplace(Body, URL_WithOutTag + "\">" + URL_WithTag, URL_WithOutTag + "\" title=\"" + URL_WithOutTag.Trim() + "\">["+ URL_OnlyDomain + "]", TReplaceFlags());
-		}
-		else if(URL_OnlyDomain.LowerCase().Pos("https://"))
-		{
-		  URL_OnlyDomain.Delete(1,URL_OnlyDomain.LowerCase().Pos("https://")+7);
-		  if(URL_OnlyDomain.Pos("/"))
-		   URL_OnlyDomain.Delete(URL_OnlyDomain.Pos("/"),URL_OnlyDomain.Length());
-		  //Formatowanie linku
-		  Body = StringReplace(Body, URL_WithOutTag + "\">" + URL_WithTag, URL_WithOutTag + "\" title=\"" + URL_WithOutTag.Trim() + "\">["+ URL_OnlyDomain + "]", TReplaceFlags());
-		}
-		//Niestandardowy odnosnik
-		else
-		 Body = StringReplace(Body, "[CC_LINK_END]", "", TReplaceFlags());
-	  }
+	  //Skracanie wyswietlania odnosnikow
+	  Body = TrimBodyLinks(Body);
 	  //Zmienianie opisu na liscie kontatkow
 	  if(Body!=BodyOrg)
 	   return (LPARAM)Body.w_str();
-	  else
-	   return 0;
-	}
+    }
   }
 
   return 0;
@@ -8756,15 +8732,16 @@ int __stdcall OnThemeChanged(WPARAM wParam, LPARAM lParam)
 }
 //---------------------------------------------------------------------------
 
-//Hook na zamkniecie okiena rozmowy
+//Hook na zamkniecie/otwarcie okien
 int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 {
+  //Pobranie informacji o oknie i eventcie
   WindowEvent = (PPluginWindowEvent)lParam;
   int Event = WindowEvent->WindowEvent;
   UnicodeString EventType = (wchar_t*)WindowEvent->ClassName;
 
   //Otwarcie okna kontaktow = zaladowanie w pelni listy kontatkow
-  if((EventType=="TfrmMain")&&(Event==1))
+  if((EventType=="TfrmMain")&&(Event==WINDOW_EVENT_CREATE))
   {
 	//Przypisanie uchwytu do okna glownego
 	hFrmMain = (HWND)WindowEvent->Handle;
@@ -8910,7 +8887,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	}
   }
   //Zamkniecie okna kontatkow
-  if((EventType=="TfrmMain")&&(Event==2))
+  if((EventType=="TfrmMain")&&(Event==WINDOW_EVENT_CLOSE))
   {
 	//Przypisanie starej procki do okna rozmowy
 	if(OldFrmMainProc)
@@ -8930,7 +8907,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
   }
 
   //Otwarcie okna rozmowy
-  if((EventType=="TfrmSend")&&(Event==1))
+  if((EventType=="TfrmSend")&&(Event==WINDOW_EVENT_CREATE))
   {
 	if(!hFrmSend)
 	{
@@ -8995,7 +8972,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	}
   }
   //Zamkniecie okna rozmowy
-  if((EventType=="TfrmSend")&&(Event==2))
+  if((EventType=="TfrmSend")&&(Event==WINDOW_EVENT_CLOSE))
   {
 	//Przypisanie starej procki do okna rozmowy
 	if(OldFrmSendProc)
@@ -9033,13 +9010,13 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
   }
 
   //Otwarcie okna ustawien
-  if((EventType=="TfrmSettings")&&(Event==1))
+  if((EventType=="TfrmSettings")&&(Event==WINDOW_EVENT_CREATE))
   {
 	//Tworzenie timera
 	SetTimer(hTimerFrm,TIMER_CHKSETTINGS,500,(TIMERPROC)TimerFrmProc);
   }
   //Zamkniecie okna ustawien
-  if((EventType=="TfrmSettings")&&(Event==2))
+  if((EventType=="TfrmSettings")&&(Event==WINDOW_EVENT_CLOSE))
   {
 	//Zatrzymanie timera
 	KillTimer(hTimerFrm,TIMER_CHKSETTINGS);
@@ -9095,7 +9072,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
   }
 
   //Otworzenie okna emotek
-  if((EventType=="TfrmGraphic")&&(Event==1))
+  if((EventType=="TfrmGraphic")&&(Event==WINDOW_EVENT_CREATE))
   {
 	//Ustawienie statusu okna dla SideSlide
 	FrmSendBlockSlide = true;
@@ -9107,7 +9084,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	 SetWindowPos((HWND)WindowEvent->Handle,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE | SWP_NOSIZE);
   }
   //Zamkniecie okna emotek
-  if((EventType=="TfrmGraphic")&&(Event==2))
+  if((EventType=="TfrmGraphic")&&(Event==WINDOW_EVENT_CLOSE))
   {
 	//Ustawienie statusu okna dla SideSlide
 	if((FrmSendSlideChk)&&(!SetStayOnTop)) FrmSendBlockSlide = false;
@@ -9117,7 +9094,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
   }
 
   //Otworzenie okna szybkich emotek
-  if((EventType=="TfrmCompletion")&&(Event==1))
+  if((EventType=="TfrmCompletion")&&(Event==WINDOW_EVENT_CREATE))
   {
     //Ustawienie statusu okna dla SideSlide
 	FrmSendBlockSlide = true;
@@ -9127,7 +9104,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	 SetWindowPos(hFrmSend,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
   }
   //Zamkniecie okna szybkich emotek
-  if((EventType=="TfrmCompletion")&&(Event==2))
+  if((EventType=="TfrmCompletion")&&(Event==WINDOW_EVENT_CLOSE))
   {
 	//Trzymanie okna na wierzchu
 	if(((StayOnTopChk)&&(SetStayOnTop))||((FrmSendSlideChk)&&(FrmSendSlideHideMode!=2)))
@@ -9138,7 +9115,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
   }
 
   //Otworzenie okna wysylania wycinka
-  if((EventType=="TfrmPos")&&(Event==1))
+  if((EventType=="TfrmPos")&&(Event==WINDOW_EVENT_CREATE))
   {
 	//Ustawienie statusu okna dla SideSlide
 	FrmSendBlockSlide = true;
@@ -9155,7 +9132,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	SetTimer(hTimerFrm,TIMER_TURNOFFMODAL,500,(TIMERPROC)TimerFrmProc);
   }
   //Zamkniecie okna wysylania wycinka
-  if((EventType=="TfrmPos")&&(Event==2))
+  if((EventType=="TfrmPos")&&(Event==WINDOW_EVENT_CLOSE))
   {
 	//Ustawienie statusu okna dla SideSlide
 	FrmSendBlockMinimizeAtFrmPos = false;
@@ -9181,7 +9158,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
   }
 
   //Otworzenie okna Centrum Akcji
-  if((EventType=="TfrmFindAction")&&(Event==1))
+  if((EventType=="TfrmFindAction")&&(Event==WINDOW_EVENT_CREATE))
   {
 	//Ustawienie statusu okna dla SideSlide
 	FrmSendBlockSlide = true;
@@ -9191,7 +9168,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	 SetWindowPos((HWND)WindowEvent->Handle,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE | SWP_NOSIZE);
   }
   //Zamkniecie okna Centrum Akcji
-  if((EventType=="TfrmFindAction")&&(Event==2))
+  if((EventType=="TfrmFindAction")&&(Event==WINDOW_EVENT_CLOSE))
   {
 	//Ustawienie statusu okna dla SideSlide
 	if((FrmSendSlideChk)&&(!SetStayOnTop)) FrmSendBlockSlide = false;
@@ -9199,14 +9176,14 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
   }
 
   //Otworzenie okna wysy³ania obrazka metod¹ Drag&Drop
-  if((EventType=="TfrmDeliveryType")&&(Event==1))
+  if((EventType=="TfrmDeliveryType")&&(Event==WINDOW_EVENT_CREATE))
   {
 	//Ustawienie statusu okna dla SideSlide
 	FrmSendBlockSlide = true;
 	FrmSendBlockSlideWndEvent = true;
   }
   //Zamkniecie okna wysy³ania obrazka metod¹ Drag&Drop
-  if((EventType=="TfrmDeliveryType")&&(Event==2))
+  if((EventType=="TfrmDeliveryType")&&(Event==WINDOW_EVENT_CLOSE))
   {
 	//Ustawienie statusu okna dla SideSlide
 	FrmSendBlockSlide = false;
@@ -9214,14 +9191,14 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
   }
 
   //Otworzenie okna zmiany opisu
-  if((EventType=="TfrmSetState")&&(Event==1))
+  if((EventType=="TfrmSetState")&&(Event==WINDOW_EVENT_CREATE))
   {
 	//Ustawienie statusu okna dla SideSlide
 	FrmMainBlockSlide = true;
 	FrmMainBlockSlideWndEvent = true;
   }
   //Zamkniecie okna zmiany opisu
-  if((EventType=="TfrmSetState")&&(Event==2))
+  if((EventType=="TfrmSetState")&&(Event==WINDOW_EVENT_CLOSE))
   {
 	//Ustawienie statusu okna dla SideSlide
 	SetTimer(hTimerFrm,TIMER_FRMMAINBLOCKSLIDE,1500,(TIMERPROC)TimerFrmProc);
@@ -9230,7 +9207,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
   }
 
   //Otworzenie okna wyszukiwarki kontaktow
-  if((EventType=="TfrmSeekOnList")&&(Event==1))
+  if((EventType=="TfrmSeekOnList")&&(Event==WINDOW_EVENT_CREATE))
   {
 	//Ustawienie statusu okna dla SideSlide
 	FrmMainBlockSlide = true;
@@ -9247,7 +9224,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	}
   }
   //Zamkniecie okna wyszukiwarki kontaktow
-  if((EventType=="TfrmSeekOnList")&&(Event==2))
+  if((EventType=="TfrmSeekOnList")&&(Event==WINDOW_EVENT_CLOSE))
   {
 	//Ustawienie statusu okna dla SideSlide
 	FrmMainBlockSlide = false;
@@ -9410,11 +9387,11 @@ bool SaveResourceToFile(char *FileName, char *res)
 //---------------------------------------------------------------------------
 
 //Obliczanie sumy kontrolnej pliku
-String __fastcall MD5File(const String FileName)
+UnicodeString MD5File(UnicodeString FileName)
 {
   if(FileExists(FileName))
   {
-    String Result;
+	UnicodeString Result;
     TFileStream *fs;
 
 	fs = new TFileStream(FileName, fmOpenRead | fmShareDenyWrite);
@@ -9882,7 +9859,10 @@ void LoadSettings()
   CloudTimeOut = Ini->ReadInteger("Other","CloudTimeOut",6);
   CloudTickModeChk = Ini->ReadBool("Other","CloudTickMode",true);
   PluginLink.CallService(AQQ_SYSTEM_FUNCTION_SETENABLED,SYS_FUNCTION_SEARCHONLIST,Ini->ReadBool("Other","SearchOnList",true));
+  bool pShortenLinksChk = ShortenLinksChk;
   ShortenLinksChk = Ini->ReadBool("Other","ShortenLinks",true);
+  //Odswiezenie listy kontaktow
+  if((ShortenLinksChk!=pShortenLinksChk)&&(!LoadExecuted)) PluginLink.CallService(AQQ_SYSTEM_RUNACTION,0,(LPARAM)L"aRefresh");
   //Wylaczanie funkcji pisaka na pasku tytu³u okna rozmowy
   if((InactiveFrmNewMsgChk)||(TweakFrmSendTitlebarChk)||(!TaskbarPenChk))
    PluginLink.CallService(AQQ_SYSTEM_FUNCTION_SETENABLED,SYS_FUNCTION_TASKBARPEN,0);
@@ -10322,7 +10302,7 @@ extern "C" int __declspec(dllexport) __stdcall Load(PPluginLink Link)
   PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_CLOSETAB,OnCloseTab);
   //Hook na aktwyna zakladke lub okno rozmowy
   PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_ACTIVETAB,OnActiveTab);
-  //Hook na zamkniecie okiena rozmowy
+  //Hook na zamkniecie/otwarcie okien
   PluginLink.HookEvent(AQQ_SYSTEM_WINDOWEVENT,OnWindowEvent);
   //Hook na odbieranie nowej wiadomosci
   PluginLink.HookEvent(AQQ_CONTACTS_RECVMSG,OnRecvMsg);
@@ -10384,7 +10364,7 @@ extern "C" int __declspec(dllexport) __stdcall Load(PPluginLink Link)
   LoadClipTabs();
   //Tworzenie interfejsu szybkiego dostepu do ustawien wtyczki
   BuildTabKitFastSettings();
-  //Sprawdzanie aktywnych zakladek i niewyslanych wiadomosci
+  //Wszystkie moduly zostaly zaladowane
   if(PluginLink.CallService(AQQ_SYSTEM_MODULESLOADED,0,0))
   {
     //Szukanie uchwytu do okna kontaktowa
@@ -10486,6 +10466,8 @@ extern "C" int __declspec(dllexport) __stdcall Load(PPluginLink Link)
 	ReplyListID = GetTickCount();
 	//Wywolanie enumeracji kontaktow
 	PluginLink.CallService(AQQ_CONTACTS_REQUESTLIST,(WPARAM)ReplyListID,0);
+	//Odswiezenie listy kontaktow - skracanie wyœwietlania odnoœników na liscie kontaktow do wygodniejszej formy
+    if(ShortenLinksChk) PluginLink.CallService(AQQ_SYSTEM_RUNACTION,0,(LPARAM)L"aRefresh");
   }
   //Rejestowanie klasy okna timera
   WNDCLASSEX wincl;
@@ -10823,6 +10805,8 @@ extern "C" int __declspec(dllexport) __stdcall Unload()
 	//Ustawienie poprawnej pozycji okna kontaktow
 	SetFrmMainPos();
   }
+  //Odswiezenie listy kontaktow - przywrocenie nie skroconych odnosnikow na liscie kontaktow
+  if(ShortenLinksChk) PluginLink.CallService(AQQ_SYSTEM_RUNACTION,0,(LPARAM)L"aRefresh");
   //Usuniecie wskaznikow do zmiennych
   delete ClosedTabsList;
   delete ClosedTabsTimeList;
@@ -10889,7 +10873,7 @@ extern "C" __declspec(dllexport) PPluginInfo __stdcall AQQPluginInfo(DWORD AQQVe
 {
   PluginInfo.cbSize = sizeof(TPluginInfo);
   PluginInfo.ShortName = L"TabKit";
-  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,4,2,0);
+  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,4,3,0);
   PluginInfo.Description = L"Wtyczka oferuje masê funkcjonalnoœci usprawniaj¹cych korzystanie z komunikatora - np. zapamiêtywanie zamkniêtych zak³adek, inteligentne prze³¹czanie, zapamiêtywanie sesji.";
   PluginInfo.Author = L"Krzysztof Grochocki (Beherit)";
   PluginInfo.AuthorMail = L"kontakt@beherit.pl";
