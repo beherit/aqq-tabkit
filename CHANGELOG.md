@@ -1,3 +1,22 @@
+1.6.0.0
+-----
+* Rozró¿nianie kontaktów równie¿ po ich zasobach.
+* Opcja pokazywania zawsze zak³adki z list¹ kontaktów po wysuniêciu okna kontaktów.
+* Poprawne przywracanie sesji z wieloma czatami.
+* Pole do wpisywania wiadomoœci dostaje fokus po zamkniêciu okna z wyborem emotek.
+* Zapisywanie sesji wpisanego d³ugiego tekstu w oknie rozmowy nie zawiesza ju¿ komunikatora.
+* Poprawne zapisywanie znaków specjalnych w pliku sesji.
+* Optymalizacja funkcji wywo³ywanych podczas prze³¹czania zak³adek.
+* Drobne poprawki w procesie wy³adowania wtyczki.
+* Usuniêcie b³êdu z niepotrzebnym przypisywaniem domyœlnego globalnego skrótu do pokazywania g³ównego okna AQQ.
+* Zmiana niektórych domyœlnie wy³¹czonych opcji na domyœlnie w³¹czone.
+* Zmiana nazwy zak³adki "Side Slide" na "Chowanie okien".
+* Dodanie odnoœnika do pliku wtyczki na forum AQQ.
+* Inne mniej wa¿ne zmiany kosmetyczne na formie ustawieñ.
+* Prawid³owe pobieranie pseudonimów kontaktów (obejœcie b³êdu #4367).
+* Poprawne ustawianie pozycji okna rozmowy po przywróceniu sesji.
+* Poprawne ustawianie pozycji okna rozmowy po zmianie zasobu przez wtyczkê ResourcesChanger.
+
 1.5.0.0
 -----
 * Opcja pokazywania nazwy zasobu kontaktu na pasku tytu³u okna rozmowy.

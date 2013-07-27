@@ -236,7 +236,7 @@ object SettingsForm: TSettingsForm
     object SideSlideCategoryPanel: TCategoryPanel
       Top = 252
       Height = 36
-      Caption = 'Side Slide'
+      Caption = 'Chowanie okien'
       Color = clWindow
       Collapsed = True
       TabOrder = 1
@@ -425,7 +425,7 @@ object SettingsForm: TSettingsForm
           object RestoreLastMsgClosedTabsCheckBox: TsCheckBox
             Left = 10
             Top = 102
-            Width = 243
+            Width = 261
             Height = 28
             Caption = 
               'Przy przywracaniu zak'#322'adki wczytuj ostatnio przeprowadzon'#261' rozmo' +
@@ -441,7 +441,7 @@ object SettingsForm: TSettingsForm
           object OnlyConversationTabsCheckBox: TsCheckBox
             Left = 10
             Top = 136
-            Width = 251
+            Width = 261
             Height = 28
             Caption = 
               'Zapami'#281'tuj wy'#322#261'cznie zak'#322'adki z kontaktami z kt'#243'rymi przeprowadz' +
@@ -535,12 +535,14 @@ object SettingsForm: TSettingsForm
           object FastClearClosedTabsCheckBox: TsCheckBox
             Left = 10
             Top = 126
-            Width = 202
+            Width = 215
             Height = 28
             Caption = 
               'Dodaj element szybkiego czyszczenia listy ostatnio zamkni'#281'tych z' +
               'ak'#322'adek'
             AutoSize = False
+            Checked = True
+            State = cbChecked
             TabOrder = 4
             OnClick = aClosedTabsChkExecute
             SkinData.SkinSection = 'CHECKBOX'
@@ -568,6 +570,8 @@ object SettingsForm: TSettingsForm
             Width = 104
             Height = 20
             Caption = 'W oknie rozmowy'
+            Checked = True
+            State = cbChecked
             TabOrder = 1
             OnClick = aClosedTabsChkExecute
             SkinData.SkinSection = 'CHECKBOX'
@@ -693,6 +697,8 @@ object SettingsForm: TSettingsForm
             Caption = 
               'Dodaj element szybkiego czyszczenia listy niewys'#322'anych wiadomo'#347'c' +
               'i'
+            Checked = True
+            State = cbChecked
             TabOrder = 2
             OnClick = aUnsentMsgChkExecute
             SkinData.SkinSection = 'CHECKBOX'
@@ -719,6 +725,8 @@ object SettingsForm: TSettingsForm
             Width = 104
             Height = 20
             Caption = 'W oknie rozmowy'
+            Checked = True
+            State = cbChecked
             TabOrder = 1
             OnClick = aUnsentMsgChkExecute
             SkinData.SkinSection = 'CHECKBOX'
@@ -860,7 +868,7 @@ object SettingsForm: TSettingsForm
         object NewMgsHoyKeyCheckBox: TsCheckBox
           Left = 10
           Top = 68
-          Width = 320
+          Width = 327
           Height = 28
           Caption = 
             'Otwieraj okno rozmowy z now'#261' wiadomo'#347'ci'#261' za pomoc'#261' skr'#243'tu aktual' +
@@ -1046,7 +1054,7 @@ object SettingsForm: TSettingsForm
       object InactiveFrmNewMsgCheckBox: TsCheckBox
         Left = 12
         Top = 12
-        Width = 325
+        Width = 341
         Height = 28
         Caption = 
           'Wy'#347'wietlaj liczb'#281' nieprzeczytanych wiadomo'#347'ci na pasku tytu'#322'u ok' +
@@ -1064,7 +1072,7 @@ object SettingsForm: TSettingsForm
       object InactiveNotiferNewMsgCheckBox: TsCheckBox
         Left = 12
         Top = 114
-        Width = 245
+        Width = 285
         Height = 28
         Caption = 
           'Pokazuj w chmurce informacyjnej tre'#347#263' nowej wiadomo'#347'ci pochodz'#261'c' +
@@ -1080,7 +1088,7 @@ object SettingsForm: TSettingsForm
       object InactiveTabsNewMsgCheckBox: TsCheckBox
         Left = 12
         Top = 80
-        Width = 269
+        Width = 317
         Height = 28
         Caption = 
           'Wy'#347'wietlaj liczb'#281' nieprzeczytanych wiadomo'#347'ci na nieaktywnych za' +
@@ -1096,7 +1104,7 @@ object SettingsForm: TSettingsForm
       object OffCoreInactiveTabsNewMsgCheckBox: TsCheckBox
         Left = 12
         Top = 46
-        Width = 269
+        Width = 341
         Height = 28
         Caption = 
           'Wy'#322#261'cz wbudowany w komunikator graficzny licznik nieprzeczytanyc' +
@@ -1112,7 +1120,7 @@ object SettingsForm: TSettingsForm
       object TaskbarPenCheckBox: TsCheckBox
         Left = 12
         Top = 182
-        Width = 229
+        Width = 253
         Height = 28
         Caption = 
           'Wy'#322#261'cz wbudowan'#261' w komunikator funkcj'#281' pisaka na pasku tytu'#322'u ok' +
@@ -1256,7 +1264,7 @@ object SettingsForm: TSettingsForm
         object TweakFrmSendTitlebarMode4RadioButton: TsRadioButton
           Left = 10
           Top = 94
-          Width = 185
+          Width = 199
           Height = 28
           Caption = 'Pseudonim i identyfikator kontaktu wraz z zasobem oraz opisem'
           TabOrder = 3
@@ -1350,7 +1358,7 @@ object SettingsForm: TSettingsForm
       object ExcludeClipTabsFromTabSwitchingCheckBox: TsCheckBox
         Left = 12
         Top = 90
-        Width = 317
+        Width = 333
         Height = 28
         Caption = 
           'Wy'#322#261'cz przypi'#281'te zak'#322'adki z prze'#322#261'czania zak'#322'adek za pomoc'#261' skr'#243 +
@@ -1366,7 +1374,7 @@ object SettingsForm: TSettingsForm
       object ExcludeClipTabsFromSwitchToNewMsgCheckBox: TsCheckBox
         Left = 28
         Top = 124
-        Width = 229
+        Width = 237
         Height = 28
         Caption = 
           'Nieaktywne dla inteligentnego prze'#322#261'czania do nieprzeczytanych w' +
@@ -1382,7 +1390,7 @@ object SettingsForm: TSettingsForm
       object ExcludeClipTabsFromTabsHotKeysCheckBox: TsCheckBox
         Left = 12
         Top = 158
-        Width = 245
+        Width = 253
         Height = 28
         Caption = 
           'Wy'#322#261'cz przypisywanie skr'#243't'#243'w klawiaturowych dla przypi'#281'tych zak'#322 +
@@ -1397,7 +1405,7 @@ object SettingsForm: TSettingsForm
       end
     end
     object SideSlideTabSheet: TsTabSheet
-      Caption = 'Side Slide'
+      Caption = 'Chowanie okien'
       TabVisible = False
       SkinData.CustomColor = False
       SkinData.CustomFont = False
@@ -1410,7 +1418,7 @@ object SettingsForm: TSettingsForm
         Left = 19
         Top = 21
         Width = 275
-        Height = 252
+        Height = 284
         TabOrder = 1
         SkinData.SkinSection = 'GROUPBOX'
         object FrmMainEdgeGroupBox: TsGroupBox
@@ -1484,10 +1492,8 @@ object SettingsForm: TSettingsForm
             Width = 102
             Height = 20
             Caption = 'okno utraci fokus'
-            Checked = True
             Enabled = False
             TabOrder = 0
-            TabStop = True
             OnClick = aSideSlideChkExecute
             SkinData.SkinSection = 'RADIOBUTTON'
           end
@@ -1507,8 +1513,10 @@ object SettingsForm: TSettingsForm
             Width = 109
             Height = 20
             Caption = 'kursor opu'#347'ci okno'
+            Checked = True
             Enabled = False
             TabOrder = 2
+            TabStop = True
             OnClick = aSideSlideChkExecute
             SkinData.SkinSection = 'RADIOBUTTON'
           end
@@ -1626,6 +1634,24 @@ object SettingsForm: TSettingsForm
             MinValue = 1
             Value = 1
           end
+        end
+        object ChangeTabAfterSlideInCheckBox: TsCheckBox
+          Left = 10
+          Top = 245
+          Width = 232
+          Height = 30
+          Caption = 
+            'Zawsze pokazuj zak'#322'adk'#281' z list'#261' kontakt'#243'w po wysuni'#281'ciu okna kon' +
+            'takt'#243'w'
+          AutoSize = False
+          Checked = True
+          State = cbChecked
+          TabOrder = 3
+          OnClick = aSideSlideChkExecute
+          SkinData.SkinSection = 'CHECKBOX'
+          ImgChecked = 0
+          ImgUnchecked = 0
+          WordWrap = True
         end
       end
       object SlideFrmSendGroupBox: TsGroupBox
@@ -1852,7 +1878,7 @@ object SettingsForm: TSettingsForm
         object SlideInAtNewMsgCheckBox: TsCheckBox
           Left = 10
           Top = 245
-          Width = 232
+          Width = 255
           Height = 30
           Caption = 
             'Wysuwaj okno rozmowy po przyj'#347'ciu nowej wiadomo'#347'ci (tylko dla ot' +
@@ -1892,8 +1918,8 @@ object SettingsForm: TSettingsForm
         ImgUnchecked = 0
       end
       object SideSlideFullScreenModeCheckBox: TsCheckBox
-        Left = 12
-        Top = 279
+        Left = 20
+        Top = 315
         Width = 281
         Height = 20
         Caption = 'Wysuwaj okna przy aktywnej aplikacji pe'#322'noekranowej'
@@ -1906,8 +1932,8 @@ object SettingsForm: TSettingsForm
         ImgUnchecked = 0
       end
       object SideSlideCtrlAndMousBlockCheckBox: TsCheckBox
-        Left = 12
-        Top = 305
+        Left = 308
+        Top = 311
         Width = 273
         Height = 28
         Caption = 
@@ -1941,6 +1967,8 @@ object SettingsForm: TSettingsForm
         Width = 273
         Height = 20
         Caption = 'Wy'#322#261'cz wbudowany w komunikator filtr antyspimowy'
+        Checked = True
+        State = cbChecked
         TabOrder = 3
         OnClick = aOtherChkExecute
         SkinData.SkinSection = 'CHECKBOX'
@@ -2118,7 +2146,7 @@ object SettingsForm: TSettingsForm
       object QuickQuoteCheckBox: TsCheckBox
         Left = 12
         Top = 8
-        Width = 298
+        Width = 325
         Height = 28
         Caption = 
           'Aktywuj skr'#243't klawiaturowy Ctrl+Q do wklejania tekstu ze schowka' +
@@ -2295,10 +2323,6 @@ object SettingsForm: TSettingsForm
       SkinData.CustomColor = False
       SkinData.CustomFont = False
       SkinData.SkinSection = 'CHECKBOX'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object PayPalImage: TImage
         Left = 350
         Top = 124
@@ -4780,38 +4804,38 @@ object SettingsForm: TSettingsForm
         Picture.Data = {
           0B54504E474772617068696336040000424D3604000000000000360000002800
           0000100000001000000001002000000000000004000000000000000000000000
-          0000000000001C231C001C231C001C231C001C231C001C231C001C231C000954
-          39001C231C091C231CF31C231C33095439000954390009543900095439000954
-          3900095439001C231C001C231C001C231C001860456C0D583CD20D583CFF0D58
-          3CED0F5138CE163828FF1C231C210D583C000D583C000D583C000D583C000D58
-          3C000D583C001C231C001C231C00125D4196196B4BFF2C8862FF2D8F66FF2B8B
-          63FF25805BFF1C704FFF125C40C9125D415D1C231C6F1C231CCC1C231C06125D
-          4100125D41001C231C0018644769297859FF227856FF58A584FF3A9770FF3695
-          6DFF36956DFF37976FFF308C67FF1D6A4CFF1A3E2EFF1C231C69186447001864
-          4700186447001C231C001E6B4DD23A9370FF328967FF287C5BFF5FAA8CFF46A1
-          7EFF43A17DFF46A581FF46A582FF3E9B78FF226F51FF1E6B4D391E6B4D001E6B
-          4D001E6B4D0026735306297556FF4EA582FF4CA481FF3A906FFF308565FF73B8
-          9EFF5BB294FF59B396FF5AB599FF5BB69AFF459D7BFF267353A2267353002673
-          5300267353001C231C122D7A59FC6FB79BFF58AC8CFF5BAF90FF499F81FF3C98
-          76FF8AC7B2FF75C6AFFF79C9B3FF92CDB9FF9BCEBBFF3E8A6AFF1E2F24F51C23
-          1CEA1C231C031C231CF62F6A50FF84BCA7FF66B599FF6CB99FFF74BFA7FF5EB2
-          9CFF4DAC8DFFB7DACEFFCAE4DAFFBAD9CDFFAACEC0FF69A890FF295540A81C23
-          1C15358362001C231C1E3C8B69576AA98FFF8AC8B3FF7CC3ACFF86C9B4FF93D0
-          BEFF7DC9B9FF7FC2B5FF5BAB8FFF43886BFF3C7159FF234431FF10190F183C8B
-          69003C8B69001C231C001C231C003F8564D6A3CFBEFF9DD2C2FF98D1BFFFA6D7
-          C8FFC2E3D8FF4FA482FF3F6656FF3E3E3EFF3E3E3EFF202620FF10190F5A4493
-          6F0044936F001C231C001C231C4E2B4939FD53A07CFFB5DACCFFBCE2D7FFB2DE
-          D1FFAFD7C8FF447960FF39413EFF3E3E3EFF3B3B3BFF1A211AFF1B221BA71C23
-          1C904A9A75001C231C091C231CE41C231C8D4D99755D53A37FC19FCEBAFFD6ED
-          E6FFB2D8C8FF45735DFF3E3E3EFF3D3D3DFF222822FF10190F9050A17B0050A1
-          7B0050A17B001C231C001C231C061C231C00FFFFFF0055A680123F7259FA66B3
-          92FF77BDA1FF1D3123FF212620FF192019FF10190F90FFFFFF0055A6800055A6
-          800055A680001C231C001C231C001C231C00FFFFFF001C231C061C231CFF3249
-          3B5559AA832710190F12111A10631B221B9DFFFFFF00FFFFFF0059AA830059AA
-          830059AA83001C231C001C231C001C231C001C231C001C231C061C231C811C23
-          1C0359AA830059AA83001C231C091C231C9059AA830059AA830059AA830059AA
-          830059AA8300FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          000000000000FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF001B581EFA1B561DF1FFFFFF00FFFFFF00FFFFFF00FFFF
           FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF001E6021C71D5D20FF1C5A1F23FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF0025722AA1216C
+          26FC206823FF1F6522FF1E6221C5FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00297A2DC129782DFF67A0
+          6EFF6AA172FF29702DFF206723FF206524641E6121411D5E20F01C5B1FFF1B59
+          1E23FFFFFF00FFFFFF00FFFFFF00FFFFFF002E8632C11F7322FF93BF9CFF6BAE
+          81FF4C9D66FF6FAF83FF74A579FF216A24FF206723FF1F6422F81E612174FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00349139872C8B31FF76B481FF4C9D53FF78B2
+          8BFF4CA069FF45995FFF70AF83FF357C38FF226D25FF226A2564FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00319436F561AC67FF76BD90FF439F5CFF4A9E
+          52FF77B38BFF4DA169FF469B61FF70B084FF699F6EFF237026FF226B2712FFFF
+          FF001F65227CFFFFFF00FFFFFF00329B37F851A858FF6CBB8BFF4CA96FFF419E
+          5BFF4BA153FF82BE95FF50A26CFF469C62FF88BD98FF257629FF237227FE226F
+          26FF216B25FFFFFFFF0033A338C732A037FF329D37FF93CFABFF5BB37DFF4DAB
+          71FF40A05CFF4DA556FF84C097FF56A772FF85BD98FF297D2CFF257829F42475
+          286DFFFFFF0036AC3BFA35A93AFF34A639A237A43DEA4FAC55FF8CCCA4FF5DB4
+          7FFF4EAC72FF41A25CFF50A958FF99CBA8FF8DBE94FF28822DFF24583AAFFFFF
+          FF00FFFFFF0037B03DF136AE3C23FFFFFF00FFFFFF0033A539FE38A43EFF8FCE
+          A7FF61B883FF57B17AFF5FB175FF37963DFF28882CFF56A361FF254F43DBFFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF0036AD3C4135AA3BFF37A83DF044AB
+          4AFF9DD4ACFFA3D7B7FF84C28DFF278E2CFF4EB65EFF96C8A9FF2B8C30FF2A88
+          2FFF29842DFFFFFFFF00FFFFFF00FFFFFF0037B23DF037B03CF8FFFFFF0037AB
+          3CF134A739FF33A438FF33A038FF71C17DFFAEE3C1FF5E8B77FF31644C75FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF0039B63FFF38B43E74FFFFFF00FFFF
+          FF0036AC3BF835A93AED457E65A539854FF7329C39FE3A705789FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF003ABA4023FFFFFF00FFFFFF00FFFF
+          FF0037B13DFF36AE3CB24D8D692234A83A6533A539F2FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF0039B63EFF38B33E41FFFFFF0036AD3C5235AB3BF7FFFFFF00FFFFFF00FFFF
           FF00FFFFFF00}
         Transparent = True
       end
@@ -4938,6 +4962,69 @@ object SettingsForm: TSettingsForm
         HoverFont.Name = 'Tahoma'
         HoverFont.Style = [fsUnderline]
         URL = 'http://beherit.pl/wsparcie'
+      end
+      object StarImage: TImage
+        Left = 32
+        Top = 196
+        Width = 16
+        Height = 16
+        AutoSize = True
+        Picture.Data = {
+          0B54504E474772617068696336040000424D3604000000000000360000002800
+          0000100000001000000001002000000000000004000000000000000000000000
+          000000000000FFFFFF00FFFFFF00FFFFFF0025A7DC5CFFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00087ACA570576C806FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF0028ABDEF426A8DCF424A5DB8CFFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00138BD16E1086CFEC0C80CCFEFFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF002AAEDFE14FCBEFFF38B6E5FF24A6
+          DCF923A3DAA320A0D9901C99D7F529A2DDFF38ADE5FF1187CFF6FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF002CB1E0C74CCAEEFF53CEF1FF4FC8
+          EFFF3FB9E8FF38B4E5FF45BCEBFF43B9EBFF3DB2E8FF158ED2E7FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF002EB4E2A348C8ECFF48CCF1FF30C2
+          EDFF41C3EEFF45C2EDFF2BB5EAFF25B0E8FF3BB3E7FF1A96D5CFFFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF0030B7E37C43C5EAFF56D2F2FF26C1
+          EDFF22BCECFF1EB6EAFF1AB2E9FF35B8EAFF39B2E6FF1F9ED8AEFFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF0034BDE50C33BBE4E958D5F2FF45D0F2FF28C3
+          EEFF24BFEDFF21BAEBFF1CB5E9FF20B3E9FF45BCEBFF22A3DAF7209FD91DFFFF
+          FF00FFFFFF00FFFFFF0038C2E70636C0E6E349CEEDFF5DDBF5FF2FCDF1FF2BC8
+          EFFF26C2EEFF23BDECFF1FB7EAFF1BB3E9FF48BFECFF36B1E4FF23A3DBF421A1
+          DA17FFFFFF00FFFFFF0039C5E8DD4BD2EEFF62E1F6FF40D6F4FF31CFF2FF2DCB
+          F0FF29C5EFFF25C0EDFF21BBEBFF1EB6EAFF1FB3E9FF46BDECFF35B1E4FF23A4
+          DBEF22A1DA123CCAEAD44CD5EFFF57DCF2FF5DDEF5FF5FDEF5FF5EDCF6FF47D4
+          F3FF2CC9EFFF28C3EEFF34C3EDFF4FC9EFFF4BC3EEFF44BDEBFF3CB6E7FF32AF
+          E2FF24A5DBEB3ECDEB0C3DCBEA613BC9E9A73AC7E9D639C4E8F548CEEDFF5AD9
+          F4FF46D3F2FF39CBF0FF54CFF1FF3DBEE8FF2DB3E1F62CB0E0DB2AADDFAE28AB
+          DE6E26A8DD1DFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF0039C4E88048CE
+          EDFF5CD9F4FF58D6F3FF42C4EAFF31B8E3A7FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF0039C5
+          E8EE55D6F2FF58D6F3FF35BEE5FA33BCE406FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF003BC8
+          E95747CEEDFF47CDEDFF37C1E780FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF003BC9E9DB3AC7E9EFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF003DCBEA333CC9EA52FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00}
+        Transparent = True
+      end
+      object StarWebLabel: TsWebLabel
+        Left = 54
+        Top = 198
+        Width = 139
+        Height = 13
+        Caption = 'Oce'#324' dodatek na forum AQQ'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        UseSkinColor = False
+        HoverFont.Charset = DEFAULT_CHARSET
+        HoverFont.Color = clWindowText
+        HoverFont.Height = -11
+        HoverFont.Name = 'Tahoma'
+        HoverFont.Style = [fsUnderline]
+        URL = 'http://forum.aqq.eu/files/file/33-tabkit/'
       end
     end
   end

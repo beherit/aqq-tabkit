@@ -156,6 +156,8 @@ void __fastcall TSettingsForm::FormShow(TObject *Sender)
 	ForumWebLabel->HoverFont->Color = sSkinManager->GetGlobalFontColor();
 	BugWebLabel->Font->Color = sSkinManager->GetGlobalFontColor();
 	BugWebLabel->HoverFont->Color = sSkinManager->GetGlobalFontColor();
+	StarWebLabel->Font->Color = sSkinManager->GetGlobalFontColor();
+	StarWebLabel->HoverFont->Color = sSkinManager->GetGlobalFontColor();
 	OtherPaymentsWebLabel->Font->Color = sSkinManager->GetGlobalFontColor();
 	OtherPaymentsWebLabel->HoverFont->Color = sSkinManager->GetGlobalFontColor();
   }
@@ -197,6 +199,8 @@ void __fastcall TSettingsForm::FormShow(TObject *Sender)
 	ForumWebLabel->HoverFont->Color = clWindowText;
 	BugWebLabel->Font->Color = clWindowText;
 	BugWebLabel->HoverFont->Color = clWindowText;
+	StarWebLabel->Font->Color = clWindowText;
+	StarWebLabel->HoverFont->Color = clWindowText;
 	OtherPaymentsWebLabel->Font->Color = clWindowText;
 	OtherPaymentsWebLabel->HoverFont->Color = clWindowText;
   }
@@ -229,10 +233,10 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   RememberClosedTabsCheckBox->Checked = Ini->ReadBool("ClosedTabs","Enable",true);
   FastAccessClosedTabsCheckBox->Checked =  Ini->ReadBool("ClosedTabs","FastAccess",true);
   FrmMainClosedTabsCheckBox->Checked =  Ini->ReadBool("ClosedTabs","FrmMain",true);
-  FrmSendClosedTabsCheckBox->Checked =  Ini->ReadBool("ClosedTabs","FrmSend",false);
+  FrmSendClosedTabsCheckBox->Checked =  Ini->ReadBool("ClosedTabs","FrmSend",true);
   ItemsCountClosedTabsSpinEdit->Value = Ini->ReadInteger("ClosedTabs","ItemsCount",5);
   ShowTimeClosedTabsCheckBox->Checked = Ini->ReadBool("ClosedTabs","ClosedTime",false);
-  FastClearClosedTabsCheckBox->Checked = Ini->ReadBool("ClosedTabs","FastClear",false);
+  FastClearClosedTabsCheckBox->Checked = Ini->ReadBool("ClosedTabs","FastClear",true);
   UnCloseTabHotKeyCheckBox->Checked =  Ini->ReadBool("ClosedTabs","HotKey",false);
   if(Ini->ReadInteger("ClosedTabs","HotKeyMode",1)==1)
    UnCloseTabHotKeyMode1RadioButton->Checked = true;
@@ -252,8 +256,8 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   TrayUnsentMsgCheckBox->Checked = Ini->ReadBool("UnsentMsg","Tray",true);
   FastAccessUnsentMsgCheckBox->Checked = Ini->ReadBool("UnsentMsg","FastAccess",true);
   FrmMainUnsentMsgCheckBox->Checked = Ini->ReadBool("UnsentMsg","FrmMain",true);
-  FrmSendUnsentMsgCheckBox->Checked = Ini->ReadBool("UnsentMsg","FrmSend",false);
-  FastClearUnsentMsgCheckBox->Checked = Ini->ReadBool("UnsentMsg","FastClear",false);
+  FrmSendUnsentMsgCheckBox->Checked = Ini->ReadBool("UnsentMsg","FrmSend",true);
+  FastClearUnsentMsgCheckBox->Checked = Ini->ReadBool("UnsentMsg","FastClear",true);
   //TabsSwitching
   SwitchToNewMsgCheckBox->Checked = Ini->ReadBool("TabsSwitching","SwitchToNewMsg",true);
   if(Ini->ReadInteger("TabsSwitching","SwitchToNewMsgMode",1)==1)
@@ -325,7 +329,7 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
 	 FrmMainEdgeTopRadioButton->Checked = true;
 	 break;
   }
-  switch(Ini->ReadInteger("SideSlide","FrmMainHideMode",1))
+  switch(Ini->ReadInteger("SideSlide","FrmMainHideMode",3))
   {
 	case 1:
 	 FrmMainHideFocusRadioButton->Checked = true;
@@ -341,6 +345,7 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   FrmMainSlideOutDelaySpinEdit->Value = Ini->ReadInteger("SideSlide","FrmMainSlideOutDelay",1);
   FrmMainSlideInTimeSpinEdit->Value = Ini->ReadInteger("SideSlide","FrmMainSlideInTime",300);
   FrmMainSlideOutTimeSpinEdit->Value = Ini->ReadInteger("SideSlide","FrmMainSlideOutTime",500);
+  ChangeTabAfterSlideInCheckBox->Checked = Ini->ReadBool("SideSlide","ChangeTabAfterSlideIn",true);
   SlideFrmSendCheckBox->Checked = Ini->ReadBool("SideSlide","SlideFrmSend",false);
   switch(Ini->ReadInteger("SideSlide","FrmSendEdge",1))
   {
@@ -380,7 +385,7 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   QuickQuoteCheckBox->Checked = Ini->ReadBool("Other","QuickQuote",true);
   CollapseImagesCheckBox->Checked = Ini->ReadBool("Other","CollapseImages",true);
   CollapseImagesModeComboBox->ItemIndex = Ini->ReadInteger("Other","CollapseImagesMode",1)-1;
-  AntiSpimCheckBox->Checked = !Ini->ReadBool("Other","AntiSpim",true);
+  AntiSpimCheckBox->Checked = !Ini->ReadBool("Other","AntiSpim",false);
   MinimizeRestoreCheckBox->Checked = Ini->ReadBool("Other","MinimizeRestore",false);
   MinimizeRestoreHotKey->HotKey = Ini->ReadInteger("Other","MinimizeRestoreHotKey",24689);
   StayOnTopCheckBox->Checked = Ini->ReadBool("Other","StayOnTop",false);
@@ -573,6 +578,7 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
   Ini->WriteInteger("SideSlide","FrmMainSlideOutDelay",FrmMainSlideOutDelaySpinEdit->Value);
   Ini->WriteInteger("SideSlide","FrmMainSlideInTime",FrmMainSlideInTimeSpinEdit->Value);
   Ini->WriteInteger("SideSlide","FrmMainSlideOutTime",FrmMainSlideOutTimeSpinEdit->Value);
+  Ini->WriteBool("SideSlide","ChangeTabAfterSlideIn",ChangeTabAfterSlideInCheckBox->Checked);
   Ini->WriteBool("SideSlide","SlideFrmSend",SlideFrmSendCheckBox->Checked);
   if(FrmSendEdgeLeftRadioButton->Checked)
    Ini->WriteInteger("SideSlide","FrmSendEdge",1);
@@ -817,6 +823,7 @@ void __fastcall TSettingsForm::aSideSlideChkExecute(TObject *Sender)
    FrmMainSlideOutDelaySpinEdit->Enabled = false;
   FrmMainSlideInTimeSpinEdit->Enabled = SlideFrmMainCheckBox->Checked;
   FrmMainSlideOutTimeSpinEdit->Enabled = SlideFrmMainCheckBox->Checked;
+  ChangeTabAfterSlideInCheckBox->Enabled = SlideFrmMainCheckBox->Checked;
 
   SaveButton->Enabled = true;
 }
