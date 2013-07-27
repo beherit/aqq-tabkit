@@ -1120,7 +1120,7 @@ VOID CALLBACK Timer(HWND hwnd, UINT msg, UINT_PTR idEvent, DWORD dwTime)
 		}
 	  }
 	  //InactiveNotifer
-	  else if(idEvent==200)
+	  if(idEvent==200)
 	  {
 		BlockInactiveNotiferNewMsg = false;
 		KillTimer(hFrmMain,200);
@@ -1372,7 +1372,16 @@ int __stdcall OnTabCaption (WPARAM wParam, LPARAM lParam)
 	UnicodeString JID = (wchar_t*)(Contact->JID);
 
 	if(InactiveTabsNewMsgList->IndexOf(JID)!=-1)
-	 return -1;
+	{
+	  UnicodeString TabCaption = (wchar_t*)wParam;
+	  int Count = InactiveTabsNewMsgCount->ReadInteger("TabsMsg",JID,0);
+	  if(Count)
+	  {
+		if(!AnsiPos("[" + IntToStr(Count) + "] " + TabCaption,TabCaption))
+		 TabCaption = "[" + IntToStr(Count) + "] " + TabCaption;
+		return (WPARAM)TabCaption.w_str();
+	  }
+	}
   }
 
   return 0;
@@ -1763,7 +1772,7 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 
   if((InactiveNotiferNewMsgChk)&&(!BlockInactiveNotiferNewMsg))
   {
-    Contact = (PPluginContact)wParam;
+	Contact = (PPluginContact)wParam;
 
 	UnicodeString JID = (wchar_t*)(Contact->JID);
 	if(Contact->IsChat)
@@ -1890,18 +1899,26 @@ int __stdcall OnMsgComposing(WPARAM wParam, LPARAM lParam)
 
 int __stdcall OnSetLastState (WPARAM wParam, LPARAM lParam)
 {
-  PluginLink.CallService(AQQ_FUNCTION_GETNETWORKSTATE,(WPARAM)(&PluginStateChange),0);
-
-  int NewState = (int)PluginStateChange.NewState;
-
-  //OnLine - Connected
-  if(NewState!=0)
+  if(InactiveNotiferNewMsgChk)
   {
-	//Blokowanie notyfikatora nowych wiadomosci
-	BlockInactiveNotiferNewMsg = true;
-	//Tworzenie timera
-	KillTimer(hFrmMain,200);
-	SetTimer(hFrmMain,200,30000,(TIMERPROC)Timer);
+	PluginLink.CallService(AQQ_FUNCTION_GETNETWORKSTATE,(WPARAM)(&PluginStateChange),0);
+
+	int NewState = (int)PluginStateChange.NewState;
+
+	//OnLine - Connected
+	if(NewState!=0)
+	{
+	  //Jezeli uchwyt do glownego okna nie zostal jeszcze zdefiniowany
+	  if(!hFrmMain)
+	   EnumWindows((WNDENUMPROC)FindFrmMain,0);
+	  if(hFrmMain)
+	  {
+		//Blokowanie notyfikatora nowych wiadomosci
+		BlockInactiveNotiferNewMsg = true;
+		//Tworzenie timera
+		SetTimer(hFrmMain,200,20000,(TIMERPROC)Timer);
+	  }
+	}
   }
 
   return 0;
@@ -1911,38 +1928,41 @@ int __stdcall OnSetLastState (WPARAM wParam, LPARAM lParam)
 //Notyfikacja zmiany stanu
 int __stdcall OnStateChange(WPARAM wParam, LPARAM lParam)
 {
-  StateChange = (PPluginStateChange)lParam;
-  int NewState = (int)StateChange->NewState;
-  int OldState = (int)StateChange->OldState;
-  bool Authorized = (bool)StateChange->Authorized;
-
-  //OnLine - Connecting
-  if((OldState==0)&&(NewState!=0)&&(Authorized==0))
+  if(InactiveNotiferNewMsgChk)
   {
-	Connecting = true;
-  }
-  //OnLine - Connected
-  if((Connecting==true)&&(Authorized==1)&&(NewState==OldState))
-  {
-	PluginLink.CallService(AQQ_FUNCTION_GETNETWORKSTATE,(WPARAM)(&PluginStateChange),0);
+	StateChange = (PPluginStateChange)lParam;
+	int NewState = (int)StateChange->NewState;
+	int OldState = (int)StateChange->OldState;
+	bool Authorized = (bool)StateChange->Authorized;
 
-	int cNewState = (int)PluginStateChange.NewState;
-	int cOldState = (int)PluginStateChange.OldState;
-
-	if((cNewState==cOldState)&&(cNewState==NewState)&&(cOldState==OldState))
+	//OnLine - Connecting
+	if((OldState==0)&&(NewState!=0)&&(Authorized==0))
 	{
-      //Blokowanie notyfikatora nowych wiadomosci
-	  BlockInactiveNotiferNewMsg = true;
-	  //Tworzenie timera
-	  KillTimer(hFrmMain,200);
-	  SetTimer(hFrmMain,200,20000,(TIMERPROC)Timer);
-	  Connecting = false;
+	  Connecting = true;
 	}
-	else
+	//OnLine - Connected
+	if((Connecting==true)&&(Authorized==1)&&(NewState==OldState))
+	{
+	  PluginLink.CallService(AQQ_FUNCTION_GETNETWORKSTATE,(WPARAM)(&PluginStateChange),0);
+
+	  int cNewState = (int)PluginStateChange.NewState;
+	  int cOldState = (int)PluginStateChange.OldState;
+
+	  if((cNewState==cOldState)&&(cNewState==NewState)&&(cOldState==OldState))
+	  {
+		//Blokowanie notyfikatora nowych wiadomosci
+		BlockInactiveNotiferNewMsg = true;
+		//Tworzenie timera
+		KillTimer(hFrmMain,200);
+		SetTimer(hFrmMain,200,20000,(TIMERPROC)Timer);
+		Connecting = false;
+	  }
+	  else
+	   Connecting = false;
+	}
+	else if((Connecting==true)&&(Authorized==1)&&(NewState!=OldState))
 	 Connecting = false;
   }
-  else if((Connecting==true)&&(Authorized==1)&&(NewState!=OldState))
-   Connecting = false;
 
   return 0;
 }
@@ -1977,7 +1997,6 @@ int __stdcall OnMsgContextPopup (WPARAM wParam, LPARAM lParam)
 		BuildQuickQuoteItem.pszService = (wchar_t*)L"sQuickQuoteItem";
 		BuildQuickQuoteItem.pszPopupName = (wchar_t*)L"popRich";
 		BuildQuickQuoteItem.Position = Action->Position + 1;
-		BuildQuickQuoteItem.ShortCut = (wchar_t*)L"CTRL+Q";
 		BuildQuickQuoteItem.Handle = PluginTriple->Handle1;
 		PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildQuickQuoteItem));
 		//Przypisanie uchwytu do pola wiadomosci
@@ -2843,7 +2862,7 @@ extern "C" __declspec(dllexport) PPluginInfo __stdcall AQQPluginInfo(DWORD AQQVe
   }
   PluginInfo.cbSize = sizeof(TPluginInfo);
   PluginInfo.ShortName = (wchar_t*)L"TabKit";
-  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,0,3,0);
+  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,0,3,4);
   PluginInfo.Description = (wchar_t*)L"";
   PluginInfo.Author = (wchar_t*)L"Krzysztof Grochocki (Beherit)";
   PluginInfo.AuthorMail = (wchar_t*)L"email@beherit.pl";
