@@ -27,7 +27,7 @@ __fastcall TSideSlideExceptionsForm::TSideSlideExceptionsForm(TComponent* Owner)
 void __fastcall TSideSlideExceptionsForm::WMTransparency(TMessage &Message)
 {
   Application->ProcessMessages();
-  sSkinProvider->BorderForm->UpdateExBordersPos(true,(int)Message.LParam);
+  if(SkinManagerEnabled) sSkinProvider->BorderForm->UpdateExBordersPos(true,(int)Message.LParam);
 }
 //---------------------------------------------------------------------------
 

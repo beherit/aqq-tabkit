@@ -236,10 +236,6 @@ object SettingsForm: TSettingsForm
       Caption = 'Informacje o wtyczce'
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object PayPalImage: TImage
         Left = 350
         Top = 124
@@ -1595,6 +1591,9 @@ object SettingsForm: TSettingsForm
         Font.Height = -24
         Font.Name = 'Tahoma'
         Font.Style = []
+        Angle = 0
+        Shadow.OffsetKeeper.LeftTop = -3
+        Shadow.OffsetKeeper.RightBottom = 5
       end
       object AvatarImage: TImage
         Left = 24
@@ -2850,6 +2849,9 @@ object SettingsForm: TSettingsForm
         Font.Height = -16
         Font.Name = 'Tahoma'
         Font.Style = []
+        Angle = 0
+        Shadow.OffsetKeeper.LeftTop = -3
+        Shadow.OffsetKeeper.RightBottom = 5
       end
       object DonateLabel: TsLabel
         Left = 358
@@ -2950,10 +2952,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 1
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object ClosedTabGroupBox: TsGroupBox
         Left = 18
         Top = 22
@@ -3733,10 +3731,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 6
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object TweakFrmMainTitlebarGroupBox: TsGroupBox
         Left = 18
         Top = 167
@@ -4604,10 +4598,6 @@ object SettingsForm: TSettingsForm
       OnShow = OtherTabSheetShow
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object AntiSpimCheckBox: TsCheckBox
         Left = 12
         Top = 68

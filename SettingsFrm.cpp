@@ -33,6 +33,8 @@ __declspec(dllimport)UnicodeString NormalizeChannel(UnicodeString Channel);
 __declspec(dllimport)bool ChkSkinEnabled();
 __declspec(dllimport)bool ChkThemeAnimateWindows();
 __declspec(dllimport)bool ChkThemeGlowing();
+__declspec(dllimport)int GetHUE();
+__declspec(dllimport)int GetSaturation();
 __declspec(dllimport)void LoadSettings();
 __declspec(dllimport)void RefreshTabs();
 __declspec(dllimport)void DestroyFrmClosedTabs();
@@ -67,7 +69,7 @@ __fastcall TSettingsForm::TSettingsForm(TComponent* Owner)
 void __fastcall TSettingsForm::WMTransparency(TMessage &Message)
 {
   Application->ProcessMessages();
-  sSkinProvider->BorderForm->UpdateExBordersPos(true,(int)Message.LParam);
+  if(sSkinManager->Active) sSkinProvider->BorderForm->UpdateExBordersPos(true,(int)Message.LParam);
 }
 //---------------------------------------------------------------------------
 
@@ -136,6 +138,9 @@ void __fastcall TSettingsForm::FormShow(TObject *Sender)
 	StarWebLabel->HoverFont->Color = sSkinManager->GetGlobalFontColor();
 	OtherPaymentsWebLabel->Font->Color = sSkinManager->GetGlobalFontColor();
 	OtherPaymentsWebLabel->HoverFont->Color = sSkinManager->GetGlobalFontColor();
+	//Zmiana kolorystyki AlphaControls
+	sSkinManager->HueOffset = GetHUE();
+	sSkinManager->Saturation = GetSaturation();
   }
   else
   {
@@ -982,6 +987,7 @@ void __fastcall TSettingsForm::IdThreadComponentRun(TIdThreadComponent *Sender)
 void __fastcall TSettingsForm::SideSlideFullScreenModeExceptionsButtonClick(TObject *Sender)
 {
   SideSlideExceptionsForm = new TSideSlideExceptionsForm(Application);
+  SideSlideExceptionsForm->SkinManagerEnabled = sSkinManager->Active;
   SideSlideExceptionsForm->ShowModal();
   delete SideSlideExceptionsForm;
 }
