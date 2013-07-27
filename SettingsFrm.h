@@ -104,6 +104,7 @@ __published:	// IDE-managed Components
 	TCheckBox *FastClearClosedTabsCheckBox;
 	TCheckBox *FastClearUnsentMsgCheckBox;
 	TCheckBox *QuickQuoteCheckBox;
+	TCheckBox *ChatStateNotiferNewMsgCheckBox;
 	void __fastcall UnsentMsgTrayIconClick(TObject *Sender);
 	void __fastcall aExitExecute(TObject *Sender);
 	void __fastcall CancelButtonClick(TObject *Sender);

@@ -1,4 +1,6 @@
-CLOSEDTABS RCData "Data\\ClosedTabsButton.png"
+COMPOSING_SMALL RCData "Data\\Composing_Smal.ico"
+COMPOSING_BIG RCData "Data\\Composing_Big.ico"
 STAYONTOP_OFF RCData "Data\\StayOnTopOff.png"
-STAYONTOP_ON RCData "Data\\StayOnTopOn.png"
+CLOSEDTABS RCData "Data\\ClosedTabsButton.png"
 UNSENTMSG RCData "Data\\UnsentMsg.png"
+STAYONTOP_ON RCData "Data\\StayOnTopOn.png"

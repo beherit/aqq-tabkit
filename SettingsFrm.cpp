@@ -117,6 +117,7 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   InactiveFrmNewMsgCheckBox->Checked = Ini->ReadBool("NewMsg","InactiveFrm",true);
   InactiveTabsNewMsgCheckBox->Checked = Ini->ReadBool("NewMsg","InactiveTabs",true);
   InactiveNotiferNewMsgCheckBox->Checked = Ini->ReadBool("NewMsg","InactiveNotifer",false);
+  ChatStateNotiferNewMsgCheckBox->Checked = Ini->ReadBool("NewMsg","ChatStateNotifer",true);
   //Other
   StayOnTopCheckBox->Checked = Ini->ReadBool("Other","StayOnTop",false);
   EmuTabsWCheckBox->Checked = Ini->ReadBool("Other","EmuTabsW",false);
@@ -238,6 +239,7 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
   Ini->WriteBool("NewMsg","InactiveFrm",InactiveFrmNewMsgCheckBox->Checked);
   Ini->WriteBool("NewMsg","InactiveTabs",InactiveTabsNewMsgCheckBox->Checked);
   Ini->WriteBool("NewMsg","InactiveNotifer",InactiveNotiferNewMsgCheckBox->Checked);
+  Ini->WriteBool("NewMsg","ChatStateNotifer",ChatStateNotiferNewMsgCheckBox->Checked);
   //Other
   Ini->WriteBool("Other","StayOnTop",StayOnTopCheckBox->Checked);
   Ini->WriteBool("Other","EmuTabsW",EmuTabsWCheckBox->Checked);
@@ -414,5 +416,6 @@ void __fastcall TSettingsForm::FormMouseWheelUp(TObject *Sender, TShiftState Shi
   CategoryPanelGroup->VertScrollBar->Position = CategoryPanelGroup->VertScrollBar->Position - 10;
 }
 //---------------------------------------------------------------------------
+
 
 

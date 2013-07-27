@@ -1,3 +1,15 @@
+1.0.4.0
+-----
+* Notyfikacja pisania nowej wiadomoœci jako zmiana ikony przypisanej do okna rozmowy.
+* Czêœciowa integracja funkcjonalnoœci wtyczki TabFocus.
+* Wy³¹czanie wbudowanej w AQQ notyfikacji o pisaniu nowej wiadomoœci przy zminimalizowanym oknie rozmowy.
+* Zmieniono sposób zak³adania uchwytu na okno rozmowy.
+* Poprawki w przenoszeniu ustawieñ z zintegrowanych wtyczek.
+* Usuniêto b³¹d ze znikaniem licznika wpisywanych znaków podczas prze³¹czania zak³adek.
+* Poprawki w systemie licznika nieprzeczytanych wiadomoœci na pasku tytu³u okna rozmowy.
+* Podczas przywracania sesji domyœlnie wczytywana jest ostatnio przeprowadzona rozmowa z kontaktem.
+* Kosmetyczne poprawki na formie ustawieñ.
+
 1.0.3.6
 -----
 * Kolejna poprawka w systemie licznika nieprzeczytanych wiadomoœci na nieaktywnych zak³adkach.
