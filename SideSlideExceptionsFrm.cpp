@@ -1,6 +1,7 @@
 //---------------------------------------------------------------------------
 #include <vcl.h>
 #pragma hdrstop
+#include "SettingsFrm.h"
 #include "SideSlideExceptionsFrm.h"
 #include <inifiles.hpp>
 //---------------------------------------------------------------------------
@@ -10,6 +11,7 @@
 #pragma link "sLabel"
 #pragma link "sListBox"
 #pragma link "sTabControl"
+#pragma link "sSkinProvider"
 #pragma resource "*.dfm"
 TSideSlideExceptionsForm *SideSlideExceptionsForm;
 //---------------------------------------------------------------------------

@@ -2,6 +2,7 @@
 #ifndef SettingsFrmH
 #define SettingsFrmH
 //---------------------------------------------------------------------------
+#include "acPNG.hpp"
 #include "sBevel.hpp"
 #include "sButton.hpp"
 #include "sCheckBox.hpp"
@@ -13,24 +14,24 @@
 #include "sRadioButton.hpp"
 #include "sSkinManager.hpp"
 #include "sSkinProvider.hpp"
+#include "sSpeedButton.hpp"
 #include "sSpinEdit.hpp"
 #include <IdBaseComponent.hpp>
 #include <IdCoder.hpp>
 #include <IdCoder3to4.hpp>
 #include <IdCoderMIME.hpp>
+#include <IdThreadComponent.hpp>
 #include <System.Actions.hpp>
 #include <System.Classes.hpp>
 #include <Vcl.ActnList.hpp>
+#include <Vcl.Buttons.hpp>
 #include <Vcl.ComCtrls.hpp>
 #include <Vcl.Controls.hpp>
 #include <Vcl.ExtCtrls.hpp>
 #include <Vcl.FileCtrl.hpp>
-#include <Vcl.Forms.hpp>
 #include <Vcl.StdCtrls.hpp>
-#include "acPNG.hpp"
-#include <IdThreadComponent.hpp>
-#include "sSpeedButton.hpp"
-#include <Vcl.Buttons.hpp>
+#include "acAlphaImageList.hpp"
+#include <Vcl.ImgList.hpp>
 //---------------------------------------------------------------------------
 class TSettingsForm : public TForm
 {
@@ -97,14 +98,6 @@ __published:	// IDE-managed Components
 	TAction *aOtherChk;
 	TsCheckBox *InactiveNotiferNewMsgCheckBox;
 	TsCheckBox *RestoreLastMsgClosedTabsCheckBox;
-	TCategoryPanelGroup *CategoryPanelGroup;
-	TCategoryPanel *ClosedTabsCategoryPanel;
-	TCategoryPanel *UnsentMsgCategoryPanel;
-	TCategoryPanel *TabsSwitchingCategoryPanel;
-	TCategoryPanel *SessionRememberCategoryPanel;
-	TCategoryPanel *TitlebarCategoryPanel;
-	TCategoryPanel *NewMsgCategoryPanel;
-	TCategoryPanel *OtherCategoryPanel;
 	TsCheckBox *EmuTabsWCheckBox;
 	TsCheckBox *ShowTimeClosedTabsCheckBox;
 	TsCheckBox *FastClearClosedTabsCheckBox;
@@ -115,7 +108,6 @@ __published:	// IDE-managed Components
 	TsCheckBox *OnlyConversationTabsCheckBox;
 	TsCheckBox *HideToolBarCheckBox;
 	TIdDecoderMIME *IdDecoderMIME;
-	TCategoryPanel *ClipTabsCategoryPanel;
 	TsCheckBox *OpenClipTabsCheckBox;
 	TsButton *ClipTabsEraseButton;
 	TsCheckBox *InactiveClipTabsCheckBox;
@@ -132,7 +124,6 @@ __published:	// IDE-managed Components
 	TsCheckBox *UnCloseTabSPMouseCheckBox;
 	TsCheckBox *UnCloseTabLPMouseCheckBox;
 	TsLabel *UnCloseMouseLabel;
-	TCategoryPanel *SideSlideCategoryPanel;
 	TsCheckBox *SlideFrmSendCheckBox;
 	TsCheckBox *SlideFrmMainCheckBox;
 	TsGroupBox *FrmSendEdgeGroupBox;
@@ -178,7 +169,6 @@ __published:	// IDE-managed Components
 	TsTabSheet *ClipTabsTabSheet;
 	TsTabSheet *SideSlideTabSheet;
 	TsTabSheet *OtherTabSheet;
-	TTimer *RefreshTimer;
 	TsTabSheet *DefaultTabSheet;
 	TsGroupBox *ClosedTabGroupBox;
 	TsGroupBox *FastAccessClosedTabsGroupBox;
@@ -229,7 +219,6 @@ __published:	// IDE-managed Components
 	TsCheckBox *ExcludeClipTabsFromTabsHotKeysCheckBox;
 	TsCheckBox *ShortenLinksCheckBox;
 	TsRadioButton *TweakFrmSendTitlebarMode4RadioButton;
-	TAction *aRefreshPanels;
 	TsCheckBox *ChangeTabAfterSlideInCheckBox;
 	TImage *StarImage;
 	TsWebLabel *StarWebLabel;
@@ -238,6 +227,8 @@ __published:	// IDE-managed Components
 	TsCheckBox *ChatGoneNotiferNewMsgCheckBox;
 	TsCheckBox *TurnOffModalCheckBox;
 	TsSpeedButton *SideSlideFullScreenModeExceptionsButton;
+	TsSkinProvider *sSkinProvider;
+	TsAlphaImageList *sAlphaImageList;
 	void __fastcall UnsentMsgTrayIconClick(TObject *Sender);
 	void __fastcall aExitExecute(TObject *Sender);
 	void __fastcall CancelButtonClick(TObject *Sender);
@@ -256,7 +247,6 @@ __published:	// IDE-managed Components
 	void __fastcall SessionRememberEraseButtonClick(TObject *Sender);
 	void __fastcall aNewMsgChkExecute(TObject *Sender);
 	void __fastcall aOtherChkExecute(TObject *Sender);
-	void __fastcall OtherCategoryPanelExpand(TObject *Sender);
 	void __fastcall ClipTabsEraseButtonClick(TObject *Sender);
 	void __fastcall aClipTabsChkExecute(TObject *Sender);
 	void __fastcall ConvertImage(UnicodeString Old, UnicodeString New);
@@ -264,28 +254,9 @@ __published:	// IDE-managed Components
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall aSideSlideChkExecute(TObject *Sender);
-	void __fastcall ClipTabsCategoryPanelCollapse(TObject *Sender);
-	void __fastcall ClipTabsCategoryPanelExpand(TObject *Sender);
-	void __fastcall ClosedTabsCategoryPanelCollapse(TObject *Sender);
-	void __fastcall ClosedTabsCategoryPanelExpand(TObject *Sender);
-	void __fastcall NewMsgCategoryPanelCollapse(TObject *Sender);
-	void __fastcall NewMsgCategoryPanelExpand(TObject *Sender);
-	void __fastcall OtherCategoryPanelCollapse(TObject *Sender);
-	void __fastcall SessionRememberCategoryPanelCollapse(TObject *Sender);
-	void __fastcall SessionRememberCategoryPanelExpand(TObject *Sender);
-	void __fastcall SideSlideCategoryPanelCollapse(TObject *Sender);
-	void __fastcall SideSlideCategoryPanelExpand(TObject *Sender);
-	void __fastcall TabsSwitchingCategoryPanelCollapse(TObject *Sender);
-	void __fastcall TabsSwitchingCategoryPanelExpand(TObject *Sender);
-	void __fastcall TitlebarCategoryPanelCollapse(TObject *Sender);
-	void __fastcall TitlebarCategoryPanelExpand(TObject *Sender);
-	void __fastcall UnsentMsgCategoryPanelCollapse(TObject *Sender);
-	void __fastcall UnsentMsgCategoryPanelExpand(TObject *Sender);
-	void __fastcall RefreshTimerTimer(TObject *Sender);
 	void __fastcall OtherTabSheetShow(TObject *Sender);
 	void __fastcall PayPalImageClick(TObject *Sender);
 	void __fastcall NewMsgTabSheetShow(TObject *Sender);
-	void __fastcall aRefreshPanelsExecute(TObject *Sender);
 	void __fastcall IdThreadComponentRun(TIdThreadComponent *Sender);
 	void __fastcall SideSlideFullScreenModeExceptionsButtonClick(TObject *Sender);
 private:	// User declarations

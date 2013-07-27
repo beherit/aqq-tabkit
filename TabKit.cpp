@@ -12,6 +12,9 @@
 using namespace boost;
 using namespace std;
 #define RESOURCESCHANGER_SYSTEM_RESOURCECHANGED L"ResourcesChanger/System/ResourceChanged"
+#define ALPHAWINDOWS_OLDPROC L"AlphaWindows/OldProc"
+#define ALPHAWINDOWS_SETTRANSPARENCY L"AlphaWindows/SetTransparency"
+#define TABKIT_OLDPROC L"TabKit/OldProc"
 
 int WINAPI DllEntryPoint(HINSTANCE hinst, unsigned long reason, void* lpReserved)
 {
@@ -470,7 +473,9 @@ int __stdcall OnPerformCopyData(WPARAM wParam, LPARAM lParam);
 int __stdcall OnPreSendMsg(WPARAM wParam, LPARAM lParam);
 int __stdcall OnPrimaryTab(WPARAM wParam, LPARAM lParam);
 int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam);
+int __stdcall OnRecvOldProc(WPARAM wParam, LPARAM lParam);
 int __stdcall OnReplyList(WPARAM wParam, LPARAM lParam);
+int __stdcall OnSetTransparency(WPARAM wParam, LPARAM lParam);
 int __stdcall OnSystemRestart(WPARAM wParam, LPARAM lParam);
 int __stdcall OnResourceChanged(WPARAM wParam, LPARAM lParam);
 int __stdcall OnSetHTMLStatus(WPARAM wParam, LPARAM lParam);
@@ -3085,7 +3090,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				//Kursor nie znajduje sie w obrebie menu start
 				wchar_t WClassName[128];
 				GetClassNameW(WindowFromPoint(Mouse->CursorPos), WClassName, sizeof(WClassName));
-				if((UnicodeString)WClassName!="DesktopProgramsMFU")
+				if(((UnicodeString)WClassName!="DesktopProgramsMFU")&&((UnicodeString)WClassName!="DV2ControlHost"))
 				{
 				  if(!PreFrmSendSlideIn)
 				  {
@@ -3215,7 +3220,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				//Kursor nie znajduje sie w obrebie menu start
 				wchar_t WClassName[128];
 				GetClassNameW(WindowFromPoint(Mouse->CursorPos), WClassName, sizeof(WClassName));
-				if((UnicodeString)WClassName!="DesktopProgramsMFU")
+				if(((UnicodeString)WClassName!="DesktopProgramsMFU")&&((UnicodeString)WClassName!="DV2ControlHost"))
 				{
 				  if(!PreFrmMainSlideIn)
 				  {
@@ -4582,16 +4587,23 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		//Okno aktywne
 		if((wParam==WA_ACTIVE)||(wParam==WA_CLICKACTIVE))
 		{
+		  //Resetowanie poprzedniego stanu ikonek
+		  LastChatState = 0;
+		  //Ustawienie oryginalnej malej ikonki
 		  if(hIconSmall)
 		  {
-			//Ustawienie oryginalnej malej ikonki
-			SendMessage(hFrmSend, WM_SETICON, ICON_SMALL, (LPARAM)hIconSmall);
+			HICON pIconSmall;
+			do { pIconSmall = (HICON)SendMessage(hFrmSend, WM_SETICON, ICON_SMALL, (LPARAM)hIconSmall); }
+			while(pIconSmall==hIconSmall);
 			hIconSmall = NULL;
-			//Ustawienie oryginalnej duzej ikonki
-			SendMessage(hFrmSend, WM_SETICON, ICON_BIG, (LPARAM)hIconBig);
+		  }
+		  //Ustawienie oryginalnej duzej ikonki
+		  if(hIconBig)
+		  {
+			HICON pIconBig;
+			do { pIconBig = (HICON)SendMessage(hFrmSend, WM_SETICON, ICON_BIG, (LPARAM)hIconBig); }
+			while(pIconBig==hIconBig);
 			hIconBig = NULL;
-			//Resetowanie poprzedniego stanu ikonek
-			LastChatState = 0;
 		  }
 		}
 	  }
@@ -7256,22 +7268,7 @@ int __stdcall OnMsgContextPopup(WPARAM wParam, LPARAM lParam)
 //Hook na pobieranie otwieranie adresow URL i przekazywanie plikow do aplikacji
 int __stdcall OnPerformCopyData(WPARAM wParam, LPARAM lParam)
 {
-  //Wlaczona jest funkcjonalnosc chowania okna kontaktow i okno jest poza krawedzia ekranu
-  if((FrmMainSlideChk)&&(!FrmMainVisible)&&(FrmMainSlideIn))
-  {
-	//Pobieranie adresu URL
-	UnicodeString CopyData = (wchar_t*)lParam;
-	//Jezeli jest to plik lokalny dodatku do AQQ
-	if((FileExists(CopyData))&&(ExtractFileExt(CopyData)==".aqq"))
-	{
-	  //Wylaczenie wczesniej aktywowanego wysuwania okna kontaktow
-	  KillTimer(hTimerFrm,TIMER_FRMMAINSLIDEIN);
-	  //Status FrmMainSlideIn
-	  FrmMainSlideIn = false;
-	}
-  }
-  //Funkcjonalnosc zawijania przeslanych obrazkow do formy zalacznikow jest aktywna
-  if((CollapseImagesChk)&&(!ForceUnloadExecuted))
+  if(!ForceUnloadExecuted)
   {
 	//Domylsne usuwanie elementow
 	CollapseImagesItem.cbSize = sizeof(TPluginAction);
@@ -7281,25 +7278,41 @@ int __stdcall OnPerformCopyData(WPARAM wParam, LPARAM lParam)
 	CollapseImagesItemURL = "";
 	//Pobieranie adresu URL
 	UnicodeString CopyData = (wchar_t*)lParam;
-	//Formatowanie adresu URL
-	CopyData = StringReplace(CopyData, "file:///", "", TReplaceFlags() << rfReplaceAll);
-	CopyData = StringReplace(CopyData, "/", "\\", TReplaceFlags() << rfReplaceAll);
-	CopyData = StringReplace(CopyData, "%20", " ", TReplaceFlags() << rfReplaceAll);
-	//Sprawdzanie czy jest to zawiniety obrazek
-	if(CollapseImagesList->IndexOf(CopyData)!=-1)
+	//Wlaczona jest funkcjonalnosc chowania okna kontaktow i okno jest poza krawedzia ekranu
+	if((FrmMainSlideChk)&&(!FrmMainVisible)&&(FrmMainSlideIn))
 	{
-      //Zapisywanie adresu URL
-	  CollapseImagesItemURL = CopyData;
-	  //Tworzenie elementu w menu
-	  CollapseImagesItem.cbSize = sizeof(TPluginAction);
-	  CollapseImagesItem.pszName = L"TabKitCollapseImagesItem";
-	  CollapseImagesItem.pszCaption = L"Otwórz";
-	  CollapseImagesItem.Position = 0;
-	  CollapseImagesItem.IconIndex = 40;
-	  CollapseImagesItem.pszService = L"sTabKitCollapseImagesItem";
-	  CollapseImagesItem.pszPopupName = L"popURL";
-	  CollapseImagesItem.Handle = (int)hFrmSend;
-	  PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&CollapseImagesItem));
+	  //Jezeli jest to plik lokalny dodatku do AQQ
+	  if((FileExists(CopyData))&&(ExtractFileExt(CopyData)==".aqq"))
+	  {
+		//Wylaczenie wczesniej aktywowanego wysuwania okna kontaktow
+		KillTimer(hTimerFrm,TIMER_FRMMAINSLIDEIN);
+		//Status FrmMainSlideIn
+		FrmMainSlideIn = false;
+	  }
+	}
+	//Funkcjonalnosc zawijania przeslanych obrazkow do formy zalacznikow jest aktywna
+	if((CollapseImagesChk)&&(hFrmSend)&&(!FileExists(CopyData)))
+	{
+	  //Formatowanie adresu URL
+	  CopyData = StringReplace(CopyData, "file:///", "", TReplaceFlags() << rfReplaceAll);
+	  CopyData = StringReplace(CopyData, "/", "\\", TReplaceFlags() << rfReplaceAll);
+	  CopyData = StringReplace(CopyData, "%20", " ", TReplaceFlags() << rfReplaceAll);
+	  //Sprawdzanie czy jest to zawiniety obrazek
+	  if(CollapseImagesList->IndexOf(CopyData)!=-1)
+	  {
+		//Zapisywanie adresu URL
+		CollapseImagesItemURL = CopyData;
+		//Tworzenie elementu w menu
+		CollapseImagesItem.cbSize = sizeof(TPluginAction);
+		CollapseImagesItem.pszName = L"TabKitCollapseImagesItem";
+		CollapseImagesItem.pszCaption = L"Otwórz";
+		CollapseImagesItem.Position = 0;
+		CollapseImagesItem.IconIndex = 40;
+		CollapseImagesItem.pszService = L"sTabKitCollapseImagesItem";
+		CollapseImagesItem.pszPopupName = L"popURL";
+		CollapseImagesItem.Handle = (int)hFrmSend;
+		PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&CollapseImagesItem));
+	  }
 	}
   }
 
@@ -7947,11 +7960,8 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 			//Zapamietywanie aktualnego stanu ikonek
 			LastChatState = ChatState;
 			//Pobranie aktualnych ikonek
-			if(!hIconSmall)
-			{
-			  hIconSmall = (HICON)SendMessage(hFrmSend, WM_GETICON, ICON_SMALL, 0);
-			  hIconBig = (HICON)SendMessage(hFrmSend, WM_GETICON, ICON_BIG, 0);
-			}
+			if(!hIconSmall) hIconSmall = (HICON)SendMessage(hFrmSend, WM_GETICON, ICON_SMALL, 0);
+			if(!hIconBig) hIconBig = (HICON)SendMessage(hFrmSend, WM_GETICON, ICON_BIG, 0);
 			//Ustawienie nowej malej ikonki
 			SendMessage(hFrmSend, WM_SETICON, ICON_SMALL, (LPARAM)LoadImage(0, ComposingIconSmall.w_str(), IMAGE_ICON, 16, 16, LR_LOADFROMFILE));
 			//Ustawienie nowej duzej ikonki
@@ -7963,11 +7973,8 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 			//Zapamietywanie aktualnego stanu ikonek
 			LastChatState = ChatState;
 			//Pobranie aktualnych ikonek
-			if(!hIconSmall)
-			{
-			  hIconSmall = (HICON)SendMessage(hFrmSend, WM_GETICON, ICON_SMALL, 0);
-			  hIconBig = (HICON)SendMessage(hFrmSend, WM_GETICON, ICON_BIG, 0);
-			}
+			if(!hIconSmall) hIconSmall = (HICON)SendMessage(hFrmSend, WM_GETICON, ICON_SMALL, 0);
+			if(!hIconBig) hIconBig = (HICON)SendMessage(hFrmSend, WM_GETICON, ICON_BIG, 0);
 			//Ustawienie nowej malej ikonki
 			SendMessage(hFrmSend, WM_SETICON, ICON_SMALL, (LPARAM)LoadImage(0, PauseIconSmall.w_str(), IMAGE_ICON, 16, 16, LR_LOADFROMFILE));
 			//Ustawienie nowej duzej ikonki
@@ -7978,14 +7985,21 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 		  {
 			//Zapamietywanie aktualnego stanu ikonek
 			LastChatState = ChatState;
-			//Pobranie aktualnych ikonek
+
+            //Ustawienie oryginalnej malej ikonki
 			if(hIconSmall)
 			{
-			  //Ustawienie oryginalnej malej ikonki
-			  SendMessage(hFrmSend, WM_SETICON, ICON_SMALL, (LPARAM)hIconSmall);
+			  HICON pIconSmall;
+			  do { pIconSmall = (HICON)SendMessage(hFrmSend, WM_SETICON, ICON_SMALL, (LPARAM)hIconSmall); }
+			  while(pIconSmall==hIconSmall);
 			  hIconSmall = NULL;
-			  //Ustawienie oryginalnej duzej ikonki
-			  SendMessage(hFrmSend, WM_SETICON, ICON_BIG, (LPARAM)hIconBig);
+			}
+			//Ustawienie oryginalnej duzej ikonki
+			if(hIconBig)
+			{
+			  HICON pIconBig;
+			  do { pIconBig = (HICON)SendMessage(hFrmSend, WM_SETICON, ICON_BIG, (LPARAM)hIconBig); }
+			  while(pIconBig==hIconBig);
 			  hIconBig = NULL;
 			}
 		  }
@@ -8138,6 +8152,34 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 }
 //---------------------------------------------------------------------------
 
+//Hook na odbieranie starej procki przekazanej przez wtyczke AlphaWindows
+int __stdcall OnRecvOldProc(WPARAM wParam, LPARAM lParam)
+{
+  //Pobieranie przekazanego uchwytu do okna
+  HWND hwnd = (HWND)lParam;
+  //Okno kontaktow
+  if(hwnd==hFrmMain)
+  {
+	if(CurrentFrmMainProc==(WNDPROC)GetWindowLongPtr(hFrmMain, GWLP_WNDPROC))
+	 OldFrmMainProc = (WNDPROC)wParam;
+  }
+  //Okno rozmowy
+  else if(hwnd==hFrmSend)
+  {
+	if(CurrentFrmSendProc==(WNDPROC)GetWindowLongPtr(hFrmSend, GWLP_WNDPROC))
+	 OldFrmSendProc = (WNDPROC)wParam;
+  }
+  //Okno wyszukiwarki na liscie kontatkow
+  else if(hwnd==hFrmSeekOnList)
+  {
+	if(CurrentFrmSeekOnListProc==(WNDPROC)GetWindowLongPtr(hFrmSeekOnList, GWLP_WNDPROC))
+	 OldFrmSeekOnListProc = (WNDPROC)wParam;
+  }
+
+  return 0;
+}
+//---------------------------------------------------------------------------
+
 //Hook na enumeracje listy kontatkow
 int __stdcall OnReplyList(WPARAM wParam, LPARAM lParam)
 {
@@ -8196,6 +8238,23 @@ int __stdcall OnReplyList(WPARAM wParam, LPARAM lParam)
 		}
 	  }
 	}
+  }
+
+  return 0;
+}
+//---------------------------------------------------------------------------
+
+//Hook na zmiane przezroczystosci okna przez wtyczke AlphaWindows
+int __stdcall OnSetTransparency(WPARAM wParam, LPARAM lParam)
+{
+  //Okno ustawien zostalo juz stworzone i jest oskorkowane
+  if((hSettingsForm)&&(hSettingsForm->sSkinManager->Active))
+  {
+	//Pobieranie przekazanego uchwytu do okna
+	HWND hwnd = (HWND)lParam;
+	//Zostala zmieniona przezroczystosc okna wtyczki
+	if(hwnd==hSettingsForm->Handle)
+	 hSettingsForm->sSkinProvider->BorderForm->UpdateExBordersPos(true,(int)wParam);
   }
 
   return 0;
@@ -8751,31 +8810,6 @@ int __stdcall OnThemeChanged(WPARAM wParam, LPARAM lParam)
 
 	if(hSettingsForm->sSkinManager->Active)
 	{
-	  //Skorkowanie komponentu CategoryPanelGroup
-	  hSettingsForm->CategoryPanelGroup->Color = hSettingsForm->sSkinManager->GetActiveEditColor();
-	  hSettingsForm->CategoryPanelGroup->GradientBaseColor = hSettingsForm->sSkinManager->GetHighLightColor(false);
-	  hSettingsForm->CategoryPanelGroup->GradientColor = hSettingsForm->sSkinManager->GetHighLightColor(true);
-	  hSettingsForm->CategoryPanelGroup->HeaderFont->Color = hSettingsForm->sSkinManager->GetActiveEditFontColor();
-	  hSettingsForm->CategoryPanelGroup->ChevronColor = hSettingsForm->CategoryPanelGroup->HeaderFont->Color;
-	  hSettingsForm->CategoryPanelGroup->ChevronHotColor = hSettingsForm->CategoryPanelGroup->HeaderFont->Color;
-	  hSettingsForm->ClipTabsCategoryPanel->Color = hSettingsForm->sSkinManager->GetGlobalColor();
-	  hSettingsForm->ClipTabsCategoryPanel->Font->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
-	  hSettingsForm->ClosedTabsCategoryPanel->Color = hSettingsForm->sSkinManager->GetGlobalColor();
-	  hSettingsForm->ClosedTabsCategoryPanel->Font->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
-	  hSettingsForm->NewMsgCategoryPanel->Color = hSettingsForm->sSkinManager->GetGlobalColor();
-	  hSettingsForm->NewMsgCategoryPanel->Font->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
-	  hSettingsForm->OtherCategoryPanel->Color = hSettingsForm->sSkinManager->GetGlobalColor();
-	  hSettingsForm->OtherCategoryPanel->Font->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
-	  hSettingsForm->SessionRememberCategoryPanel->Color = hSettingsForm->sSkinManager->GetGlobalColor();
-	  hSettingsForm->SessionRememberCategoryPanel->Font->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
-	  hSettingsForm->SideSlideCategoryPanel->Color = hSettingsForm->sSkinManager->GetGlobalColor();
-	  hSettingsForm->SideSlideCategoryPanel->Font->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
-	  hSettingsForm->TabsSwitchingCategoryPanel->Color = hSettingsForm->sSkinManager->GetGlobalColor();
-	  hSettingsForm->TabsSwitchingCategoryPanel->Font->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
-	  hSettingsForm->TitlebarCategoryPanel->Color = hSettingsForm->sSkinManager->GetGlobalColor();
-	  hSettingsForm->TitlebarCategoryPanel->Font->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
-	  hSettingsForm->UnsentMsgCategoryPanel->Color = hSettingsForm->sSkinManager->GetGlobalColor();
-	  hSettingsForm->UnsentMsgCategoryPanel->Font->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
 	  //Kolor WebLabel'ow
 	  hSettingsForm->EmailWebLabel->Font->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
 	  hSettingsForm->EmailWebLabel->HoverFont->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
@@ -8794,31 +8828,6 @@ int __stdcall OnThemeChanged(WPARAM wParam, LPARAM lParam)
 	}
 	else
 	{
-	  //Skorkowanie komponentu CategoryPanelGroup
-	  hSettingsForm->CategoryPanelGroup->Color = clWindow;
-	  hSettingsForm->CategoryPanelGroup->GradientBaseColor = (TColor)0xF0F0F0;
-	  hSettingsForm->CategoryPanelGroup->GradientColor = clSilver;
-	  hSettingsForm->CategoryPanelGroup->HeaderFont->Color = clWindowText;
-	  hSettingsForm->CategoryPanelGroup->ChevronColor = clBlack;
-	  hSettingsForm->CategoryPanelGroup->ChevronHotColor = clGray;
-	  hSettingsForm->ClipTabsCategoryPanel->Color = clWindow;
-	  hSettingsForm->ClipTabsCategoryPanel->Font->Color = clWindowText;
-	  hSettingsForm->ClosedTabsCategoryPanel->Color = clWindow;
-	  hSettingsForm->ClosedTabsCategoryPanel->Font->Color = clWindowText;
-	  hSettingsForm->NewMsgCategoryPanel->Color = clWindow;
-	  hSettingsForm->NewMsgCategoryPanel->Font->Color = clWindowText;
-	  hSettingsForm->OtherCategoryPanel->Color = clWindow;
-	  hSettingsForm->OtherCategoryPanel->Font->Color = clWindowText;
-	  hSettingsForm->SessionRememberCategoryPanel->Color = clWindow;
-	  hSettingsForm->SessionRememberCategoryPanel->Font->Color = clWindowText;
-	  hSettingsForm->SideSlideCategoryPanel->Color = clWindow;
-	  hSettingsForm->SideSlideCategoryPanel->Font->Color = clWindowText;
-	  hSettingsForm->TabsSwitchingCategoryPanel->Color = clWindow;
-	  hSettingsForm->TabsSwitchingCategoryPanel->Font->Color = clWindowText;
-	  hSettingsForm->TitlebarCategoryPanel->Color = clWindow;
-	  hSettingsForm->TitlebarCategoryPanel->Font->Color = clWindowText;
-	  hSettingsForm->UnsentMsgCategoryPanel->Color = clWindow;
-	  hSettingsForm->UnsentMsgCategoryPanel->Font->Color = clWindowText;
 	  //Kolor WebLabel'ow
 	  hSettingsForm->EmailWebLabel->Font->Color = clWindowText;
 	  hSettingsForm->EmailWebLabel->HoverFont->Color = clWindowText;
@@ -9058,10 +9067,10 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	//Pobranie informacji o oknie i eventcie
 	WindowEvent = (PPluginWindowEvent)lParam;
 	int Event = WindowEvent->WindowEvent;
-	UnicodeString EventType = (wchar_t*)WindowEvent->ClassName;
+	UnicodeString ClassName = (wchar_t*)WindowEvent->ClassName;
 
 	//Otwarcie okna kontaktow = zaladowanie w pelni listy kontatkow
-	if((EventType=="TfrmMain")&&(Event==WINDOW_EVENT_CREATE))
+	if((ClassName=="TfrmMain")&&(Event==WINDOW_EVENT_CREATE))
 	{
 	  //Przypisanie uchwytu do okna glownego
 	  hFrmMain = (HWND)(int)WindowEvent->Handle;
@@ -9199,15 +9208,27 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  }
 	}
     //Zamkniecie okna kontatkow
-    if((EventType=="TfrmMain")&&(Event==WINDOW_EVENT_CLOSE))
-    {
+	if((ClassName=="TfrmMain")&&(Event==WINDOW_EVENT_CLOSE))
+	{
 	  //Przypisanie starej procki do okna rozmowy
 	  if(OldFrmMainProc)
 	  {
+		//Przywrocenie wczesniej zapisanej procki
 		if(CurrentFrmMainProc==(WNDPROC)GetWindowLongPtr(hFrmMain, GWLP_WNDPROC))
 		 SetWindowLongPtrW(hFrmMain, GWLP_WNDPROC,(LONG)OldFrmMainProc);
+		//Samo wyrejestrowanie hooka
 		else
-		 SetWindowLongPtrW(hFrmMain, GWLP_WNDPROC,(LONG)(WNDPROC)GetWindowLongPtr(hFrmMain, GWLP_WNDPROC));
+		{
+		  //Przekazanie starej procki przez API
+		  TPluginHook PluginHook;
+		  PluginHook.HookName = TABKIT_OLDPROC;
+		  PluginHook.wParam = (WPARAM)OldFrmMainProc;
+		  PluginHook.lParam = (LPARAM)hFrmMain;
+		  PluginLink.CallService(AQQ_SYSTEM_SENDHOOK,(WPARAM)(&PluginHook),0);
+		  //Wyrejestrowanie hooka
+		  SetWindowLongPtrW(hFrmMain, GWLP_WNDPROC,(LONG)(WNDPROC)GetWindowLongPtr(hFrmMain, GWLP_WNDPROC));
+		}
+		//Skasowanie procek
 		OldFrmMainProc = NULL;
 		CurrentFrmMainProc = NULL;
 	  }
@@ -9216,7 +9237,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	}
 
 	//Otwarcie okna rozmowy
-	if((EventType=="TfrmSend")&&(Event==WINDOW_EVENT_CREATE))
+	if((ClassName=="TfrmSend")&&(Event==WINDOW_EVENT_CREATE))
 	{
 	  if(!hFrmSend)
 	  {
@@ -9248,7 +9269,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 		//Przypisanie nowej procki dla okna rozmowy
 		OldFrmSendProc = (WNDPROC)SetWindowLongPtrW(hFrmSend, GWLP_WNDPROC,(LONG)FrmSendProc);
 		//Pobieranie aktualnej procki okna rozmowy
-	    CurrentFrmSendProc = (WNDPROC)GetWindowLongPtr(hFrmSend, GWLP_WNDPROC);
+		CurrentFrmSendProc = (WNDPROC)GetWindowLongPtr(hFrmSend, GWLP_WNDPROC);
 		//Tworzenie interfejsu tworzenia okna rozmowy na wierzchu
 		BuildStayOnTop();
 		//Tworzenie elementu przypinania zakladek
@@ -9261,12 +9282,12 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 		  //Szybki dostep do ostatnio zamknietych zakladek
 		  DestroyFrmClosedTabs();
 		  BuildFrmClosedTabs();
-	    }
-		//Usuniêcie uchwytow do ikonek okna rozmowy
-		hIconSmall = NULL;
-	    hIconBig = NULL;
+		}
 		//Resetowanie poprzedniego stanu ikonek
 		LastChatState = 0;
+		//Usuniêcie uchwytow do ikonek okna rozmowy
+		hIconSmall = NULL;
+		hIconBig = NULL;
 		//Otwieranie przypietych zakladek
 		if((OpenClipTabsChk)&&(!RestoringSession))
 		{
@@ -9275,15 +9296,27 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  }
 	}
 	//Zamkniecie okna rozmowy
-	if((EventType=="TfrmSend")&&(Event==WINDOW_EVENT_CLOSE))
+	if((ClassName=="TfrmSend")&&(Event==WINDOW_EVENT_CLOSE))
 	{
 	  //Przypisanie starej procki do okna rozmowy
 	  if(OldFrmSendProc)
 	  {
+		//Przywrocenie wczesniej zapisanej procki
 		if(CurrentFrmSendProc==(WNDPROC)GetWindowLongPtr(hFrmSend, GWLP_WNDPROC))
 		 SetWindowLongPtrW(hFrmSend, GWLP_WNDPROC,(LONG)OldFrmSendProc);
+		//Samo wyrejestrowanie hooka
 		else
-		 SetWindowLongPtrW(hFrmSend, GWLP_WNDPROC,(LONG)(WNDPROC)GetWindowLongPtr(hFrmSend, GWLP_WNDPROC));
+		{
+          //Przekazanie starej procki przez API
+		  TPluginHook PluginHook;
+		  PluginHook.HookName = TABKIT_OLDPROC;
+		  PluginHook.wParam = (WPARAM)OldFrmSendProc;
+		  PluginHook.lParam = (LPARAM)hFrmSend;
+		  PluginLink.CallService(AQQ_SYSTEM_SENDHOOK,(WPARAM)(&PluginHook),0);
+		  //Wyrejestrowanie hooka
+		  SetWindowLongPtrW(hFrmSend, GWLP_WNDPROC,(LONG)(WNDPROC)GetWindowLongPtr(hFrmSend, GWLP_WNDPROC));
+		}
+		//Skasowanie procek
 		OldFrmSendProc = NULL;
 		CurrentFrmSendProc = NULL;
 	  }
@@ -9310,13 +9343,13 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	}
 
 	//Otwarcie okna ustawien
-	if((EventType=="TfrmSettings")&&(Event==WINDOW_EVENT_CREATE))
+	if((ClassName=="TfrmSettings")&&(Event==WINDOW_EVENT_CREATE))
 	{
 	  //Tworzenie timera
 	  SetTimer(hTimerFrm,TIMER_CHKSETTINGS,500,(TIMERPROC)TimerFrmProc);
 	}
 	//Zamkniecie okna ustawien
-	if((EventType=="TfrmSettings")&&(Event==WINDOW_EVENT_CLOSE))
+	if((ClassName=="TfrmSettings")&&(Event==WINDOW_EVENT_CLOSE))
 	{
 	  //Zatrzymanie timera
 	  KillTimer(hTimerFrm,TIMER_CHKSETTINGS);
@@ -9362,7 +9395,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	}
 
 	//Otworzenie okna emotek
-	if((EventType=="TfrmGraphic")&&(Event==WINDOW_EVENT_CREATE))
+	if((ClassName=="TfrmGraphic")&&(Event==WINDOW_EVENT_CREATE))
 	{
 	  //Zatrzymanie timerow wylaczanie tymczasowej blokady
 	  KillTimer(hTimerFrm,TIMER_FRMSENDBLOCKSLIDE);
@@ -9380,7 +9413,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  }
 	}
 	//Zamkniecie okna emotek
-	if((EventType=="TfrmGraphic")&&(Event==WINDOW_EVENT_CLOSE))
+	if((ClassName=="TfrmGraphic")&&(Event==WINDOW_EVENT_CLOSE))
 	{
 	  //Ustawienie statusu okna dla SideSlide
 	  if((FrmSendSlideChk)&&(!SetStayOnTop)) FrmSendBlockSlide = false;
@@ -9396,7 +9429,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	}
 
 	//Otworzenie okna szybkich emotek
-	if((EventType=="TfrmCompletion")&&(Event==WINDOW_EVENT_CREATE))
+	if((ClassName=="TfrmCompletion")&&(Event==WINDOW_EVENT_CREATE))
 	{
 	  //Zatrzymanie timera wylaczanie tymczasowej blokady
 	  KillTimer(hTimerFrm,TIMER_FRMSENDBLOCKSLIDE);
@@ -9409,7 +9442,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	   SetWindowPos(hFrmSend,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 	}
 	//Zamkniecie okna szybkich emotek
-	if((EventType=="TfrmCompletion")&&(Event==WINDOW_EVENT_CLOSE))
+	if((ClassName=="TfrmCompletion")&&(Event==WINDOW_EVENT_CLOSE))
 	{
 	  //Trzymanie okna na wierzchu
 	  if(((StayOnTopChk)&&(SetStayOnTop))||((FrmSendSlideChk)&&(FrmSendSlideHideMode!=2)))
@@ -9429,7 +9462,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	}
 
 	//Otworzenie okna wysylania wycinka
-	if((EventType=="TfrmPos")&&(Event==WINDOW_EVENT_CREATE))
+	if((ClassName=="TfrmPos")&&(Event==WINDOW_EVENT_CREATE))
 	{
 	  //Zatrzymanie timera wylaczanie tymczasowej blokady
 	  KillTimer(hTimerFrm,TIMER_FRMSENDBLOCKSLIDE);
@@ -9448,7 +9481,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  SetTimer(hTimerFrm,TIMER_TURNOFFMODAL,500,(TIMERPROC)TimerFrmProc);
 	}
 	//Zamkniecie okna wysylania wycinka
-	if((EventType=="TfrmPos")&&(Event==WINDOW_EVENT_CLOSE))
+	if((ClassName=="TfrmPos")&&(Event==WINDOW_EVENT_CLOSE))
 	{
 	  //Ustawienie statusu okna dla SideSlide
 	  FrmSendBlockMinimizeAtFrmPos = false;
@@ -9475,7 +9508,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	}
 
 	//Otworzenie okna Centrum Akcji
-	if((EventType=="TfrmFindAction")&&(Event==WINDOW_EVENT_CREATE))
+	if((ClassName=="TfrmFindAction")&&(Event==WINDOW_EVENT_CREATE))
 	{
 	  //Zatrzymanie timera wylaczanie tymczasowej blokady
 	  KillTimer(hTimerFrm,TIMER_FRMSENDBLOCKSLIDE);
@@ -9490,7 +9523,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  }
 	}
 	//Zamkniecie okna Centrum Akcji
-	if((EventType=="TfrmFindAction")&&(Event==WINDOW_EVENT_CLOSE))
+	if((ClassName=="TfrmFindAction")&&(Event==WINDOW_EVENT_CLOSE))
 	{
 	  //Ustawienie statusu okna dla SideSlide
 	  if((FrmSendSlideChk)&&(!SetStayOnTop)) FrmSendBlockSlide = false;
@@ -9501,7 +9534,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	}
 
 	//Otworzenie okna wysy³ania obrazka metod¹ Drag&Drop
-	if((EventType=="TfrmDeliveryType")&&(Event==WINDOW_EVENT_CREATE))
+	if((ClassName=="TfrmDeliveryType")&&(Event==WINDOW_EVENT_CREATE))
 	{
 	  //Zatrzymanie timera wylaczanie tymczasowej blokady
 	  KillTimer(hTimerFrm,TIMER_FRMSENDBLOCKSLIDE);
@@ -9513,7 +9546,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	   SetWindowPos(hFrmSend,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 	}
 	//Zamkniecie okna wysy³ania obrazka metod¹ Drag&Drop
-	if((EventType=="TfrmDeliveryType")&&(Event==WINDOW_EVENT_CLOSE))
+	if((ClassName=="TfrmDeliveryType")&&(Event==WINDOW_EVENT_CLOSE))
 	{
 	  //Ustawienie statusu okna dla SideSlide
 	  if((FrmSendSlideChk)&&(!SetStayOnTop)) FrmSendBlockSlide = false;
@@ -9524,7 +9557,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	}
 
 	//Otworzenie okna zmiany opisu
-	if((EventType=="TfrmSetState")&&(Event==WINDOW_EVENT_CREATE))
+	if((ClassName=="TfrmSetState")&&(Event==WINDOW_EVENT_CREATE))
 	{
 	  //Zatrzymanie timera wylaczanie tymczasowej blokady
 	  KillTimer(hTimerFrm,TIMER_FRMMAINBLOCKSLIDE);
@@ -9535,7 +9568,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  FrmMainBlockSlideWndEvent = true;
 	}
 	//Zamkniecie okna zmiany opisu
-	if((EventType=="TfrmSetState")&&(Event==WINDOW_EVENT_CLOSE))
+	if((ClassName=="TfrmSetState")&&(Event==WINDOW_EVENT_CLOSE))
 	{
 	  //Informacja o zamknieciu okna zmiany opisu
 	  FrmSetStateExist = false;
@@ -9546,7 +9579,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	}
 
 	//Otworzenie okna wyszukiwarki kontaktow
-	if((EventType=="TfrmSeekOnList")&&(Event==WINDOW_EVENT_CREATE))
+	if((ClassName=="TfrmSeekOnList")&&(Event==WINDOW_EVENT_CREATE))
 	{
 	  //Zatrzymanie timera wylaczanie tymczasowej blokady
 	  KillTimer(hTimerFrm,TIMER_FRMMAINBLOCKSLIDE);
@@ -9560,12 +9593,14 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 		hFrmSeekOnList = (HWND)(int)WindowEvent->Handle;
 		//Ustawienie okna wyszukiwarki na wierzchu
 		SetWindowPos(hFrmSeekOnList,HWND_TOPMOST,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
-		//Przypisanie nowej procki dla okna
+		//Przypisanie nowej procki dla okna wyszukiwarki
 		OldFrmSeekOnListProc = (WNDPROC)SetWindowLongPtrW(hFrmSeekOnList, GWLP_WNDPROC,(LONG)FrmSeekOnListProc);
+		//Pobieranie aktualnej procki okna wyszukiwarki
+		CurrentFrmSeekOnListProc = (WNDPROC)GetWindowLongPtr(hFrmSeekOnList, GWLP_WNDPROC);
 	  }
 	}
 	//Zamkniecie okna wyszukiwarki kontaktow
-	if((EventType=="TfrmSeekOnList")&&(Event==WINDOW_EVENT_CLOSE))
+	if((ClassName=="TfrmSeekOnList")&&(Event==WINDOW_EVENT_CLOSE))
 	{
 	  //Ustawienie statusu okna dla SideSlide
 	  FrmMainBlockSlide = false;
@@ -9573,12 +9608,24 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  //Zabezpieczenie przed chowaniem okna kontaktow
 	  if(FrmMainSlideChk)
 	  {
-		//Przypisanie starej procki dla okna
-		if(OldFrmSeekOnListProc)
+		//Przywrocenie wczesniej zapisanej procki
+		if(CurrentFrmSeekOnListProc==(WNDPROC)GetWindowLongPtr(hFrmSeekOnList, GWLP_WNDPROC))
+		 SetWindowLongPtrW(hFrmSeekOnList, GWLP_WNDPROC,(LONG)OldFrmSeekOnListProc);
+		//Samo wyrejestrowanie hooka
+		else
 		{
-		  SetWindowLongPtrW(hFrmSeekOnList, GWLP_WNDPROC,(LONG)OldFrmSeekOnListProc);
-		  OldFrmSeekOnListProc = NULL;
+          //Przekazanie starej procki przez API
+		  TPluginHook PluginHook;
+		  PluginHook.HookName = TABKIT_OLDPROC;
+		  PluginHook.wParam = (WPARAM)OldFrmSeekOnListProc;
+		  PluginHook.lParam = (LPARAM)hFrmSeekOnList;
+		  PluginLink.CallService(AQQ_SYSTEM_SENDHOOK,(WPARAM)(&PluginHook),0);
+		  //Wyrejestrowanie hooka
+		  SetWindowLongPtrW(hFrmSeekOnList, GWLP_WNDPROC,(LONG)(WNDPROC)GetWindowLongPtr(hFrmSeekOnList, GWLP_WNDPROC));
 		}
+		//Skasowanie procek
+		OldFrmSeekOnListProc = NULL;
+		CurrentFrmSeekOnListProc = NULL;
 		//Zatrzymanie timera
 		KillTimer(hTimerFrm,TIMER_FRMMAINSETTOPMOSTEX);
 		//Usuniecie uchwytu do okna wyszukiwarki
@@ -9592,7 +9639,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	}
 
 	//Otworzenie okna instalowania dodatku
-	if((EventType=="TfrmInstallAddon")&&(Event==WINDOW_EVENT_CREATE))
+	if((ClassName=="TfrmInstallAddon")&&(Event==WINDOW_EVENT_CREATE))
 	{
 	   //Informacja o otwarciu okna instalowania dodatku
 	  FrmInstallAddonExist = true;
@@ -9600,7 +9647,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  SetTimer(hTimerFrm,TIMER_TURNOFFMODAL,500,(TIMERPROC)TimerFrmProc);
 	}
 	//Zamkniecie okna instalowania dodatku
-	if((EventType=="TfrmInstallAddon")&&(Event==WINDOW_EVENT_CLOSE))
+	if((ClassName=="TfrmInstallAddon")&&(Event==WINDOW_EVENT_CLOSE))
 	{
 	  //Informacja o zamknieciu okna instalowania dodatku
 	  FrmInstallAddonExist = false;
@@ -10408,8 +10455,12 @@ extern "C" int __declspec(dllexport) __stdcall Load(PPluginLink Link)
   PluginLink.HookEvent(AQQ_CONTACTS_PRESENDMSG,OnPreSendMsg);
   //Hook na odbieranie nowej wiadomosci
   PluginLink.HookEvent(AQQ_CONTACTS_RECVMSG,OnRecvMsg);
+  //Hook na odbieranie starej procki przekazanej przez wtyczke AlphaWindows
+  PluginLink.HookEvent(ALPHAWINDOWS_OLDPROC,OnRecvOldProc);
   //Hook na enumeracje listy kontatkow
   PluginLink.HookEvent(AQQ_CONTACTS_REPLYLIST,OnReplyList);
+  //Hook na zmiane przezroczystosci okna przez wtyczke AlphaWindows
+  PluginLink.HookEvent(ALPHAWINDOWS_SETTRANSPARENCY,OnSetTransparency);
   //Hook na restart komunikatora
   PluginLink.HookEvent(AQQ_SYSTEM_RESTART,OnSystemRestart);
   //Hook na zmiane nazwy zasobu przez wtyczke ResourcesChanger
@@ -10591,20 +10642,44 @@ extern "C" int __declspec(dllexport) __stdcall Unload()
   //Przypisanie starej procki do okna rozmowy
   if(OldFrmSendProc)
   {
+	//Przywrocenie wczesniej zapisanej procki
 	if(CurrentFrmSendProc==(WNDPROC)GetWindowLongPtr(hFrmSend, GWLP_WNDPROC))
 	 SetWindowLongPtrW(hFrmSend, GWLP_WNDPROC,(LONG)OldFrmSendProc);
+	//Samo wyrejestrowanie hooka
 	else
-	 SetWindowLongPtrW(hFrmSend, GWLP_WNDPROC,(LONG)(WNDPROC)GetWindowLongPtr(hFrmSend, GWLP_WNDPROC));
+	{
+      //Przekazanie starej procki przez API
+	  TPluginHook PluginHook;
+	  PluginHook.HookName = TABKIT_OLDPROC;
+	  PluginHook.wParam = (WPARAM)OldFrmSendProc;
+	  PluginHook.lParam = (LPARAM)hFrmSend;
+	  PluginLink.CallService(AQQ_SYSTEM_SENDHOOK,(WPARAM)(&PluginHook),0);
+	  //Wyrejestrowanie hooka
+	  SetWindowLongPtrW(hFrmSend, GWLP_WNDPROC,(LONG)(WNDPROC)GetWindowLongPtr(hFrmSend, GWLP_WNDPROC));
+	}
+	//Skasowanie procek
 	OldFrmSendProc = NULL;
 	CurrentFrmSendProc = NULL;
   }
   //Przypisanie starej procki do okna kontaktow
   if(OldFrmMainProc)
   {
+	//Przywrocenie wczesniej zapisanej procki
 	if(CurrentFrmMainProc==(WNDPROC)GetWindowLongPtr(hFrmMain, GWLP_WNDPROC))
 	 SetWindowLongPtrW(hFrmMain, GWLP_WNDPROC,(LONG)OldFrmMainProc);
+	//Samo wyrejestrowanie hooka
 	else
-	 SetWindowLongPtrW(hFrmMain, GWLP_WNDPROC,(LONG)(WNDPROC)GetWindowLongPtr(hFrmMain, GWLP_WNDPROC));
+	{
+      //Przekazanie starej procki przez API
+	  TPluginHook PluginHook;
+	  PluginHook.HookName = TABKIT_OLDPROC;
+	  PluginHook.wParam = (WPARAM)OldFrmMainProc;
+	  PluginHook.lParam = (LPARAM)hFrmMain;
+	  PluginLink.CallService(AQQ_SYSTEM_SENDHOOK,(WPARAM)(&PluginHook),0);
+	  //Wyrejestrowanie hooka
+	  SetWindowLongPtrW(hFrmMain, GWLP_WNDPROC,(LONG)(WNDPROC)GetWindowLongPtr(hFrmMain, GWLP_WNDPROC));
+	}
+	//Skasowanie procek
 	OldFrmMainProc = NULL;
 	CurrentFrmMainProc = NULL;
   }
@@ -10689,7 +10764,9 @@ extern "C" int __declspec(dllexport) __stdcall Unload()
   PluginLink.UnhookEvent(OnPerformCopyData);
   PluginLink.UnhookEvent(OnPrimaryTab);
   PluginLink.UnhookEvent(OnRecvMsg);
+  PluginLink.UnhookEvent(OnRecvOldProc);
   PluginLink.UnhookEvent(OnReplyList);
+  PluginLink.UnhookEvent(OnSetTransparency);
   PluginLink.UnhookEvent(OnSystemRestart);
   PluginLink.UnhookEvent(OnResourceChanged);
   PluginLink.UnhookEvent(OnSetHTMLStatus);
@@ -10902,7 +10979,7 @@ extern "C" PPluginInfo __declspec(dllexport) __stdcall AQQPluginInfo(DWORD AQQVe
 {
   PluginInfo.cbSize = sizeof(TPluginInfo);
   PluginInfo.ShortName = L"TabKit";
-  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,7,2,0);
+  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,7,3,0);
   PluginInfo.Description = L"Wtyczka oferuje masê funkcjonalnoœci usprawniaj¹cych korzystanie z komunikatora - np. zapamiêtywanie zamkniêtych zak³adek, inteligentne prze³¹czanie, zapamiêtywanie sesji.";
   PluginInfo.Author = L"Krzysztof Grochocki (Beherit)";
   PluginInfo.AuthorMail = L"kontakt@beherit.pl";

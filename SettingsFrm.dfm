@@ -170,7 +170,7 @@ object SettingsForm: TSettingsForm
     Height = 25
     Caption = 'Zastosuj'
     Enabled = False
-    TabOrder = 2
+    TabOrder = 1
     OnClick = SaveButtonClick
     SkinData.SkinSection = 'BUTTON'
   end
@@ -180,7 +180,7 @@ object SettingsForm: TSettingsForm
     Width = 75
     Height = 25
     Caption = 'Anuluj'
-    TabOrder = 3
+    TabOrder = 2
     OnClick = CancelButtonClick
     SkinData.SkinSection = 'BUTTON'
   end
@@ -190,149 +190,9 @@ object SettingsForm: TSettingsForm
     Width = 75
     Height = 25
     Caption = 'OK'
-    TabOrder = 4
+    TabOrder = 3
     OnClick = OkButtonClick
     SkinData.SkinSection = 'BUTTON'
-  end
-  object CategoryPanelGroup: TCategoryPanelGroup
-    AlignWithMargins = True
-    Left = 6
-    Top = 19
-    Width = 163
-    Height = 327
-    Margins.Left = 6
-    Margins.Top = 19
-    Margins.Right = 0
-    Margins.Bottom = 20
-    HorzScrollBar.Visible = False
-    VertScrollBar.Increment = 31
-    VertScrollBar.Tracking = True
-    BevelEdges = []
-    BevelInner = bvNone
-    BevelOuter = bvNone
-    Color = 15790320
-    GradientDirection = gdHorizontal
-    HeaderFont.Charset = DEFAULT_CHARSET
-    HeaderFont.Color = clWindowText
-    HeaderFont.Height = -11
-    HeaderFont.Name = 'Tahoma'
-    HeaderFont.Style = []
-    HeaderHeight = 30
-    TabOrder = 0
-    TabStop = True
-    Visible = False
-    object OtherCategoryPanel: TCategoryPanel
-      Top = 288
-      Height = 36
-      Caption = 'Inne'
-      Color = clWindow
-      Collapsed = True
-      TabOrder = 0
-      TabStop = True
-      OnCollapse = OtherCategoryPanelCollapse
-      OnExpand = OtherCategoryPanelExpand
-      ExpandedHeight = 36
-    end
-    object SideSlideCategoryPanel: TCategoryPanel
-      Top = 252
-      Height = 36
-      Caption = 'Chowanie okien'
-      Color = clWindow
-      Collapsed = True
-      TabOrder = 1
-      TabStop = True
-      OnCollapse = SideSlideCategoryPanelCollapse
-      OnExpand = SideSlideCategoryPanelExpand
-      ExpandedHeight = 36
-    end
-    object ClipTabsCategoryPanel: TCategoryPanel
-      Top = 216
-      Height = 36
-      Caption = 'Przypinanie zak'#322'adek'
-      Color = clWindow
-      Collapsed = True
-      Ctl3D = True
-      ParentCtl3D = False
-      TabOrder = 2
-      TabStop = True
-      OnCollapse = ClipTabsCategoryPanelCollapse
-      OnExpand = ClipTabsCategoryPanelExpand
-      ExpandedHeight = 36
-    end
-    object TitlebarCategoryPanel: TCategoryPanel
-      Top = 180
-      Height = 36
-      Caption = 'Pasek tytu'#322'u'
-      Color = clWindow
-      Collapsed = True
-      TabOrder = 3
-      TabStop = True
-      OnCollapse = TitlebarCategoryPanelCollapse
-      OnExpand = TitlebarCategoryPanelExpand
-      ExpandedHeight = 36
-    end
-    object NewMsgCategoryPanel: TCategoryPanel
-      Top = 144
-      Height = 36
-      Caption = 'Nowe wiadomo'#347'ci'
-      Color = clWindow
-      Collapsed = True
-      TabOrder = 4
-      TabStop = True
-      OnCollapse = NewMsgCategoryPanelCollapse
-      OnExpand = NewMsgCategoryPanelExpand
-      ExpandedHeight = 36
-    end
-    object SessionRememberCategoryPanel: TCategoryPanel
-      Top = 108
-      Height = 36
-      Caption = 'Zapami'#281'tywanie sesji'
-      Color = clWindow
-      Collapsed = True
-      TabOrder = 5
-      TabStop = True
-      OnCollapse = SessionRememberCategoryPanelCollapse
-      OnExpand = SessionRememberCategoryPanelExpand
-      ExpandedHeight = 36
-    end
-    object TabsSwitchingCategoryPanel: TCategoryPanel
-      Top = 72
-      Height = 36
-      Caption = 'Prze'#322#261'czanie zak'#322'adek'
-      Color = clWindow
-      Collapsed = True
-      TabOrder = 6
-      TabStop = True
-      OnCollapse = TabsSwitchingCategoryPanelCollapse
-      OnExpand = TabsSwitchingCategoryPanelExpand
-      ExpandedHeight = 36
-    end
-    object UnsentMsgCategoryPanel: TCategoryPanel
-      Top = 36
-      Height = 36
-      Caption = 'Niewys'#322'ane wiadomo'#347'ci'
-      Color = clWindow
-      Collapsed = True
-      TabOrder = 7
-      TabStop = True
-      OnCollapse = UnsentMsgCategoryPanelCollapse
-      OnExpand = UnsentMsgCategoryPanelExpand
-      ExpandedHeight = 36
-    end
-    object ClosedTabsCategoryPanel: TCategoryPanel
-      Top = 0
-      Height = 36
-      Caption = 'Zamkni'#281'te zak'#322'adki'
-      Color = clWindow
-      Collapsed = True
-      Ctl3D = True
-      ParentCtl3D = False
-      TabOrder = 8
-      TabStop = True
-      OnCollapse = ClosedTabsCategoryPanelCollapse
-      OnExpand = ClosedTabsCategoryPanelExpand
-      ExpandedHeight = 36
-    end
   end
   object FileListBox: TFileListBox
     Left = 0
@@ -341,2014 +201,41 @@ object SettingsForm: TSettingsForm
     Height = 0
     TabStop = False
     ItemHeight = 13
-    TabOrder = 5
+    TabOrder = 4
     Visible = False
   end
   object sPageControl: TsPageControl
     AlignWithMargins = True
-    Left = 169
+    Left = 6
     Top = 6
-    Width = 601
+    Width = 764
     Height = 354
-    Margins.Left = 0
+    Margins.Left = 6
     Margins.Top = 6
     Margins.Right = 6
     Margins.Bottom = 6
     ActivePage = DefaultTabSheet
-    Align = alRight
-    TabOrder = 1
+    Align = alClient
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Images = sAlphaImageList
+    MultiLine = True
+    ParentFont = False
+    TabHeight = 164
+    TabOrder = 0
+    TabPosition = tpLeft
+    TabWidth = 34
+    ActiveIsBold = True
+    RotateCaptions = True
+    ShowFocus = False
     SkinData.SkinSection = 'PAGECONTROL'
-    object ClosedTabsTabSheet: TsTabSheet
-      Caption = 'Zamkni'#281'te zak'#322'adki'
-      TabVisible = False
-      SkinData.CustomColor = False
-      SkinData.CustomFont = False
-      SkinData.SkinSection = 'CHECKBOX'
-      object ClosedTabGroupBox: TsGroupBox
-        Left = 18
-        Top = 22
-        Width = 556
-        Height = 306
-        TabOrder = 1
-        SkinData.SkinSection = 'GROUPBOX'
-        object OtherClosedTabGroupBox: TsGroupBox
-          Left = 266
-          Top = 26
-          Width = 274
-          Height = 265
-          TabOrder = 4
-          SkinData.SkinSection = 'GROUPBOX'
-          object UnCloseMouseLabel: TsLabel
-            Left = 14
-            Top = 12
-            Width = 245
-            Height = 13
-            Caption = 'Przywracaj ostatnio zamkni'#281't'#261' zak'#322'adk'#281' za pomoc'#261
-          end
-          object CountClosedTabsLabel: TsLabel
-            Left = 14
-            Top = 83
-            Width = 163
-            Height = 13
-            Caption = 'Liczba zapami'#281'tywanych zak'#322'adek'
-          end
-          object UnCloseTabLPMouseCheckBox: TsCheckBox
-            Left = 26
-            Top = 57
-            Width = 207
-            Height = 20
-            Caption = 'przycisku Ctrl i lewego przycisku myszki'
-            TabOrder = 1
-            OnClick = aClosedTabsChkExecute
-            SkinData.SkinSection = 'CHECKBOX'
-            ImgChecked = 0
-            ImgUnchecked = 0
-          end
-          object UnCloseTabSPMouseCheckBox: TsCheckBox
-            Left = 26
-            Top = 31
-            Width = 159
-            Height = 20
-            Caption = #347'rodkowego przycisku myszki'
-            Checked = True
-            State = cbChecked
-            TabOrder = 0
-            OnClick = aClosedTabsChkExecute
-            SkinData.SkinSection = 'CHECKBOX'
-            ImgChecked = 0
-            ImgUnchecked = 0
-          end
-          object RestoreLastMsgClosedTabsCheckBox: TsCheckBox
-            Left = 10
-            Top = 102
-            Width = 261
-            Height = 28
-            Caption = 
-              'Przy przywracaniu zak'#322'adki wczytuj ostatnio przeprowadzon'#261' rozmo' +
-              'w'#281
-            AutoSize = False
-            TabOrder = 3
-            OnClick = aClosedTabsChkExecute
-            SkinData.SkinSection = 'CHECKBOX'
-            ImgChecked = 0
-            ImgUnchecked = 0
-            WordWrap = True
-          end
-          object OnlyConversationTabsCheckBox: TsCheckBox
-            Left = 10
-            Top = 136
-            Width = 261
-            Height = 28
-            Caption = 
-              'Zapami'#281'tuj wy'#322#261'cznie zak'#322'adki z kontaktami z kt'#243'rymi przeprowadz' +
-              'ili'#347'my rozmow'#281
-            AutoSize = False
-            TabOrder = 4
-            OnClick = aClosedTabsChkExecute
-            SkinData.SkinSection = 'CHECKBOX'
-            ImgChecked = 0
-            ImgUnchecked = 0
-            WordWrap = True
-          end
-          object CountClosedTabsSpinEdit: TsSpinEdit
-            Left = 183
-            Top = 80
-            Width = 36
-            Height = 21
-            TabOrder = 2
-            Text = '5'
-            OnChange = aClosedTabsChkExecute
-            SkinData.SkinSection = 'EDIT'
-            BoundLabel.Indent = 0
-            BoundLabel.Font.Charset = DEFAULT_CHARSET
-            BoundLabel.Font.Color = clWindowText
-            BoundLabel.Font.Height = -11
-            BoundLabel.Font.Name = 'Tahoma'
-            BoundLabel.Font.Style = []
-            BoundLabel.Layout = sclLeft
-            BoundLabel.MaxWidth = 0
-            BoundLabel.UseSkinColor = True
-            MaxValue = 30
-            MinValue = 5
-            Value = 5
-          end
-        end
-        object UnCloseTabHotKeyGroupBox: TsGroupBox
-          Left = 16
-          Top = 208
-          Width = 244
-          Height = 83
-          TabOrder = 3
-          SkinData.SkinSection = 'GROUPBOX'
-          object UnCloseTabHotKeyInput: THotKey
-            Left = 107
-            Top = 51
-            Width = 115
-            Height = 19
-            Enabled = False
-            HotKey = 0
-            Modifiers = []
-            TabOrder = 2
-            OnChange = aClosedTabsChkExecute
-          end
-          object UnCloseTabHotKeyMode1RadioButton: TsRadioButton
-            Left = 10
-            Top = 24
-            Width = 101
-            Height = 20
-            Caption = 'Ctrl + Backspace'
-            Checked = True
-            TabOrder = 0
-            TabStop = True
-            OnClick = aClosedTabsChkExecute
-            SkinData.SkinSection = 'RADIOBUTTON'
-          end
-          object UnCloseTabHotKeyMode2RadioButton: TsRadioButton
-            Left = 10
-            Top = 50
-            Width = 91
-            Height = 20
-            Caption = 'Wybrany skr'#243't'
-            TabOrder = 1
-            OnClick = aClosedTabsChkExecute
-            SkinData.SkinSection = 'RADIOBUTTON'
-          end
-        end
-        object FastAccessClosedTabsGroupBox: TsGroupBox
-          Left = 16
-          Top = 26
-          Width = 244
-          Height = 166
-          TabOrder = 1
-          SkinData.SkinSection = 'GROUPBOX'
-          object ItemsCountClosedTabsLabel: TsLabel
-            Left = 14
-            Top = 76
-            Width = 150
-            Height = 13
-            Caption = 'Ilo'#347#263' wy'#347'wietlanych element'#243'w'
-          end
-          object FastClearClosedTabsCheckBox: TsCheckBox
-            Left = 10
-            Top = 126
-            Width = 215
-            Height = 28
-            Caption = 
-              'Dodaj element szybkiego czyszczenia listy ostatnio zamkni'#281'tych z' +
-              'ak'#322'adek'
-            AutoSize = False
-            Checked = True
-            State = cbChecked
-            TabOrder = 4
-            OnClick = aClosedTabsChkExecute
-            SkinData.SkinSection = 'CHECKBOX'
-            ImgChecked = 0
-            ImgUnchecked = 0
-            WordWrap = True
-          end
-          object FrmMainClosedTabsCheckBox: TsCheckBox
-            Left = 10
-            Top = 24
-            Width = 133
-            Height = 20
-            Caption = 'W oknie listy kontakt'#243'w'
-            Checked = True
-            State = cbChecked
-            TabOrder = 0
-            OnClick = aClosedTabsChkExecute
-            SkinData.SkinSection = 'CHECKBOX'
-            ImgChecked = 0
-            ImgUnchecked = 0
-          end
-          object FrmSendClosedTabsCheckBox: TsCheckBox
-            Left = 10
-            Top = 50
-            Width = 104
-            Height = 20
-            Caption = 'W oknie rozmowy'
-            Checked = True
-            State = cbChecked
-            TabOrder = 1
-            OnClick = aClosedTabsChkExecute
-            SkinData.SkinSection = 'CHECKBOX'
-            ImgChecked = 0
-            ImgUnchecked = 0
-          end
-          object ItemsCountClosedTabsSpinEdit: TsSpinEdit
-            Left = 170
-            Top = 73
-            Width = 36
-            Height = 21
-            TabOrder = 2
-            Text = '5'
-            OnChange = aClosedTabsChkExecute
-            SkinData.SkinSection = 'EDIT'
-            BoundLabel.Indent = 0
-            BoundLabel.Font.Charset = DEFAULT_CHARSET
-            BoundLabel.Font.Color = clWindowText
-            BoundLabel.Font.Height = -11
-            BoundLabel.Font.Name = 'Tahoma'
-            BoundLabel.Font.Style = []
-            BoundLabel.Layout = sclLeft
-            BoundLabel.MaxWidth = 0
-            BoundLabel.UseSkinColor = True
-            MaxValue = 10
-            MinValue = 5
-            Value = 5
-          end
-          object ShowTimeClosedTabsCheckBox: TsCheckBox
-            Left = 10
-            Top = 100
-            Width = 196
-            Height = 20
-            Caption = 'Wy'#347'wietlaj dat'#281' zamkni'#281'cia zak'#322'adek'
-            TabOrder = 3
-            OnClick = aClosedTabsChkExecute
-            SkinData.SkinSection = 'CHECKBOX'
-            ImgChecked = 0
-            ImgUnchecked = 0
-          end
-        end
-        object UnCloseTabHotKeyCheckBox: TsCheckBox
-          Left = 10
-          Top = 198
-          Width = 231
-          Height = 28
-          Caption = 
-            'Przypisz skr'#243't klawiaturowy przywracaj'#261'cy ostatnio zamkni'#281't'#261' zak' +
-            #322'adk'#281
-          AutoSize = False
-          Checked = True
-          State = cbChecked
-          TabOrder = 2
-          OnClick = aClosedTabsChkExecute
-          SkinData.SkinSection = 'CHECKBOX'
-          ImgChecked = 0
-          ImgUnchecked = 0
-          WordWrap = True
-        end
-        object FastAccessClosedTabsCheckBox: TsCheckBox
-          Left = 10
-          Top = 16
-          Width = 213
-          Height = 28
-          Caption = 
-            'Wy'#347'wietlaj przycisk szybkiego dost'#281'p do ostatnio zamkni'#281'tych zak' +
-            #322'adek'
-          AutoSize = False
-          Checked = True
-          State = cbChecked
-          TabOrder = 0
-          OnClick = aClosedTabsChkExecute
-          SkinData.SkinSection = 'CHECKBOX'
-          ImgChecked = 0
-          ImgUnchecked = 0
-          WordWrap = True
-        end
-      end
-      object RememberClosedTabsCheckBox: TsCheckBox
-        Left = 12
-        Top = 12
-        Width = 207
-        Height = 20
-        Caption = 'Zapami'#281'tuj ostatnio zamkni'#281'te zak'#322'adki'
-        Checked = True
-        State = cbChecked
-        TabOrder = 0
-        OnClick = aClosedTabsChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-      end
-    end
-    object UnsentMsgTabSheet: TsTabSheet
-      Caption = 'Niewys'#322'ane wiadomo'#347'ci'
-      TabVisible = False
-      SkinData.CustomColor = False
-      SkinData.CustomFont = False
-      SkinData.SkinSection = 'CHECKBOX'
-      object RememberUnsentMsgGroupBox: TsGroupBox
-        Left = 18
-        Top = 22
-        Width = 399
-        Height = 259
-        TabOrder = 1
-        SkinData.SkinSection = 'GROUPBOX'
-        object FastAccessUnsentMsgGroupBox: TsGroupBox
-          Left = 16
-          Top = 142
-          Width = 369
-          Height = 100
-          TabOrder = 3
-          SkinData.SkinSection = 'GROUPBOX'
-          object FastClearUnsentMsgCheckBox: TsCheckBox
-            Left = 10
-            Top = 68
-            Width = 345
-            Height = 20
-            Caption = 
-              'Dodaj element szybkiego czyszczenia listy niewys'#322'anych wiadomo'#347'c' +
-              'i'
-            Checked = True
-            State = cbChecked
-            TabOrder = 2
-            OnClick = aUnsentMsgChkExecute
-            SkinData.SkinSection = 'CHECKBOX'
-            ImgChecked = 0
-            ImgUnchecked = 0
-          end
-          object FrmMainUnsentMsgCheckBox: TsCheckBox
-            Left = 10
-            Top = 16
-            Width = 133
-            Height = 20
-            Caption = 'W oknie listy kontakt'#243'w'
-            Checked = True
-            State = cbChecked
-            TabOrder = 0
-            OnClick = aUnsentMsgChkExecute
-            SkinData.SkinSection = 'CHECKBOX'
-            ImgChecked = 0
-            ImgUnchecked = 0
-          end
-          object FrmSendUnsentMsgCheckBox: TsCheckBox
-            Left = 10
-            Top = 42
-            Width = 104
-            Height = 20
-            Caption = 'W oknie rozmowy'
-            Checked = True
-            State = cbChecked
-            TabOrder = 1
-            OnClick = aUnsentMsgChkExecute
-            SkinData.SkinSection = 'CHECKBOX'
-            ImgChecked = 0
-            ImgUnchecked = 0
-          end
-        end
-        object InfoUnsentMsgGroupBox: TsGroupBox
-          Left = 16
-          Top = 26
-          Width = 369
-          Height = 100
-          TabOrder = 1
-          SkinData.SkinSection = 'GROUPBOX'
-          object CloudUnsentMsgCheckBox: TsCheckBox
-            Left = 10
-            Top = 16
-            Width = 127
-            Height = 20
-            Caption = 'Chmurka informacyjna'
-            Checked = True
-            State = cbChecked
-            TabOrder = 0
-            OnClick = aUnsentMsgChkExecute
-            SkinData.SkinSection = 'CHECKBOX'
-            ImgChecked = 0
-            ImgUnchecked = 0
-          end
-          object DetailedCloudUnsentMsgCheckBox: TsCheckBox
-            Left = 26
-            Top = 42
-            Width = 174
-            Height = 20
-            Caption = 'Pokazuj szczeg'#243#322'owe informacje'
-            TabOrder = 1
-            OnClick = aUnsentMsgChkExecute
-            SkinData.SkinSection = 'CHECKBOX'
-            ImgChecked = 0
-            ImgUnchecked = 0
-          end
-          object TrayUnsentMsgCheckBox: TsCheckBox
-            Left = 10
-            Top = 68
-            Width = 178
-            Height = 20
-            Caption = 'Ikonka w zasobniku systemowym'
-            Checked = True
-            State = cbChecked
-            TabOrder = 2
-            OnClick = aUnsentMsgChkExecute
-            SkinData.SkinSection = 'CHECKBOX'
-            ImgChecked = 0
-            ImgUnchecked = 0
-          end
-        end
-        object FastAccessUnsentMsgCheckBox: TsCheckBox
-          Left = 10
-          Top = 132
-          Width = 226
-          Height = 20
-          Caption = 'Szybki dost'#281'p do niewys'#322'anych wiadomo'#347'ci'
-          Checked = True
-          State = cbChecked
-          TabOrder = 2
-          OnClick = aUnsentMsgChkExecute
-          SkinData.SkinSection = 'CHECKBOX'
-          ImgChecked = 0
-          ImgUnchecked = 0
-        end
-        object InfoUnsentMsgCheckBox: TsCheckBox
-          Left = 10
-          Top = 16
-          Width = 312
-          Height = 20
-          Caption = 'Informuj o niewys'#322'anych wiadomo'#347'ciach przy w'#322#261'czeniu AQQ'
-          Checked = True
-          State = cbChecked
-          TabOrder = 0
-          OnClick = aUnsentMsgChkExecute
-          SkinData.SkinSection = 'CHECKBOX'
-          ImgChecked = 0
-          ImgUnchecked = 0
-        end
-      end
-      object RememberUnsentMsgCheckBox: TsCheckBox
-        Left = 12
-        Top = 12
-        Width = 187
-        Height = 20
-        Caption = 'Zapami'#281'tuj niewys'#322'ane wiadomo'#347'ci'
-        Checked = True
-        State = cbChecked
-        TabOrder = 0
-        OnClick = aUnsentMsgChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-      end
-    end
-    object TabsSwitchingTabSheet: TsTabSheet
-      Caption = 'Prze'#322#261'czanie zak'#322'adek'
-      TabVisible = False
-      SkinData.CustomColor = False
-      SkinData.CustomFont = False
-      SkinData.SkinSection = 'CHECKBOX'
-      object TabsHotKeysGroupBox: TsGroupBox
-        Left = 18
-        Top = 116
-        Width = 335
-        Height = 110
-        TabOrder = 3
-        SkinData.SkinSection = 'GROUPBOX'
-        object TabsHotKeysMode1RadioButton: TsRadioButton
-          Left = 10
-          Top = 16
-          Width = 129
-          Height = 20
-          Caption = 'Klawisze od F1 do  F12'
-          TabOrder = 0
-          OnClick = aTabsSwitchingChkExecute
-          SkinData.SkinSection = 'RADIOBUTTON'
-        end
-        object TabsHotKeysMode2RadioButton: TsRadioButton
-          Left = 10
-          Top = 42
-          Width = 175
-          Height = 20
-          Caption = 'Klawisz Ctrl + klawisze od 1 do 9'
-          Checked = True
-          TabOrder = 1
-          TabStop = True
-          OnClick = aTabsSwitchingChkExecute
-          SkinData.SkinSection = 'RADIOBUTTON'
-        end
-        object NewMgsHoyKeyCheckBox: TsCheckBox
-          Left = 10
-          Top = 68
-          Width = 327
-          Height = 28
-          Caption = 
-            'Otwieraj okno rozmowy z now'#261' wiadomo'#347'ci'#261' za pomoc'#261' skr'#243'tu aktual' +
-            'nie nieprzypisanego do '#380'adnej otwartej zak'#322'adki'
-          AutoSize = False
-          TabOrder = 2
-          OnClick = aTabsSwitchingChkExecute
-          SkinData.SkinSection = 'CHECKBOX'
-          ImgChecked = 0
-          ImgUnchecked = 0
-          WordWrap = True
-        end
-      end
-      object SwitchToNewMsgGroupBox: TsGroupBox
-        Left = 18
-        Top = 29
-        Width = 335
-        Height = 72
-        TabOrder = 1
-        SkinData.SkinSection = 'GROUPBOX'
-        object SwitchToNewMsgMode1RadioButton: TsRadioButton
-          Left = 10
-          Top = 17
-          Width = 203
-          Height = 20
-          Caption = 'Prze'#322#261'czanie na najstarsz'#261' wiadomo'#347#263
-          Checked = True
-          TabOrder = 0
-          TabStop = True
-          OnClick = aTabsSwitchingChkExecute
-          SkinData.SkinSection = 'RADIOBUTTON'
-        end
-        object SwitchToNewMsgMode2RadioButton: TsRadioButton
-          Left = 10
-          Top = 43
-          Width = 204
-          Height = 20
-          Caption = 'Prze'#322#261'czanie na najnowsz'#261' wiadomo'#347#263
-          TabOrder = 1
-          OnClick = aTabsSwitchingChkExecute
-          SkinData.SkinSection = 'RADIOBUTTON'
-        end
-      end
-      object SwitchToNewMsgCheckBox: TsCheckBox
-        Left = 12
-        Top = 12
-        Width = 301
-        Height = 28
-        Caption = 
-          'Inteligentne prze'#322#261'czanie do nieprzeczytanych wiadomo'#347'ci za pomo' +
-          'c'#261' skr'#243'tu klawiaturowego Ctrl+Tab'
-        AutoSize = False
-        Checked = True
-        State = cbChecked
-        TabOrder = 0
-        OnClick = aTabsSwitchingChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-        WordWrap = True
-      end
-      object TabsHotKeysCheckBox: TsCheckBox
-        Left = 12
-        Top = 107
-        Width = 280
-        Height = 20
-        Caption = 'Przypisz skr'#243'ty klawiaturowe do konkretnych zak'#322'adek'
-        Checked = True
-        State = cbChecked
-        TabOrder = 2
-        OnClick = aTabsSwitchingChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-      end
-    end
-    object SessionRememberTabSheet: TsTabSheet
-      Caption = 'Zapami'#281'tywanie sesji'
-      TabVisible = False
-      SkinData.CustomColor = False
-      SkinData.CustomFont = False
-      SkinData.SkinSection = 'CHECKBOX'
-      object RestoreTabsSessionGroupBox: TsGroupBox
-        Left = 18
-        Top = 22
-        Width = 391
-        Height = 115
-        TabOrder = 1
-        SkinData.SkinSection = 'GROUPBOX'
-        object RestoreSessionLabel: TsLabel
-          Left = 26
-          Top = 76
-          Width = 351
-          Height = 26
-          Alignment = taCenter
-          Caption = 
-            'Opcja zapami'#281'tywania wpisanego tekstu mo'#380'e w niekt'#243'rych przypadk' +
-            'ach znacznie obni'#380'y'#263' wydajno'#347#263' komunikatora. U'#380'ywaj tej opcj z r' +
-            'ozwag'#261'!'
-          Enabled = False
-          WordWrap = True
-        end
-        object ManualRestoreTabsSessionCheckBox: TsCheckBox
-          Left = 10
-          Top = 24
-          Width = 367
-          Height = 20
-          Caption = 
-            'Przywracaj r'#243'wnie'#380' zak'#322'adki zapami'#281'tane przy r'#281'cznym wy'#322#261'czeniu ' +
-            'AQQ'
-          TabOrder = 0
-          OnClick = aSessionRememberChkExecute
-          SkinData.SkinSection = 'CHECKBOX'
-          ImgChecked = 0
-          ImgUnchecked = 0
-        end
-        object RestoreMsgSessionCheckBox: TsCheckBox
-          Left = 10
-          Top = 50
-          Width = 227
-          Height = 20
-          Caption = 'Zapami'#281'tuj wpisany tekst w oknie rozmowy'
-          TabOrder = 1
-          OnClick = aSessionRememberChkExecute
-          SkinData.SkinSection = 'CHECKBOX'
-          ImgChecked = 0
-          ImgUnchecked = 0
-        end
-      end
-      object RestoreTabsSessionCheckBox: TsCheckBox
-        Left = 12
-        Top = 12
-        Width = 325
-        Height = 28
-        Caption = 
-          'Przywracaj wszystkie otwarte zak'#322'adki utracone w wyniku niepo'#380#261'd' +
-          'anego zamkni'#281'cia lub restartu komunikatora'
-        AutoSize = False
-        Checked = True
-        State = cbChecked
-        TabOrder = 0
-        OnClick = aSessionRememberChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-        WordWrap = True
-      end
-    end
-    object NewMsgTabSheet: TsTabSheet
-      Caption = 'Nowe wiadomo'#347'ci'
-      TabVisible = False
-      OnShow = NewMsgTabSheetShow
-      SkinData.CustomColor = False
-      SkinData.CustomFont = False
-      SkinData.SkinSection = 'CHECKBOX'
-      object ChatStateNotiferNewMsgCheckBox: TsCheckBox
-        Left = 12
-        Top = 148
-        Width = 341
-        Height = 28
-        Caption = 
-          'Informuj graficznie o pisaniu nowej wiadomo'#347'ci na zak'#322'adkach ora' +
-          'z na pasku tytu'#322'u okna gdy jest ono zminimalizowane lub nieaktyw' +
-          'ne'
-        AutoSize = False
-        Checked = True
-        State = cbChecked
-        TabOrder = 4
-        OnClick = aNewMsgChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-        WordWrap = True
-      end
-      object InactiveFrmNewMsgCheckBox: TsCheckBox
-        Left = 12
-        Top = 12
-        Width = 341
-        Height = 28
-        Caption = 
-          'Wy'#347'wietlaj liczb'#281' nieprzeczytanych wiadomo'#347'ci na pasku tytu'#322'u ok' +
-          'na rozmowy gdy jest ono zminimalizowane lub nieaktywne'
-        AutoSize = False
-        Checked = True
-        State = cbChecked
-        TabOrder = 0
-        OnClick = aNewMsgChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-        WordWrap = True
-      end
-      object InactiveNotiferNewMsgCheckBox: TsCheckBox
-        Left = 12
-        Top = 114
-        Width = 285
-        Height = 28
-        Caption = 
-          'Pokazuj w chmurce informacyjnej tre'#347#263' nowej wiadomo'#347'ci pochodz'#261'c' +
-          'ej z nieaktywnej zak'#322'adki'
-        AutoSize = False
-        TabOrder = 3
-        OnClick = aNewMsgChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-        WordWrap = True
-      end
-      object InactiveTabsNewMsgCheckBox: TsCheckBox
-        Left = 12
-        Top = 80
-        Width = 317
-        Height = 28
-        Caption = 
-          'Wy'#347'wietlaj liczb'#281' nieprzeczytanych wiadomo'#347'ci na nieaktywnych za' +
-          'k'#322'adkach w formie tekstowej'
-        AutoSize = False
-        TabOrder = 2
-        OnClick = aNewMsgChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-        WordWrap = True
-      end
-      object OffCoreInactiveTabsNewMsgCheckBox: TsCheckBox
-        Left = 12
-        Top = 46
-        Width = 341
-        Height = 28
-        Caption = 
-          'Wy'#322#261'cz wbudowany w komunikator graficzny licznik nieprzeczytanyc' +
-          'h wiadomo'#347'ci'
-        AutoSize = False
-        TabOrder = 1
-        OnClick = aNewMsgChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-        WordWrap = True
-      end
-      object TaskbarPenCheckBox: TsCheckBox
-        Left = 12
-        Top = 208
-        Width = 253
-        Height = 28
-        Caption = 
-          'Wy'#322#261'cz wbudowan'#261' w komunikator funkcj'#281' pisaka na pasku tytu'#322'u ok' +
-          'na rozmowy'
-        AutoSize = False
-        TabOrder = 6
-        OnClick = aNewMsgChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-        WordWrap = True
-      end
-      object ChatGoneNotiferNewMsgCheckBox: TsCheckBox
-        Left = 28
-        Top = 182
-        Width = 316
-        Height = 20
-        Caption = 'Informuj graficznie na zak'#322'adkach o zamkni'#281'ciu okna rozmowy'
-        TabOrder = 5
-        OnClick = aNewMsgChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-      end
-    end
-    object TitlebarTabSheet: TsTabSheet
-      Caption = 'Pasek tytu'#322'u'
-      TabVisible = False
-      SkinData.CustomColor = False
-      SkinData.CustomFont = False
-      SkinData.SkinSection = 'CHECKBOX'
-      object TweakFrmMainTitlebarGroupBox: TsGroupBox
-        Left = 18
-        Top = 167
-        Width = 271
-        Height = 74
-        TabOrder = 3
-        SkinData.SkinSection = 'GROUPBOX'
-        object TweakFrmMainTitlebarModeExLabel: TsLabel
-          Left = 185
-          Top = 19
-          Width = 4
-          Height = 13
-          Caption = ']'
-        end
-        object TweakFrmMainTitlebarMode1RadioButton: TsRadioButton
-          Left = 10
-          Top = 16
-          Width = 50
-          Height = 20
-          Caption = 'AQQ ['
-          Checked = True
-          TabOrder = 0
-          TabStop = True
-          OnClick = aTitlebarTweakChkExecute
-          SkinData.SkinSection = 'RADIOBUTTON'
-        end
-        object TweakFrmMainTitlebarMode2Edit: TsEdit
-          Left = 70
-          Top = 42
-          Width = 121
-          Height = 21
-          TabOrder = 3
-          TextHint = 'Wpisz tutaj sw'#243'j tekst'
-          OnChange = aTitlebarTweakChkExecute
-          SkinData.SkinSection = 'EDIT'
-          BoundLabel.Indent = 0
-          BoundLabel.Font.Charset = DEFAULT_CHARSET
-          BoundLabel.Font.Color = clWindowText
-          BoundLabel.Font.Height = -11
-          BoundLabel.Font.Name = 'Tahoma'
-          BoundLabel.Font.Style = []
-          BoundLabel.Layout = sclLeft
-          BoundLabel.MaxWidth = 0
-          BoundLabel.UseSkinColor = True
-        end
-        object TweakFrmMainTitlebarMode2RadioButton: TsRadioButton
-          Left = 10
-          Top = 42
-          Width = 54
-          Height = 20
-          Caption = 'AQQ +'
-          TabOrder = 2
-          OnClick = aTitlebarTweakChkExecute
-          SkinData.SkinSection = 'RADIOBUTTON'
-        end
-        object TweakFrmMainTitlebarModeExComboBox: TsComboBox
-          Left = 66
-          Top = 16
-          Width = 113
-          Height = 21
-          Alignment = taLeftJustify
-          BoundLabel.Caption = 'TweakFrmMainTitlebarModeExComboBox'
-          BoundLabel.Indent = 0
-          BoundLabel.Font.Charset = DEFAULT_CHARSET
-          BoundLabel.Font.Color = clWindowText
-          BoundLabel.Font.Height = -11
-          BoundLabel.Font.Name = 'Tahoma'
-          BoundLabel.Font.Style = []
-          BoundLabel.Layout = sclLeftTop
-          BoundLabel.MaxWidth = 0
-          BoundLabel.UseSkinColor = True
-          SkinData.SkinSection = 'COMBOBOX'
-          Style = csDropDownList
-          ItemIndex = -1
-          TabOrder = 1
-          OnChange = aTitlebarTweakChkExecute
-        end
-      end
-      object TweakFrmSendTitlebarGroupBox: TsGroupBox
-        Left = 18
-        Top = 22
-        Width = 271
-        Height = 129
-        TabOrder = 1
-        SkinData.SkinSection = 'GROUPBOX'
-        object TweakFrmSendTitlebarMode1RadioButton: TsRadioButton
-          Left = 10
-          Top = 16
-          Width = 143
-          Height = 20
-          Caption = 'Pseudonim i opis kontaktu'
-          Checked = True
-          TabOrder = 0
-          TabStop = True
-          OnClick = aTitlebarTweakChkExecute
-          SkinData.SkinSection = 'RADIOBUTTON'
-        end
-        object TweakFrmSendTitlebarMode2RadioButton: TsRadioButton
-          Left = 10
-          Top = 42
-          Width = 139
-          Height = 20
-          Caption = 'Sam pseudonim kontaktu'
-          TabOrder = 1
-          OnClick = aTitlebarTweakChkExecute
-          SkinData.SkinSection = 'RADIOBUTTON'
-        end
-        object TweakFrmSendTitlebarMode3RadioButton: TsRadioButton
-          Left = 10
-          Top = 68
-          Width = 185
-          Height = 20
-          Caption = 'Pseudonim i identyfikator kontaktu'
-          TabOrder = 2
-          OnClick = aTitlebarTweakChkExecute
-          SkinData.SkinSection = 'RADIOBUTTON'
-        end
-        object TweakFrmSendTitlebarMode4RadioButton: TsRadioButton
-          Left = 10
-          Top = 94
-          Width = 199
-          Height = 28
-          Caption = 'Pseudonim i identyfikator kontaktu wraz z zasobem oraz opisem'
-          TabOrder = 3
-          WordWrap = True
-          OnClick = aTitlebarTweakChkExecute
-          AutoSize = False
-          SkinData.SkinSection = 'RADIOBUTTON'
-        end
-      end
-      object TweakFrmMainTitlebarCheckBox: TsCheckBox
-        Left = 12
-        Top = 157
-        Width = 243
-        Height = 20
-        Caption = 'Zmieniaj tekst na pasku tytu'#322'u okna kontakt'#243'w'
-        TabOrder = 2
-        OnClick = aTitlebarTweakChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-      end
-      object TweakFrmSendTitlebarCheckBox: TsCheckBox
-        Left = 12
-        Top = 12
-        Width = 236
-        Height = 20
-        Caption = 'Zmieniaj tekst na pasku tytu'#322'u okna rozmowy'
-        TabOrder = 0
-        OnClick = aTitlebarTweakChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-      end
-    end
-    object ClipTabsTabSheet: TsTabSheet
-      Caption = 'Przypinanie zak'#322'adek'
-      TabVisible = False
-      SkinData.CustomColor = False
-      SkinData.CustomFont = False
-      SkinData.SkinSection = 'CHECKBOX'
-      object OpenClipTabsCheckBox: TsCheckBox
-        Left = 12
-        Top = 12
-        Width = 308
-        Height = 20
-        Caption = 'Otwieraj przypi'#281'te zak'#322'adki wraz z otwarciem okna rozmowy'
-        Checked = True
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        State = cbChecked
-        TabOrder = 0
-        OnClick = aClipTabsChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-        WordWrap = True
-      end
-      object InactiveClipTabsCheckBox: TsCheckBox
-        Left = 12
-        Top = 38
-        Width = 268
-        Height = 20
-        Caption = 'Nie wy'#347'wietlaj licznika nieprzeczytanych wiadomo'#347'ci'
-        TabOrder = 1
-        OnClick = aClipTabsChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-        WordWrap = True
-      end
-      object CounterClipTabsCheckBox: TsCheckBox
-        Left = 12
-        Top = 64
-        Width = 267
-        Height = 20
-        Caption = 'Wy'#347'wietlaj licznik znak'#243'w z powiadomienia o pisaniu'
-        TabOrder = 2
-        OnClick = aClipTabsChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-      end
-      object ExcludeClipTabsFromTabSwitchingCheckBox: TsCheckBox
-        Left = 12
-        Top = 90
-        Width = 333
-        Height = 28
-        Caption = 
-          'Wy'#322#261'cz przypi'#281'te zak'#322'adki z prze'#322#261'czania zak'#322'adek za pomoc'#261' skr'#243 +
-          'tu klawiaturowego Ctrl+Tab / Ctrl+Shift+Tab'
-        AutoSize = False
-        TabOrder = 3
-        OnClick = aClipTabsChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-        WordWrap = True
-      end
-      object ExcludeClipTabsFromSwitchToNewMsgCheckBox: TsCheckBox
-        Left = 28
-        Top = 124
-        Width = 237
-        Height = 28
-        Caption = 
-          'Nieaktywne dla inteligentnego prze'#322#261'czania do nieprzeczytanych w' +
-          'iadomo'#347'ci'
-        AutoSize = False
-        TabOrder = 4
-        OnClick = aClipTabsChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-        WordWrap = True
-      end
-      object ExcludeClipTabsFromTabsHotKeysCheckBox: TsCheckBox
-        Left = 12
-        Top = 158
-        Width = 253
-        Height = 28
-        Caption = 
-          'Wy'#322#261'cz przypisywanie skr'#243't'#243'w klawiaturowych dla przypi'#281'tych zak'#322 +
-          'adek'
-        AutoSize = False
-        TabOrder = 5
-        OnClick = aClipTabsChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-        WordWrap = True
-      end
-      object NoMiniAvatarsClipTabsCheckBox: TsCheckBox
-        Left = 12
-        Top = 192
-        Width = 280
-        Height = 20
-        Caption = 'Nie ustawiaj mini awatar'#243'w na przypi'#281'tych zak'#322'adkach'
-        TabOrder = 6
-        OnClick = aClipTabsChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-      end
-    end
-    object SideSlideTabSheet: TsTabSheet
-      Caption = 'Chowanie okien'
-      TabVisible = False
-      SkinData.CustomColor = False
-      SkinData.CustomFont = False
-      SkinData.SkinSection = 'CHECKBOX'
-      object SideSlideFullScreenModeExceptionsButton: TsSpeedButton
-        Left = 263
-        Top = 314
-        Width = 23
-        Height = 22
-        Hint = 'Wyj'#261'tki...'
-        Flat = True
-        Glyph.Data = {
-          36040000424D3604000000000000360000002800000010000000100000000100
-          2000000000000004000000000000000000000000000000000000FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF006C6C6C63575757BF505050BF5151
-          5163FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF006E6E6E296969690E79797902808080EABCBCBCFFB1B1B1FF5A5A
-          5AEA595959025B5B5B0E4D4D4D29FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF008080809B6E6E6EFD636363E775757519828282E7CBCBCBFFC7C7C7FF6161
-          61E759595919575757E74D4D4DFD4848489BFFFFFF00FFFFFF00FFFFFF00A3A3
-          A37BBBBBBBFFDEDEDEFFA5A5A5FF828282F4848484FEC3C3C3FFC1C1C1FF6C6C
-          6CFE6D6D6DF4A5A5A5FFD2D2D2FF7F7F7FFF5151517BFFFFFF00FFFFFF00AAAA
-          AA7DA5A5A5FED5D5D5FFC4C4C4FFCBCBCBFFD1D1D1FFC9C9C9FFC7C7C7FFCCCC
-          CCFFC4C4C4FFBCBCBCFFCBCBCBFF6D6D6DFE6666667DFFFFFF00FFFFFF00FFFF
-          FF00ABABAB85C4C4C4FFC0C0C0FFC4C4C4FFC7C7C7FFA9A9A9FFA6A6A6FFC0C0
-          C0FFBDBDBDFFB4B4B4FFA9A9A9FF68686885FFFFFF00FFFFFF00A2A2A2CD8E8E
-          8EE39F9F9FEECFCFCFFFC5C5C5FFCCCCCCFF9D9D9DC698989844939393448E8E
-          8EC6C0C0C0FFBBBBBBFFB8B8B8FF636363EE575757E3525252CDBEBEBEFDE2E2
-          E2FFD2D2D2FFC5C5C5FFCDCDCDFFB0B0B0FF92929244FFFFFF00FFFFFF009494
-          9444A7A7A7FFC1C1C1FFB6B6B6FFBFBFBFFFD2D2D2FF606060FDC3C3C3FDE9E9
-          E9FFD6D6D6FFC9C9C9FFCECECEFFA4A4A4FF83838344FFFFFF00FFFFFF009999
-          9944ABABABFFC3C3C3FFB9B9B9FFC5C5C5FFDDDDDDFF6A6A6AFDC8C8C8CDC3C3
-          C3E3BFBFBFEED8D8D8FFCDCDCDFFBBBBBBFF818181C6767676447D7D7D448E8E
-          8EC6C2C2C2FFC1C1C1FFCDCDCDFF8B8B8BEE868686E3828282CDFFFFFF00FFFF
-          FF00C4C4C485D4D4D4FFCCCCCCFFC9C9C9FFB9B9B9FF9B9B9BFFA0A0A0FFC1C1
-          C1FFC5C5C5FFC0C0C0FFB6B6B6FF88888885FFFFFF00FFFFFF00FFFFFF00CACA
-          CA7DC3C3C3FEDCDCDCFFD4D4D4FFD9D9D9FFDBDBDBFFD6D6D6FFD4D4D4FFD9D9
-          D9FFD2D2D2FFCBCBCBFFC8C8C8FF787878FE7070707DFFFFFF00FFFFFF00D0D0
-          D07BDCDCDCFFEDEDEDFFDBDBDBFFC1C1C1F4BDBDBDFED6D6D6FFD4D4D4FFAFAF
-          AFFEABABABF4CBCBCBFFE7E7E7FFB6B6B6FF8A8A8A7BFFFFFF00FFFFFF00FFFF
-          FF00D1D1D19BCECECEFDCACACAE7C5C5C519C1C1C1E7DEDEDEFFDDDDDDFFB1B1
-          B1E7B0B0B019ABABABE7A6A6A6FDA2A2A29BFFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00D1D1D129CECECE0ECBCBCB02C7C7C7EAE5E5E5FFE4E4E4FFABAB
-          ABEAB5B5B502B1B1B10EACACAC29FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00CBCBCB63C7C7C7BFC3C3C3BFBEBE
-          BE63FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00}
-        ParentShowHint = False
-        ShowHint = True
-        OnClick = SideSlideFullScreenModeExceptionsButtonClick
-        SkinData.SkinSection = 'SPEEDBUTTON'
-      end
-      object SlideFrmMainGroupBox: TsGroupBox
-        Left = 19
-        Top = 21
-        Width = 275
-        Height = 284
-        TabOrder = 1
-        SkinData.SkinSection = 'GROUPBOX'
-        object FrmMainEdgeGroupBox: TsGroupBox
-          Left = 12
-          Top = 12
-          Width = 116
-          Height = 72
-          Caption = 'Wybrana kraw'#281'd'#378
-          Enabled = False
-          TabOrder = 0
-          SkinData.SkinSection = 'GROUPBOX'
-          object FrmMainEdgeLeftRadioButton: TsRadioButton
-            Left = 10
-            Top = 16
-            Width = 42
-            Height = 20
-            Caption = 'lewa'
-            Enabled = False
-            TabOrder = 0
-            OnClick = aSideSlideChkExecute
-            SkinData.SkinSection = 'RADIOBUTTON'
-          end
-          object FrmMainEdgeRightRadioButton: TsRadioButton
-            Left = 58
-            Top = 16
-            Width = 50
-            Height = 20
-            Caption = 'prawa'
-            Checked = True
-            Enabled = False
-            TabOrder = 1
-            TabStop = True
-            OnClick = aSideSlideChkExecute
-            SkinData.SkinSection = 'RADIOBUTTON'
-          end
-          object FrmMainEdgeBottomRadioButton: TsRadioButton
-            Left = 10
-            Top = 42
-            Width = 46
-            Height = 20
-            Caption = 'dolna'
-            Enabled = False
-            TabOrder = 2
-            OnClick = aSideSlideChkExecute
-            SkinData.SkinSection = 'RADIOBUTTON'
-          end
-          object FrmMainEdgeTopRadioButton: TsRadioButton
-            Left = 58
-            Top = 42
-            Width = 48
-            Height = 20
-            Caption = 'g'#243'rna'
-            Enabled = False
-            TabOrder = 3
-            OnClick = aSideSlideChkExecute
-            SkinData.SkinSection = 'RADIOBUTTON'
-          end
-        end
-        object FrmMainHideGroupBox: TsGroupBox
-          Left = 134
-          Top = 12
-          Width = 128
-          Height = 96
-          Caption = 'Schowaj gdy'
-          Enabled = False
-          TabOrder = 1
-          SkinData.SkinSection = 'GROUPBOX'
-          object FrmMainHideFocusRadioButton: TsRadioButton
-            Left = 10
-            Top = 16
-            Width = 102
-            Height = 20
-            Caption = 'okno utraci fokus'
-            Enabled = False
-            TabOrder = 0
-            OnClick = aSideSlideChkExecute
-            SkinData.SkinSection = 'RADIOBUTTON'
-          end
-          object FrmMainHideAppFocusRadioButton: TsRadioButton
-            Left = 10
-            Top = 42
-            Width = 102
-            Height = 20
-            Caption = 'AQQ utraci fokus'
-            TabOrder = 1
-            OnClick = aSideSlideChkExecute
-            SkinData.SkinSection = 'RADIOBUTTON'
-          end
-          object FrmMainHideCursorRadioButton: TsRadioButton
-            Left = 10
-            Top = 68
-            Width = 109
-            Height = 20
-            Caption = 'kursor opu'#347'ci okno'
-            Checked = True
-            Enabled = False
-            TabOrder = 2
-            TabStop = True
-            OnClick = aSideSlideChkExecute
-            SkinData.SkinSection = 'RADIOBUTTON'
-          end
-        end
-        object FrmMainTimeGroupBox: TsGroupBox
-          Left = 12
-          Top = 110
-          Width = 250
-          Height = 129
-          Caption = 'Ustawienia animacji'
-          Enabled = False
-          TabOrder = 2
-          SkinData.SkinSection = 'GROUPBOX'
-          object FrmMainSlideInTimeSpinEdit: TsSpinEdit
-            Left = 182
-            Top = 70
-            Width = 48
-            Height = 21
-            Enabled = False
-            TabOrder = 2
-            Text = '300'
-            OnChange = aSideSlideChkExecute
-            SkinData.SkinSection = 'EDIT'
-            BoundLabel.Active = True
-            BoundLabel.Caption = 'Czas wysuwania okna (ms)'
-            BoundLabel.Indent = 0
-            BoundLabel.Font.Charset = DEFAULT_CHARSET
-            BoundLabel.Font.Color = clWindowText
-            BoundLabel.Font.Height = -11
-            BoundLabel.Font.Name = 'Tahoma'
-            BoundLabel.Font.Style = []
-            BoundLabel.Layout = sclLeft
-            BoundLabel.MaxWidth = 0
-            BoundLabel.UseSkinColor = True
-            Increment = 10
-            MaxValue = 1000
-            MinValue = 30
-            Value = 300
-          end
-          object FrmMainSlideOutTimeSpinEdit: TsSpinEdit
-            Left = 182
-            Top = 97
-            Width = 48
-            Height = 21
-            Enabled = False
-            TabOrder = 3
-            Text = '500'
-            OnChange = aSideSlideChkExecute
-            SkinData.SkinSection = 'EDIT'
-            BoundLabel.Active = True
-            BoundLabel.Caption = 'Czas chowania okna (ms)'
-            BoundLabel.Indent = 0
-            BoundLabel.Font.Charset = DEFAULT_CHARSET
-            BoundLabel.Font.Color = clWindowText
-            BoundLabel.Font.Height = -11
-            BoundLabel.Font.Name = 'Tahoma'
-            BoundLabel.Font.Style = []
-            BoundLabel.Layout = sclLeft
-            BoundLabel.MaxWidth = 0
-            BoundLabel.UseSkinColor = True
-            Increment = 10
-            MaxValue = 1000
-            MinValue = 30
-            Value = 500
-          end
-          object FrmMainSlideInDelaySpinEdit: TsSpinEdit
-            Left = 182
-            Top = 16
-            Width = 48
-            Height = 21
-            Enabled = False
-            TabOrder = 0
-            Text = '1000'
-            OnChange = aSideSlideChkExecute
-            SkinData.SkinSection = 'EDIT'
-            BoundLabel.Active = True
-            BoundLabel.Caption = 'Op'#243#378'nienie wysuwania okna (ms)'
-            BoundLabel.Indent = 0
-            BoundLabel.Font.Charset = DEFAULT_CHARSET
-            BoundLabel.Font.Color = clWindowText
-            BoundLabel.Font.Height = -11
-            BoundLabel.Font.Name = 'Tahoma'
-            BoundLabel.Font.Style = []
-            BoundLabel.Layout = sclLeft
-            BoundLabel.MaxWidth = 0
-            BoundLabel.UseSkinColor = True
-            Increment = 10
-            MaxValue = 3000
-            MinValue = 1
-            Value = 1000
-          end
-          object FrmMainSlideOutDelaySpinEdit: TsSpinEdit
-            Left = 182
-            Top = 43
-            Width = 48
-            Height = 21
-            Enabled = False
-            TabOrder = 1
-            Text = '1'
-            OnChange = aSideSlideChkExecute
-            SkinData.SkinSection = 'EDIT'
-            BoundLabel.Active = True
-            BoundLabel.Caption = 'Op'#243#378'nienie chowania okna (ms)'
-            BoundLabel.Indent = 0
-            BoundLabel.Font.Charset = DEFAULT_CHARSET
-            BoundLabel.Font.Color = clWindowText
-            BoundLabel.Font.Height = -11
-            BoundLabel.Font.Name = 'Tahoma'
-            BoundLabel.Font.Style = []
-            BoundLabel.Layout = sclLeft
-            BoundLabel.MaxWidth = 0
-            BoundLabel.UseSkinColor = True
-            Increment = 10
-            MaxValue = 9000
-            MinValue = 1
-            Value = 1
-          end
-        end
-        object ChangeTabAfterSlideInCheckBox: TsCheckBox
-          Left = 10
-          Top = 245
-          Width = 232
-          Height = 30
-          Caption = 'Zawsze pokazuj zak'#322'adk'#281' z list'#261' kontakt'#243'w po wysuni'#281'ciu okna'
-          AutoSize = False
-          Checked = True
-          State = cbChecked
-          TabOrder = 3
-          OnClick = aSideSlideChkExecute
-          SkinData.SkinSection = 'CHECKBOX'
-          ImgChecked = 0
-          ImgUnchecked = 0
-          WordWrap = True
-        end
-      end
-      object SlideFrmSendGroupBox: TsGroupBox
-        Left = 306
-        Top = 22
-        Width = 275
-        Height = 284
-        TabOrder = 3
-        SkinData.SkinSection = 'GROUPBOX'
-        object FrmSendEdgeGroupBox: TsGroupBox
-          Left = 12
-          Top = 12
-          Width = 116
-          Height = 71
-          Caption = 'Wybrana kraw'#281'd'#378
-          Enabled = False
-          TabOrder = 0
-          SkinData.SkinSection = 'GROUPBOX'
-          object FrmSendEdgeLeftRadioButton: TsRadioButton
-            Left = 10
-            Top = 16
-            Width = 42
-            Height = 20
-            Caption = 'lewa'
-            Checked = True
-            Enabled = False
-            TabOrder = 0
-            TabStop = True
-            OnClick = aSideSlideChkExecute
-            SkinData.SkinSection = 'RADIOBUTTON'
-          end
-          object FrmSendEdgeRightRadioButton: TsRadioButton
-            Left = 58
-            Top = 16
-            Width = 50
-            Height = 20
-            Caption = 'prawa'
-            Enabled = False
-            TabOrder = 1
-            OnClick = aSideSlideChkExecute
-            SkinData.SkinSection = 'RADIOBUTTON'
-          end
-          object FrmSendEdgeTopRadioButton: TsRadioButton
-            Left = 58
-            Top = 42
-            Width = 48
-            Height = 20
-            Caption = 'g'#243'rna'
-            Enabled = False
-            TabOrder = 3
-            OnClick = aSideSlideChkExecute
-            SkinData.SkinSection = 'RADIOBUTTON'
-          end
-          object FrmSendEdgeBottomRadioButton: TsRadioButton
-            Left = 10
-            Top = 42
-            Width = 46
-            Height = 20
-            Caption = 'dolna'
-            Enabled = False
-            TabOrder = 2
-            OnClick = aSideSlideChkExecute
-            SkinData.SkinSection = 'RADIOBUTTON'
-          end
-        end
-        object FrmSendHideGroupBox: TsGroupBox
-          Left = 134
-          Top = 12
-          Width = 128
-          Height = 96
-          Caption = 'Schowaj gdy'
-          Enabled = False
-          TabOrder = 1
-          SkinData.SkinSection = 'GROUPBOX'
-          object FrmSendHideFocusRadioButton: TsRadioButton
-            Left = 10
-            Top = 16
-            Width = 102
-            Height = 20
-            Caption = 'okno utraci fokus'
-            Checked = True
-            Enabled = False
-            TabOrder = 0
-            TabStop = True
-            OnClick = aSideSlideChkExecute
-            SkinData.SkinSection = 'RADIOBUTTON'
-          end
-          object FrmSendHideAppFocusRadioButton: TsRadioButton
-            Left = 10
-            Top = 42
-            Width = 102
-            Height = 20
-            Caption = 'AQQ utraci fokus'
-            TabOrder = 1
-            OnClick = aSideSlideChkExecute
-            SkinData.SkinSection = 'RADIOBUTTON'
-          end
-          object FrmSendHideCursorRadioButton: TsRadioButton
-            Left = 10
-            Top = 68
-            Width = 109
-            Height = 20
-            Caption = 'kursor opu'#347'ci okno'
-            Enabled = False
-            TabOrder = 2
-            OnClick = aSideSlideChkExecute
-            SkinData.SkinSection = 'RADIOBUTTON'
-          end
-        end
-        object FrmSendTimeGroupBox: TsGroupBox
-          Left = 12
-          Top = 110
-          Width = 250
-          Height = 129
-          Caption = 'Ustawienia animacji'
-          Enabled = False
-          TabOrder = 2
-          SkinData.SkinSection = 'GROUPBOX'
-          object FrmSendSlideInTimeSpinEdit: TsSpinEdit
-            Left = 182
-            Top = 70
-            Width = 48
-            Height = 21
-            Enabled = False
-            TabOrder = 2
-            Text = '280'
-            OnChange = aSideSlideChkExecute
-            SkinData.SkinSection = 'EDIT'
-            BoundLabel.Active = True
-            BoundLabel.Caption = 'Czas wysuwania okna (ms)'
-            BoundLabel.Indent = 0
-            BoundLabel.Font.Charset = DEFAULT_CHARSET
-            BoundLabel.Font.Color = clWindowText
-            BoundLabel.Font.Height = -11
-            BoundLabel.Font.Name = 'Tahoma'
-            BoundLabel.Font.Style = []
-            BoundLabel.Layout = sclLeft
-            BoundLabel.MaxWidth = 0
-            BoundLabel.UseSkinColor = True
-            Increment = 10
-            MaxValue = 1000
-            MinValue = 30
-            Value = 280
-          end
-          object FrmSendSlideOutTimeSpinEdit: TsSpinEdit
-            Left = 182
-            Top = 97
-            Width = 48
-            Height = 21
-            Enabled = False
-            TabOrder = 3
-            Text = '500'
-            OnChange = aSideSlideChkExecute
-            SkinData.SkinSection = 'EDIT'
-            BoundLabel.Active = True
-            BoundLabel.Caption = 'Czas chowania okna (ms)'
-            BoundLabel.Indent = 0
-            BoundLabel.Font.Charset = DEFAULT_CHARSET
-            BoundLabel.Font.Color = clWindowText
-            BoundLabel.Font.Height = -11
-            BoundLabel.Font.Name = 'Tahoma'
-            BoundLabel.Font.Style = []
-            BoundLabel.Layout = sclLeft
-            BoundLabel.MaxWidth = 0
-            BoundLabel.UseSkinColor = True
-            Increment = 10
-            MaxValue = 1000
-            MinValue = 30
-            Value = 500
-          end
-          object FrmSendSlideInDelaySpinEdit: TsSpinEdit
-            Left = 182
-            Top = 16
-            Width = 48
-            Height = 21
-            Enabled = False
-            TabOrder = 0
-            Text = '1000'
-            OnChange = aSideSlideChkExecute
-            SkinData.SkinSection = 'EDIT'
-            BoundLabel.Active = True
-            BoundLabel.Caption = 'Op'#243#378'nienie wysuwania okna (ms)'
-            BoundLabel.Indent = 0
-            BoundLabel.Font.Charset = DEFAULT_CHARSET
-            BoundLabel.Font.Color = clWindowText
-            BoundLabel.Font.Height = -11
-            BoundLabel.Font.Name = 'Tahoma'
-            BoundLabel.Font.Style = []
-            BoundLabel.Layout = sclLeft
-            BoundLabel.MaxWidth = 0
-            BoundLabel.UseSkinColor = True
-            Increment = 10
-            MaxValue = 3000
-            MinValue = 1
-            Value = 1000
-          end
-          object FrmSendSlideOutDelaySpinEdit: TsSpinEdit
-            Left = 182
-            Top = 43
-            Width = 48
-            Height = 21
-            Enabled = False
-            TabOrder = 1
-            Text = '1'
-            OnChange = aSideSlideChkExecute
-            SkinData.SkinSection = 'EDIT'
-            BoundLabel.Active = True
-            BoundLabel.Caption = 'Op'#243#378'nienie chowania okna (ms)'
-            BoundLabel.Indent = 0
-            BoundLabel.Font.Charset = DEFAULT_CHARSET
-            BoundLabel.Font.Color = clWindowText
-            BoundLabel.Font.Height = -11
-            BoundLabel.Font.Name = 'Tahoma'
-            BoundLabel.Font.Style = []
-            BoundLabel.Layout = sclLeft
-            BoundLabel.MaxWidth = 0
-            BoundLabel.UseSkinColor = True
-            Increment = 10
-            MaxValue = 9000
-            MinValue = 1
-            Value = 1
-          end
-        end
-        object SlideInAtNewMsgCheckBox: TsCheckBox
-          Left = 10
-          Top = 245
-          Width = 255
-          Height = 30
-          Caption = 
-            'Wysuwaj okno po przyj'#347'ciu nowej wiadomo'#347'ci (tylko dla otwartych ' +
-            'zak'#322'adek)'
-          AutoSize = False
-          Enabled = False
-          TabOrder = 3
-          OnClick = aSideSlideChkExecute
-          SkinData.SkinSection = 'CHECKBOX'
-          ImgChecked = 0
-          ImgUnchecked = 0
-          WordWrap = True
-        end
-      end
-      object SlideFrmSendCheckBox: TsCheckBox
-        Left = 300
-        Top = 12
-        Width = 229
-        Height = 20
-        Caption = 'Chowaj okno rozmowy za kraw'#281'dzi'#261' ekranu'
-        TabOrder = 2
-        OnClick = aSideSlideChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-      end
-      object SlideFrmMainCheckBox: TsCheckBox
-        Left = 12
-        Top = 12
-        Width = 236
-        Height = 20
-        Caption = 'Chowaj okno kontakt'#243'w za kraw'#281'dzi'#261' ekranu'
-        TabOrder = 0
-        OnClick = aSideSlideChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-      end
-      object SideSlideFullScreenModeCheckBox: TsCheckBox
-        Left = 20
-        Top = 315
-        Width = 234
-        Height = 20
-        Caption = 'Wysuwaj okna przy aplikacji pe'#322'noekranowej'
-        Checked = True
-        State = cbChecked
-        TabOrder = 4
-        OnClick = aSideSlideChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-      end
-      object SideSlideCtrlAndMousBlockCheckBox: TsCheckBox
-        Left = 308
-        Top = 311
-        Width = 273
-        Height = 28
-        Caption = 
-          'Blokuj wysuwanie okien przy wci'#347'ni'#281'tym klawiszu Ctrl oraz lewym/' +
-          'prawym przycisku myszy'
-        AutoSize = False
-        Checked = True
-        State = cbChecked
-        TabOrder = 5
-        OnClick = aSideSlideChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-        WordWrap = True
-      end
-    end
-    object OtherTabSheet: TsTabSheet
-      Caption = 'Inne'
-      TabVisible = False
-      OnShow = OtherTabSheetShow
-      SkinData.CustomColor = False
-      SkinData.CustomFont = False
-      SkinData.SkinSection = 'CHECKBOX'
-      object AntiSpimCheckBox: TsCheckBox
-        Left = 12
-        Top = 68
-        Width = 273
-        Height = 20
-        Caption = 'Wy'#322#261'cz wbudowany w komunikator filtr antyspimowy'
-        Checked = True
-        State = cbChecked
-        TabOrder = 3
-        OnClick = aOtherChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-      end
-      object ClearCacheGroupBox: TsGroupBox
-        AlignWithMargins = True
-        Left = 364
-        Top = 12
-        Width = 214
-        Height = 153
-        HelpContext = 1
-        BiDiMode = bdLeftToRight
-        Caption = 'Wyczy'#347#263' plik cache z informacji na temat'
-        ParentBiDiMode = False
-        TabOrder = 14
-        CaptionLayout = clTopCenter
-        SkinData.SkinSection = 'GROUPBOX'
-        object SessionRememberEraseButton: TsButton
-          Left = 28
-          Top = 72
-          Width = 158
-          Height = 20
-          Caption = 'Aktywna sesja'
-          Enabled = False
-          TabOrder = 2
-          OnClick = SessionRememberEraseButtonClick
-          SkinData.SkinSection = 'BUTTON'
-        end
-        object UnsentMsgEraseButton: TsButton
-          Left = 28
-          Top = 46
-          Width = 158
-          Height = 20
-          Caption = 'Niewys'#322'ane wiadomo'#347'ci'
-          Enabled = False
-          TabOrder = 1
-          OnClick = UnsentMsgEraseButtonClick
-          SkinData.SkinSection = 'BUTTON'
-        end
-        object ClosedTabsEraseButton: TsButton
-          Left = 28
-          Top = 20
-          Width = 158
-          Height = 20
-          Caption = 'Ostatnio zamkni'#281'te zak'#322'adki'
-          Enabled = False
-          TabOrder = 0
-          OnClick = ClosedTabsEraseButtonClick
-          SkinData.SkinSection = 'BUTTON'
-        end
-        object ClipTabsEraseButton: TsButton
-          Left = 28
-          Top = 98
-          Width = 158
-          Height = 20
-          Caption = 'Przypi'#281'te zak'#322'adki'
-          Enabled = False
-          TabOrder = 3
-          OnClick = ClipTabsEraseButtonClick
-          SkinData.SkinSection = 'BUTTON'
-        end
-        object MiniAvatarsEraseButton: TsButton
-          Left = 28
-          Top = 124
-          Width = 158
-          Height = 20
-          Caption = 'Usu'#324' / aktualizuj mini awatary'
-          TabOrder = 4
-          OnClick = MiniAvatarsEraseButtonClick
-          SkinData.SkinSection = 'BUTTON'
-        end
-      end
-      object CloseBy2xLPMCheckBox: TsCheckBox
-        Left = 12
-        Top = 240
-        Width = 262
-        Height = 20
-        Caption = 'Zamykaj zak'#322'adki poprzez dwukrotne klikni'#281'cie LPM'
-        TabOrder = 10
-        OnClick = aOtherChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-      end
-      object CollapseImagesCheckBox: TsCheckBox
-        Left = 12
-        Top = 42
-        Width = 233
-        Height = 20
-        Caption = 'Zwijaj przes'#322'ane obrazki do formy za'#322#261'cznika'
-        Checked = True
-        State = cbChecked
-        TabOrder = 1
-        OnClick = aOtherChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-      end
-      object EmuTabsWCheckBox: TsCheckBox
-        Left = 12
-        Top = 266
-        Width = 295
-        Height = 20
-        Caption = 'Ostrzegaj przed zamykaniem wielu zak'#322'adek jednocze'#347'nie'
-        TabOrder = 11
-        OnClick = aOtherChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-      end
-      object HideTabCloseButtonCheckBox: TsCheckBox
-        Left = 12
-        Top = 188
-        Width = 233
-        Height = 20
-        Caption = 'Nie wy'#347'wietlaj przycisku zamykania zak'#322'adek'
-        TabOrder = 8
-        OnClick = aOtherChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-      end
-      object HideToolBarCheckBox: TsCheckBox
-        Left = 12
-        Top = 162
-        Width = 215
-        Height = 20
-        Caption = 'Automatyczne ukrywanie paska narz'#281'dzi'
-        TabOrder = 7
-        OnClick = aOtherChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-      end
-      object MinimizeRestoreCheckBox: TsCheckBox
-        Left = 12
-        Top = 94
-        Width = 206
-        Height = 28
-        Caption = 
-          'Minimalizuj / przywracaj okno rozmowy przy pomocy skr'#243'tu klawiat' +
-          'urowego'
-        AutoSize = False
-        TabOrder = 4
-        OnClick = aOtherChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-        WordWrap = True
-      end
-      object MinimizeRestoreHotKey: THotKey
-        Left = 224
-        Top = 98
-        Width = 103
-        Height = 19
-        HotKey = 24689
-        Modifiers = [hkShift, hkCtrl]
-        TabOrder = 5
-        OnChange = aOtherChkExecute
-      end
-      object QuickQuoteCheckBox: TsCheckBox
-        Left = 12
-        Top = 8
-        Width = 325
-        Height = 28
-        Caption = 
-          'Aktywuj skr'#243't klawiaturowy Ctrl+Q do wklejania tekstu ze schowka' +
-          ' jako cytat'
-        AutoSize = False
-        Checked = True
-        State = cbChecked
-        TabOrder = 0
-        OnClick = aOtherChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-        WordWrap = True
-      end
-      object StayOnTopCheckBox: TsCheckBox
-        Left = 12
-        Top = 128
-        Width = 312
-        Height = 28
-        Caption = 
-          'Dodaj do okna rozmowy przycisk trzymaj'#261'cy okno zawsze na wierzch' +
-          'u'
-        AutoSize = False
-        TabOrder = 6
-        OnClick = aOtherChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-        WordWrap = True
-      end
-      object CollapseImagesModeComboBox: TsComboBox
-        Left = 251
-        Top = 42
-        Width = 76
-        Height = 21
-        Alignment = taLeftJustify
-        BoundLabel.Indent = 0
-        BoundLabel.Font.Charset = DEFAULT_CHARSET
-        BoundLabel.Font.Color = clWindowText
-        BoundLabel.Font.Height = -11
-        BoundLabel.Font.Name = 'Tahoma'
-        BoundLabel.Font.Style = []
-        BoundLabel.Layout = sclLeft
-        BoundLabel.MaxWidth = 0
-        BoundLabel.UseSkinColor = True
-        SkinData.SkinSection = 'COMBOBOX'
-        Style = csDropDownList
-        ItemIndex = 0
-        TabOrder = 2
-        Text = 'Wszystkie'
-        OnChange = aOtherChkExecute
-        Items.Strings = (
-          'Wszystkie'
-          'Wys'#322'ane'
-          'Odebrane')
-      end
-      object CloudSettingsGroupBox: TsGroupBox
-        Left = 364
-        Top = 171
-        Width = 214
-        Height = 78
-        Caption = 'Ustawienia chmurek informacyjnych'
-        TabOrder = 15
-        CaptionLayout = clTopCenter
-        SkinData.SkinSection = 'GROUPBOX'
-        object CloudTimeOutSpinEdit: TsSpinEdit
-          Left = 141
-          Top = 20
-          Width = 38
-          Height = 21
-          TabOrder = 0
-          Text = '6'
-          OnChange = aOtherChkExecute
-          SkinData.SkinSection = 'EDIT'
-          BoundLabel.Active = True
-          BoundLabel.Caption = 'Czas wy'#347'wietlania (s)'
-          BoundLabel.Indent = 0
-          BoundLabel.Font.Charset = DEFAULT_CHARSET
-          BoundLabel.Font.Color = clWindowText
-          BoundLabel.Font.Height = -11
-          BoundLabel.Font.Name = 'Tahoma'
-          BoundLabel.Font.Style = []
-          BoundLabel.Layout = sclLeft
-          BoundLabel.MaxWidth = 0
-          BoundLabel.UseSkinColor = True
-          MaxValue = 60
-          MinValue = 1
-          Value = 6
-        end
-        object CloudTickModeComboBox: TsComboBox
-          Left = 135
-          Top = 47
-          Width = 44
-          Height = 21
-          Alignment = taLeftJustify
-          BoundLabel.Active = True
-          BoundLabel.Caption = 'Tylko jedna chmurka'
-          BoundLabel.Indent = 0
-          BoundLabel.Font.Charset = DEFAULT_CHARSET
-          BoundLabel.Font.Color = clWindowText
-          BoundLabel.Font.Height = -11
-          BoundLabel.Font.Name = 'Tahoma'
-          BoundLabel.Font.Style = []
-          BoundLabel.Layout = sclLeft
-          BoundLabel.MaxWidth = 0
-          BoundLabel.UseSkinColor = True
-          SkinData.SkinSection = 'COMBOBOX'
-          Style = csDropDownList
-          ItemIndex = 1
-          TabOrder = 1
-          Text = 'Tak'
-          OnChange = aOtherChkExecute
-          Items.Strings = (
-            'Nie'
-            'Tak')
-        end
-      end
-      object HideScrollTabButtonsCheckBox: TsCheckBox
-        Left = 12
-        Top = 214
-        Width = 219
-        Height = 20
-        Caption = 'Ukrywaj przyciski do przewijania zak'#322'adek'
-        TabOrder = 9
-        OnClick = aOtherChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-      end
-      object SearchOnListCheckBox: TsCheckBox
-        Left = 12
-        Top = 292
-        Width = 230
-        Height = 20
-        Caption = 'Wy'#322#261'cz funkcj'#281' szukania na li'#347'cie kontakt'#243'w'
-        TabOrder = 12
-        OnClick = aOtherChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-      end
-      object ShortenLinksCheckBox: TsCheckBox
-        Left = 12
-        Top = 318
-        Width = 295
-        Height = 20
-        Caption = 'Skracaj wy'#347'wietlanie odno'#347'nik'#243'w do wygodniejszej formy'
-        Checked = True
-        State = cbChecked
-        TabOrder = 13
-        OnClick = aOtherChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-        WordWrap = True
-      end
-      object TurnOffModalCheckBox: TsCheckBox
-        Left = 372
-        Top = 255
-        Width = 196
-        Height = 28
-        Caption = 
-          'Wy'#322#261'cz modalno'#347#263' okna wysy'#322'ania wycinka oraz instalowania dodatk' +
-          #243'w'
-        AutoSize = False
-        Checked = True
-        Enabled = False
-        State = cbChecked
-        TabOrder = 16
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-        WordWrap = True
-      end
-    end
     object DefaultTabSheet: TsTabSheet
       Caption = 'Informacje o wtyczce'
-      TabVisible = False
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      SkinData.SkinSection = 'CHECKBOX'
       object PayPalImage: TImage
         Left = 350
         Top = 124
@@ -4830,38 +2717,38 @@ object SettingsForm: TSettingsForm
         Picture.Data = {
           0B54504E474772617068696336040000424D3604000000000000360000002800
           0000100000001000000001002000000000000004000000000000000000000000
-          000000000000FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF001B581EFA1B561DF1FFFFFF00FFFFFF00FFFFFF00FFFF
+          0000000000000000000000000001000000050000000B00000011000000160000
+          001A0000001A0000001A00000017000000120000000B00000006000000010000
+          0000FFFFFF0000000000000000020015003C0000001500000021000C00330034
+          0077005000C700340077000C003400000023000000160015003D000000020000
+          0000FFFFFF000023000000230000004900B3001000000021000D00470091196F
+          19DD40AA40FD196F19DD004700910021000D00100000004900B3002300000023
+          0000FFFFFF00003C0000003C0000003C008A003A0066003C00761C6A1CE047AE
+          47FE41A741FF47AE47FE1C6A1CE0003C0076003A0066003C008A003C0000003C
+          0000FFFFFF0000300000003800000035000B003100B9094009CD409B40FB4EB2
+          4EFF409940FF4EB24EFF409B40FB094009CD003100B90035000B003800000030
+          0000FFFFFF00002D000000300000002D0000002C0071226122E5489E48FF54AC
+          54FF3F8D3FFF54AC54FF489E48FF226122E5002C0071002D000000300000002D
+          0000FFFFFF00002F008A0030004D0030000B002C00A0367936F44E9B4EFF59A9
+          59FF3D843DFF59A959FF4E9B4EFF367936F4002C00A00030000B0030004D002F
+          008AFFFFFF000034002401370189013701CA003100C6408340FC549954FF5FA9
+          5FFF3A7E3AFF5FA95FFF549954FF408340FC003100C6013701CA013701890034
+          0024FFFFFF0000340000013A0100013B0100013901C7478947FF5A9D5AFF65AE
+          65FF377B37FF65AE65FF5A9D5AFF478947FF013901C7013B0100013A01000034
+          0000FFFFFF00014201000250020002550200014301B857A157FB69B569FF6EBD
+          6EFF357935FF6EBD6EFF69B569FF57A157FB014301B802550200025002000142
+          0100FFFFFF000369030003660319025F02AA025202C93E873EF24C934CFF3C81
+          3CFF347834FF3B803BFF4A904AFF3C853CF2025202C9025F02AA036603190369
+          0300FFFFFF00036C0300036C0399036B0343025902682F812FE067B567FF71C1
+          71FF71C171FF71C171FF67B567FF2F812FE002590268036B0343036C0399036C
+          0300FFFFFF000375030003740377036C0300025F02190D6E0DC73F943FF561B6
+          61FF76CB76FF61B661FF3F943FF50D6E0DC7025F0219036C0300037403770375
+          0300FFFFFF000376030003750300036E0300036E0300036E03BFE6E6B3FF3993
+          39F062B762FC399339F0E6E6B3FF036E03BF036E0300036E0300037503000376
+          0300FFFFFF000376030003750300037303000373030003740360037503BE0375
+          03BE037503BE037503BE037503BE037403600373030003730300037503000376
+          0300FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
           FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF001E6021C71D5D20FF1C5A1F23FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF0025722AA1216C
-          26FC206823FF1F6522FF1E6221C5FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00297A2DC129782DFF67A0
-          6EFF6AA172FF29702DFF206723FF206524641E6121411D5E20F01C5B1FFF1B59
-          1E23FFFFFF00FFFFFF00FFFFFF00FFFFFF002E8632C11F7322FF93BF9CFF6BAE
-          81FF4C9D66FF6FAF83FF74A579FF216A24FF206723FF1F6422F81E612174FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00349139872C8B31FF76B481FF4C9D53FF78B2
-          8BFF4CA069FF45995FFF70AF83FF357C38FF226D25FF226A2564FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00319436F561AC67FF76BD90FF439F5CFF4A9E
-          52FF77B38BFF4DA169FF469B61FF70B084FF699F6EFF237026FF226B2712FFFF
-          FF001F65227CFFFFFF00FFFFFF00329B37F851A858FF6CBB8BFF4CA96FFF419E
-          5BFF4BA153FF82BE95FF50A26CFF469C62FF88BD98FF257629FF237227FE226F
-          26FF216B25FFFFFFFF0033A338C732A037FF329D37FF93CFABFF5BB37DFF4DAB
-          71FF40A05CFF4DA556FF84C097FF56A772FF85BD98FF297D2CFF257829F42475
-          286DFFFFFF0036AC3BFA35A93AFF34A639A237A43DEA4FAC55FF8CCCA4FF5DB4
-          7FFF4EAC72FF41A25CFF50A958FF99CBA8FF8DBE94FF28822DFF24583AAFFFFF
-          FF00FFFFFF0037B03DF136AE3C23FFFFFF00FFFFFF0033A539FE38A43EFF8FCE
-          A7FF61B883FF57B17AFF5FB175FF37963DFF28882CFF56A361FF254F43DBFFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF0036AD3C4135AA3BFF37A83DF044AB
-          4AFF9DD4ACFFA3D7B7FF84C28DFF278E2CFF4EB65EFF96C8A9FF2B8C30FF2A88
-          2FFF29842DFFFFFFFF00FFFFFF00FFFFFF0037B23DF037B03CF8FFFFFF0037AB
-          3CF134A739FF33A438FF33A038FF71C17DFFAEE3C1FF5E8B77FF31644C75FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF0039B63FFF38B43E74FFFFFF00FFFF
-          FF0036AC3BF835A93AED457E65A539854FF7329C39FE3A705789FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF003ABA4023FFFFFF00FFFFFF00FFFF
-          FF0037B13DFF36AE3CB24D8D692234A83A6533A539F2FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF0039B63EFF38B33E41FFFFFF0036AD3C5235AB3BF7FFFFFF00FFFFFF00FFFF
           FF00FFFFFF00}
         Transparent = True
       end
@@ -4874,39 +2761,39 @@ object SettingsForm: TSettingsForm
         Picture.Data = {
           0B54504E474772617068696336040000424D3604000000000000360000002800
           0000100000001000000001002000000000000004000000000000000000000000
-          000000000000FFFFFF00FFFFFF00FFFFFF00FFFFFF0086351B1C86351B808635
-          1BD086351BF286351BF286351BD386351B8686351B22FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF0089381D838E3D1FF3A75323F9B962
-          27FDC06929FFC06929FFB96328FDA85424F9903E1FF489381D86FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF008C3C208EA04E25F7C06B2CFEC26D2DFFC26D
-          2DFFC26D2DFFC26D2DFFC26D2DFFC26D2DFFC06B2DFFA25025F78C3C208EFFFF
-          FF00FFFFFF00FFFFFF0090402483A3532BF7C47132FFC47132FFC47132FFC471
-          32FFC47132FFC47132FFC47132FFC47132FFC47132FFC47132FFA5542AF79040
-          2489FFFFFF009445271A9B4E2EF3C57437FEC77638FFC77638FFC77638FFC776
-          38FFFCF9F6FFFCF9F6FFC77638FFC77638FFC77638FFC77638FFC67538FF9B4E
-          2DF394452728984A2B7DB56A3FF9CA7B3EFFCA7B3EFFCA7B3EFFCA7B3EFFCA7B
-          3EFFFCFAF7FFFCFAF7FFCA7B3EFFCA7B3EFFCA7B3EFFCA7B3EFFCA7B3EFFB86C
-          3FF9984A2B8C9C502FC4C57B43FDCD8144FFCD8144FFCD8144FFCD8144FFCD81
-          44FFFCFAF7FFFCFAF7FFCD8144FFCD8144FFCD8144FFCD8144FFCD8144FFC77B
-          43FD9C502FD0A05533E7CF864CFED0874BFFD0874BFFD0874BFFD0874BFFD087
-          4BFFFCFAF7FFFCFAF7FFD0874BFFD0874BFFD0874BFFD0874BFFD0874BFFD087
-          4CFFA05533ECA55A37ECD79761FFD48D52FFD48D52FFD48D52FFD48D52FFD48D
-          52FFFCFAF7FFFCFAF7FFD48D52FFD48D52FFD48D52FFD48D52FFD48D52FFD795
-          5FFFA55A37ECA9603BC4D79F74FDD79358FFD79358FFD79358FFD79358FFD793
-          58FFC18239FFC18239FFD79358FFD79358FFD79358FFD79358FFD79358FFD8A1
-          76FDA9603BCAAD653F7DCE9977F9DB9C64FFDA985EFFDA985EFFDA985EFFDA98
-          5EFFFFFFFFFFFFFFFFFFDA985EFFDA985EFFDA985EFFDA985EFFDB9A62FFCE98
-          76F9AD653F7DB16A421AB6714AF3E5B994FEDD9E65FFDD9D64FFDD9D64FFDD9D
-          64FFFFFFFFFFFFFFFFFFDD9D64FFDD9D64FFDD9D64FFDD9D64FFE6B993FEB875
-          4EF3B16A421AFFFFFF00B56E467DC78D69F6EAC29EFFE0A46EFFDFA169FFDFA1
-          69FFC4883FFFC4883FFFDFA169FFDFA169FFE0A36DFFEAC19CFFC9916DF6B56E
-          4683FFFFFF00FFFFFF00FFFFFF00B872498CC88E69F6ECCAABFEE9BD94FFE6B3
-          84FFE3AA76FFE3AA75FFE6B383FFE9BC92FFEDCAACFECB936EF6B872498EFFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00BB754B80BF7C53F3D5A380F8E0B7
-          97FBEBCAACFDEBCAADFEE1B898FBD7A583F8C07D54F3BB754B83FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00BD784D11BD784D72BD78
-          4DA5BD784DD6BD784DD8BD784DA8BD784D78BD784D14FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00}
+          0000000000000000000300000013000000260000003205050542090909650B0B
+          0B7A0B0B0B880B0B0B880B0B0B7A090909650505054200000032000000270000
+          001300000003000000020000000A0707071C1313135D3D3A3A93B2A6A6DCEBDA
+          DAFFEBDADAFFEBDADAFFEBDADAFFB2A6A6DC3D3A3A931313135D0707071D0000
+          000A0000000217171700212121092626265C807979AFE4D6D6FFC69689FFAD64
+          4EFF943312FF943312FFAD644EFFC69689FFE3D6D6FF7F7979AF2626265C2121
+          210917171700303030002F2F2F48827E7EACDBD1D1FFAC573CFFB6461FFFD659
+          2AFFE56230FFE56230FFD6592AFFB6461FFFAC573CFFDACFCFFF817C7CAC2F2F
+          2F48303030003434341953515186D4CECEFFB35F44FFC9572FFFE16132FFD359
+          2DFFEDEDEDFFEEEEEEFFD3592DFFE15F30FFC8532AFFB35F44FFD0C9C9FF5150
+          50863434341937373747ACAAAAD7C09789FFBF5631FFD85F33FFD55A2DFFCB54
+          2AFFE2E2E2FFEDEDEDFFCB542AFFD55A2DFFD55A2DFFBC4F29FFBF9588FFA29F
+          9FD7373737473A3A3A61D0CFCFFFB9745DFFCF643EFFC9542AFFC9542AFFC250
+          28FFD6D6D6FFE2E2E2FFC25028FFC9542AFFC9542AFFC5542CFFB9745DFFC2C0
+          C0FF3A3A3A613E3E3E6ECCCCCCFFB95737FFD5714DFFBF502AFFBD4E27FFB94B
+          26FFCDCDCDFFD6D6D6FFB94B26FFBD4E27FFBD4E27FFC1542EFFB95737FFC0C0
+          C0FF3E3E3E6E4242426CCFCFCFFFBC5B3BFFDD7D5BFFC96240FFBD5330FFB249
+          25FFCCCCCCFFCDCDCDFFB14824FFB34925FFB34925FFBD5532FFBC5B3BFFC3C3
+          C3FF4242426C4545455CDBDCDCFFC07C65FFDF805EFFCF6947FFCF6947FFCA64
+          42FFAE4826FFAC4523FFB04927FFAD4624FFAD4624FFC3603EFFC07C65FFCBCC
+          CCFF4545455C48484842BEBFBFD4C9A295FFD57452FFE2815FFFD87250FFCD67
+          45FFFFFFFFFFFFFFFFFFCD6745FFD87250FFDF7C5AFFD16E4CFFC7A194FFB2B3
+          B3D4484848424B4B4B176C6C6C7CDFE0E0FFC8755AFFE28361FFEB8A68FFD56F
+          4DFFFFFFFFFFFFFFFFFFD56F4DFFEA8866FFDF7E5CFFC8755AFFD8D8D8FF6969
+          697C4B4B4B174E4E4E004E4E4E3F9D9D9DA2DFDFDFFFCB795EFFDB7A58FFEE90
+          6EFFF49674FFF49573FFED8E6CFFDA7856FFCB795EFFDBDCDCFF999999A24E4E
+          4E3F4E4E4E004F4F4F00505050075151514D9F9F9FA1E6E6E6FFD7B0A3FFD08C
+          75FFCD6C4BFFCD6C4BFFD08C75FFD6AFA2FFE3E4E4FF9D9D9DA15151514D5050
+          50074F4F4F004F4F4F0050505000525252075353533D73737378C8C8C8D2EAEA
+          EAFFE6E6E6FFE6E6E6FFEAEAEAFFC7C7C7D2727272785353533D525252075050
+          50004F4F4F004F4F4F00505050005252520053535300545454155555553E5555
+          55555555556355555563555555555555553E5454541553535300525252005050
+          50004F4F4F00}
         Transparent = True
       end
       object ForumWebLabel: TsWebLabel
@@ -4950,7 +2837,7 @@ object SettingsForm: TSettingsForm
       object DonateLabelFX: TsLabelFX
         Left = 357
         Top = 46
-        Width = 182
+        Width = 183
         Height = 27
         Caption = 'Wesprzyj autora wtyczki!'
         ParentFont = False
@@ -4961,7 +2848,7 @@ object SettingsForm: TSettingsForm
         Font.Style = []
       end
       object DonateLabel: TsLabel
-        Left = 357
+        Left = 358
         Top = 79
         Width = 181
         Height = 39
@@ -4999,39 +2886,39 @@ object SettingsForm: TSettingsForm
         Picture.Data = {
           0B54504E474772617068696336040000424D3604000000000000360000002800
           0000100000001000000001002000000000000004000000000000000000000000
-          000000000000FFFFFF00FFFFFF00FFFFFF0025A7DC5CFFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00087ACA570576C806FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF0028ABDEF426A8DCF424A5DB8CFFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00138BD16E1086CFEC0C80CCFEFFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF002AAEDFE14FCBEFFF38B6E5FF24A6
-          DCF923A3DAA320A0D9901C99D7F529A2DDFF38ADE5FF1187CFF6FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF002CB1E0C74CCAEEFF53CEF1FF4FC8
-          EFFF3FB9E8FF38B4E5FF45BCEBFF43B9EBFF3DB2E8FF158ED2E7FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF002EB4E2A348C8ECFF48CCF1FF30C2
-          EDFF41C3EEFF45C2EDFF2BB5EAFF25B0E8FF3BB3E7FF1A96D5CFFFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF0030B7E37C43C5EAFF56D2F2FF26C1
-          EDFF22BCECFF1EB6EAFF1AB2E9FF35B8EAFF39B2E6FF1F9ED8AEFFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF0034BDE50C33BBE4E958D5F2FF45D0F2FF28C3
-          EEFF24BFEDFF21BAEBFF1CB5E9FF20B3E9FF45BCEBFF22A3DAF7209FD91DFFFF
-          FF00FFFFFF00FFFFFF0038C2E70636C0E6E349CEEDFF5DDBF5FF2FCDF1FF2BC8
-          EFFF26C2EEFF23BDECFF1FB7EAFF1BB3E9FF48BFECFF36B1E4FF23A3DBF421A1
-          DA17FFFFFF00FFFFFF0039C5E8DD4BD2EEFF62E1F6FF40D6F4FF31CFF2FF2DCB
-          F0FF29C5EFFF25C0EDFF21BBEBFF1EB6EAFF1FB3E9FF46BDECFF35B1E4FF23A4
-          DBEF22A1DA123CCAEAD44CD5EFFF57DCF2FF5DDEF5FF5FDEF5FF5EDCF6FF47D4
-          F3FF2CC9EFFF28C3EEFF34C3EDFF4FC9EFFF4BC3EEFF44BDEBFF3CB6E7FF32AF
-          E2FF24A5DBEB3ECDEB0C3DCBEA613BC9E9A73AC7E9D639C4E8F548CEEDFF5AD9
-          F4FF46D3F2FF39CBF0FF54CFF1FF3DBEE8FF2DB3E1F62CB0E0DB2AADDFAE28AB
-          DE6E26A8DD1DFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF0039C4E88048CE
-          EDFF5CD9F4FF58D6F3FF42C4EAFF31B8E3A7FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF0039C5
-          E8EE55D6F2FF58D6F3FF35BEE5FA33BCE406FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF003BC8
-          E95747CEEDFF47CDEDFF37C1E780FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF003BC9E9DB3AC7E9EFFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF003DCBEA333CC9EA52FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-          FF00FFFFFF00}
+          000000000000000000030000001400000028007F95CC005361770006072D0000
+          00230000001C0000001B000000200007082B00546176007F95CC000000280000
+          001400000003000000020000000A00000014007E939B058CA1D200778BA80040
+          4B330000000E0000000E00404B3200788CA7058CA1D2007E939B000000140000
+          000A00000002000000000000000000414C000082986513AEC2E318BBCEEA0287
+          9DC8008399600083996002879DC815BACDEA11AEC2E30082986500414C000000
+          000000000000000000000022280000859C0000859C320D9BB1D42BDFEFFF27D5
+          E5F90B99AFD40999AFD420D4E5F923DDEEFF099AB0D400859C3200859C000022
+          2800000000000000000000889F0000889F0000889F06028BA2C137DBE8FD29DB
+          E8FF30DCE9FF2DDBE9FF29DAE8FF2AD8E6FD018BA2C100889F0600889F000088
+          9F000000000003A3BA0003A3BA000298AF000193AA00008EA5913DCAD5EE32D6
+          DEFF32D6DEFF32D6DEFF32D6DEFF2FC7D2EE008EA5910193AA000298AF0003A3
+          BA0003A3BA0003A3BA0003A3BA0003A3BA0003A3BA1C03A3BA9E55D2DCED3DD2
+          D5FF3CD1D4FF3CD1D4FF3CD1D4FF3FCBD3ED03A3BA9E03A3BA1C03A3BA0003A3
+          BA0003A3BA0003A3BA0003A3BA0203A3BA560BA7BDBA5DD0DFE37CE4F1FF61DB
+          E9FF55D6E0FF4CD0D8FF47CCD4FF54D0D8FF40C1D1E308A6BCBA03A3BA5603A3
+          BA0203A3BA0003A3BA1C03A3BA9430B9CBCD95EAF2F697EEF6FF85E8F3FF83E7
+          F3FF67DDEEFF67DDEEFF7DE5F2FF7BE4F2FF82E7F3FF77E0EDF625B6CACD03A3
+          BA9403A3BA1C01A2BAB601A2BAB601A2BAB601A2BAB601A2BAB601A2BAB64DC7
+          D7D775E3F1FF74E2F1FF48C5D6D701A2BAB601A2BAB601A2BAB601A2BAB601A2
+          BAB601A2BAB601A3BB0001A3BB0001A3BB0001A3BB0001A3BB0001A6BF1F1DB3
+          C9BD95EEF9FF93EDF9FF1CB3C9BD01A6BF1F01A3BB0001A3BB0001A3BB0001A3
+          BB0001A3BB0001A3BB0001A3BB0001A3BB0001A3BB0001A6BE0001AAC20001AB
+          C39496ECF5EF95EBF5EF01ABC39401AAC20001A6BE0001A3BB0001A3BB0001A3
+          BB0001A3BB0001A3BB0001A3BB0001A3BB0001A3BB0001AEC60001AEC60001AF
+          C75760D5E3D35FD5E3D301AFC75701AEC60001AEC60001A3BB0001A3BB0001A3
+          BB0001A3BB0001A3BB0001A3BB0001A3BB0001AEC70001B2CB0001B2CB0001B2
+          CB1E22BED4B722BED4B701B2CB1E01B2CB0001B2CB0001AEC70001A3BB0001A3
+          BB0001A3BB0001A3BB0001A3BB0001A7C00001B3CC0001B3CC0001B3CC0001B3
+          CC0001B3CC8F01B3CC8F01B3CC0001B3CC0001B3CC0001B3CC0002938D0001A3
+          BB0001A3BB000000000000000000012D330001B3CC0001B3CC0001B3CC0001B3
+          CC0001B3CC5E01B3CC5E01B3CC0001B3CC0001B3CC0003753300056900000000
+          000001525E00}
         Transparent = True
       end
       object StarWebLabel: TsWebLabel
@@ -5052,6 +2939,1982 @@ object SettingsForm: TSettingsForm
         HoverFont.Name = 'Tahoma'
         HoverFont.Style = [fsUnderline]
         URL = 'http://forum.aqq.eu/files/file/33-tabkit/'
+      end
+    end
+    object ClosedTabsTabSheet: TsTabSheet
+      Caption = 'Zamkni'#281'te zak'#322'adki'
+      ImageIndex = 1
+      SkinData.CustomColor = False
+      SkinData.CustomFont = False
+      object ClosedTabGroupBox: TsGroupBox
+        Left = 18
+        Top = 22
+        Width = 556
+        Height = 306
+        TabOrder = 1
+        SkinData.SkinSection = 'GROUPBOX'
+        object OtherClosedTabGroupBox: TsGroupBox
+          Left = 266
+          Top = 26
+          Width = 274
+          Height = 265
+          TabOrder = 4
+          SkinData.SkinSection = 'GROUPBOX'
+          object UnCloseMouseLabel: TsLabel
+            Left = 14
+            Top = 12
+            Width = 245
+            Height = 13
+            Caption = 'Przywracaj ostatnio zamkni'#281't'#261' zak'#322'adk'#281' za pomoc'#261
+          end
+          object CountClosedTabsLabel: TsLabel
+            Left = 14
+            Top = 83
+            Width = 163
+            Height = 13
+            Caption = 'Liczba zapami'#281'tywanych zak'#322'adek'
+          end
+          object UnCloseTabLPMouseCheckBox: TsCheckBox
+            Left = 26
+            Top = 57
+            Width = 207
+            Height = 20
+            Caption = 'przycisku Ctrl i lewego przycisku myszki'
+            TabOrder = 1
+            OnClick = aClosedTabsChkExecute
+            SkinData.SkinSection = 'CHECKBOX'
+            ImgChecked = 0
+            ImgUnchecked = 0
+          end
+          object UnCloseTabSPMouseCheckBox: TsCheckBox
+            Left = 26
+            Top = 31
+            Width = 159
+            Height = 20
+            Caption = #347'rodkowego przycisku myszki'
+            Checked = True
+            State = cbChecked
+            TabOrder = 0
+            OnClick = aClosedTabsChkExecute
+            SkinData.SkinSection = 'CHECKBOX'
+            ImgChecked = 0
+            ImgUnchecked = 0
+          end
+          object RestoreLastMsgClosedTabsCheckBox: TsCheckBox
+            Left = 10
+            Top = 102
+            Width = 261
+            Height = 28
+            Caption = 
+              'Przy przywracaniu zak'#322'adki wczytuj ostatnio przeprowadzon'#261' rozmo' +
+              'w'#281
+            AutoSize = False
+            TabOrder = 3
+            OnClick = aClosedTabsChkExecute
+            SkinData.SkinSection = 'CHECKBOX'
+            ImgChecked = 0
+            ImgUnchecked = 0
+            WordWrap = True
+          end
+          object OnlyConversationTabsCheckBox: TsCheckBox
+            Left = 10
+            Top = 136
+            Width = 261
+            Height = 28
+            Caption = 
+              'Zapami'#281'tuj wy'#322#261'cznie zak'#322'adki z kontaktami z kt'#243'rymi przeprowadz' +
+              'ili'#347'my rozmow'#281
+            AutoSize = False
+            TabOrder = 4
+            OnClick = aClosedTabsChkExecute
+            SkinData.SkinSection = 'CHECKBOX'
+            ImgChecked = 0
+            ImgUnchecked = 0
+            WordWrap = True
+          end
+          object CountClosedTabsSpinEdit: TsSpinEdit
+            Left = 183
+            Top = 80
+            Width = 36
+            Height = 21
+            TabOrder = 2
+            Text = '5'
+            OnChange = aClosedTabsChkExecute
+            SkinData.SkinSection = 'EDIT'
+            BoundLabel.Indent = 0
+            BoundLabel.Font.Charset = DEFAULT_CHARSET
+            BoundLabel.Font.Color = clWindowText
+            BoundLabel.Font.Height = -11
+            BoundLabel.Font.Name = 'Tahoma'
+            BoundLabel.Font.Style = []
+            BoundLabel.Layout = sclLeft
+            BoundLabel.MaxWidth = 0
+            BoundLabel.UseSkinColor = True
+            MaxValue = 30
+            MinValue = 5
+            Value = 5
+          end
+        end
+        object UnCloseTabHotKeyGroupBox: TsGroupBox
+          Left = 16
+          Top = 208
+          Width = 244
+          Height = 83
+          TabOrder = 3
+          SkinData.SkinSection = 'GROUPBOX'
+          object UnCloseTabHotKeyInput: THotKey
+            Left = 107
+            Top = 51
+            Width = 115
+            Height = 19
+            Enabled = False
+            HotKey = 0
+            Modifiers = []
+            TabOrder = 2
+            OnChange = aClosedTabsChkExecute
+          end
+          object UnCloseTabHotKeyMode1RadioButton: TsRadioButton
+            Left = 10
+            Top = 24
+            Width = 101
+            Height = 20
+            Caption = 'Ctrl + Backspace'
+            Checked = True
+            TabOrder = 0
+            TabStop = True
+            OnClick = aClosedTabsChkExecute
+            SkinData.SkinSection = 'RADIOBUTTON'
+          end
+          object UnCloseTabHotKeyMode2RadioButton: TsRadioButton
+            Left = 10
+            Top = 50
+            Width = 91
+            Height = 20
+            Caption = 'Wybrany skr'#243't'
+            TabOrder = 1
+            OnClick = aClosedTabsChkExecute
+            SkinData.SkinSection = 'RADIOBUTTON'
+          end
+        end
+        object FastAccessClosedTabsGroupBox: TsGroupBox
+          Left = 16
+          Top = 26
+          Width = 244
+          Height = 166
+          TabOrder = 1
+          SkinData.SkinSection = 'GROUPBOX'
+          object ItemsCountClosedTabsLabel: TsLabel
+            Left = 14
+            Top = 76
+            Width = 150
+            Height = 13
+            Caption = 'Ilo'#347#263' wy'#347'wietlanych element'#243'w'
+          end
+          object FastClearClosedTabsCheckBox: TsCheckBox
+            Left = 10
+            Top = 126
+            Width = 215
+            Height = 28
+            Caption = 
+              'Dodaj element szybkiego czyszczenia listy ostatnio zamkni'#281'tych z' +
+              'ak'#322'adek'
+            AutoSize = False
+            Checked = True
+            State = cbChecked
+            TabOrder = 4
+            OnClick = aClosedTabsChkExecute
+            SkinData.SkinSection = 'CHECKBOX'
+            ImgChecked = 0
+            ImgUnchecked = 0
+            WordWrap = True
+          end
+          object FrmMainClosedTabsCheckBox: TsCheckBox
+            Left = 10
+            Top = 24
+            Width = 133
+            Height = 20
+            Caption = 'W oknie listy kontakt'#243'w'
+            Checked = True
+            State = cbChecked
+            TabOrder = 0
+            OnClick = aClosedTabsChkExecute
+            SkinData.SkinSection = 'CHECKBOX'
+            ImgChecked = 0
+            ImgUnchecked = 0
+          end
+          object FrmSendClosedTabsCheckBox: TsCheckBox
+            Left = 10
+            Top = 50
+            Width = 104
+            Height = 20
+            Caption = 'W oknie rozmowy'
+            Checked = True
+            State = cbChecked
+            TabOrder = 1
+            OnClick = aClosedTabsChkExecute
+            SkinData.SkinSection = 'CHECKBOX'
+            ImgChecked = 0
+            ImgUnchecked = 0
+          end
+          object ItemsCountClosedTabsSpinEdit: TsSpinEdit
+            Left = 170
+            Top = 73
+            Width = 36
+            Height = 21
+            TabOrder = 2
+            Text = '5'
+            OnChange = aClosedTabsChkExecute
+            SkinData.SkinSection = 'EDIT'
+            BoundLabel.Indent = 0
+            BoundLabel.Font.Charset = DEFAULT_CHARSET
+            BoundLabel.Font.Color = clWindowText
+            BoundLabel.Font.Height = -11
+            BoundLabel.Font.Name = 'Tahoma'
+            BoundLabel.Font.Style = []
+            BoundLabel.Layout = sclLeft
+            BoundLabel.MaxWidth = 0
+            BoundLabel.UseSkinColor = True
+            MaxValue = 10
+            MinValue = 5
+            Value = 5
+          end
+          object ShowTimeClosedTabsCheckBox: TsCheckBox
+            Left = 10
+            Top = 100
+            Width = 196
+            Height = 20
+            Caption = 'Wy'#347'wietlaj dat'#281' zamkni'#281'cia zak'#322'adek'
+            TabOrder = 3
+            OnClick = aClosedTabsChkExecute
+            SkinData.SkinSection = 'CHECKBOX'
+            ImgChecked = 0
+            ImgUnchecked = 0
+          end
+        end
+        object UnCloseTabHotKeyCheckBox: TsCheckBox
+          Left = 10
+          Top = 198
+          Width = 231
+          Height = 28
+          Caption = 
+            'Przypisz skr'#243't klawiaturowy przywracaj'#261'cy ostatnio zamkni'#281't'#261' zak' +
+            #322'adk'#281
+          AutoSize = False
+          Checked = True
+          State = cbChecked
+          TabOrder = 2
+          OnClick = aClosedTabsChkExecute
+          SkinData.SkinSection = 'CHECKBOX'
+          ImgChecked = 0
+          ImgUnchecked = 0
+          WordWrap = True
+        end
+        object FastAccessClosedTabsCheckBox: TsCheckBox
+          Left = 10
+          Top = 16
+          Width = 213
+          Height = 28
+          Caption = 
+            'Wy'#347'wietlaj przycisk szybkiego dost'#281'p do ostatnio zamkni'#281'tych zak' +
+            #322'adek'
+          AutoSize = False
+          Checked = True
+          State = cbChecked
+          TabOrder = 0
+          OnClick = aClosedTabsChkExecute
+          SkinData.SkinSection = 'CHECKBOX'
+          ImgChecked = 0
+          ImgUnchecked = 0
+          WordWrap = True
+        end
+      end
+      object RememberClosedTabsCheckBox: TsCheckBox
+        Left = 12
+        Top = 12
+        Width = 207
+        Height = 20
+        Caption = 'Zapami'#281'tuj ostatnio zamkni'#281'te zak'#322'adki'
+        Checked = True
+        State = cbChecked
+        TabOrder = 0
+        OnClick = aClosedTabsChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+    end
+    object UnsentMsgTabSheet: TsTabSheet
+      Caption = 'Niewys'#322'ane wiadomo'#347'ci'
+      ImageIndex = 2
+      SkinData.CustomColor = False
+      SkinData.CustomFont = False
+      object RememberUnsentMsgGroupBox: TsGroupBox
+        Left = 18
+        Top = 22
+        Width = 399
+        Height = 259
+        TabOrder = 1
+        SkinData.SkinSection = 'GROUPBOX'
+        object FastAccessUnsentMsgGroupBox: TsGroupBox
+          Left = 16
+          Top = 142
+          Width = 369
+          Height = 100
+          TabOrder = 3
+          SkinData.SkinSection = 'GROUPBOX'
+          object FastClearUnsentMsgCheckBox: TsCheckBox
+            Left = 10
+            Top = 68
+            Width = 345
+            Height = 20
+            Caption = 
+              'Dodaj element szybkiego czyszczenia listy niewys'#322'anych wiadomo'#347'c' +
+              'i'
+            Checked = True
+            State = cbChecked
+            TabOrder = 2
+            OnClick = aUnsentMsgChkExecute
+            SkinData.SkinSection = 'CHECKBOX'
+            ImgChecked = 0
+            ImgUnchecked = 0
+          end
+          object FrmMainUnsentMsgCheckBox: TsCheckBox
+            Left = 10
+            Top = 16
+            Width = 133
+            Height = 20
+            Caption = 'W oknie listy kontakt'#243'w'
+            Checked = True
+            State = cbChecked
+            TabOrder = 0
+            OnClick = aUnsentMsgChkExecute
+            SkinData.SkinSection = 'CHECKBOX'
+            ImgChecked = 0
+            ImgUnchecked = 0
+          end
+          object FrmSendUnsentMsgCheckBox: TsCheckBox
+            Left = 10
+            Top = 42
+            Width = 104
+            Height = 20
+            Caption = 'W oknie rozmowy'
+            Checked = True
+            State = cbChecked
+            TabOrder = 1
+            OnClick = aUnsentMsgChkExecute
+            SkinData.SkinSection = 'CHECKBOX'
+            ImgChecked = 0
+            ImgUnchecked = 0
+          end
+        end
+        object InfoUnsentMsgGroupBox: TsGroupBox
+          Left = 16
+          Top = 26
+          Width = 369
+          Height = 100
+          TabOrder = 1
+          SkinData.SkinSection = 'GROUPBOX'
+          object CloudUnsentMsgCheckBox: TsCheckBox
+            Left = 10
+            Top = 16
+            Width = 127
+            Height = 20
+            Caption = 'Chmurka informacyjna'
+            Checked = True
+            State = cbChecked
+            TabOrder = 0
+            OnClick = aUnsentMsgChkExecute
+            SkinData.SkinSection = 'CHECKBOX'
+            ImgChecked = 0
+            ImgUnchecked = 0
+          end
+          object DetailedCloudUnsentMsgCheckBox: TsCheckBox
+            Left = 26
+            Top = 42
+            Width = 174
+            Height = 20
+            Caption = 'Pokazuj szczeg'#243#322'owe informacje'
+            TabOrder = 1
+            OnClick = aUnsentMsgChkExecute
+            SkinData.SkinSection = 'CHECKBOX'
+            ImgChecked = 0
+            ImgUnchecked = 0
+          end
+          object TrayUnsentMsgCheckBox: TsCheckBox
+            Left = 10
+            Top = 68
+            Width = 178
+            Height = 20
+            Caption = 'Ikonka w zasobniku systemowym'
+            Checked = True
+            State = cbChecked
+            TabOrder = 2
+            OnClick = aUnsentMsgChkExecute
+            SkinData.SkinSection = 'CHECKBOX'
+            ImgChecked = 0
+            ImgUnchecked = 0
+          end
+        end
+        object FastAccessUnsentMsgCheckBox: TsCheckBox
+          Left = 10
+          Top = 132
+          Width = 226
+          Height = 20
+          Caption = 'Szybki dost'#281'p do niewys'#322'anych wiadomo'#347'ci'
+          Checked = True
+          State = cbChecked
+          TabOrder = 2
+          OnClick = aUnsentMsgChkExecute
+          SkinData.SkinSection = 'CHECKBOX'
+          ImgChecked = 0
+          ImgUnchecked = 0
+        end
+        object InfoUnsentMsgCheckBox: TsCheckBox
+          Left = 10
+          Top = 16
+          Width = 312
+          Height = 20
+          Caption = 'Informuj o niewys'#322'anych wiadomo'#347'ciach przy w'#322#261'czeniu AQQ'
+          Checked = True
+          State = cbChecked
+          TabOrder = 0
+          OnClick = aUnsentMsgChkExecute
+          SkinData.SkinSection = 'CHECKBOX'
+          ImgChecked = 0
+          ImgUnchecked = 0
+        end
+      end
+      object RememberUnsentMsgCheckBox: TsCheckBox
+        Left = 12
+        Top = 12
+        Width = 187
+        Height = 20
+        Caption = 'Zapami'#281'tuj niewys'#322'ane wiadomo'#347'ci'
+        Checked = True
+        State = cbChecked
+        TabOrder = 0
+        OnClick = aUnsentMsgChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+    end
+    object TabsSwitchingTabSheet: TsTabSheet
+      Caption = 'Prze'#322#261'czanie zak'#322'adek'
+      ImageIndex = 3
+      SkinData.CustomColor = False
+      SkinData.CustomFont = False
+      object TabsHotKeysGroupBox: TsGroupBox
+        Left = 18
+        Top = 116
+        Width = 335
+        Height = 110
+        TabOrder = 3
+        SkinData.SkinSection = 'GROUPBOX'
+        object TabsHotKeysMode1RadioButton: TsRadioButton
+          Left = 10
+          Top = 16
+          Width = 129
+          Height = 20
+          Caption = 'Klawisze od F1 do  F12'
+          TabOrder = 0
+          OnClick = aTabsSwitchingChkExecute
+          SkinData.SkinSection = 'RADIOBUTTON'
+        end
+        object TabsHotKeysMode2RadioButton: TsRadioButton
+          Left = 10
+          Top = 42
+          Width = 175
+          Height = 20
+          Caption = 'Klawisz Ctrl + klawisze od 1 do 9'
+          Checked = True
+          TabOrder = 1
+          TabStop = True
+          OnClick = aTabsSwitchingChkExecute
+          SkinData.SkinSection = 'RADIOBUTTON'
+        end
+        object NewMgsHoyKeyCheckBox: TsCheckBox
+          Left = 10
+          Top = 68
+          Width = 327
+          Height = 28
+          Caption = 
+            'Otwieraj okno rozmowy z now'#261' wiadomo'#347'ci'#261' za pomoc'#261' skr'#243'tu aktual' +
+            'nie nieprzypisanego do '#380'adnej otwartej zak'#322'adki'
+          AutoSize = False
+          TabOrder = 2
+          OnClick = aTabsSwitchingChkExecute
+          SkinData.SkinSection = 'CHECKBOX'
+          ImgChecked = 0
+          ImgUnchecked = 0
+          WordWrap = True
+        end
+      end
+      object SwitchToNewMsgGroupBox: TsGroupBox
+        Left = 18
+        Top = 29
+        Width = 335
+        Height = 72
+        TabOrder = 1
+        SkinData.SkinSection = 'GROUPBOX'
+        object SwitchToNewMsgMode1RadioButton: TsRadioButton
+          Left = 10
+          Top = 17
+          Width = 203
+          Height = 20
+          Caption = 'Prze'#322#261'czanie na najstarsz'#261' wiadomo'#347#263
+          Checked = True
+          TabOrder = 0
+          TabStop = True
+          OnClick = aTabsSwitchingChkExecute
+          SkinData.SkinSection = 'RADIOBUTTON'
+        end
+        object SwitchToNewMsgMode2RadioButton: TsRadioButton
+          Left = 10
+          Top = 43
+          Width = 204
+          Height = 20
+          Caption = 'Prze'#322#261'czanie na najnowsz'#261' wiadomo'#347#263
+          TabOrder = 1
+          OnClick = aTabsSwitchingChkExecute
+          SkinData.SkinSection = 'RADIOBUTTON'
+        end
+      end
+      object SwitchToNewMsgCheckBox: TsCheckBox
+        Left = 12
+        Top = 12
+        Width = 301
+        Height = 28
+        Caption = 
+          'Inteligentne prze'#322#261'czanie do nieprzeczytanych wiadomo'#347'ci za pomo' +
+          'c'#261' skr'#243'tu klawiaturowego Ctrl+Tab'
+        AutoSize = False
+        Checked = True
+        State = cbChecked
+        TabOrder = 0
+        OnClick = aTabsSwitchingChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object TabsHotKeysCheckBox: TsCheckBox
+        Left = 12
+        Top = 107
+        Width = 280
+        Height = 20
+        Caption = 'Przypisz skr'#243'ty klawiaturowe do konkretnych zak'#322'adek'
+        Checked = True
+        State = cbChecked
+        TabOrder = 2
+        OnClick = aTabsSwitchingChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+    end
+    object SessionRememberTabSheet: TsTabSheet
+      Caption = 'Zapami'#281'tywanie sesji'
+      ImageIndex = 4
+      SkinData.CustomColor = False
+      SkinData.CustomFont = False
+      object RestoreTabsSessionGroupBox: TsGroupBox
+        Left = 18
+        Top = 22
+        Width = 391
+        Height = 115
+        TabOrder = 1
+        SkinData.SkinSection = 'GROUPBOX'
+        object RestoreSessionLabel: TsLabel
+          Left = 20
+          Top = 76
+          Width = 351
+          Height = 26
+          Alignment = taCenter
+          Caption = 
+            'Opcja zapami'#281'tywania wpisanego tekstu mo'#380'e w niekt'#243'rych przypadk' +
+            'ach znacznie obni'#380'y'#263' wydajno'#347#263' komunikatora. U'#380'ywaj tej opcji z ' +
+            'rozwag'#261'!'
+          Enabled = False
+          WordWrap = True
+        end
+        object ManualRestoreTabsSessionCheckBox: TsCheckBox
+          Left = 10
+          Top = 24
+          Width = 367
+          Height = 20
+          Caption = 
+            'Przywracaj r'#243'wnie'#380' zak'#322'adki zapami'#281'tane przy r'#281'cznym wy'#322#261'czeniu ' +
+            'AQQ'
+          TabOrder = 0
+          OnClick = aSessionRememberChkExecute
+          SkinData.SkinSection = 'CHECKBOX'
+          ImgChecked = 0
+          ImgUnchecked = 0
+        end
+        object RestoreMsgSessionCheckBox: TsCheckBox
+          Left = 10
+          Top = 50
+          Width = 227
+          Height = 20
+          Caption = 'Zapami'#281'tuj wpisany tekst w oknie rozmowy'
+          TabOrder = 1
+          OnClick = aSessionRememberChkExecute
+          SkinData.SkinSection = 'CHECKBOX'
+          ImgChecked = 0
+          ImgUnchecked = 0
+        end
+      end
+      object RestoreTabsSessionCheckBox: TsCheckBox
+        Left = 12
+        Top = 12
+        Width = 325
+        Height = 28
+        Caption = 
+          'Przywracaj wszystkie otwarte zak'#322'adki utracone w wyniku niepo'#380#261'd' +
+          'anego zamkni'#281'cia lub restartu komunikatora'
+        AutoSize = False
+        Checked = True
+        State = cbChecked
+        TabOrder = 0
+        OnClick = aSessionRememberChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+    end
+    object NewMsgTabSheet: TsTabSheet
+      Caption = 'Nowe wiadomo'#347'ci'
+      ImageIndex = 5
+      OnShow = NewMsgTabSheetShow
+      SkinData.CustomColor = False
+      SkinData.CustomFont = False
+      object ChatStateNotiferNewMsgCheckBox: TsCheckBox
+        Left = 12
+        Top = 148
+        Width = 341
+        Height = 28
+        Caption = 
+          'Informuj graficznie o pisaniu nowej wiadomo'#347'ci na zak'#322'adkach ora' +
+          'z na pasku tytu'#322'u okna gdy jest ono zminimalizowane lub nieaktyw' +
+          'ne'
+        AutoSize = False
+        Checked = True
+        State = cbChecked
+        TabOrder = 4
+        OnClick = aNewMsgChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object InactiveFrmNewMsgCheckBox: TsCheckBox
+        Left = 12
+        Top = 12
+        Width = 341
+        Height = 28
+        Caption = 
+          'Wy'#347'wietlaj liczb'#281' nieprzeczytanych wiadomo'#347'ci na pasku tytu'#322'u ok' +
+          'na rozmowy gdy jest ono zminimalizowane lub nieaktywne'
+        AutoSize = False
+        Checked = True
+        State = cbChecked
+        TabOrder = 0
+        OnClick = aNewMsgChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object InactiveNotiferNewMsgCheckBox: TsCheckBox
+        Left = 12
+        Top = 114
+        Width = 285
+        Height = 28
+        Caption = 
+          'Pokazuj w chmurce informacyjnej tre'#347#263' nowej wiadomo'#347'ci pochodz'#261'c' +
+          'ej z nieaktywnej zak'#322'adki'
+        AutoSize = False
+        TabOrder = 3
+        OnClick = aNewMsgChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object InactiveTabsNewMsgCheckBox: TsCheckBox
+        Left = 12
+        Top = 80
+        Width = 317
+        Height = 28
+        Caption = 
+          'Wy'#347'wietlaj liczb'#281' nieprzeczytanych wiadomo'#347'ci na nieaktywnych za' +
+          'k'#322'adkach w formie tekstowej'
+        AutoSize = False
+        TabOrder = 2
+        OnClick = aNewMsgChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object OffCoreInactiveTabsNewMsgCheckBox: TsCheckBox
+        Left = 12
+        Top = 46
+        Width = 341
+        Height = 28
+        Caption = 
+          'Wy'#322#261'cz wbudowany w komunikator graficzny licznik nieprzeczytanyc' +
+          'h wiadomo'#347'ci'
+        AutoSize = False
+        TabOrder = 1
+        OnClick = aNewMsgChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object TaskbarPenCheckBox: TsCheckBox
+        Left = 12
+        Top = 208
+        Width = 253
+        Height = 28
+        Caption = 
+          'Wy'#322#261'cz wbudowan'#261' w komunikator funkcj'#281' pisaka na pasku tytu'#322'u ok' +
+          'na rozmowy'
+        AutoSize = False
+        TabOrder = 6
+        OnClick = aNewMsgChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object ChatGoneNotiferNewMsgCheckBox: TsCheckBox
+        Left = 28
+        Top = 182
+        Width = 316
+        Height = 20
+        Caption = 'Informuj graficznie na zak'#322'adkach o zamkni'#281'ciu okna rozmowy'
+        TabOrder = 5
+        OnClick = aNewMsgChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+    end
+    object TitlebarTabSheet: TsTabSheet
+      Caption = 'Pasek tytu'#322'u'
+      ImageIndex = 6
+      SkinData.CustomColor = False
+      SkinData.CustomFont = False
+      object TweakFrmMainTitlebarGroupBox: TsGroupBox
+        Left = 18
+        Top = 167
+        Width = 271
+        Height = 74
+        TabOrder = 3
+        SkinData.SkinSection = 'GROUPBOX'
+        object TweakFrmMainTitlebarModeExLabel: TsLabel
+          Left = 185
+          Top = 19
+          Width = 4
+          Height = 13
+          Caption = ']'
+        end
+        object TweakFrmMainTitlebarMode1RadioButton: TsRadioButton
+          Left = 10
+          Top = 16
+          Width = 50
+          Height = 20
+          Caption = 'AQQ ['
+          Checked = True
+          TabOrder = 0
+          TabStop = True
+          OnClick = aTitlebarTweakChkExecute
+          SkinData.SkinSection = 'RADIOBUTTON'
+        end
+        object TweakFrmMainTitlebarMode2Edit: TsEdit
+          Left = 70
+          Top = 42
+          Width = 121
+          Height = 21
+          TabOrder = 3
+          TextHint = 'Wpisz tutaj sw'#243'j tekst'
+          OnChange = aTitlebarTweakChkExecute
+          SkinData.SkinSection = 'EDIT'
+          BoundLabel.Indent = 0
+          BoundLabel.Font.Charset = DEFAULT_CHARSET
+          BoundLabel.Font.Color = clWindowText
+          BoundLabel.Font.Height = -11
+          BoundLabel.Font.Name = 'Tahoma'
+          BoundLabel.Font.Style = []
+          BoundLabel.Layout = sclLeft
+          BoundLabel.MaxWidth = 0
+          BoundLabel.UseSkinColor = True
+        end
+        object TweakFrmMainTitlebarMode2RadioButton: TsRadioButton
+          Left = 10
+          Top = 42
+          Width = 54
+          Height = 20
+          Caption = 'AQQ +'
+          TabOrder = 2
+          OnClick = aTitlebarTweakChkExecute
+          SkinData.SkinSection = 'RADIOBUTTON'
+        end
+        object TweakFrmMainTitlebarModeExComboBox: TsComboBox
+          Left = 66
+          Top = 16
+          Width = 113
+          Height = 21
+          Alignment = taLeftJustify
+          BoundLabel.Caption = 'TweakFrmMainTitlebarModeExComboBox'
+          BoundLabel.Indent = 0
+          BoundLabel.Font.Charset = DEFAULT_CHARSET
+          BoundLabel.Font.Color = clWindowText
+          BoundLabel.Font.Height = -11
+          BoundLabel.Font.Name = 'Tahoma'
+          BoundLabel.Font.Style = []
+          BoundLabel.Layout = sclLeftTop
+          BoundLabel.MaxWidth = 0
+          BoundLabel.UseSkinColor = True
+          SkinData.SkinSection = 'COMBOBOX'
+          Style = csDropDownList
+          ItemIndex = -1
+          TabOrder = 1
+          OnChange = aTitlebarTweakChkExecute
+        end
+      end
+      object TweakFrmSendTitlebarGroupBox: TsGroupBox
+        Left = 18
+        Top = 22
+        Width = 271
+        Height = 129
+        TabOrder = 1
+        SkinData.SkinSection = 'GROUPBOX'
+        object TweakFrmSendTitlebarMode1RadioButton: TsRadioButton
+          Left = 10
+          Top = 16
+          Width = 143
+          Height = 20
+          Caption = 'Pseudonim i opis kontaktu'
+          Checked = True
+          TabOrder = 0
+          TabStop = True
+          OnClick = aTitlebarTweakChkExecute
+          SkinData.SkinSection = 'RADIOBUTTON'
+        end
+        object TweakFrmSendTitlebarMode2RadioButton: TsRadioButton
+          Left = 10
+          Top = 42
+          Width = 139
+          Height = 20
+          Caption = 'Sam pseudonim kontaktu'
+          TabOrder = 1
+          OnClick = aTitlebarTweakChkExecute
+          SkinData.SkinSection = 'RADIOBUTTON'
+        end
+        object TweakFrmSendTitlebarMode3RadioButton: TsRadioButton
+          Left = 10
+          Top = 68
+          Width = 185
+          Height = 20
+          Caption = 'Pseudonim i identyfikator kontaktu'
+          TabOrder = 2
+          OnClick = aTitlebarTweakChkExecute
+          SkinData.SkinSection = 'RADIOBUTTON'
+        end
+        object TweakFrmSendTitlebarMode4RadioButton: TsRadioButton
+          Left = 10
+          Top = 94
+          Width = 199
+          Height = 28
+          Caption = 'Pseudonim i identyfikator kontaktu wraz z zasobem oraz opisem'
+          TabOrder = 3
+          WordWrap = True
+          OnClick = aTitlebarTweakChkExecute
+          AutoSize = False
+          SkinData.SkinSection = 'RADIOBUTTON'
+        end
+      end
+      object TweakFrmMainTitlebarCheckBox: TsCheckBox
+        Left = 12
+        Top = 157
+        Width = 243
+        Height = 20
+        Caption = 'Zmieniaj tekst na pasku tytu'#322'u okna kontakt'#243'w'
+        TabOrder = 2
+        OnClick = aTitlebarTweakChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+      object TweakFrmSendTitlebarCheckBox: TsCheckBox
+        Left = 12
+        Top = 12
+        Width = 236
+        Height = 20
+        Caption = 'Zmieniaj tekst na pasku tytu'#322'u okna rozmowy'
+        TabOrder = 0
+        OnClick = aTitlebarTweakChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+    end
+    object ClipTabsTabSheet: TsTabSheet
+      Caption = 'Przypinanie zak'#322'adek'
+      ImageIndex = 7
+      SkinData.CustomColor = False
+      SkinData.CustomFont = False
+      object OpenClipTabsCheckBox: TsCheckBox
+        Left = 12
+        Top = 12
+        Width = 308
+        Height = 20
+        Caption = 'Otwieraj przypi'#281'te zak'#322'adki wraz z otwarciem okna rozmowy'
+        Checked = True
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        State = cbChecked
+        TabOrder = 0
+        OnClick = aClipTabsChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object InactiveClipTabsCheckBox: TsCheckBox
+        Left = 12
+        Top = 38
+        Width = 268
+        Height = 20
+        Caption = 'Nie wy'#347'wietlaj licznika nieprzeczytanych wiadomo'#347'ci'
+        TabOrder = 1
+        OnClick = aClipTabsChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object CounterClipTabsCheckBox: TsCheckBox
+        Left = 12
+        Top = 64
+        Width = 267
+        Height = 20
+        Caption = 'Wy'#347'wietlaj licznik znak'#243'w z powiadomienia o pisaniu'
+        TabOrder = 2
+        OnClick = aClipTabsChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+      object ExcludeClipTabsFromTabSwitchingCheckBox: TsCheckBox
+        Left = 12
+        Top = 90
+        Width = 333
+        Height = 28
+        Caption = 
+          'Wy'#322#261'cz przypi'#281'te zak'#322'adki z prze'#322#261'czania zak'#322'adek za pomoc'#261' skr'#243 +
+          'tu klawiaturowego Ctrl+Tab / Ctrl+Shift+Tab'
+        AutoSize = False
+        TabOrder = 3
+        OnClick = aClipTabsChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object ExcludeClipTabsFromSwitchToNewMsgCheckBox: TsCheckBox
+        Left = 28
+        Top = 124
+        Width = 237
+        Height = 28
+        Caption = 
+          'Nieaktywne dla inteligentnego prze'#322#261'czania do nieprzeczytanych w' +
+          'iadomo'#347'ci'
+        AutoSize = False
+        TabOrder = 4
+        OnClick = aClipTabsChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object ExcludeClipTabsFromTabsHotKeysCheckBox: TsCheckBox
+        Left = 12
+        Top = 158
+        Width = 253
+        Height = 28
+        Caption = 
+          'Wy'#322#261'cz przypisywanie skr'#243't'#243'w klawiaturowych dla przypi'#281'tych zak'#322 +
+          'adek'
+        AutoSize = False
+        TabOrder = 5
+        OnClick = aClipTabsChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object NoMiniAvatarsClipTabsCheckBox: TsCheckBox
+        Left = 12
+        Top = 192
+        Width = 280
+        Height = 20
+        Caption = 'Nie ustawiaj mini awatar'#243'w na przypi'#281'tych zak'#322'adkach'
+        TabOrder = 6
+        OnClick = aClipTabsChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+    end
+    object SideSlideTabSheet: TsTabSheet
+      Caption = 'Chowanie okien'
+      ImageIndex = 8
+      SkinData.CustomColor = False
+      SkinData.CustomFont = False
+      object SideSlideFullScreenModeExceptionsButton: TsSpeedButton
+        Left = 263
+        Top = 314
+        Width = 23
+        Height = 22
+        Hint = 'Wyj'#261'tki...'
+        Flat = True
+        Glyph.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000000000000000000000000000000000000FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF006C6C6C63575757BF505050BF5151
+          5163FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF006E6E6E296969690E79797902808080EABCBCBCFFB1B1B1FF5A5A
+          5AEA595959025B5B5B0E4D4D4D29FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF008080809B6E6E6EFD636363E775757519828282E7CBCBCBFFC7C7C7FF6161
+          61E759595919575757E74D4D4DFD4848489BFFFFFF00FFFFFF00FFFFFF00A3A3
+          A37BBBBBBBFFDEDEDEFFA5A5A5FF828282F4848484FEC3C3C3FFC1C1C1FF6C6C
+          6CFE6D6D6DF4A5A5A5FFD2D2D2FF7F7F7FFF5151517BFFFFFF00FFFFFF00AAAA
+          AA7DA5A5A5FED5D5D5FFC4C4C4FFCBCBCBFFD1D1D1FFC9C9C9FFC7C7C7FFCCCC
+          CCFFC4C4C4FFBCBCBCFFCBCBCBFF6D6D6DFE6666667DFFFFFF00FFFFFF00FFFF
+          FF00ABABAB85C4C4C4FFC0C0C0FFC4C4C4FFC7C7C7FFA9A9A9FFA6A6A6FFC0C0
+          C0FFBDBDBDFFB4B4B4FFA9A9A9FF68686885FFFFFF00FFFFFF00A2A2A2CD8E8E
+          8EE39F9F9FEECFCFCFFFC5C5C5FFCCCCCCFF9D9D9DC698989844939393448E8E
+          8EC6C0C0C0FFBBBBBBFFB8B8B8FF636363EE575757E3525252CDBEBEBEFDE2E2
+          E2FFD2D2D2FFC5C5C5FFCDCDCDFFB0B0B0FF92929244FFFFFF00FFFFFF009494
+          9444A7A7A7FFC1C1C1FFB6B6B6FFBFBFBFFFD2D2D2FF606060FDC3C3C3FDE9E9
+          E9FFD6D6D6FFC9C9C9FFCECECEFFA4A4A4FF83838344FFFFFF00FFFFFF009999
+          9944ABABABFFC3C3C3FFB9B9B9FFC5C5C5FFDDDDDDFF6A6A6AFDC8C8C8CDC3C3
+          C3E3BFBFBFEED8D8D8FFCDCDCDFFBBBBBBFF818181C6767676447D7D7D448E8E
+          8EC6C2C2C2FFC1C1C1FFCDCDCDFF8B8B8BEE868686E3828282CDFFFFFF00FFFF
+          FF00C4C4C485D4D4D4FFCCCCCCFFC9C9C9FFB9B9B9FF9B9B9BFFA0A0A0FFC1C1
+          C1FFC5C5C5FFC0C0C0FFB6B6B6FF88888885FFFFFF00FFFFFF00FFFFFF00CACA
+          CA7DC3C3C3FEDCDCDCFFD4D4D4FFD9D9D9FFDBDBDBFFD6D6D6FFD4D4D4FFD9D9
+          D9FFD2D2D2FFCBCBCBFFC8C8C8FF787878FE7070707DFFFFFF00FFFFFF00D0D0
+          D07BDCDCDCFFEDEDEDFFDBDBDBFFC1C1C1F4BDBDBDFED6D6D6FFD4D4D4FFAFAF
+          AFFEABABABF4CBCBCBFFE7E7E7FFB6B6B6FF8A8A8A7BFFFFFF00FFFFFF00FFFF
+          FF00D1D1D19BCECECEFDCACACAE7C5C5C519C1C1C1E7DEDEDEFFDDDDDDFFB1B1
+          B1E7B0B0B019ABABABE7A6A6A6FDA2A2A29BFFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00D1D1D129CECECE0ECBCBCB02C7C7C7EAE5E5E5FFE4E4E4FFABAB
+          ABEAB5B5B502B1B1B10EACACAC29FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00CBCBCB63C7C7C7BFC3C3C3BFBEBE
+          BE63FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00}
+        ParentShowHint = False
+        ShowHint = True
+        OnClick = SideSlideFullScreenModeExceptionsButtonClick
+        SkinData.SkinSection = 'SPEEDBUTTON'
+      end
+      object SlideFrmMainGroupBox: TsGroupBox
+        Left = 18
+        Top = 21
+        Width = 275
+        Height = 284
+        TabOrder = 1
+        SkinData.SkinSection = 'GROUPBOX'
+        object FrmMainEdgeGroupBox: TsGroupBox
+          Left = 12
+          Top = 12
+          Width = 116
+          Height = 72
+          Caption = 'Wybrana kraw'#281'd'#378
+          Enabled = False
+          TabOrder = 0
+          SkinData.SkinSection = 'GROUPBOX'
+          object FrmMainEdgeLeftRadioButton: TsRadioButton
+            Left = 10
+            Top = 16
+            Width = 42
+            Height = 20
+            Caption = 'lewa'
+            Enabled = False
+            TabOrder = 0
+            OnClick = aSideSlideChkExecute
+            SkinData.SkinSection = 'RADIOBUTTON'
+          end
+          object FrmMainEdgeRightRadioButton: TsRadioButton
+            Left = 58
+            Top = 16
+            Width = 50
+            Height = 20
+            Caption = 'prawa'
+            Checked = True
+            Enabled = False
+            TabOrder = 1
+            TabStop = True
+            OnClick = aSideSlideChkExecute
+            SkinData.SkinSection = 'RADIOBUTTON'
+          end
+          object FrmMainEdgeBottomRadioButton: TsRadioButton
+            Left = 10
+            Top = 42
+            Width = 46
+            Height = 20
+            Caption = 'dolna'
+            Enabled = False
+            TabOrder = 2
+            OnClick = aSideSlideChkExecute
+            SkinData.SkinSection = 'RADIOBUTTON'
+          end
+          object FrmMainEdgeTopRadioButton: TsRadioButton
+            Left = 58
+            Top = 42
+            Width = 48
+            Height = 20
+            Caption = 'g'#243'rna'
+            Enabled = False
+            TabOrder = 3
+            OnClick = aSideSlideChkExecute
+            SkinData.SkinSection = 'RADIOBUTTON'
+          end
+        end
+        object FrmMainHideGroupBox: TsGroupBox
+          Left = 134
+          Top = 12
+          Width = 128
+          Height = 96
+          Caption = 'Schowaj gdy'
+          Enabled = False
+          TabOrder = 1
+          SkinData.SkinSection = 'GROUPBOX'
+          object FrmMainHideFocusRadioButton: TsRadioButton
+            Left = 10
+            Top = 16
+            Width = 102
+            Height = 20
+            Caption = 'okno utraci fokus'
+            Enabled = False
+            TabOrder = 0
+            OnClick = aSideSlideChkExecute
+            SkinData.SkinSection = 'RADIOBUTTON'
+          end
+          object FrmMainHideAppFocusRadioButton: TsRadioButton
+            Left = 10
+            Top = 42
+            Width = 102
+            Height = 20
+            Caption = 'AQQ utraci fokus'
+            TabOrder = 1
+            OnClick = aSideSlideChkExecute
+            SkinData.SkinSection = 'RADIOBUTTON'
+          end
+          object FrmMainHideCursorRadioButton: TsRadioButton
+            Left = 10
+            Top = 68
+            Width = 109
+            Height = 20
+            Caption = 'kursor opu'#347'ci okno'
+            Checked = True
+            Enabled = False
+            TabOrder = 2
+            TabStop = True
+            OnClick = aSideSlideChkExecute
+            SkinData.SkinSection = 'RADIOBUTTON'
+          end
+        end
+        object FrmMainTimeGroupBox: TsGroupBox
+          Left = 12
+          Top = 110
+          Width = 250
+          Height = 129
+          Caption = 'Ustawienia animacji'
+          Enabled = False
+          TabOrder = 2
+          SkinData.SkinSection = 'GROUPBOX'
+          object FrmMainSlideInTimeSpinEdit: TsSpinEdit
+            Left = 182
+            Top = 70
+            Width = 48
+            Height = 21
+            Enabled = False
+            TabOrder = 2
+            Text = '300'
+            OnChange = aSideSlideChkExecute
+            SkinData.SkinSection = 'EDIT'
+            BoundLabel.Active = True
+            BoundLabel.Caption = 'Czas wysuwania okna (ms)'
+            BoundLabel.Indent = 0
+            BoundLabel.Font.Charset = DEFAULT_CHARSET
+            BoundLabel.Font.Color = clWindowText
+            BoundLabel.Font.Height = -11
+            BoundLabel.Font.Name = 'Tahoma'
+            BoundLabel.Font.Style = []
+            BoundLabel.Layout = sclLeft
+            BoundLabel.MaxWidth = 0
+            BoundLabel.UseSkinColor = True
+            Increment = 10
+            MaxValue = 1000
+            MinValue = 30
+            Value = 300
+          end
+          object FrmMainSlideOutTimeSpinEdit: TsSpinEdit
+            Left = 182
+            Top = 97
+            Width = 48
+            Height = 21
+            Enabled = False
+            TabOrder = 3
+            Text = '500'
+            OnChange = aSideSlideChkExecute
+            SkinData.SkinSection = 'EDIT'
+            BoundLabel.Active = True
+            BoundLabel.Caption = 'Czas chowania okna (ms)'
+            BoundLabel.Indent = 0
+            BoundLabel.Font.Charset = DEFAULT_CHARSET
+            BoundLabel.Font.Color = clWindowText
+            BoundLabel.Font.Height = -11
+            BoundLabel.Font.Name = 'Tahoma'
+            BoundLabel.Font.Style = []
+            BoundLabel.Layout = sclLeft
+            BoundLabel.MaxWidth = 0
+            BoundLabel.UseSkinColor = True
+            Increment = 10
+            MaxValue = 1000
+            MinValue = 30
+            Value = 500
+          end
+          object FrmMainSlideInDelaySpinEdit: TsSpinEdit
+            Left = 182
+            Top = 16
+            Width = 48
+            Height = 21
+            Enabled = False
+            TabOrder = 0
+            Text = '1000'
+            OnChange = aSideSlideChkExecute
+            SkinData.SkinSection = 'EDIT'
+            BoundLabel.Active = True
+            BoundLabel.Caption = 'Op'#243#378'nienie wysuwania okna (ms)'
+            BoundLabel.Indent = 0
+            BoundLabel.Font.Charset = DEFAULT_CHARSET
+            BoundLabel.Font.Color = clWindowText
+            BoundLabel.Font.Height = -11
+            BoundLabel.Font.Name = 'Tahoma'
+            BoundLabel.Font.Style = []
+            BoundLabel.Layout = sclLeft
+            BoundLabel.MaxWidth = 0
+            BoundLabel.UseSkinColor = True
+            Increment = 10
+            MaxValue = 3000
+            MinValue = 1
+            Value = 1000
+          end
+          object FrmMainSlideOutDelaySpinEdit: TsSpinEdit
+            Left = 182
+            Top = 43
+            Width = 48
+            Height = 21
+            Enabled = False
+            TabOrder = 1
+            Text = '1'
+            OnChange = aSideSlideChkExecute
+            SkinData.SkinSection = 'EDIT'
+            BoundLabel.Active = True
+            BoundLabel.Caption = 'Op'#243#378'nienie chowania okna (ms)'
+            BoundLabel.Indent = 0
+            BoundLabel.Font.Charset = DEFAULT_CHARSET
+            BoundLabel.Font.Color = clWindowText
+            BoundLabel.Font.Height = -11
+            BoundLabel.Font.Name = 'Tahoma'
+            BoundLabel.Font.Style = []
+            BoundLabel.Layout = sclLeft
+            BoundLabel.MaxWidth = 0
+            BoundLabel.UseSkinColor = True
+            Increment = 10
+            MaxValue = 9000
+            MinValue = 1
+            Value = 1
+          end
+        end
+        object ChangeTabAfterSlideInCheckBox: TsCheckBox
+          Left = 10
+          Top = 245
+          Width = 232
+          Height = 30
+          Caption = 'Zawsze pokazuj zak'#322'adk'#281' z list'#261' kontakt'#243'w po wysuni'#281'ciu okna'
+          AutoSize = False
+          Checked = True
+          State = cbChecked
+          TabOrder = 3
+          OnClick = aSideSlideChkExecute
+          SkinData.SkinSection = 'CHECKBOX'
+          ImgChecked = 0
+          ImgUnchecked = 0
+          WordWrap = True
+        end
+      end
+      object SlideFrmSendGroupBox: TsGroupBox
+        Left = 306
+        Top = 22
+        Width = 275
+        Height = 284
+        TabOrder = 3
+        SkinData.SkinSection = 'GROUPBOX'
+        object FrmSendEdgeGroupBox: TsGroupBox
+          Left = 12
+          Top = 12
+          Width = 116
+          Height = 71
+          Caption = 'Wybrana kraw'#281'd'#378
+          Enabled = False
+          TabOrder = 0
+          SkinData.SkinSection = 'GROUPBOX'
+          object FrmSendEdgeLeftRadioButton: TsRadioButton
+            Left = 10
+            Top = 16
+            Width = 42
+            Height = 20
+            Caption = 'lewa'
+            Checked = True
+            Enabled = False
+            TabOrder = 0
+            TabStop = True
+            OnClick = aSideSlideChkExecute
+            SkinData.SkinSection = 'RADIOBUTTON'
+          end
+          object FrmSendEdgeRightRadioButton: TsRadioButton
+            Left = 58
+            Top = 16
+            Width = 50
+            Height = 20
+            Caption = 'prawa'
+            Enabled = False
+            TabOrder = 1
+            OnClick = aSideSlideChkExecute
+            SkinData.SkinSection = 'RADIOBUTTON'
+          end
+          object FrmSendEdgeTopRadioButton: TsRadioButton
+            Left = 58
+            Top = 42
+            Width = 48
+            Height = 20
+            Caption = 'g'#243'rna'
+            Enabled = False
+            TabOrder = 3
+            OnClick = aSideSlideChkExecute
+            SkinData.SkinSection = 'RADIOBUTTON'
+          end
+          object FrmSendEdgeBottomRadioButton: TsRadioButton
+            Left = 10
+            Top = 42
+            Width = 46
+            Height = 20
+            Caption = 'dolna'
+            Enabled = False
+            TabOrder = 2
+            OnClick = aSideSlideChkExecute
+            SkinData.SkinSection = 'RADIOBUTTON'
+          end
+        end
+        object FrmSendHideGroupBox: TsGroupBox
+          Left = 134
+          Top = 12
+          Width = 128
+          Height = 96
+          Caption = 'Schowaj gdy'
+          Enabled = False
+          TabOrder = 1
+          SkinData.SkinSection = 'GROUPBOX'
+          object FrmSendHideFocusRadioButton: TsRadioButton
+            Left = 10
+            Top = 16
+            Width = 102
+            Height = 20
+            Caption = 'okno utraci fokus'
+            Checked = True
+            Enabled = False
+            TabOrder = 0
+            TabStop = True
+            OnClick = aSideSlideChkExecute
+            SkinData.SkinSection = 'RADIOBUTTON'
+          end
+          object FrmSendHideAppFocusRadioButton: TsRadioButton
+            Left = 10
+            Top = 42
+            Width = 102
+            Height = 20
+            Caption = 'AQQ utraci fokus'
+            TabOrder = 1
+            OnClick = aSideSlideChkExecute
+            SkinData.SkinSection = 'RADIOBUTTON'
+          end
+          object FrmSendHideCursorRadioButton: TsRadioButton
+            Left = 10
+            Top = 68
+            Width = 109
+            Height = 20
+            Caption = 'kursor opu'#347'ci okno'
+            Enabled = False
+            TabOrder = 2
+            OnClick = aSideSlideChkExecute
+            SkinData.SkinSection = 'RADIOBUTTON'
+          end
+        end
+        object FrmSendTimeGroupBox: TsGroupBox
+          Left = 12
+          Top = 110
+          Width = 250
+          Height = 129
+          Caption = 'Ustawienia animacji'
+          Enabled = False
+          TabOrder = 2
+          SkinData.SkinSection = 'GROUPBOX'
+          object FrmSendSlideInTimeSpinEdit: TsSpinEdit
+            Left = 182
+            Top = 70
+            Width = 48
+            Height = 21
+            Enabled = False
+            TabOrder = 2
+            Text = '280'
+            OnChange = aSideSlideChkExecute
+            SkinData.SkinSection = 'EDIT'
+            BoundLabel.Active = True
+            BoundLabel.Caption = 'Czas wysuwania okna (ms)'
+            BoundLabel.Indent = 0
+            BoundLabel.Font.Charset = DEFAULT_CHARSET
+            BoundLabel.Font.Color = clWindowText
+            BoundLabel.Font.Height = -11
+            BoundLabel.Font.Name = 'Tahoma'
+            BoundLabel.Font.Style = []
+            BoundLabel.Layout = sclLeft
+            BoundLabel.MaxWidth = 0
+            BoundLabel.UseSkinColor = True
+            Increment = 10
+            MaxValue = 1000
+            MinValue = 30
+            Value = 280
+          end
+          object FrmSendSlideOutTimeSpinEdit: TsSpinEdit
+            Left = 182
+            Top = 97
+            Width = 48
+            Height = 21
+            Enabled = False
+            TabOrder = 3
+            Text = '500'
+            OnChange = aSideSlideChkExecute
+            SkinData.SkinSection = 'EDIT'
+            BoundLabel.Active = True
+            BoundLabel.Caption = 'Czas chowania okna (ms)'
+            BoundLabel.Indent = 0
+            BoundLabel.Font.Charset = DEFAULT_CHARSET
+            BoundLabel.Font.Color = clWindowText
+            BoundLabel.Font.Height = -11
+            BoundLabel.Font.Name = 'Tahoma'
+            BoundLabel.Font.Style = []
+            BoundLabel.Layout = sclLeft
+            BoundLabel.MaxWidth = 0
+            BoundLabel.UseSkinColor = True
+            Increment = 10
+            MaxValue = 1000
+            MinValue = 30
+            Value = 500
+          end
+          object FrmSendSlideInDelaySpinEdit: TsSpinEdit
+            Left = 182
+            Top = 16
+            Width = 48
+            Height = 21
+            Enabled = False
+            TabOrder = 0
+            Text = '1000'
+            OnChange = aSideSlideChkExecute
+            SkinData.SkinSection = 'EDIT'
+            BoundLabel.Active = True
+            BoundLabel.Caption = 'Op'#243#378'nienie wysuwania okna (ms)'
+            BoundLabel.Indent = 0
+            BoundLabel.Font.Charset = DEFAULT_CHARSET
+            BoundLabel.Font.Color = clWindowText
+            BoundLabel.Font.Height = -11
+            BoundLabel.Font.Name = 'Tahoma'
+            BoundLabel.Font.Style = []
+            BoundLabel.Layout = sclLeft
+            BoundLabel.MaxWidth = 0
+            BoundLabel.UseSkinColor = True
+            Increment = 10
+            MaxValue = 3000
+            MinValue = 1
+            Value = 1000
+          end
+          object FrmSendSlideOutDelaySpinEdit: TsSpinEdit
+            Left = 182
+            Top = 43
+            Width = 48
+            Height = 21
+            Enabled = False
+            TabOrder = 1
+            Text = '1'
+            OnChange = aSideSlideChkExecute
+            SkinData.SkinSection = 'EDIT'
+            BoundLabel.Active = True
+            BoundLabel.Caption = 'Op'#243#378'nienie chowania okna (ms)'
+            BoundLabel.Indent = 0
+            BoundLabel.Font.Charset = DEFAULT_CHARSET
+            BoundLabel.Font.Color = clWindowText
+            BoundLabel.Font.Height = -11
+            BoundLabel.Font.Name = 'Tahoma'
+            BoundLabel.Font.Style = []
+            BoundLabel.Layout = sclLeft
+            BoundLabel.MaxWidth = 0
+            BoundLabel.UseSkinColor = True
+            Increment = 10
+            MaxValue = 9000
+            MinValue = 1
+            Value = 1
+          end
+        end
+        object SlideInAtNewMsgCheckBox: TsCheckBox
+          Left = 10
+          Top = 245
+          Width = 255
+          Height = 30
+          Caption = 
+            'Wysuwaj okno po przyj'#347'ciu nowej wiadomo'#347'ci (tylko dla otwartych ' +
+            'zak'#322'adek)'
+          AutoSize = False
+          Enabled = False
+          TabOrder = 3
+          OnClick = aSideSlideChkExecute
+          SkinData.SkinSection = 'CHECKBOX'
+          ImgChecked = 0
+          ImgUnchecked = 0
+          WordWrap = True
+        end
+      end
+      object SlideFrmSendCheckBox: TsCheckBox
+        Left = 300
+        Top = 12
+        Width = 229
+        Height = 20
+        Caption = 'Chowaj okno rozmowy za kraw'#281'dzi'#261' ekranu'
+        TabOrder = 2
+        OnClick = aSideSlideChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+      object SlideFrmMainCheckBox: TsCheckBox
+        Left = 12
+        Top = 12
+        Width = 236
+        Height = 20
+        Caption = 'Chowaj okno kontakt'#243'w za kraw'#281'dzi'#261' ekranu'
+        TabOrder = 0
+        OnClick = aSideSlideChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+      object SideSlideFullScreenModeCheckBox: TsCheckBox
+        Left = 20
+        Top = 315
+        Width = 234
+        Height = 20
+        Caption = 'Wysuwaj okna przy aplikacji pe'#322'noekranowej'
+        Checked = True
+        State = cbChecked
+        TabOrder = 4
+        OnClick = aSideSlideChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+      object SideSlideCtrlAndMousBlockCheckBox: TsCheckBox
+        Left = 308
+        Top = 311
+        Width = 273
+        Height = 28
+        Caption = 
+          'Blokuj wysuwanie okien przy wci'#347'ni'#281'tym klawiszu Ctrl oraz lewym/' +
+          'prawym przycisku myszy'
+        AutoSize = False
+        Checked = True
+        State = cbChecked
+        TabOrder = 5
+        OnClick = aSideSlideChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+    end
+    object OtherTabSheet: TsTabSheet
+      Caption = 'Inne'
+      ImageIndex = 9
+      OnShow = OtherTabSheetShow
+      SkinData.CustomColor = False
+      SkinData.CustomFont = False
+      object AntiSpimCheckBox: TsCheckBox
+        Left = 12
+        Top = 68
+        Width = 273
+        Height = 20
+        Caption = 'Wy'#322#261'cz wbudowany w komunikator filtr antyspimowy'
+        Checked = True
+        State = cbChecked
+        TabOrder = 3
+        OnClick = aOtherChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+      object ClearCacheGroupBox: TsGroupBox
+        AlignWithMargins = True
+        Left = 364
+        Top = 12
+        Width = 214
+        Height = 153
+        HelpContext = 1
+        BiDiMode = bdLeftToRight
+        Caption = 'Wyczy'#347#263' plik cache z informacji na temat'
+        ParentBiDiMode = False
+        TabOrder = 14
+        CaptionLayout = clTopCenter
+        SkinData.SkinSection = 'GROUPBOX'
+        object SessionRememberEraseButton: TsButton
+          Left = 28
+          Top = 72
+          Width = 158
+          Height = 20
+          Caption = 'Aktywna sesja'
+          Enabled = False
+          TabOrder = 2
+          OnClick = SessionRememberEraseButtonClick
+          SkinData.SkinSection = 'BUTTON'
+        end
+        object UnsentMsgEraseButton: TsButton
+          Left = 28
+          Top = 46
+          Width = 158
+          Height = 20
+          Caption = 'Niewys'#322'ane wiadomo'#347'ci'
+          Enabled = False
+          TabOrder = 1
+          OnClick = UnsentMsgEraseButtonClick
+          SkinData.SkinSection = 'BUTTON'
+        end
+        object ClosedTabsEraseButton: TsButton
+          Left = 28
+          Top = 20
+          Width = 158
+          Height = 20
+          Caption = 'Ostatnio zamkni'#281'te zak'#322'adki'
+          Enabled = False
+          TabOrder = 0
+          OnClick = ClosedTabsEraseButtonClick
+          SkinData.SkinSection = 'BUTTON'
+        end
+        object ClipTabsEraseButton: TsButton
+          Left = 28
+          Top = 98
+          Width = 158
+          Height = 20
+          Caption = 'Przypi'#281'te zak'#322'adki'
+          Enabled = False
+          TabOrder = 3
+          OnClick = ClipTabsEraseButtonClick
+          SkinData.SkinSection = 'BUTTON'
+        end
+        object MiniAvatarsEraseButton: TsButton
+          Left = 28
+          Top = 124
+          Width = 158
+          Height = 20
+          Caption = 'Usu'#324' / aktualizuj mini awatary'
+          TabOrder = 4
+          OnClick = MiniAvatarsEraseButtonClick
+          SkinData.SkinSection = 'BUTTON'
+        end
+      end
+      object CloseBy2xLPMCheckBox: TsCheckBox
+        Left = 12
+        Top = 240
+        Width = 262
+        Height = 20
+        Caption = 'Zamykaj zak'#322'adki poprzez dwukrotne klikni'#281'cie LPM'
+        TabOrder = 10
+        OnClick = aOtherChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+      object CollapseImagesCheckBox: TsCheckBox
+        Left = 12
+        Top = 42
+        Width = 233
+        Height = 20
+        Caption = 'Zwijaj przes'#322'ane obrazki do formy za'#322#261'cznika'
+        Checked = True
+        State = cbChecked
+        TabOrder = 1
+        OnClick = aOtherChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+      object EmuTabsWCheckBox: TsCheckBox
+        Left = 12
+        Top = 266
+        Width = 295
+        Height = 20
+        Caption = 'Ostrzegaj przed zamykaniem wielu zak'#322'adek jednocze'#347'nie'
+        TabOrder = 11
+        OnClick = aOtherChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+      object HideTabCloseButtonCheckBox: TsCheckBox
+        Left = 12
+        Top = 188
+        Width = 233
+        Height = 20
+        Caption = 'Nie wy'#347'wietlaj przycisku zamykania zak'#322'adek'
+        TabOrder = 8
+        OnClick = aOtherChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+      object HideToolBarCheckBox: TsCheckBox
+        Left = 12
+        Top = 162
+        Width = 215
+        Height = 20
+        Caption = 'Automatyczne ukrywanie paska narz'#281'dzi'
+        TabOrder = 7
+        OnClick = aOtherChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+      object MinimizeRestoreCheckBox: TsCheckBox
+        Left = 12
+        Top = 94
+        Width = 206
+        Height = 28
+        Caption = 
+          'Minimalizuj / przywracaj okno rozmowy przy pomocy skr'#243'tu klawiat' +
+          'urowego'
+        AutoSize = False
+        TabOrder = 4
+        OnClick = aOtherChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object MinimizeRestoreHotKey: THotKey
+        Left = 224
+        Top = 98
+        Width = 103
+        Height = 19
+        HotKey = 24689
+        Modifiers = [hkShift, hkCtrl]
+        TabOrder = 5
+        OnChange = aOtherChkExecute
+      end
+      object QuickQuoteCheckBox: TsCheckBox
+        Left = 12
+        Top = 8
+        Width = 325
+        Height = 28
+        Caption = 
+          'Aktywuj skr'#243't klawiaturowy Ctrl+Q do wklejania tekstu ze schowka' +
+          ' jako cytat'
+        AutoSize = False
+        Checked = True
+        State = cbChecked
+        TabOrder = 0
+        OnClick = aOtherChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object StayOnTopCheckBox: TsCheckBox
+        Left = 12
+        Top = 128
+        Width = 312
+        Height = 28
+        Caption = 
+          'Dodaj do okna rozmowy przycisk trzymaj'#261'cy okno zawsze na wierzch' +
+          'u'
+        AutoSize = False
+        TabOrder = 6
+        OnClick = aOtherChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object CollapseImagesModeComboBox: TsComboBox
+        Left = 251
+        Top = 42
+        Width = 76
+        Height = 21
+        Alignment = taLeftJustify
+        BoundLabel.Indent = 0
+        BoundLabel.Font.Charset = DEFAULT_CHARSET
+        BoundLabel.Font.Color = clWindowText
+        BoundLabel.Font.Height = -11
+        BoundLabel.Font.Name = 'Tahoma'
+        BoundLabel.Font.Style = []
+        BoundLabel.Layout = sclLeft
+        BoundLabel.MaxWidth = 0
+        BoundLabel.UseSkinColor = True
+        SkinData.SkinSection = 'COMBOBOX'
+        Style = csDropDownList
+        ItemIndex = 0
+        TabOrder = 2
+        Text = 'Wszystkie'
+        OnChange = aOtherChkExecute
+        Items.Strings = (
+          'Wszystkie'
+          'Wys'#322'ane'
+          'Odebrane')
+      end
+      object CloudSettingsGroupBox: TsGroupBox
+        Left = 364
+        Top = 171
+        Width = 214
+        Height = 78
+        Caption = 'Ustawienia chmurek informacyjnych'
+        TabOrder = 15
+        CaptionLayout = clTopCenter
+        SkinData.SkinSection = 'GROUPBOX'
+        object CloudTimeOutSpinEdit: TsSpinEdit
+          Left = 141
+          Top = 20
+          Width = 38
+          Height = 21
+          TabOrder = 0
+          Text = '6'
+          OnChange = aOtherChkExecute
+          SkinData.SkinSection = 'EDIT'
+          BoundLabel.Active = True
+          BoundLabel.Caption = 'Czas wy'#347'wietlania (s)'
+          BoundLabel.Indent = 0
+          BoundLabel.Font.Charset = DEFAULT_CHARSET
+          BoundLabel.Font.Color = clWindowText
+          BoundLabel.Font.Height = -11
+          BoundLabel.Font.Name = 'Tahoma'
+          BoundLabel.Font.Style = []
+          BoundLabel.Layout = sclLeft
+          BoundLabel.MaxWidth = 0
+          BoundLabel.UseSkinColor = True
+          MaxValue = 60
+          MinValue = 1
+          Value = 6
+        end
+        object CloudTickModeComboBox: TsComboBox
+          Left = 135
+          Top = 47
+          Width = 44
+          Height = 21
+          Alignment = taLeftJustify
+          BoundLabel.Active = True
+          BoundLabel.Caption = 'Tylko jedna chmurka'
+          BoundLabel.Indent = 0
+          BoundLabel.Font.Charset = DEFAULT_CHARSET
+          BoundLabel.Font.Color = clWindowText
+          BoundLabel.Font.Height = -11
+          BoundLabel.Font.Name = 'Tahoma'
+          BoundLabel.Font.Style = []
+          BoundLabel.Layout = sclLeft
+          BoundLabel.MaxWidth = 0
+          BoundLabel.UseSkinColor = True
+          SkinData.SkinSection = 'COMBOBOX'
+          Style = csDropDownList
+          ItemIndex = 1
+          TabOrder = 1
+          Text = 'Tak'
+          OnChange = aOtherChkExecute
+          Items.Strings = (
+            'Nie'
+            'Tak')
+        end
+      end
+      object HideScrollTabButtonsCheckBox: TsCheckBox
+        Left = 12
+        Top = 214
+        Width = 219
+        Height = 20
+        Caption = 'Ukrywaj przyciski do przewijania zak'#322'adek'
+        TabOrder = 9
+        OnClick = aOtherChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+      object SearchOnListCheckBox: TsCheckBox
+        Left = 12
+        Top = 292
+        Width = 230
+        Height = 20
+        Caption = 'Wy'#322#261'cz funkcj'#281' szukania na li'#347'cie kontakt'#243'w'
+        TabOrder = 12
+        OnClick = aOtherChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+      object ShortenLinksCheckBox: TsCheckBox
+        Left = 12
+        Top = 318
+        Width = 295
+        Height = 20
+        Caption = 'Skracaj wy'#347'wietlanie odno'#347'nik'#243'w do wygodniejszej formy'
+        Checked = True
+        State = cbChecked
+        TabOrder = 13
+        OnClick = aOtherChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object TurnOffModalCheckBox: TsCheckBox
+        Left = 372
+        Top = 255
+        Width = 196
+        Height = 28
+        Caption = 
+          'Wy'#322#261'cz modalno'#347#263' okna wysy'#322'ania wycinka oraz instalowania dodatk' +
+          #243'w'
+        AutoSize = False
+        Checked = True
+        Enabled = False
+        State = cbChecked
+        TabOrder = 16
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
       end
     end
   end
@@ -5128,10 +4991,6 @@ object SettingsForm: TSettingsForm
       Caption = 'aOtherChk'
       OnExecute = aOtherChkExecute
     end
-    object aRefreshPanels: TAction
-      Caption = 'aRefreshPanels'
-      OnExecute = aRefreshPanelsExecute
-    end
   end
   object IdDecoderMIME: TIdDecoderMIME
     FillChar = '='
@@ -5175,13 +5034,6 @@ object SettingsForm: TSettingsForm
     Left = 96
     Top = 368
   end
-  object RefreshTimer: TTimer
-    Enabled = False
-    Interval = 10
-    OnTimer = RefreshTimerTimer
-    Left = 128
-    Top = 368
-  end
   object IdThreadComponent: TIdThreadComponent
     Active = False
     Loop = False
@@ -5190,5 +5042,378 @@ object SettingsForm: TSettingsForm
     OnRun = IdThreadComponentRun
     Left = 160
     Top = 368
+  end
+  object sSkinProvider: TsSkinProvider
+    AddedTitle.Font.Charset = DEFAULT_CHARSET
+    AddedTitle.Font.Color = clNone
+    AddedTitle.Font.Height = -11
+    AddedTitle.Font.Name = 'Tahoma'
+    AddedTitle.Font.Style = []
+    SkinData.SkinSection = 'FORM'
+    TitleButtons = <>
+    Left = 128
+    Top = 368
+  end
+  object sAlphaImageList: TsAlphaImageList
+    DrawingStyle = dsTransparent
+    Height = 24
+    Width = 24
+    Items = <
+      item
+        ImageFormat = ifPNG
+        ImgData = {
+          89504E470D0A1A0A0000000D4948445200000018000000180806000000E0773D
+          F80000057949444154785EB5945D4C536718C7FF3D3DEDE92780541C40992328
+          400404E2CC1C8E4E88D198655FDE98191737CDA2C6382FA66E2E5BB2641177A1
+          D31B13BD708959A2F1C68D8DE9DCB28C6441440218990544040428D042292DED
+          E9C7BBE739C1E6982CBBDB9BFCFA7E3DCFFFFFBE4FDE53831002FF679309E4E6
+          E6A2ACAC0C2E970B0683210D001BF52F012822B2794E708B1073C4A8106298E7
+          D4E319B3B3B3F07ABD989E9E860400F5F5F59AB8AE29C4CB595959EF3735351D
+          3D7EFCF8A9D3A74F9F3B7BF6EC853367CE5C686E6E3EC76B8D8D8D4739866397
+          73C0B0166BA66FF03CC824B66EA7D6D0D0F0862449AE44228165D21A191919AE
+          AD5BB7566FD9B2E5CDB6B6B6965FA801F89508EAC52402A9548AAFA689DB6CB6
+          9D070E1C38E8F178F6AAAAEA1A1889E0FB5B117C75791147BE5D6078ACADD11E
+          9BBA3876FFFEFD07399735588B35F5068C426CDBB367CFEE82827CCF6C601157
+          7F8BE2C20F29F89656E1C59252BC5ABF5EC35DBC1693E15CDED362FCF3111415
+          B93DBB76EDDACD1A9A96DE801C991A2E4B6161A12730BF84CBAD310CCD64A2AA
+          7A2DAC563B464703E8EA7AA4F1F46980D66C28AF28C6C09413DFFD1CC3FC428C
+          4C8A3C4D4D8DDB598B78CEC04E35DDB069D32B3B42A105B4FC154750CD86DBBD
+          0A8F1FFB8871D89518CE1F2B6668ACE2C993498C8CCCD00B5C8199B043CB8946
+          23D8B871E30E87C3B18135F5252AAEA3168BC55CC31309F40C19919FBF120303
+          E3080643088542A85E634361AE89E131AF1161BA990F99994EDCEB0746A7B4DA
+          BB2A2B2BEB58336D904C268BABAA2AEB229130EEF425E15AB9029393B324B008
+          32D55ECF1FED63783412D2B871AB0F6363637480410C0E0E114F609465B4536E
+          3CAEA2A2A2BC8E35D3CF94DC721C0E67DED252048F2752C82D543031310B558D
+          6B26E1C81226A792D8FED104B849060992D14CBD816758084560369BF1E86902
+          80014EA7338F35F537B0D37BCFE2E735339F04F7FC8A66020B88C492946344E5
+          9A4C5CFDDA8DEBCDAB515596098324C368B2403229B42F234161BE401C063697
+          8C59ACA9BF81944A09F623331573C128A22A20C95648BC9F50A90466188D46ED
+          A426B38DE6493250E81620410989948175C8807BA169A60DC82D42B59EA7C09C
+          6C2710892660B6D8E9542968FB9464345B3571ABD54A06293250C9C0CA068C16
+          9B93410318C05AACA92FD19CDFEFF719A814250532C28B6158EC0EC88A8DD14A
+          61A29EC52D164B7A4D26533696CC16C455156B8A143A39E0F7CFF95853FF4C87
+          3A3B3B7B652A4343AD03A1E02C9D5281592113B39D4E6BA1B14D1357140532D7
+          5E5660E43D938DCA62423C1AC4EB754E0821A1A7A7BB9735F53718BC7BB7A397
+          9E6360759E059BAB2C989F1EA3327139F8B40AF55616E71AF3E93564DA93A85F
+          0C4EA1718313852B652A8F1AE8EEEEEA654D3CFB9BA8ADAD454D4D4DC3C9935F
+          5CEBEAFA5BB4773C14EF1C6A15156FB789D70E0784E7E8A2A879AF478FB6B6F9
+          B05F94BFF5A7D879F8A6B87B6F4074763E10274E7C7E8DB55893B5F57F761D2D
+          2D376EF7F676DFB1594CF8F4C3526C2E8F62E8FE4D4C8F796171BE80AC55650C
+          8F69ED2186EFDF42C3BA383EA358C52481735B5B7FBCCD5A04D237282F2FD728
+          2D2DCD59BFBEE6934B97AE74F4F58D0AAF775CFC74DB2BF61E6B15EBB65D1619
+          D5E7196DFC01ADB5FEDE2FFAFBC7C58307A3E2E2C52B1D9CCB1ACFF4585BFBC9
+          CECE4EE376BB730A0A0A0E1D3972EC467B7BDF9CD73B2906077D627878468C8C
+          F8191E6B6BBCC7311CCB399CABD74A1BE89A81904C269393FE5D771417979CDA
+          B7EF50CBF5EB37E911F4CFF5F7FB120C8F798DF73886633987739735B8FDAB81
+          917010F944097DB935F471BD4BCFF363FA06BE24BE6178CC6BBCC7311C4BE42D
+          E74A7A0319CF374124882522C55F23E103D08EFF6E2922B69C2BF41BFF00C48A
+          10DEC6B5359A0000000049454E44AE426082}
+      end
+      item
+        ImageFormat = ifPNG
+        ImgData = {
+          89504E470D0A1A0A0000000D4948445200000018000000180806000000E0773D
+          F8000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+          00097048597300000EC300000EC301C76FA8640000001A74455874536F667477
+          617265005061696E742E4E45542076332E352E313030F472A1000002D1494441
+          54484BED925D48536118C70F0425C1D2308884282442A99B0A1D34504717B941
+          9028D50A4221A6A52B9890B9064BCBF2032F4C48ED42BB282B420CC98F48C594
+          99A39DB08D4DACADE93EDC67D3B1983A36FF9DF770262EEB42F4AAFAC38FE73D
+          CFE1F99D97F7BCD4BF97EC76772E431BF7B8B511B4DA72056D762D816B6D5D32
+          9B4CB9990FCDDA3607402AD7DE78542A552A8384411AE3FCDD974DFC3A7A86C8
+          1BA62220EB556AB533276B357AE183F7BDE29AFEB39CE6CF512A95173D1E8F1E
+          5C46BF2E20FFB1112D36403EFC038AF110AA3F2DA18A5EC21DED12541F17A150
+          0751DAE78E6435D2B6F42A6DE561E5879D9C6E7D2A2A2A8A575656108D4659CE
+          34D168B64451F2663E8EA2D75E143CB741D4FE05A75A0D103ED241DC3E15CD68
+          A0CDA915A3959C6E7DE4727949241241381C6679A773E274FD38EA8D61487BFC
+          281E08E0DCDB05E4F4F820E8F682DFE5C1B1571E1C79E1C6A1A72EA43F73460E
+          28C6F429B2810C4E191F994C76757979198B8B8BABF4D35608AB8650A60DE3E8
+          50845DAF523D8CACFBA310346AB0FFDEC4F7E427AE4072CB8C77CF95EE464E19
+          1FA9547A2D140A21180CC6D1336186A0B217C7C7C0D6587F7E21009BDB8FCFDF
+          DC1014D534F32E7536F2CAFA69A6F671CAF814161696B283F3F3EBE81AA29159
+          DECDF2EB3B32436689637BF62D454241C7EFAFB24422290B0402F07ABD2CCC8D
+          C2DCDC1C666767613299D0DE35880BB73BA0D168A056AB31323282C1C141B6F2
+          F9FC3A467182B04D50DEC9D483C41997BCBC3C99DFEF87D3E9642172BBDD0EAB
+          D50A8BC502B3D98CE9E969188D46E8F57AE8743A4C4E4EC2603020272747C928
+          52D690C440512291285F2C165F8F41764EA41B81CCAC7510272B27110A85377C
+          3E1F5C2E178BC3E1608F64239099D83C711127A7A7A8B4B4B472B283D8B16C16
+          E2224E4E4F25F178BCC2C4C4C49B5B09E3BCCCB877910F2430EC66D8C7B0F607
+          6D86BD0C44BE83E17FFEEE50D44F1112D2EC74F2DE1E0000000049454E44AE42
+          6082}
+      end
+      item
+        ImageFormat = ifPNG
+        ImgData = {
+          89504E470D0A1A0A0000000D4948445200000018000000180806000000E0773D
+          F8000003E149444154484BED957F4CD4651CC7BF3C473A33D358230BC191B9DC
+          9CB2966B537E3AC206DA28B76B5BCCA86AD82C986E2D71D8468CB25966125606
+          107682582C9C845469954088A2438C58173890E38E3BEE67DE1D74BFDE7D3EE7
+          7DBF1D4E08F83BB6D79EE7FB3C9FCFFBFD7C3EDF2FCF49D2FF7F73E940738110
+          44DCE9029149BC40EC220A893D2178CE6BBC97C9B19C3323AFE67CB18CC8BDF0
+          516AB9AEED40AB4BF7F3B0DFD1EB867B00E1F01AEF710CC7720EE74E6BD2942F
+          D6FD581C5F62EED174C3DDEF876704F09B0058086B18F41C30033E23E0D19171
+          BF9F733897356E6B72EA3591F053E9AAF7268C1D9660120B7839590B387B811B
+          3D93715E055C7DC00455E6D3037F5F07E7B2066B4D3239F9AA58DCB23BBAC875
+          FD8C3E28EE37022CEAB83C43BA81F17E321B026BB0166B2A265FEF10E97D8DF9
+          2D54EA4D71473702F6AE5903D71F804B0BD6624DC5A0E115B1C379AD5907EF08
+          406507AC9D93F05B5A316E3C05FB48052CC307611A7A07C6C1B782F09CD7786F
+          DCD48480EB77B0166B2A065F6E17C57EF3050F9F3E60BB8880A5238877EC0738
+          462A49E46D4550169E6AB49B8ED1BBF8CEC39A8A417D9E28F19B3B3DF08DD2C9
+          CF834F7CC3A0C1D8D03E98064B6785CD5001A7FE2B0F6B2A06752F8B9D7F691B
+          F5981884CFDA0E9BAE1CE6A177E784C3500D536F999E351503CD4B22F34A7DDE
+          D980E312C6ED67601DFE604ED87465701A6AD1754C7D9635FFAD2052AAA95F24
+          46BF5915E3FD3661255A121EC4E935B1D3D2969348EFA73C8CC3708ED6D0E90F
+          99EAF397EC3FFAA2B84731A896A42E6B5E1E86737230A056A32F3B1B3D5959B8
+          9491818BE9E9E8DCB811E7D3D2D0919A8A5F535282F3C6B5CBE9B4553719FD1C
+          6E632DAC7F7E666F7823AEAAFA79F1D8A47FB4836460C8CD8576EB56FCB6650B
+          2E6FDA141465B1F6E464B42525A1353111E7366CC02FEBD70747CDDA78FA748F
+          63C2748268C0C0B9BDDAE33B971EA97C4EA4DC7A552CDB26495F149209B34725
+          5D2D5A20E98AA3E6D9F6C545B90F3C1CE3FD704D7CE050C20A9485F1B13A0DD7
+          AE54C2337632C8916DE25362C5EDEEA1BB69318AB88F788059385F8A7D665D44
+          F2AEC7454161A6D8BF77B3A87A73B3A893297E52D4963E253435AFAFFEDE676E
+          0273F85955C58CAEEB5050048DB7C2F7BDC243D11191DB535449EFAB5575014B
+          0B686403DE97F3A6F4E32055883B689C47CC271610771277118B08AE7CB1FA51
+          917174F723ED25D9AA4FE87961283672BA6A78938565514E6231FEECEE0DB5F2
+          7E1A63885822EE89D5E2E9A22C5519CDA3D934943BA547B8817C624EE2F7C402
+          4BC3C497D33C3E04CF796FC97F1984F75EEE39B78C8D6573AE506E1FB75086F7
+          3956F97DFE07E5DF9D0D87164B5F0000000049454E44AE426082}
+      end
+      item
+        ImageFormat = ifPNG
+        ImgData = {
+          89504E470D0A1A0A0000000D4948445200000018000000180806000000E0773D
+          F80000028249444154484BEDD37148135100067021A000741990161920440BA8
+          20110D566CB858130486012CA3F6D7B46A6A137694CB21866260105958820815
+          409698254C91394659CA1DB596A882E4D8D6D6261B6B6ED3B1EDEBDE7087D0E6
+          16291474F0E31E70EFFBDEBD7B9793F3B75FC2BEEF8F5817B66D9D82C70E7ADD
+          F694943F58A27BEC00B997777FDDFA9292BBF374E74C14DD4B71907149D7DCE6
+          253A9DAE98256729934EDF9E3095B64F2FA5D3CAAC426D5841D77C14C73A3ED3
+          47DBCDE94BB45AED79B7DB6DC186ABBAE70B3A6722B8351582F64308CDEF8309
+          372783B8F12E88C6F11FA87BE34B68FBB80ABE6E9A3EDC3295BA84A2A8DA783C
+          8E582CC6A9BAC7240295C35E8E62D08DEAA756487BE7207E6881E8FEA70432AE
+          D3BB504C99E894274BAD56D745A351442211CED93B936865C2D0985670DD1840
+          8DDE0BE9900B67069DA878F90DA5CF6C38D2674DA81AF1E040FD285DD43096FA
+          0D542AD5E5B5B53584C3614E633F838AB689B40E8D84913710C489B130F62A5F
+          D105B5C3E9BF8152A9BC120A85100804B2724AABC79E51E0E0385078E989355F
+          31B0F9295228145749B8CFE7CB4AB966188563C049EA358ED774F467FCA3E572
+          F935BFDF0F8FC7939592C617207A87DE82CCCD582093C9545EAF174EA793E370
+          38B0B0B000866160341AA1D7EB39324D2F5ABA9FC36030A0ACACAC9D2D2862F1
+          583BB832A9545A5D5959599F44566FB7DB39369B0D8B8B8B989D9D85D96C064D
+          D3BFB0582C100804CD42A190128BC54D1289E41C572012891A969797E172B912
+          C88AAD56EB6F217392F34916C9E40AF87C7E1359F5C66DF99331C92299C982DD
+          B9B9B90A1E8FA7D94A6CE645B6208F94EC62E5B3F6B1F66F9182F5F09D194FD5
+          FF07FEFD1DF8094AC9DFC3ACD7C26D0000000049454E44AE426082}
+      end
+      item
+        ImageFormat = ifPNG
+        ImgData = {
+          89504E470D0A1A0A0000000D4948445200000018000000180806000000E0773D
+          F80000052949444154785EB5547B68DB55143EF7F74C933649F3EA963ED6B598
+          B967D766D539B6BA3985B2C1046711D90084810208051C82802008FE27FB4F87
+          A002938953E61054C626AAC0C4B51BEB36DD0A9B5D4CD3B449D6BC7FEF7B3DB7
+          ED8F34EC01087EE423F79E7BCEFDCEE326843106FF27C8AE8F52CD0641000149
+          380989209F41F31EE406640C29202B481EF82B26780199669402AE4110451E37
+          0A00B99F5F8B4D0AF0707891076509DEE95DAB1EDB3B14187D7124BCF39517A2
+          3B90C3B8DE8DB697F0EC5DF43903006F2343B08CA328F43EF224201E26D08E87
+          637D7175EF815DE1FEA184BFD32B4B6D5A0DD4429E0A48C2D7680BE0D97AF419
+          44DF3730E6530018A78E337E64B42389DFC021E162757BFC1261FB9FDA12ECE9
+          59E38D944A54B62C1B1E856A95822C13756843A03712907D7FDC58EC79F9F9CE
+          C1729902B597E32467654108510863C9E18150A4A3DDE39B9BB3784FDD337E11
+          8822010EC76160596CE9DC3401EA75021D214FF4F0FE78349331211090D0C7AD
+          805257A0E7C9DEB6205EEE9D9B337930B781AA129A2FD70AE9F95ABE5831794B
+          85609BE2E9EAF085227E6FD83098C87D339946A526BA61E24D2D5255458C6DEC
+          0BB6A4D31AAA2F5FEE6921F6E53F73F70A457D1A0DDF03C04D24C91AD6B66CAE
+          FA6A38E819D99E88F6EB1A53B848438034042CD3E497B5F777B7AAE5A2296A75
+          0B38BC3E914EDC5C48DF2FE917F1E97DC3053930211EFC0BEEBBE773D68E96AD
+          1D4A695187D5300D016CCB6AAAC0DFBDC6A7E4E62B18CC1811889DD5ACF442BE
+          7203C5972E37B43A10B25CBA288A4771337E704F5F3235537C60F886CE1A15AC
+          282902A58256594A3F2F2B627E66B65846A7DF19A3502B978043F1B40062D4B6
+          EDF143FBFA93A5C51AA80A3C0046ED4605CECAC2368C92A9D7976E722C01164B
+          F59AE3D0FB8EB36A789A06922CE778BFCF9EBF35098FC7E4EA19BCF9EDC5E924
+          3C1EC0287B1D9FDF24FAEFC0AD3B135910C8A68D5D6D3ED716EF6C87F39766CA
+          AB67903C3236F858812FCE5CE51945B9BFE2F100FFC656A1280DB5FAD45E8B10
+          3F7F7D08AB663925C7B2CBAB67009A49E1CA8DCC0302435BE2F0D5D7133CEB13
+          8220FC681906548B459014850F9BFFFA47A2B1C8164B94448B39053EC38A6651
+          BCD76C9A41CD66A08B7293C0C01311387DFAD224033881DB5336B673556B8000
+          1C6E0F7AF7C5BAC26A6AA19A0351205E5582D94CC1746CB78295E754A5043449
+          05173E8F045894190CF9BCF985D26E46E93F689E4232E466C6D8013C4B3CBD77
+          B37A7B5E2BB8B13E5570D2A99C615BF66253056547044D6E08680E002D3165E7
+          683291BD3B17FE7B7AF6D962BEACF3E483113F5D9FE8246BFAD6D2BF168CFC7D
+          8C055984565584CCED3B9A5ED316082146D39F5D059605FA430AA4CB36183685
+          5913209F75C475F1CE5832B12ED6AA0880A0559356B2557BF1B7AC55306CB461
+          9C2A09A06767EB99E97B459C4BCAFDE54BEEBF5E1964888664B872EAECD5F0F0
+          4017E9E98D6A7C2EBC2F254EEEC7E982E047010C83168980939AA9A52F5FCF33
+          FE8C1933C115A0EE0C8804E94F4E4DD2ECB51FE6EBB541DFC6C2667960DB5ADD
+          E355B198870293068F5EB7B489A97CEDF69D14107291DEFAAEDCF0380A1C443A
+          747282534C1E7B0BF74912E81E11771FFF401EFBEC52EBF19FEE063E9E29FABF
+          2CE96DE74C8AB4703D8FB6293C3B278F7DFEA1F8DC7B874864831F0044247105
+          18634B1B898413FB20D0B39EDDBDD0F4F327B14D21121FDE0EF1E45610E4389A
+          DA901418CD81ADCFC0DCD529367F0D799DBF181D5943D6910692B9025CB515E9
+          75D5FF0318D2441A2BB45D817F012B8EC2EFAC19177E0000000049454E44AE42
+          6082}
+      end
+      item
+        ImageFormat = ifPNG
+        ImgData = {
+          89504E470D0A1A0A0000000D4948445200000018000000180806000000E0773D
+          F80000042749444154484BED957B50946514C677BF753313B945844AA4685372
+          079A1CD3704CA9B0BC55CC149306A65A2A8EFA47D6E834464C369136116684A2
+          0E82200C326C40CD689140042E861AA9840DC802BBDB5E6B176861F7E99CCFF5
+          0B306CEB6F77E637EFF9CEFB9EE739EFBBDF4526BBF3FB3F2750B555108890EA
+          AD421291466C27DE22DE76C331E7782E89D7728D475E55E94230F16AF3A70B73
+          34F5FBEAEC9ADA6EA7B5AD1FFDD73012CEF11CAFE1B55CC3B5B73551A50B8F7E
+          B3676686E162412BFA3B9C70F4004E3D0023611A015DBB0CC0B00E7068C8B8C3
+          C9355CCB1AFF6852B94588FE36F391AC415DA3512C6281212E6E076C6DC01F17
+          4763BB04D82F0383B4B3E15EE0CFEBE05AD660AD5126159B059F9A9D81BBECD7
+          4FF78AE24E1DC0A2D6F31ED20A0C749059175883B558533229DF242CBE7C2ABD
+          86B67A43DCDA0A9745FD9F81FD2A606F076BB1A66450F6BAB0C9F66B9506433D
+          006DDB656AC2FA86D588AB9927B2BE3E0503BA4A587AF260ECFE18FAAEF7A1EB
+          7C578463CEF1DC805E0597FD67B0166B4A0627370A7B9C86660777EF329F83CB
+          D888B8AAB948D3ED40AA763BA2546192E04DE1F1468BFE38FD175F3B58533228
+          DE2064380D4D0E0C6BA9FB1FE034D621A632062F75BE21125511067D67A64798
+          FBF260EB2D75B0A66450B44ED8F67BFBA95E0C7662D8D400B32607D1E5615875
+          752D565E49136343D7071E61EDCB87BE2DBB9735258382D784A40BC51BCEB8AC
+          2D18B09C86A97B3FA24BC390742105CFB4BE2CC69CFB37CC9A6CD8FA0AA13E9E
+          7C8635258389077D8F06E4F869230AE70CC596C623F6640C624AC2B1F8DC8B58
+          D4F4BC188F25F5AB44587B7246700036ED51EAFE137D71BAEF87C7D60A7E7F3F
+          0B9FF9AA97B5ADC11275B228FA64F30BA2F0E3679FC5BCEF9622E1FB1578A261
+          3916D42FC3FCBAE7C438A62882BA3D7C03ED11F4EB0A61FAE50B4BD99B2187F3
+          5385C7463FCDD93E6A3E8A858D2B45589085C354F331A32456647A6104A61584
+          23B83012A1BCCB8248BA754F60505F4294E1DAD9DDED27B605E51E5A2324DCFA
+          AAD8EF9D2BDBE7AD669459532EF9EEF5D24CCDF237079747625A191D4F7E842B
+          F64814E246B04EB51C8EDF2A2472570B9F13B33C7AA3EE481414CABD5E3F0555
+          CF41E0970FC3FFBDC9BA03298A4363297F27BA7AD8A0024373791E89BB17C965
+          995EEA80DA87706FED6C704C797EDF4BCC0E944FD898A058F051B2A2C865AC01
+          8D6CC0F37237E3FAF122856CF7A416FF9659F053878263CA4D22EE21BC882984
+          37E1931C2F241EDB19DB90B1427190AE2713138909B7DB0D4F2A655B942D7E57
+          42C1C8362B7FA41CDF7601C4FDC454623AF10011F274B8B06AD7524536C5816C
+          EA36B9C58385B9289E982B7B4A5E2C7B457E5E6489BC94728B087E43F2076586
+          5BFC411A67BAE13888F01DCF808F86B77DB33B36E34F202376EA1EEFA3F16E42
+          49DC35066E524148DFE7BF004238A335017C1DE40000000049454E44AE426082}
+      end
+      item
+        ImageFormat = ifPNG
+        ImgData = {
+          89504E470D0A1A0A0000000D4948445200000018000000180806000000E0773D
+          F80000023F49444154484BB5D68D67955100C7F103DD82D2C2A691482459448A
+          59DD589692AC495293AA2D48A4AC1ABDB9568B104D6FAB6D932469AADB9BD46A
+          65ABCDCE36DB663299EEEE7AEEEEDB6ECF7DEBB9CF7DF9757EDA9F70EEE1CBC3
+          E37CCE711E3C470010F92CAF38379EFF059CAD7EB1A52D50AE72ABA4A66895D3
+          16CE9619E63EF3CD361B4781ABC3395C19CCA0A13F0D576F0A977A2C9CFF92C4
+          B9CF719CFE18C3890F31D4AA0EA8E7CACE38B6AA771BBA2DACEEB5B14CA65130
+          9445614FCAA4495B6CBA6F30796DEC3FDE309081ABCFC66535E9425702F50AAB
+          7B67E2E49B088EBF9A458D7B16D5AF23D8FDF60F2ADE4751FA298E92AF7FB1E2
+          7B0A456A530BD5028ED11C68D21665F7A6993CA626D6BE0CA3E64508479F0771
+          B8C38F43CF6670F0A981EA27D3D8FF780AFB1EFDC2DE8793D8D3FE1355AD13A8
+          7CF003BB9AC7B1F3EE1876DC1EC1F65BC3D8D634848A9B8328ACEB922AC1F367
+          1280D631F72D85D8ACCE492573B91CB2D9AC9668D1A42DCA9A7F3399C964904E
+          A7B5448B266D517A678A49DBB66159969668D1A42D36364D32493C9148688916
+          4DDA62FD8D092693C924A2D1A89668D1A42DD65D1F6732168B2112896889164D
+          DA626DE30893A66922140A6989164DDA628D6B8049EEDEEFF76B89164DDA62D5
+          C53E26C3E1300CC3D0122D9AB4C5CAFA6E26038100BC5EAF9668D1A42D969FEA
+          6492C7E3F178B4448B266DE1282E114B8E74C86030089FCFA7255A3469732C9E
+          E73CDBEEA86A913A53669BB217718105AA02D55255B1A68AE6F0F9F9FF27E7F3
+          CA42FB1F63F9D845A82494C90000000049454E44AE426082}
+      end
+      item
+        ImageFormat = ifPNG
+        ImgData = {
+          89504E470D0A1A0A0000000D4948445200000018000000180806000000E0773D
+          F8000002B249444154484BED925F48536118C6CFD74D81980548D46557DEF917
+          4130E654D0A9209A0A13945DAD6AAD6892BB51F526854091A44054240452C416
+          2838140C642366DB18CE613411B7B639DCDA588232997BFADE4393C4C1015A80
+          D0811FE7C0F73DCFF3F2BC47102EC3E367AC9C33EF65ECDE3F9997CC313B0B37
+          631F1D8CC9321EF29DB1050C0F23313686CF8C198D8C55652C84EAD965CC101F
+          1880A7B1113B2D2D981304D38420D4A40DE9EFEFBFCB5172D452CCD7D6BEDACA
+          CDB5617212E18E0EB8AAAAE06B6840B4AD0D6F05C19A36A0A7A7A7FDE0E0C089
+          344FACAF0F3FF88444B8B919013E71CADCD7DE8E775959DF2605C142E66F04A1
+          366D805EAF7F904C26717A7A7A812F4545A06562640489C141FCECEE162727F3
+          85E262BC2C2F7F2DD9BD4EA77B9848247072727281E0E222CC3C24393181884A
+          851D8502AE9A1AAC969561776909A4950CD06AB58FE2F1388E8F8FD3B23A3E8E
+          4F858508E974B09796E2AB5C0E43490948435AC900B55AFDF8E8E80887878717
+          080402181D1D85C964C272410176EAEB11E47B98E5DFA421AD64804AA5D29079
+          341A3D47381CC6F4F434B6B7B7D1DBDB8B0FFCBF37E4E723D2DA8AF7FC4D1AD2
+          4A062895CA27B1580CA150E81C0683014BBCE711BE60B7DB2D9E6DF185CF71F3
+          E5CE4E9086B492014D4D4DDA482482FDFDFD33D6D6D630343484999919F87CBE
+          7367A97BA4216DDA00854271BFAEAEEE690A9A8E8C088BC5028D4683A9A92918
+          8D46ACACAC8002D7D7D761369BC5739BCD2656575151A1AFACAC7C515D5DDDC5
+          69E36157C440B95CFE8C3A0E0683227EBF1F1E8F47C4E974626363E30CABD50A
+          BBDD0E87C381CDCD4DF1DCE57289B5EDEDEDC1EBF58A1E3299EC39B76662405E
+          5E5E174DFD672D7FF34D5EE499AAEB467676B62A2727A73B9370CF4E1E709D42
+          AE716E726E73EE64885BBFCDAF4AFE55FF2F5CFE067E016438B3CEF8180F8900
+          00000049454E44AE426082}
+      end
+      item
+        ImageFormat = ifPNG
+        ImgData = {
+          89504E470D0A1A0A0000000D4948445200000018000000180806000000E0773D
+          F8000002F649444154484BB594EF2BA46F14876FAAECA4DAB651D951A55189F9
+          2A315B1A9328522912AADD3F80DDB5B6CDA66DA756BB35B5E5A5BC9390489242
+          82B196E6871DA8D1D02C88A6482000C067CFB967466BFB3ED598E6D4D5DD3C73
+          3FD7E7B9CF79660400114EC22A0720446969A9282B2BD3122F89F210E0FBB5EC
+          0B20034A4A4A98570E87C3BDB2B282A5A525783C1ECCCFBBE172B9303B3B03A7
+          D389C94907EC76076CB6495A9DC40C5D73D177F3989AFA8DA121BB9B3D7E9FF4
+          CA80E2E262E6F5EAEA2A161717B1B0B020C5D3D3537038EC989818C7D8D80F8C
+          8E5A60B18CD2FA933E5B313EFE0B56EB2CED71538887F62F833D7E9FF4CA80A2
+          A222E68DC562C1C8C80886878731383888818101F4F7F7A3B7B7173D3D3DE8EE
+          EE465757173A3B3BD1DEDE8EB6B636B4B6B6A2B9B9194D4D4D686C6C44646464
+          79444484082003A86F4C398090CB3FBF80D377027FCF2AEEEEEE102AE4AA509C
+          C1EDED2D6E6E6E82C666B3A1AFAF0FCBCB0A33282C2C14C4DBEBEB6B5C5E5E06
+          0DCF868BD7828282CABCBC3C91939323B2B2B27C2DA28B4C25CBCFCECE828607
+          1EA8CCCCCC6A83C1A04F4F4F17292929BE80FCFC7CA6EAFCFC1C2727278A6C6F
+          6F636D6D0D737373F4EA4EC8B6747474C8B7E8EF22794D5A5ADA8BFB80DCDC5C
+          41BC3F3D3DC5E1E1A122C7C7C7E03DFC205757577256FC52FC5FE974BACF844E
+          9E203B3B9BF970747484BDBD3D450E0E0EC07B38E4E2E2023C33A500AD56FB85
+          F84F06188D46A69A05DC0625B83D6EB71B56AB55FEF85A5A5A505F5F8FBABABA
+          0787D068345FE3E2E20CF1F1F1BE19646464301FF7F7F7B1B5B5153466B3F93E
+          40AD569B6362628C1422EE03F47ABD206A767777B1B1B11134B5B5B5328057EE
+          7D424282484C4C14C9C9C9BE13A4A6A6329FB8355EAF37681A1A1A603299E4FF
+          187BFC3EE995014949498C89DBB3BEBEFE68F87EF6F87DD22B03A2A2A2446C6C
+          ECB79D9D1D6C6E6E3E1ABE9F3DEC0B940CA07AA652A9AAA2A3A3BF870A79DE91
+          EFE9BF012ABAA0263421F29C1F9678F22000800827619503107F00CB950E5DE3
+          E29A500000000049454E44AE426082}
+      end
+      item
+        ImageFormat = ifPNG
+        ImgData = {
+          89504E470D0A1A0A0000000D4948445200000018000000180806000000E0773D
+          F80000042449444154484BB5946F485B6714C6DF28AA4C35D4294C45D1149B0D
+          64645B535014405721A0220641FCD63A563ABA8D3129055AB7E168D9D7C23EAB
+          153631295553ADA96916334DD2286AD2D0262D362B5341F74F703886CAD979DE
+          DDF7EE76731B0316F871CF3DE7799E73FF70238848FC9FC8F0D6D656D1D6D626
+          3A3A3A84D3E97C8EAEAE2EC138981EE62D0DD4E8FD458F0C642113D9472D38C9
+          4BCE31358685E7767777BF3B3C3CDC07A8358DBAA81AEDFCE4BF2DB0B3E0FCFE
+          FE3EE1C8D4B4B7B723E4FCF6F636A55229096AF4B4192EC4E8B1FFDD1D9CE2C1
+          3B7B7B7B94482408479C2B363636641FA036CE8EF09C7AEE11391C0EC15C48A7
+          D3B4BCBCACB3B3B343030303D7171717E3EBEBEBB4B6B626418D1E66D0183DC8
+          401632F577D0D2D2229813CCBBA954922291B004C667CFBE916C6E6ED2D6D696
+          04B5EA43A3F4F02243CBFA63416363A3686E6E06D6A6A6A6F7E3F11885C3217A
+          F0204EE9F4538AC556C9E399A41B378625A8D1C30C1A68E1811719C842A67E07
+          F5F5F50234343460F0415F5FDFE730E079FB7C3E1A1A1AA2898971F27A6724A8
+          D1C30C1A68E18117192A4F5F505757D7C97CA8989C9C4884420B3437F715070D
+          D2CD9BEE5FCF9E3D335B5151711DA0460F3368A085C798814C7D81DD6E7F9B6F
+          F37B5C09B87F3F42C1E01C8D8E7E492ED718F5F6F6DECEC8C87032C7349CE861
+          060DB4F0283FB290A92FB0D96C7D4B4B4B076EB79BC0D4D46DBA77CF47838383
+          FC3826A9AAAAEA630E363342C38C1E66D0400B8FF2230B99FA82DADADA8BD168
+          F4606C6C8C80C7E391CF7778789866667C64B11CBF623299CC8CD030A3871934
+          D0C2A3FCC842A6BEC06AB55E0804023FCCCEFA08F87C7EF2FB036C70F19579E9
+          D2A57E37073B84108500357A9841032D3CCA8F2C64EA0B2C164B0F73453132F2
+          45321098E75BC77B70D1CACAE35FFAFBAFBAACD6572E02D4E861060DB4F01833
+          90A92FA8AEAE16A0B2B2127CD4DDDD33140A2DF187F690AF2C48B76E4DF10B7C
+          CA5FF0CF12D4E861060DB4F0C08B0C95A72F282F2F17252525A2B4B4F4D5B2B2
+          B24F56571FD29D3B7EFE8062944C7ECB2149F27A031C3A2D418D1E66D0400B0F
+          BCC8401632F505C5C5C55880C1403CFE84C6C7BD92BB7717D8F8841E3D5AE7BF
+          861FF94F6E57821A3DCCA0517A7891812C64EA0B8A8A8A04F3E9FCFC0A793C7E
+          1D9C7776768D8C8E4E3C8EC5D6F85DFC0E6AF4303BCA832C64EA0BCC66B3609A
+          0B0B0BAF86C3099A9EFE9A6F3D413857A8FE3FCD940759C8D417E4E6E68ABCBC
+          3C919F9FFF261FAF45A349C291CF6D05050598C99ED71B96A83966D0FCC9830C
+          814C7D811042FE323333454E4ECE691E7EC6471BCE01CE83C1D84F9148F200A0
+          464FCDA1D53CA7D1533FE3820C6E1630E5CCCBCCEBCC1B8AACACACF7B2B3B32F
+          33D7342EA367D470FD1A73827989798131191798B891A37DA9C57C2C65CAFE23
+          F0BCC8E433596AC16FA0C39B00F0D5509E0000000049454E44AE426082}
+      end>
+    Left = 192
+    Top = 368
+    Bitmap = {}
   end
 end
