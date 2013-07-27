@@ -98,7 +98,7 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   else
    SwitchToNewMsgMode2RadioButton->Checked = true;
   TabsHotKeysCheckBox->Checked = Ini->ReadBool("TabsSwitching","TabsHotKeys",true);
-  int pTabsHotKeysMode = Ini->ReadInteger("TabsSwitching","TabsHotKeysMode",1);
+  int pTabsHotKeysMode = Ini->ReadInteger("TabsSwitching","TabsHotKeysMode",2);
   if(pTabsHotKeysMode==1)
    TabsHotKeysMode1RadioButton->Checked = true;
   else
@@ -571,4 +571,3 @@ void __fastcall TSettingsForm::MiniAvatarsEraseButtonClick(TObject *Sender)
   MiniAvatarsEraseButton->Enabled = false;
 }
 //---------------------------------------------------------------------------
-

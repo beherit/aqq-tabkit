@@ -1,3 +1,12 @@
+1.1.1.0
+-----
+* Poprawne rozpoznawanie nadawcy wiadomoœci w przypadku multilogowania w sieci GG.
+* Poprawki w usuwaniu hooka systemowego zak³adanego na okno rozmowy.
+* Poprawki w usuwaniu elementu menu s³u¿¹cego do przypinania/odpinania zak³adek.
+* Przywracanie za pomoc¹ skrótu klawiaturowego ostatnio zamkniêtej zak³adki, nie wczytywa³o ostatnio przeprowadzonej rozmowy.
+* Ma³e poprawki kosmetyczne formie ustawie.
+* Optymalizacja kodu.
+
 1.1.0.8
 -----
 * Poprawki w pobieraniu uchwytu zmienionego komponentu pola wiadomoœci.
