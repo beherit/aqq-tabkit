@@ -30,7 +30,8 @@ __declspec(dllimport)UnicodeString GetPluginUserDirW();
 __declspec(dllimport)UnicodeString GetThemeSkinDir();
 __declspec(dllimport)UnicodeString NormalizeChannel(UnicodeString Channel);
 __declspec(dllimport)bool ChkSkinEnabled();
-__declspec(dllimport)bool ChkNativeEnabled();
+__declspec(dllimport)bool ChkThemeAnimateWindows();
+__declspec(dllimport)bool ChkThemeGlowing();
 __declspec(dllimport)void LoadSettings();
 __declspec(dllimport)void RefreshTabs();
 __declspec(dllimport)void DestroyFrmClosedTabs();
@@ -86,40 +87,31 @@ void TSettingsForm::WMHotKey(TMessage& Msg)
 
 void __fastcall TSettingsForm::FormCreate(TObject *Sender)
 {
+  //Wlaczona zaawansowana stylizacja okien
   if(ChkSkinEnabled())
   {
 	UnicodeString ThemeSkinDir = GetThemeSkinDir();
-	if((FileExists(ThemeSkinDir + "\\\\Skin.asz"))&&(!ChkNativeEnabled()))
+	//Plik zaawansowanej stylizacji okien istnieje
+	if(FileExists(ThemeSkinDir + "\\\\Skin.asz"))
 	{
 	  ThemeSkinDir = StringReplace(ThemeSkinDir, "\\\\", "\\", TReplaceFlags() << rfReplaceAll);
 	  sSkinManager->SkinDirectory = ThemeSkinDir;
 	  sSkinManager->SkinName = "Skin.asz";
-	  sSkinProvider->DrawNonClientArea = true;
+	  if(ChkThemeAnimateWindows()) sSkinManager->AnimEffects->FormShow->Time = 200;
+	  else sSkinManager->AnimEffects->FormShow->Time = 0;
+	  sSkinManager->Effects->AllowGlowing = ChkThemeGlowing();
 	  sSkinManager->Active = true;
 	}
-	else
-	 sSkinManager->Active = false;
+	//Brak pliku zaawansowanej stylizacji okien
+	else sSkinManager->Active = false;
   }
+  //Zaawansowana stylizacja okien wylaczona
+  else sSkinManager->Active = false;
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TSettingsForm::FormShow(TObject *Sender)
 {
-  //Skorkowanie okna
-  if(!ChkSkinEnabled())
-  {
-	UnicodeString ThemeSkinDir = GetThemeSkinDir();
-	if((FileExists(ThemeSkinDir + "\\\\Skin.asz"))&&(!ChkNativeEnabled()))
-	{
-	  ThemeSkinDir = StringReplace(ThemeSkinDir, "\\\\", "\\", TReplaceFlags() << rfReplaceAll);
-	  sSkinManager->SkinDirectory = ThemeSkinDir;
-	  sSkinManager->SkinName = "Skin.asz";
-	  sSkinProvider->DrawNonClientArea = false;
-	  sSkinManager->Active = true;
-	}
-	else
-	 sSkinManager->Active = false;
-  }
   if(sSkinManager->Active)
   {
 	//Skorkowanie glownego komponentu

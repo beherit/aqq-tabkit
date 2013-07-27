@@ -1,3 +1,11 @@
+1.7.2.0
+-----
+* Poprawki w przywracaniu prawid³owych procedur okien.
+* Drobne zmiany w skórkowaniu formy ustawieñ.
+* Ma³e kosmetyczne poprawki na formie ustawieñ.
+* Okno kontaktów nie jest ju¿ wysuwane przy instalacji dodatków.
+* Aktualizacja komponentów AlphaControls do najnowszej dostêpnej wersji (8.19).
+
 1.7.1.0
 -----
 * Opcja informowania graficznie na zak³adkach o zamkniêciu okna rozmowy.

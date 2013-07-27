@@ -125,7 +125,6 @@ __published:	// IDE-managed Components
 	TsCheckBox *CollapseImagesCheckBox;
 	TsCheckBox *CounterClipTabsCheckBox;
 	TsSkinManager *sSkinManager;
-	TsSkinProvider *sSkinProvider;
 	TsLabel *ItemsCountClosedTabsLabel;
 	TsLabel *CountClosedTabsLabel;
 	TsCheckBox *MinimizeRestoreCheckBox;
