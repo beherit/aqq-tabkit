@@ -64,10 +64,17 @@ __fastcall TSettingsForm::TSettingsForm(TComponent* Owner)
 }
 //---------------------------------------------------------------------------
 
-void TSettingsForm::WMHotKey(TMessage& Msg)
+void __fastcall TSettingsForm::WMTransparency(TMessage &Message)
+{
+  Application->ProcessMessages();
+  sSkinProvider->BorderForm->UpdateExBordersPos(true,(int)Message.LParam);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TSettingsForm::WMHotKey(TMessage &Message)
 {
   //Minimalizacja / przywracanie okna rozmowy + FrmSendSideSlide
-  if(Msg.WParam==0x0100)
+  if(Message.WParam==0x0100)
   {
 	if(!MinimizeRestoreHotKey->Focused())
 	 MinimizeRestoreFrmSendExecute();
@@ -75,7 +82,7 @@ void TSettingsForm::WMHotKey(TMessage& Msg)
 	 MinimizeRestoreHotKey->HotKey = GetMinimizeRestoreFrmSendKey();
   }
   //SideSlide dla FrmMain + otwieranie nowych wiadomosci
-  if(Msg.WParam==0x0200)
+  if(Message.WParam==0x0200)
   {
 	if(!MinimizeRestoreHotKey->Focused())
 	 MinimizeRestoreFrmMainExecute();

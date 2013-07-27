@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
-
 #ifndef SideSlideExceptionsFrmH
 #define SideSlideExceptionsFrmH
+#define WM_ALPHAWINDOWS (WM_USER + 666)
 //---------------------------------------------------------------------------
 #include <System.Classes.hpp>
 #include <Vcl.Controls.hpp>
@@ -33,6 +33,7 @@ __published:	// IDE-managed Components
 	TAction *aExit;
 	TAction *aSaveSettings;
 	TAction *aLoadSettings;
+	TsSkinProvider *sSkinProvider;
 	void __fastcall aExitExecute(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall SaveButtonClick(TObject *Sender);
@@ -44,6 +45,10 @@ __published:	// IDE-managed Components
 private:	// User declarations
 public:		// User declarations
 	__fastcall TSideSlideExceptionsForm(TComponent* Owner);
+	void __fastcall WMTransparency(TMessage &Message);
+	BEGIN_MESSAGE_MAP
+	MESSAGE_HANDLER(WM_ALPHAWINDOWS,TMessage,WMTransparency);
+	END_MESSAGE_MAP(TForm)
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TSideSlideExceptionsForm *SideSlideExceptionsForm;

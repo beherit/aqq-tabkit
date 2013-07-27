@@ -124,4 +124,15 @@ object SideSlideExceptionsForm: TSideSlideExceptionsForm
       OnExecute = aLoadSettingsExecute
     end
   end
+  object sSkinProvider: TsSkinProvider
+    AddedTitle.Font.Charset = DEFAULT_CHARSET
+    AddedTitle.Font.Color = clNone
+    AddedTitle.Font.Height = -11
+    AddedTitle.Font.Name = 'Tahoma'
+    AddedTitle.Font.Style = []
+    SkinData.SkinSection = 'FORM'
+    TitleButtons = <>
+    Left = 32
+    Top = 176
+  end
 end
