@@ -12,9 +12,13 @@ TSettingsForm *SettingsForm;
 __declspec(dllimport)void LoadSettings();
 __declspec(dllimport)void DestroyFrmUnsentMsg();
 __declspec(dllimport)void BuildFrmUnsentMsg();
+__declspec(dllimport)void EraseUnsentMsg();
+__declspec(dllimport)void ShowUnsentMsg();
 __declspec(dllimport)void DestroyFrmClosedTabs();
 __declspec(dllimport)void BuildFrmClosedTabs();
-__declspec(dllimport)void ShowUnsentMsg();
+__declspec(dllimport)void EraseClosedTabs();
+__declspec(dllimport)void ChangeFrmSendTitlebar();
+__declspec(dllimport)void ChangeFrmMainTitlebar();
 __declspec(dllimport)UnicodeString GetPluginUserDir();
 //---------------------------------------------------------------------------
 __fastcall TSettingsForm::TSettingsForm(TComponent* Owner)
@@ -74,6 +78,7 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   FastAccessClosedTabsCheckBox->Checked =  Ini->ReadBool("ClosedTabs","FastAccess",true);
   FrmMainClosedTabsCheckBox->Checked =  Ini->ReadBool("ClosedTabs","FrmMain",true);
   FrmSendClosedTabsCheckBox->Checked =  Ini->ReadBool("ClosedTabs","FrmSend",false);
+  ItemsCountClosedTabsCSpinEdit->Value = Ini->ReadInteger("ClosedTabs","ItemsCount",5);
   UnCloseTabHotKeyCheckBox->Checked =  Ini->ReadBool("ClosedTabs","HotKey",false);
   int pUnCloseTabHotKeyMode = Ini->ReadInteger("ClosedTabs","HotKeyMode",1);
   if(pUnCloseTabHotKeyMode==1)
@@ -82,11 +87,36 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
    UnCloseTabHotKeyMode2RadioButton->Checked = true;
   UnCloseTabHotKeyInput->HotKey = Ini->ReadInteger("ClosedTabs","HotKeyDef",0);
   CountClosedTabsCSpinEdit->Value = Ini->ReadInteger("ClosedTabs","Count",5);
+  //SessionRemember
+  RestoreTabsSessionCheckBox->Checked = Ini->ReadBool("SessionRemember","RestoreTabs",true);
+  ManualRestoreTabsSessionCheckBox->Checked = Ini->ReadBool("SessionRemember","ManualRestoreTabs",false);
+  RestoreMsgSessionCheckBox->Checked = Ini->ReadBool("SessionRemember","RestoreMsg",false);
+  //Titlebar
+  TweakFrmSendTitlebarCheckBox->Checked = Ini->ReadBool("Titlebar","TweakSend",false);
+  int pTweakFrmSendTitlebarMode = Ini->ReadInteger("Titlebar","SendMode",1);
+  if(pTweakFrmSendTitlebarMode==1)
+   TweakFrmSendTitlebarMode1RadioButton->Checked = true;
+  else if(pTweakFrmSendTitlebarMode==2)
+   TweakFrmSendTitlebarMode2RadioButton->Checked = true;
+  else
+   TweakFrmSendTitlebarMode3RadioButton->Checked = true;
+  TweakFrmMainTitlebarCheckBox->Checked = Ini->ReadBool("Titlebar","TweakMain",false);
+  int pTweakFrmMainTitlebarMode = Ini->ReadInteger("Titlebar","MainMode",1);
+  if(pTweakFrmMainTitlebarMode==1)
+   TweakFrmMainTitlebarMode1RadioButton->Checked = true;
+  else
+   TweakFrmMainTitlebarMode2RadioButton->Checked = true;
+  TweakFrmMainTitlebarMode2Edit->Text = Ini->ReadString("Titlebar","MainText","");
+  //NewMsg
+  InactiveFrmNewMsgCheckBox->Checked = Ini->ReadBool("NewMsg","InactiveFrm",true);
   delete Ini;
 
   aUnsentMsgChk->Execute();
   aTabsSwitchingChk->Execute();
   aClosedTabsChk->Execute();
+  aSessionRememberChk->Execute();
+  aTitlebarTweakChk->Execute();
+  aNewMsgChk->Execute();
   SaveButton->Enabled = false;
 }
 //---------------------------------------------------------------------------
@@ -112,54 +142,6 @@ void __fastcall TSettingsForm::aUnsentMsgChkExecute(TObject *Sender)
   }
 
   SaveButton->Enabled = true;
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::RememberUnsentMsgCheckBoxClick(TObject *Sender)
-{
-  aUnsentMsgChk->Execute();
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::InfoUnsentMsgCheckBoxClick(TObject *Sender)
-{
-  aUnsentMsgChk->Execute();
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::CloudUnsentMsgCheckBoxClick(TObject *Sender)
-{
-  aUnsentMsgChk->Execute();
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::DetailedCloudUnsentMsgCheckBoxClick(TObject *Sender)
-{
-  aUnsentMsgChk->Execute();
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::TrayUnsentMsgCheckBoxClick(TObject *Sender)
-{
-  aUnsentMsgChk->Execute();
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::FastAccessUnsentMsgCheckBoxClick(TObject *Sender)
-{
-  aUnsentMsgChk->Execute();
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::FrmSendUnsentMsgCheckBoxClick(TObject *Sender)
-{
-  aUnsentMsgChk->Execute();
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::FrmMainUnsentMsgCheckBoxClick(TObject *Sender)
-{
-  aUnsentMsgChk->Execute();
 }
 //---------------------------------------------------------------------------
 
@@ -197,6 +179,7 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
    Ini->WriteBool("ClosedTabs","FastAccess",FastAccessClosedTabsCheckBox->Checked);
   Ini->WriteBool("ClosedTabs","FrmMain",FrmMainClosedTabsCheckBox->Checked);
   Ini->WriteBool("ClosedTabs","FrmSend",FrmSendClosedTabsCheckBox->Checked);
+  Ini->WriteInteger("ClosedTabs","ItemsCount",ItemsCountClosedTabsCSpinEdit->Value);
   Ini->WriteBool("ClosedTabs","HotKey",UnCloseTabHotKeyCheckBox->Checked);
   if(UnCloseTabHotKeyMode1RadioButton->Checked)
    Ini->WriteInteger("ClosedTabs","HotKeyMode",1);
@@ -204,6 +187,37 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
    Ini->WriteInteger("ClosedTabs","HotKeyMode",2);
   Ini->WriteInteger("ClosedTabs","HotKeyDef",UnCloseTabHotKeyInput->HotKey);
   Ini->WriteInteger("ClosedTabs","Count",CountClosedTabsCSpinEdit->Value);
+  //SessionRemember
+  Ini->WriteBool("SessionRemember","RestoreTabs",RestoreTabsSessionCheckBox->Checked);
+  if(RestoreTabsSessionCheckBox->Checked)
+  {
+	Ini->WriteBool("SessionRemember","ManualRestoreTabs",ManualRestoreTabsSessionCheckBox->Checked);
+	Ini->WriteBool("SessionRemember","RestoreMsg",RestoreMsgSessionCheckBox->Checked);
+  }
+  else
+  {
+	Ini->WriteBool("SessionRemember","ManualRestoreTabs",false);
+	Ini->WriteBool("SessionRemember","RestoreMsg",false);
+  }
+  //Titlebar
+  Ini->WriteBool("Titlebar","TweakSend",TweakFrmSendTitlebarCheckBox->Checked);
+  if(TweakFrmSendTitlebarMode1RadioButton->Checked)
+   Ini->WriteInteger("Titlebar","SendMode",1);
+  else if(TweakFrmSendTitlebarMode2RadioButton->Checked)
+   Ini->WriteInteger("Titlebar","SendMode",2);
+  else
+   Ini->WriteInteger("Titlebar","SendMode",3);
+  Ini->WriteBool("Titlebar","TweakMain",TweakFrmMainTitlebarCheckBox->Checked);
+  if(TweakFrmMainTitlebarMode1RadioButton->Checked)
+   Ini->WriteInteger("Titlebar","MainMode",1);
+  else
+   Ini->WriteInteger("Titlebar","MainMode",2);
+  if(TweakFrmMainTitlebarMode2Edit->Text!="Wpisz tutaj swój tekst")
+   Ini->WriteString("Titlebar","MainText",TweakFrmMainTitlebarMode2Edit->Text);
+  else
+   Ini->WriteString("Titlebar","MainText","");
+  //NewMsg
+  Ini->WriteBool("NewMsg","InactiveFrm",InactiveFrmNewMsgCheckBox->Checked);
   delete Ini;
 }
 //---------------------------------------------------------------------------
@@ -226,49 +240,16 @@ void __fastcall TSettingsForm::aTabsSwitchingChkExecute(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TSettingsForm::SwitchToNewMsgCheckBoxClick(TObject *Sender)
-{
-  aTabsSwitchingChk->Execute();
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::SwitchToNewMsgMode1RadioButtonClick(TObject *Sender)
-{
-  aTabsSwitchingChk->Execute();
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::SwitchToNewMsgMode2RadioButtonClick(TObject *Sender)
-{
-  aTabsSwitchingChk->Execute();
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::TabsHotKeysCheckBoxClick(TObject *Sender)
-{
-  aTabsSwitchingChk->Execute();
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::TabsHotKeysMode1RadioButtonClick(TObject *Sender)
-{
-  aTabsSwitchingChk->Execute();
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::TabsHotKeysMode2RadioButtonClick(TObject *Sender)
-{
-  aTabsSwitchingChk->Execute();
-}
-//---------------------------------------------------------------------------
 void __fastcall TSettingsForm::aSaveSettingsWExecute(TObject *Sender)
 {
+  DestroyFrmUnsentMsg();
+  DestroyFrmClosedTabs();
   aSaveSettings->Execute();
   LoadSettings();
-  DestroyFrmUnsentMsg();
   BuildFrmUnsentMsg();
-  DestroyFrmClosedTabs();
   BuildFrmClosedTabs();
+  ChangeFrmSendTitlebar();
+  ChangeFrmMainTitlebar();
 }
 //---------------------------------------------------------------------------
 
@@ -283,6 +264,8 @@ void __fastcall TSettingsForm::aClosedTabsChkExecute(TObject *Sender)
 {
   FrmMainClosedTabsCheckBox->Enabled = FastAccessClosedTabsCheckBox->Checked;
   FrmSendClosedTabsCheckBox->Enabled = FastAccessClosedTabsCheckBox->Checked;
+  ItemsCountClosedTabsLabel->Enabled = FastAccessClosedTabsCheckBox->Checked;
+  ItemsCountClosedTabsCSpinEdit->Enabled = FastAccessClosedTabsCheckBox->Checked;
   UnCloseTabHotKeyMode1RadioButton->Enabled = UnCloseTabHotKeyCheckBox->Checked;
   UnCloseTabHotKeyMode2RadioButton->Enabled = UnCloseTabHotKeyCheckBox->Checked;
   UnCloseTabHotKeyInput->Enabled = UnCloseTabHotKeyMode2RadioButton->Checked;
@@ -294,6 +277,8 @@ void __fastcall TSettingsForm::aClosedTabsChkExecute(TObject *Sender)
   {
 	FrmMainClosedTabsCheckBox->Enabled = false;
 	FrmSendClosedTabsCheckBox->Enabled = false;
+	ItemsCountClosedTabsLabel->Enabled = false;
+	ItemsCountClosedTabsCSpinEdit->Enabled = false;
 	UnCloseTabHotKeyMode1RadioButton->Enabled = false;
 	UnCloseTabHotKeyMode2RadioButton->Enabled = false;
 	UnCloseTabHotKeyInput->Enabled = false;
@@ -303,57 +288,79 @@ void __fastcall TSettingsForm::aClosedTabsChkExecute(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TSettingsForm::RememberClosedTabsCheckBoxClick(TObject *Sender)
+void __fastcall TSettingsForm::aSessionRememberChkExecute(TObject *Sender)
 {
-  aClosedTabsChk->Execute();
+  ManualRestoreTabsSessionCheckBox->Enabled = RestoreTabsSessionCheckBox->Checked;
+  RestoreMsgSessionCheckBox->Enabled = RestoreTabsSessionCheckBox->Checked;
+
+  SaveButton->Enabled = true;
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TSettingsForm::FastAccessClosedTabsCheckBoxClick(TObject *Sender)
+void __fastcall TSettingsForm::aTitlebarTweakChkExecute(TObject *Sender)
 {
-  aClosedTabsChk->Execute();
+  TweakFrmSendTitlebarMode1RadioButton->Enabled = TweakFrmSendTitlebarCheckBox->Checked;
+  TweakFrmSendTitlebarMode2RadioButton->Enabled = TweakFrmSendTitlebarCheckBox->Checked;
+  TweakFrmSendTitlebarMode3RadioButton->Enabled = TweakFrmSendTitlebarCheckBox->Checked;
+  TweakFrmMainTitlebarMode2Edit->Enabled = TweakFrmMainTitlebarMode2RadioButton->Checked;
+  TweakFrmMainTitlebarMode1RadioButton->Enabled = TweakFrmMainTitlebarCheckBox->Checked;
+  TweakFrmMainTitlebarMode2RadioButton->Enabled = TweakFrmMainTitlebarCheckBox->Checked;
+  if(!TweakFrmMainTitlebarCheckBox->Checked)
+   TweakFrmMainTitlebarMode2Edit->Enabled = false;
+  if(!TweakFrmMainTitlebarMode2Edit->Enabled)
+  {
+	if(TweakFrmMainTitlebarMode2Edit->Text.IsEmpty())
+	 TweakFrmMainTitlebarMode2Edit->Text = "Wpisz tutaj swój tekst";
+  }
+  else
+  {
+	if(TweakFrmMainTitlebarMode2Edit->Text=="Wpisz tutaj swój tekst")
+	 TweakFrmMainTitlebarMode2Edit->Text = "";
+  }
+
+  SaveButton->Enabled = true;
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TSettingsForm::FrmMainClosedTabsCheckBoxClick(TObject *Sender)
+void __fastcall TSettingsForm::OtherTabSheetShow(TObject *Sender)
 {
-  aClosedTabsChk->Execute();
+  TIniFile *Ini = new TIniFile(GetPluginUserDir() + "\\\\TabKit\\\\Session.ini");
+  UnsentMsgEraseButton->Enabled = Ini->SectionExists("Messages");
+  ClosedTabsEraseButton->Enabled = Ini->SectionExists("ClosedTabs");
+  if((Ini->SectionExists("Session"))||(Ini->SectionExists("SessionMsg")))
+   SessionRememberEraseButton->Enabled = true;
+  else
+   SessionRememberEraseButton->Enabled = false;
+  delete Ini;
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TSettingsForm::FrmSendClosedTabsCheckBoxClick(TObject *Sender)
+void __fastcall TSettingsForm::UnsentMsgEraseButtonClick(TObject *Sender)
 {
-  aClosedTabsChk->Execute();
+  EraseUnsentMsg();
+  UnsentMsgEraseButton->Enabled = false;
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TSettingsForm::UnCloseTabHotKeyCheckBoxClick(TObject *Sender)
+void __fastcall TSettingsForm::ClosedTabsEraseButtonClick(TObject *Sender)
 {
-  aClosedTabsChk->Execute();
+  EraseClosedTabs();
+  ClosedTabsEraseButton->Enabled = false;
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TSettingsForm::UnCloseTabHotKeyMode1RadioButtonClick(TObject *Sender)
+void __fastcall TSettingsForm::SessionRememberEraseButtonClick(TObject *Sender)
 {
-  aClosedTabsChk->Execute();
+  TIniFile *Ini = new TIniFile(GetPluginUserDir() + "\\\\TabKit\\\\Session.ini");
+  Ini->EraseSection("Session");
+  Ini->EraseSection("SessionMsg");
+  delete Ini;
+  SessionRememberEraseButton->Enabled = false;
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TSettingsForm::UnCloseTabHotKeyMode2RadioButtonClick(TObject *Sender)
+void __fastcall TSettingsForm::aNewMsgChkExecute(TObject *Sender)
 {
-  aClosedTabsChk->Execute();
+  SaveButton->Enabled = true;
 }
 //---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::UnCloseTabHotKeyInputChange(TObject *Sender)
-{
-  aClosedTabsChk->Execute();
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::CountClosedTabsCSpinEditChange(TObject *Sender)
-{
-  aClosedTabsChk->Execute();
-}
-//---------------------------------------------------------------------------
-
