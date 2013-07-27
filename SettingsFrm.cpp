@@ -1,15 +1,39 @@
 //---------------------------------------------------------------------------
+#define STRICT
 #include <vcl.h>
 #pragma hdrstop
 #include "SettingsFrm.h"
+#include <gdiplus.h>
+//#include <windows.h>
+//#include <algorithm>
 #include <inifiles.hpp>
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "cspin"
+#pragma link "IdBaseComponent"
+#pragma link "IdCoder"
+#pragma link "IdCoder3to4"
+#pragma link "IdCoderMIME"
+#pragma link "cspin"
+#pragma link "IdBaseComponent"
+#pragma link "IdCoder"
+#pragma link "IdCoder3to4"
+#pragma link "IdCoderMIME"
+#pragma link "cspin"
+#pragma link "IdBaseComponent"
+#pragma link "IdCoder"
+#pragma link "IdCoder3to4"
+#pragma link "IdCoderMIME"
+//#pragma link "GdiPlus.lib"
 #pragma resource "*.dfm"
 TSettingsForm *SettingsForm;
+//using std::min;
+//using std::max;
 //---------------------------------------------------------------------------
 __declspec(dllimport)void LoadSettings();
+__declspec(dllimport)void CheckAntiSpim();
+__declspec(dllimport)void CheckHideStatusBar();
+__declspec(dllimport)void ShowToolBar();
 __declspec(dllimport)void DestroyStayOnTop();
 __declspec(dllimport)void BuildStayOnTop();
 __declspec(dllimport)void DestroyFrmUnsentMsg();
@@ -21,7 +45,10 @@ __declspec(dllimport)void BuildFrmClosedTabs();
 __declspec(dllimport)void EraseClosedTabs();
 __declspec(dllimport)void ChangeFrmSendTitlebar();
 __declspec(dllimport)void ChangeFrmMainTitlebar();
+__declspec(dllimport)void EraseClipTabs();
+__declspec(dllimport)void EraseClipTabsIcons();
 __declspec(dllimport)UnicodeString GetPluginUserDir();
+__declspec(dllimport)UnicodeString GetPluginUserDirW();
 //---------------------------------------------------------------------------
 __fastcall TSettingsForm::TSettingsForm(TComponent* Owner)
 	: TForm(Owner)
@@ -93,6 +120,7 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   UnCloseTabHotKeyInput->HotKey = Ini->ReadInteger("ClosedTabs","HotKeyDef",0);
   CountClosedTabsCSpinEdit->Value = Ini->ReadInteger("ClosedTabs","Count",5);
   RestoreLastMsgClosedTabsCheckBox->Checked = Ini->ReadBool("ClosedTabs","RestoreLastMsg",false);
+  OnlyConversationTabsCheckBox->Checked = Ini->ReadBool("ClosedTabs","OnlyConversationTabs",false);
   //SessionRemember
   RestoreTabsSessionCheckBox->Checked = Ini->ReadBool("SessionRemember","RestoreTabs",true);
   ManualRestoreTabsSessionCheckBox->Checked = Ini->ReadBool("SessionRemember","ManualRestoreTabs",false);
@@ -118,10 +146,17 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   InactiveTabsNewMsgCheckBox->Checked = Ini->ReadBool("NewMsg","InactiveTabs",true);
   InactiveNotiferNewMsgCheckBox->Checked = Ini->ReadBool("NewMsg","InactiveNotifer",false);
   ChatStateNotiferNewMsgCheckBox->Checked = Ini->ReadBool("NewMsg","ChatStateNotifer",true);
+  //ClipTabs
+  OpenClipTabsCheckBox->Checked = Ini->ReadBool("ClipTabs","OpenClipTabs",true);
+  InactiveClipTabsCheckBox->Checked = Ini->ReadBool("ClipTabs","InactiveClipTabs",false);
   //Other
   StayOnTopCheckBox->Checked = Ini->ReadBool("Other","StayOnTop",false);
   EmuTabsWCheckBox->Checked = Ini->ReadBool("Other","EmuTabsW",false);
   QuickQuoteCheckBox->Checked = Ini->ReadBool("Other","QuickQuote",false);
+  AntiSpimCheckBox->Checked = !Ini->ReadBool("Other","AntiSpim",true);
+  HideStatusBarCheckBox->Checked = Ini->ReadBool("Other","HideStatusBar",false);
+  HideToolBarCheckBox->Checked = Ini->ReadBool("Other","HideToolBar",false);
+  CollapseImagesCheckBox->Checked = Ini->ReadBool("Other","CollapseImages",false);
   delete Ini;
 
   aUnsentMsgChk->Execute();
@@ -162,6 +197,35 @@ void __fastcall TSettingsForm::aUnsentMsgChkExecute(TObject *Sender)
 
 void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
 {
+  //Sprawdzanie zaleznosci opcji
+  //ClosedTabs
+  if((!FrmMainClosedTabsCheckBox->Checked)&&(!FrmSendClosedTabsCheckBox->Checked))
+  {
+	FastAccessClosedTabsCheckBox->Checked = false;
+	aClosedTabsChk->Execute();
+  }
+  if((!FastAccessClosedTabsCheckBox->Checked)&&(!UnCloseTabHotKeyCheckBox->Checked))
+  {
+	RememberClosedTabsCheckBox->Checked = false;
+	aClosedTabsChk->Execute();
+  }
+  //UnsentMsg
+  if((!CloudUnsentMsgCheckBox->Checked)&&(!TrayUnsentMsgCheckBox->Checked))
+  {
+	InfoUnsentMsgCheckBox->Checked = false;
+	aUnsentMsgChk->Execute();
+  }
+  if((!FrmMainUnsentMsgCheckBox->Checked)&&(!FrmSendUnsentMsgCheckBox->Checked))
+  {
+	FastAccessUnsentMsgCheckBox->Checked = false;
+	aUnsentMsgChk->Execute();
+  }
+  if((!InfoUnsentMsgCheckBox->Checked)&&(!FastAccessUnsentMsgCheckBox->Checked))
+  {
+	RememberUnsentMsgCheckBox->Checked = false;
+    aUnsentMsgChk->Execute();
+  }
+  //Zapisywanie poszczegolnych ustawien
   TIniFile *Ini = new TIniFile(GetPluginUserDir() + "\\\\TabKit\\\\Settings.ini");
   //UnsentMsg
   Ini->WriteBool("UnsentMsg","Enable",RememberUnsentMsgCheckBox->Checked);
@@ -206,6 +270,7 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
   Ini->WriteInteger("ClosedTabs","HotKeyDef",UnCloseTabHotKeyInput->HotKey);
   Ini->WriteInteger("ClosedTabs","Count",CountClosedTabsCSpinEdit->Value);
   Ini->WriteBool("ClosedTabs","RestoreLastMsg",RestoreLastMsgClosedTabsCheckBox->Checked);
+  Ini->WriteBool("ClosedTabs","OnlyConversationTabs",OnlyConversationTabsCheckBox->Checked);
   //SessionRemember
   Ini->WriteBool("SessionRemember","RestoreTabs",RestoreTabsSessionCheckBox->Checked);
   if(RestoreTabsSessionCheckBox->Checked)
@@ -240,10 +305,18 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
   Ini->WriteBool("NewMsg","InactiveTabs",InactiveTabsNewMsgCheckBox->Checked);
   Ini->WriteBool("NewMsg","InactiveNotifer",InactiveNotiferNewMsgCheckBox->Checked);
   Ini->WriteBool("NewMsg","ChatStateNotifer",ChatStateNotiferNewMsgCheckBox->Checked);
+  //ClipTabs
+  Ini->WriteBool("ClipTabs","OpenClipTabs",OpenClipTabsCheckBox->Checked);
+  Ini->WriteBool("ClipTabs","InactiveClipTabs",InactiveClipTabsCheckBox->Checked);
   //Other
   Ini->WriteBool("Other","StayOnTop",StayOnTopCheckBox->Checked);
   Ini->WriteBool("Other","EmuTabsW",EmuTabsWCheckBox->Checked);
   Ini->WriteBool("Other","QuickQuote",QuickQuoteCheckBox->Checked);
+  Ini->WriteBool("Other","AntiSpim",!AntiSpimCheckBox->Checked);
+  Ini->WriteBool("Other","HideStatusBar",HideStatusBarCheckBox->Checked);
+  Ini->WriteBool("Other","HideToolBar",HideToolBarCheckBox->Checked);
+  Ini->WriteBool("Other","CollapseImages",CollapseImagesCheckBox->Checked);
+
   delete Ini;
 }
 //---------------------------------------------------------------------------
@@ -273,6 +346,9 @@ void __fastcall TSettingsForm::aSaveSettingsWExecute(TObject *Sender)
   DestroyStayOnTop();
   aSaveSettings->Execute();
   LoadSettings();
+  CheckAntiSpim();
+  CheckHideStatusBar();
+  ShowToolBar();
   BuildStayOnTop();
   BuildFrmUnsentMsg();
   BuildFrmClosedTabs();
@@ -304,6 +380,7 @@ void __fastcall TSettingsForm::aClosedTabsChkExecute(TObject *Sender)
   CountClosedTabsLabel->Enabled = RememberClosedTabsCheckBox->Checked;
   CountClosedTabsCSpinEdit->Enabled = RememberClosedTabsCheckBox->Checked;
   RestoreLastMsgClosedTabsCheckBox->Enabled = RememberClosedTabsCheckBox->Checked;
+  OnlyConversationTabsCheckBox->Enabled = RememberClosedTabsCheckBox->Checked;
   if(!RememberClosedTabsCheckBox->Checked)
   {
 	FrmMainClosedTabsCheckBox->Enabled = false;
@@ -399,6 +476,13 @@ void __fastcall TSettingsForm::OtherCategoryPanelExpand(TObject *Sender)
    SessionRememberEraseButton->Enabled = true;
   else
    SessionRememberEraseButton->Enabled = false;
+  ClipTabsEraseButton->Enabled = Ini->SectionExists("ClipTabs");
+  FileListBox->Directory = GetPluginUserDirW() + "\\TabKit\\Avatars";
+  FileListBox->Update();
+  if(FileListBox->Items->Count)
+   MiniAvatarsEraseButton->Enabled = true;
+  else
+   MiniAvatarsEraseButton->Enabled = false;
   delete Ini;
 }
 //---------------------------------------------------------------------------
@@ -417,5 +501,72 @@ void __fastcall TSettingsForm::FormMouseWheelUp(TObject *Sender, TShiftState Shi
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TSettingsForm::ClipTabsEraseButtonClick(TObject *Sender)
+{
+  EraseClipTabs();
+  ClipTabsEraseButton->Enabled = false;
+}
+//---------------------------------------------------------------------------
 
+void __fastcall TSettingsForm::aClipTabsChkExecute(TObject *Sender)
+{
+  SaveButton->Enabled = true;
+}
+//---------------------------------------------------------------------------
+
+int GetEncoderClsid(const WCHAR* format, CLSID* pClsid)
+{
+  unsigned int num = 0;
+  unsigned int size = 0;
+
+  Gdiplus::GetImageEncodersSize(&num, &size);
+  if(size == 0)return -1;
+
+  Gdiplus::ImageCodecInfo* imageCodecInfo = new Gdiplus::ImageCodecInfo[size];
+  Gdiplus::GetImageEncoders(num, size, imageCodecInfo);
+
+  for(unsigned int i = 0; i < num; ++i)
+  {
+	if(wcscmp(imageCodecInfo[i].MimeType, format) == 0)
+	{
+	  *pClsid = imageCodecInfo[i].Clsid;
+	  delete[] imageCodecInfo;
+	  return i;
+	}
+  }
+  delete imageCodecInfo;
+  return -1;
+}
+//-----------------------------------------------------------------
+
+void __fastcall TSettingsForm::ConvertImage(UnicodeString Old, UnicodeString New)
+{
+  //Inicjalizacja GDIPlus
+  Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+  ULONG_PTR gdiplusToken;
+  GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+  //Konwertowanie grafiki
+  Gdiplus::Graphics Grphx(Handle);
+  Gdiplus::Image OrgImage(Old.w_str());
+  Gdiplus::Image* Thumbnail = OrgImage.GetThumbnailImage(16, 16, NULL, NULL);
+  Grphx.DrawImage(Thumbnail, 0, 0,Thumbnail->GetWidth(), Thumbnail->GetHeight());
+  CLSID gifClsid;
+  GetEncoderClsid(L"image/png", &gifClsid);
+  Thumbnail->Save(New.w_str(), &gifClsid, NULL);
+  delete Thumbnail;
+  //Zakoñczenie sesji z GDIPlus
+  Gdiplus::GdiplusShutdown(gdiplusToken);
+}
+//-----------------------------------------------------------------
+
+void __fastcall TSettingsForm::MiniAvatarsEraseButtonClick(TObject *Sender)
+{
+  for(int Count=0;Count<FileListBox->Items->Count;Count++)
+  {
+	DeleteFile(FileListBox->Items->Strings[Count]);
+  }
+  EraseClipTabsIcons();
+  MiniAvatarsEraseButton->Enabled = false;
+}
+//---------------------------------------------------------------------------
 
