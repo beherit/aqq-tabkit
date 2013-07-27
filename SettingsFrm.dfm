@@ -260,7 +260,7 @@ object SettingsForm: TSettingsForm
         Top = 84
         Width = 181
         Height = 17
-        Caption = 'Pokazuj szczeg'#243'lowe informacje'
+        Caption = 'Pokazuj szczeg'#243#322'owe informacje'
         TabOrder = 3
         OnClick = DetailedCloudUnsentMsgCheckBoxClick
       end
@@ -272,10 +272,10 @@ object SettingsForm: TSettingsForm
         Left = 6
         Top = 6
         Width = 280
-        Height = 35
+        Height = 26
         Caption = 
-          'Inteligentne prze'#322#261'czanie mi'#281'dzy zak'#322'adkami przy u'#380'yciu skr'#243'tu C' +
-          'trl+Tab do nieodczytanych wiadomo'#347#263' '
+          'Inteligentne prze'#322#261'czanie pomi'#281'dzy zak'#322'adkami przy u'#380'yciu skr'#243'tu' +
+          ' Ctrl+Tab do nieodczytanych wiadomo'#347'ci'
         Checked = True
         State = cbChecked
         TabOrder = 0
@@ -284,7 +284,7 @@ object SettingsForm: TSettingsForm
       end
       object TabsHotKeysCheckBox: TCheckBox
         Left = 6
-        Top = 94
+        Top = 85
         Width = 280
         Height = 17
         Caption = 'Przypisz skr'#243'ty klawiszowe do konkretnych zak'#322'adek'
@@ -295,7 +295,7 @@ object SettingsForm: TSettingsForm
       end
       object SwitchToNewMsgModePanel: TPanel
         Left = 20
-        Top = 47
+        Top = 38
         Width = 266
         Height = 41
         BevelOuter = bvNone
@@ -324,7 +324,7 @@ object SettingsForm: TSettingsForm
       end
       object TabsHotKeysModePanel: TPanel
         Left = 20
-        Top = 117
+        Top = 108
         Width = 266
         Height = 41
         BevelOuter = bvNone
@@ -355,6 +355,13 @@ object SettingsForm: TSettingsForm
     object ClosedTabsSheet: TTabSheet
       Caption = 'Zamkni'#281'te zak'#322'adki'
       ImageIndex = 2
+      object CountClosedTabsLabel: TLabel
+        Left = 20
+        Top = 178
+        Width = 163
+        Height = 13
+        Caption = 'Liczba zapami'#281'tywanych zak'#322#261'dek'
+      end
       object RememberClosedTabsCheckBox: TCheckBox
         Left = 6
         Top = 6
@@ -401,10 +408,10 @@ object SettingsForm: TSettingsForm
         Left = 20
         Top = 98
         Width = 253
-        Height = 23
+        Height = 26
         Caption = 
-          'Przypisz skr'#243't klawiszowy przywracaj'#261'cy ostnio zamkni'#281't'#261' zak'#322'adk' +
-          #281
+          'Przypisz skr'#243't klawiszowy przywracaj'#261'cy ostatnio zamkni'#281't'#261' zak'#322'a' +
+          'dk'#281
         Checked = True
         State = cbChecked
         TabOrder = 4
@@ -413,7 +420,7 @@ object SettingsForm: TSettingsForm
       end
       object UnCloseTabHotKeyMode1RadioButton: TRadioButton
         Left = 35
-        Top = 127
+        Top = 130
         Width = 110
         Height = 17
         Caption = 'Ctrl + Backspace'
@@ -424,7 +431,7 @@ object SettingsForm: TSettingsForm
       end
       object UnCloseTabHotKeyMode2RadioButton: TRadioButton
         Left = 35
-        Top = 150
+        Top = 153
         Width = 93
         Height = 17
         Caption = 'Wybrany skr'#243't'
@@ -433,7 +440,7 @@ object SettingsForm: TSettingsForm
       end
       object UnCloseTabHotKeyInput: THotKey
         Left = 134
-        Top = 150
+        Top = 152
         Width = 115
         Height = 19
         Enabled = False
@@ -441,6 +448,17 @@ object SettingsForm: TSettingsForm
         Modifiers = []
         TabOrder = 7
         OnChange = UnCloseTabHotKeyInputChange
+      end
+      object CountClosedTabsCSpinEdit: TCSpinEdit
+        Left = 189
+        Top = 175
+        Width = 36
+        Height = 22
+        MaxValue = 30
+        MinValue = 5
+        TabOrder = 8
+        Value = 5
+        OnChange = CountClosedTabsCSpinEditChange
       end
     end
   end

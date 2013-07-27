@@ -60,6 +60,7 @@ bool FrmSendClosedTabsChk;
 bool UnCloseTabHotKeyChk;
 int UnCloseTabHotKeyMode;
 int UnCloseTabHotKeyDef;
+int CountUnCloseTabVal;
 
 //JID kontaktu
 UnicodeString JID;
@@ -119,10 +120,18 @@ UnicodeString GetContactNick(UnicodeString JID)
   PluginContactSimpleInfo.cbSize = sizeof(TPluginContactSimpleInfo);
   PluginContactSimpleInfo.JID = JID.w_str();
   PluginLink.CallService(AQQ_CONTACTS_FILLSIMPLEINFO,0,(LPARAM)(&PluginContactSimpleInfo));
-  JID = (wchar_t*)(PluginContactSimpleInfo.Nick);
-  if(JID.IsEmpty())
-   JID = (wchar_t*)(PluginContactSimpleInfo.JID);
-  return JID;
+  UnicodeString Nick = (wchar_t*)(PluginContactSimpleInfo.Nick);
+  Nick = Nick.Trim();
+  UnicodeString NickW = Nick;
+  NickW.t_str();
+  if((NickW.IsEmpty())||(NickW=="?"))
+  {
+	if(AnsiPos("@plugin.gg.",JID))
+	 JID.Delete(AnsiPos("@plugin.gg.",JID),JID.Length());
+	return JID;
+  }
+  else
+   return Nick;
 }
 //---------------------------------------------------------------------------
 
@@ -229,7 +238,7 @@ void BuildFrmUnsentMsg()
 	TStringList *Messages = new TStringList;
 	Ini->ReadSection("Messages",Messages);
 	int MsgCount = Messages->Count;
-	//Maks 5 elementow
+	//Maks 5 elementow w popupmenu
 	if(MsgCount>5) MsgCount = 5;
 	//Jezeli w ogole cos jest
 	if(MsgCount>0)
@@ -363,8 +372,8 @@ void GetClosedTabs()
 	TStringList *ClosedTabs = new TStringList;
 	Ini->ReadSection("ClosedTabs",ClosedTabs);
 	int TabsCount = ClosedTabs->Count;
-	if(TabsCount>5)
-	 TabsCount = 5;
+	//Maks X zdefiniowanych elementów	
+	if(TabsCount>CountUnCloseTabVal) TabsCount = CountUnCloseTabVal;
 	if(TabsCount>0)
 	{
 	  ClosedTabsList->Clear();
@@ -389,8 +398,8 @@ void SaveClosedTabs()
 	TIniFile *Ini = new TIniFile(SessionFileDir);
 	Ini->EraseSection("ClosedTabs");
 	int TabsCount = ClosedTabsList->Count;
-	//Maks 5 elementow w popupmenu
-    if(TabsCount>5) TabsCount = 5;
+	//Maks X zdefiniowanych elementów
+	if(TabsCount>CountUnCloseTabVal) TabsCount = CountUnCloseTabVal;
 	if(TabsCount>0)
 	{
 	  for(int Count=0;Count<TabsCount;Count++)
@@ -495,7 +504,7 @@ void BuildFrmClosedTabs()
   if((ClosedTabsChk)&&(FastAccessClosedTabsChk))
   {
 	int TabsCount = ClosedTabsList->Count;
-	//Maks 5 elementow
+	//Maks 5 elementow w popupmenu
 	if(TabsCount>5) TabsCount = 5;
 	//Jezeli w ogole cos jest
 	if(TabsCount>0)
@@ -736,9 +745,12 @@ int __stdcall OnFetchAllTabs (WPARAM wParam, LPARAM lParam)
 	  {
 		//Usuwanie JID z tablicy
 		ClosedTabsList->Delete(ClosedTabsList->IndexOf(JID));
-		//Usuwanie nadmiaru
-		while(ClosedTabsList->Count>5)
-		 ClosedTabsList->Delete(5);
+		//Maks X zdefiniowanych elementów
+		if(ClosedTabsList->Count>CountUnCloseTabVal)
+		{
+		  while(ClosedTabsList->Count>CountUnCloseTabVal)
+		   ClosedTabsList->Delete(CountUnCloseTabVal);
+		}
 		//Zapisywanie ostatnio zamknietych zakladek do pliku
 		SaveClosedTabs();
 	  }
@@ -859,9 +871,12 @@ int __stdcall OnActiveTab (WPARAM wParam, LPARAM lParam)
 		DestroyFrmClosedTabs();
 		//Usuwanie JID z tablicy
 		ClosedTabsList->Delete(ClosedTabsList->IndexOf(JID));
-		//Usuwanie nadmiaru
-		while(ClosedTabsList->Count>5)
-		 ClosedTabsList->Delete(5);
+		//Maks X zdefiniowanych elementów
+		if(ClosedTabsList->Count>CountUnCloseTabVal)
+		{
+		  while(ClosedTabsList->Count>CountUnCloseTabVal)
+		   ClosedTabsList->Delete(CountUnCloseTabVal);
+		}
 		//Zapisywanie ostatnio zamknietych zakladek do pliku
 		SaveClosedTabs();
 		//Tworzenie interfejsu
@@ -904,10 +919,12 @@ int __stdcall OnCloseTab(WPARAM wParam, LPARAM lParam)
 	  DestroyFrmClosedTabs();
 	  //Dodawanie JID do tablicy
 	  ClosedTabsList->Insert(0,JID);
-	  //Usuwanie nadmiaru
-	  while(ClosedTabsList->Count>5)
-	   ClosedTabsList->Delete(5);
-	  //Zapisywanie ostatnio zamknietych zakladek do pliku
+	  //Maks X zdefiniowanych elementów
+	  if(ClosedTabsList->Count>CountUnCloseTabVal)
+	  {
+		while(ClosedTabsList->Count>CountUnCloseTabVal)
+		 ClosedTabsList->Delete(CountUnCloseTabVal);
+	  }
 	  SaveClosedTabs();
 	  //Tworzenie interfejsu
 	  BuildFrmClosedTabs();
@@ -963,9 +980,12 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 		if(Message->Kind==MSGKIND_CHAT)
 		{
 		  Body = (wchar_t*)(Message->Body);
-		  //Dodawanie JID do kolejki nowych wiadomosci
-		  if(MsgList->IndexOf(JID)==-1)
-		   MsgList->Add(JID);
+		  if(!Body.IsEmpty())
+		  {
+			//Dodawanie JID do kolejki nowych wiadomosci
+			if(MsgList->IndexOf(JID)==-1)
+			 MsgList->Add(JID);
+          }
 		}
 	  }
 	}
@@ -1308,9 +1328,27 @@ void LoadSettings()
   FastAccessClosedTabsChk =  Ini->ReadBool("ClosedTabs","FastAccess",true);
   FrmMainClosedTabsChk =  Ini->ReadBool("ClosedTabs","FrmMain",true);
   FrmSendClosedTabsChk =  Ini->ReadBool("ClosedTabs","FrmSend",false);
-  UnCloseTabHotKeyChk =  Ini->ReadBool("ClosedTabs","UnCloseTabHotKey",false);
-  UnCloseTabHotKeyMode = Ini->ReadInteger("ClosedTabs","UnCloseTabHotKeyMode",1);
-  UnCloseTabHotKeyDef = Ini->ReadInteger("ClosedTabs","UnCloseTabHotKeyDef",0);
+  //1.0.0.0 -> 1.0.1.0
+  if(Ini->ValueExists("ClosedTabs","UnCloseTabHotKey"))
+  {
+	Ini->WriteInteger("ClosedTabs","HotKey",Ini->ReadBool("ClosedTabs","UnCloseTabHotKey",false));
+	Ini->DeleteKey("ClosedTabs","UnCloseTabHotKey");
+  }
+  if(Ini->ValueExists("ClosedTabs","UnCloseTabHotKeyMode"))
+  {
+	Ini->WriteInteger("ClosedTabs","HotKeyMode",Ini->ReadBool("ClosedTabs","UnCloseTabHotKeyMode",false));
+	Ini->DeleteKey("ClosedTabs","UnCloseTabHotKeyMode");
+  }
+  if(Ini->ValueExists("ClosedTabs","UnCloseTabHotKeyDef"))
+  {
+	Ini->WriteInteger("ClosedTabs","HotKeyDef",Ini->ReadBool("ClosedTabs","UnCloseTabHotKeyDef",false));
+	Ini->DeleteKey("ClosedTabs","UnCloseTabHotKeyDef");
+  }
+  //END
+  UnCloseTabHotKeyChk =  Ini->ReadBool("ClosedTabs","HotKey",false);  
+  UnCloseTabHotKeyMode = Ini->ReadInteger("ClosedTabs","HotKeyMode",1);
+  UnCloseTabHotKeyDef = Ini->ReadInteger("ClosedTabs","HotKeyDef",0);
+  CountUnCloseTabVal = Ini->ReadInteger("ClosedTabs","Count",5);
   delete Ini;
 }
 //---------------------------------------------------------------------------
@@ -1434,7 +1472,7 @@ extern "C" __declspec(dllexport) PPluginInfo __stdcall AQQPluginInfo(DWORD AQQVe
 {
   PluginInfo.cbSize = sizeof(TPluginInfo);
   PluginInfo.ShortName = (wchar_t*)L"TabKit";
-  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,0,0,0);
+  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,0,1,0);
   PluginInfo.Description = (wchar_t*)L"";
   PluginInfo.Author = (wchar_t*)L"Krzysztof Grochocki (Beherit)";
   PluginInfo.AuthorMail = (wchar_t*)L"email@beherit.pl";

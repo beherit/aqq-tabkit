@@ -9,6 +9,7 @@
 #include <ComCtrls.hpp>
 #include <ExtCtrls.hpp>
 #include <ActnList.hpp>
+#include "cspin.h"
 //---------------------------------------------------------------------------
 class TSettingsForm : public TForm
 {
@@ -54,6 +55,8 @@ __published:	// IDE-managed Components
 	TRadioButton *UnCloseTabHotKeyMode2RadioButton;
 	THotKey *UnCloseTabHotKeyInput;
 	TAction *aClosedTabsChk;
+	TLabel *CountClosedTabsLabel;
+	TCSpinEdit *CountClosedTabsCSpinEdit;
 	void __fastcall UnsentMsgTrayIconClick(TObject *Sender);
 	void __fastcall aExitExecute(TObject *Sender);
 	void __fastcall CancelButtonClick(TObject *Sender);
@@ -87,6 +90,7 @@ __published:	// IDE-managed Components
 	void __fastcall UnCloseTabHotKeyMode1RadioButtonClick(TObject *Sender);
 	void __fastcall UnCloseTabHotKeyMode2RadioButtonClick(TObject *Sender);
 	void __fastcall UnCloseTabHotKeyInputChange(TObject *Sender);
+	void __fastcall CountClosedTabsCSpinEditChange(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	__fastcall TSettingsForm(TComponent* Owner);
