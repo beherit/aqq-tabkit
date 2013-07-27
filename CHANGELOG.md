@@ -1,3 +1,8 @@
+1.1.0.4
+-----
+* Kolejne poprawki w ustawianiu nowej procedury okna rozmowy przy ³adowaniu wtyczki. (#4862)
+* Optymalizacja dzia³ania funkcji automatycznego ukrywania paska narzêdzi. (#4863)
+
 1.1.0.2
 -----
 * Mo¿liwoœæ wyœwietlania licznika znaków na przypiêtych zak³adkach.
