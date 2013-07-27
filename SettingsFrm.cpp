@@ -1,20 +1,12 @@
 //---------------------------------------------------------------------------
-#define STRICT
 #include <vcl.h>
 #pragma hdrstop
 #include "SettingsFrm.h"
 #include <gdiplus.h>
 #include <inifiles.hpp>
-//#include <windows.h>
-//#include <algorithm>
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
-//#pragma link "GdiPlus.lib"
-#pragma link "IdBaseComponent"
-#pragma link "IdCoder"
-#pragma link "IdCoder3to4"
-#pragma link "IdCoderMIME"
-#pragma link "LMDPNGImage"
+#pragma link "GdiPlus.lib"
 #pragma link "sBevel"
 #pragma link "sButton"
 #pragma link "sCheckBox"
@@ -27,10 +19,9 @@
 #pragma link "sSkinManager"
 #pragma link "sSkinProvider"
 #pragma link "sSpinEdit"
+#pragma link "acPNG"
 #pragma resource "*.dfm"
 TSettingsForm *SettingsForm;
-//using std::min;
-//using std::max;
 //---------------------------------------------------------------------------
 __declspec(dllimport)UnicodeString GetPluginUserDir();
 __declspec(dllimport)UnicodeString GetPluginUserDirW();
@@ -70,10 +61,10 @@ __fastcall TSettingsForm::TSettingsForm(TComponent* Owner)
 }
 //---------------------------------------------------------------------------
 
-void TSettingsForm::WMHotKey(TMessage& Message)
+void TSettingsForm::WMHotKey(TMessage& Msg)
 {
   //Minimalizacja / przywracanie okna rozmowy + FrmSendSideSlide
-  if(Message.WParam==0x0100)
+  if(Msg.WParam==0x0100)
   {
 	if(!MinimizeRestoreHotKey->Focused())
 	 MinimizeRestoreFrmSendExecute();
@@ -81,7 +72,7 @@ void TSettingsForm::WMHotKey(TMessage& Message)
 	 MinimizeRestoreHotKey->HotKey = GetMinimizeRestoreFrmSendKey();
   }
   //SideSlide dla FrmMain + otwieranie nowych wiadomosci
-  if(Message.WParam==0x0200)
+  if(Msg.WParam==0x0200)
   {
 	if(!MinimizeRestoreHotKey->Focused())
 	 MinimizeRestoreFrmMainExecute();
@@ -130,12 +121,12 @@ void __fastcall TSettingsForm::FormShow(TObject *Sender)
   if(sSkinManager->Active)
   {
 	//Skorkowanie glownego komponentu
-	CategoryPanelGroup->ChevronColor = sSkinManager->GetActiveEditFontColor();
-	CategoryPanelGroup->ChevronHotColor = sSkinManager->GetHighLightFontColor();
 	CategoryPanelGroup->Color = sSkinManager->GetActiveEditColor();
-	CategoryPanelGroup->GradientBaseColor = sSkinManager->GetActiveEditColor();
-	CategoryPanelGroup->GradientColor = sSkinManager->GetHighLightColor();
+	CategoryPanelGroup->GradientBaseColor = sSkinManager->GetHighLightColor(false);
+	CategoryPanelGroup->GradientColor = sSkinManager->GetHighLightColor(true);
 	CategoryPanelGroup->HeaderFont->Color = sSkinManager->GetActiveEditFontColor();
+	CategoryPanelGroup->ChevronColor = CategoryPanelGroup->HeaderFont->Color;
+	CategoryPanelGroup->ChevronHotColor = CategoryPanelGroup->HeaderFont->Color;
 	ClipTabsCategoryPanel->Color = sSkinManager->GetGlobalColor();
 	ClipTabsCategoryPanel->Font->Color = sSkinManager->GetGlobalFontColor();
 	ClosedTabsCategoryPanel->Color = sSkinManager->GetGlobalColor();
@@ -171,12 +162,12 @@ void __fastcall TSettingsForm::FormShow(TObject *Sender)
   else
   {
 	//Skorkowanie glownego komponentu
-	CategoryPanelGroup->ChevronColor = clBlack;
-	CategoryPanelGroup->ChevronHotColor = clGray;
 	CategoryPanelGroup->Color = clWindow;
 	CategoryPanelGroup->GradientBaseColor = (TColor)0xF0F0F0;
 	CategoryPanelGroup->GradientColor = clSilver;
 	CategoryPanelGroup->HeaderFont->Color = clWindowText;
+	CategoryPanelGroup->ChevronColor = clBlack;
+	CategoryPanelGroup->ChevronHotColor = clGray;
 	ClipTabsCategoryPanel->Color = clWindow;
 	ClipTabsCategoryPanel->Font->Color = clWindowText;
 	ClosedTabsCategoryPanel->Color = clWindow;
@@ -298,6 +289,9 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
 	 break;
 	case 3:
 	 TweakFrmSendTitlebarMode3RadioButton->Checked = true;
+	 break;
+	case 4:
+	 TweakFrmSendTitlebarMode4RadioButton->Checked = true;
 	 break;
   }
   TweakFrmMainTitlebarCheckBox->Checked = Ini->ReadBool("Titlebar","TweakMain",false);
@@ -537,8 +531,10 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
    Ini->WriteInteger("Titlebar","SendMode",1);
   else if(TweakFrmSendTitlebarMode2RadioButton->Checked)
    Ini->WriteInteger("Titlebar","SendMode",2);
-  else
+  else if(TweakFrmSendTitlebarMode3RadioButton->Checked)
    Ini->WriteInteger("Titlebar","SendMode",3);
+  else
+   Ini->WriteInteger("Titlebar","SendMode",4);
   Ini->WriteBool("Titlebar","TweakMain",TweakFrmMainTitlebarCheckBox->Checked);
   if(TweakFrmMainTitlebarMode1RadioButton->Checked)
    Ini->WriteInteger("Titlebar","MainMode",1);
@@ -754,6 +750,7 @@ void __fastcall TSettingsForm::aTitlebarTweakChkExecute(TObject *Sender)
   TweakFrmSendTitlebarMode1RadioButton->Enabled = TweakFrmSendTitlebarCheckBox->Checked;
   TweakFrmSendTitlebarMode2RadioButton->Enabled = TweakFrmSendTitlebarCheckBox->Checked;
   TweakFrmSendTitlebarMode3RadioButton->Enabled = TweakFrmSendTitlebarCheckBox->Checked;
+  TweakFrmSendTitlebarMode4RadioButton->Enabled = TweakFrmSendTitlebarCheckBox->Checked;
   TweakFrmMainTitlebarMode1RadioButton->Enabled = TweakFrmMainTitlebarCheckBox->Checked;
   TweakFrmMainTitlebarModeExComboBox->Enabled = TweakFrmMainTitlebarCheckBox->Checked;
   if(TweakFrmMainTitlebarCheckBox->Checked) TweakFrmMainTitlebarModeExComboBox->Enabled = TweakFrmMainTitlebarMode1RadioButton->Checked;
@@ -1294,13 +1291,6 @@ void __fastcall TSettingsForm::UnsentMsgCategoryPanelExpand(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TSettingsForm::aRefreshPanelsExecute(TObject *Sender)
-{
-  CategoryPanelGroup->Visible = false;
-  CategoryPanelGroup->Visible = true;
-}
-//---------------------------------------------------------------------------
-
 void __fastcall TSettingsForm::RefreshTimerTimer(TObject *Sender)
 {
   //Wylaczenie timera
@@ -1311,6 +1301,13 @@ void __fastcall TSettingsForm::RefreshTimerTimer(TObject *Sender)
   aRefreshPanels->Execute();
   //Status odswiezania
   pRefreshTabs = false;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TSettingsForm::aRefreshPanelsExecute(TObject *Sender)
+{
+  CategoryPanelGroup->Visible = false;
+  CategoryPanelGroup->Visible = true;
 }
 //---------------------------------------------------------------------------
 
@@ -1336,7 +1333,7 @@ void __fastcall TSettingsForm::OtherTabSheetShow(TObject *Sender)
 
 void __fastcall TSettingsForm::PayPalImageClick(TObject *Sender)
 {
-  ShellExecute(NULL, "open", "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9QAXL9BG9XKRE", NULL, NULL, SW_SHOWNORMAL);
+  ShellExecute(NULL, L"open", L"https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9QAXL9BG9XKRE", NULL, NULL, SW_SHOWNORMAL);
 }
 //---------------------------------------------------------------------------
 

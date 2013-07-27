@@ -2,11 +2,6 @@
 #ifndef SettingsFrmH
 #define SettingsFrmH
 //---------------------------------------------------------------------------
-#include "IdBaseComponent.hpp"
-#include "IdCoder.hpp"
-#include "IdCoder3to4.hpp"
-#include "IdCoderMIME.hpp"
-#include "LMDPNGImage.hpp"
 #include "sBevel.hpp"
 #include "sButton.hpp"
 #include "sCheckBox.hpp"
@@ -19,14 +14,20 @@
 #include "sSkinManager.hpp"
 #include "sSkinProvider.hpp"
 #include "sSpinEdit.hpp"
-#include <ActnList.hpp>
-#include <Classes.hpp>
-#include <ComCtrls.hpp>
-#include <Controls.hpp>
-#include <ExtCtrls.hpp>
-#include <FileCtrl.hpp>
-#include <Forms.hpp>
-#include <StdCtrls.hpp>
+#include <IdBaseComponent.hpp>
+#include <IdCoder.hpp>
+#include <IdCoder3to4.hpp>
+#include <IdCoderMIME.hpp>
+#include <System.Actions.hpp>
+#include <System.Classes.hpp>
+#include <Vcl.ActnList.hpp>
+#include <Vcl.ComCtrls.hpp>
+#include <Vcl.Controls.hpp>
+#include <Vcl.ExtCtrls.hpp>
+#include <Vcl.FileCtrl.hpp>
+#include <Vcl.Forms.hpp>
+#include <Vcl.StdCtrls.hpp>
+#include "acPNG.hpp"
 //---------------------------------------------------------------------------
 class TSettingsForm : public TForm
 {
@@ -166,7 +167,6 @@ __published:	// IDE-managed Components
 	TsSpinEdit *FrmMainSlideInDelaySpinEdit;
 	TsSpinEdit *FrmSendSlideOutDelaySpinEdit;
 	TsSpinEdit *FrmMainSlideOutDelaySpinEdit;
-	TAction *aRefreshPanels;
 	TsPageControl *sPageControl;
 	TsTabSheet *ClosedTabsTabSheet;
 	TsTabSheet *UnsentMsgTabSheet;
@@ -228,6 +228,8 @@ __published:	// IDE-managed Components
 	TsCheckBox *ExcludeClipTabsFromSwitchToNewMsgCheckBox;
 	TsCheckBox *ExcludeClipTabsFromTabsHotKeysCheckBox;
 	TsCheckBox *ShortenLinksCheckBox;
+	TsRadioButton *TweakFrmSendTitlebarMode4RadioButton;
+	TAction *aRefreshPanels;
 	void __fastcall UnsentMsgTrayIconClick(TObject *Sender);
 	void __fastcall aExitExecute(TObject *Sender);
 	void __fastcall CancelButtonClick(TObject *Sender);
@@ -271,19 +273,15 @@ __published:	// IDE-managed Components
 	void __fastcall TitlebarCategoryPanelExpand(TObject *Sender);
 	void __fastcall UnsentMsgCategoryPanelCollapse(TObject *Sender);
 	void __fastcall UnsentMsgCategoryPanelExpand(TObject *Sender);
-	void __fastcall aRefreshPanelsExecute(TObject *Sender);
 	void __fastcall RefreshTimerTimer(TObject *Sender);
 	void __fastcall OtherTabSheetShow(TObject *Sender);
 	void __fastcall PayPalImageClick(TObject *Sender);
 	void __fastcall NewMsgTabSheetShow(TObject *Sender);
-
+	void __fastcall aRefreshPanelsExecute(TObject *Sender);
 private:	// User declarations
-	//Konieczne do inicjalizacji GDIPlus
-	//Gdiplus::GdiplusStartupInput gdiplusStartupInput;
-	//ULONG_PTR gdiplusToken;
 public:		// User declarations
 	__fastcall TSettingsForm(TComponent* Owner);
-	void WMHotKey(TMessage& Message);
+	void WMHotKey(TMessage& Msg);
 	BEGIN_MESSAGE_MAP
 	MESSAGE_HANDLER(WM_HOTKEY,TMessage,WMHotKey);
 	END_MESSAGE_MAP(TComponent)
