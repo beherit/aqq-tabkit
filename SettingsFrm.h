@@ -1,6 +1,7 @@
 //---------------------------------------------------------------------------
 #ifndef SettingsFrmH
 #define SettingsFrmH
+#define WM_ALPHAWINDOWS (WM_USER + 666)
 //---------------------------------------------------------------------------
 #include "acPNG.hpp"
 #include "sBevel.hpp"
@@ -263,10 +264,12 @@ private:	// User declarations
 public:		// User declarations
 	UnicodeString XML;
 	__fastcall TSettingsForm(TComponent* Owner);
-	void WMHotKey(TMessage& Msg);
+	void __fastcall WMTransparency(TMessage &Message);
+	void __fastcall WMHotKey(TMessage &Message);
 	BEGIN_MESSAGE_MAP
+	MESSAGE_HANDLER(WM_ALPHAWINDOWS,TMessage,WMTransparency);
 	MESSAGE_HANDLER(WM_HOTKEY,TMessage,WMHotKey);
-	END_MESSAGE_MAP(TComponent)
+	END_MESSAGE_MAP(TForm)
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TSettingsForm *SettingsForm;

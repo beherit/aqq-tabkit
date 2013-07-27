@@ -1,3 +1,12 @@
+1.7.4.0
+-----
+* Zmiana w obs³udze nadawania przeŸroczystoœci obramowañ przez wtyczkê AlphaWindows.
+* Blokada wysuwania okna rozmowy po schowaniu okna kontaktów podczas tworzenia wycinka.
+* Drobna poprawka w wy³¹czaniu modalnoœci okna kontaktów w niektórych sytuacjach.
+* Ma³e poprawki w blokadach uruchamianych po po³¹czeniu siê z sieci¹.
+* Poprawa funkcjonalnoœci zmieniania tekstu na pasku tytu³u okna rozmowy.
+* Systemowe wiadomoœci dotycz¹ce transferu pliku s¹ traktowane jako zwyk³e wiadomoœci (dzia³aj¹ce np. inteligentne prze³¹czanie zak³adek).
+
 1.7.3.0
 -----
 * Zmiana wygl¹du okna ustawieñ.
