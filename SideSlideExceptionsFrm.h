@@ -45,6 +45,7 @@ __published:	// IDE-managed Components
 private:	// User declarations
 public:		// User declarations
 	__fastcall TSideSlideExceptionsForm(TComponent* Owner);
+	bool SkinManagerEnabled;
 	void __fastcall WMTransparency(TMessage &Message);
 	BEGIN_MESSAGE_MAP
 	MESSAGE_HANDLER(WM_ALPHAWINDOWS,TMessage,WMTransparency);

@@ -464,6 +464,7 @@ int __stdcall OnAutoSecureOff(WPARAM wParam, LPARAM lParam);
 int __stdcall OnBeforeUnload(WPARAM wParam, LPARAM lParam);
 int __stdcall OnCloseTab(WPARAM wParam, LPARAM lParam);
 int __stdcall OnCloseTabMessage(WPARAM wParam, LPARAM lParam);
+int __stdcall OnColorChange(WPARAM wParam, LPARAM lParam);
 int __stdcall OnContactsUpdate(WPARAM wParam, LPARAM lParam);
 int __stdcall OnFetchAllTabs(WPARAM wParam, LPARAM lParam);
 int __stdcall OnFetchAllTabsW(WPARAM wParam, LPARAM lParam);
@@ -832,6 +833,18 @@ bool ChkThemeGlowing()
 }
 //---------------------------------------------------------------------------
 
+//Pobieranie ustawien koloru AlphaControls
+int GetHUE()
+{
+  return (int)PluginLink.CallService(AQQ_SYSTEM_COLORGETHUE,0,0);
+}
+//---------------------------------------------------------------------------
+int GetSaturation()
+{
+  return (int)PluginLink.CallService(AQQ_SYSTEM_COLORGETSATURATION,0,0);
+}
+//---------------------------------------------------------------------------
+
 //Pobieranie informacji o pliku (wersja itp)
 UnicodeString GetFileInfo(wchar_t *ModulePath, String KeyName)
 {
@@ -916,6 +929,9 @@ int GetContactState(UnicodeString JID)
   //Ikona bota Blip (gdy zakladka jest przypieta)
   if(((JID=="blip@blip.pl")||(JID.Pos("202@plugin.gg")==1))&&(!UnloadExecuted))
    if(ClipTabsList->IndexOf(JID)!=-1) return 132;
+  //Ikona bota tweet.IM (gdy zakladka jest przypieta)
+  if((JID.Pos("@twitter.tweet.im"))&&(!UnloadExecuted))
+   if(ClipTabsList->IndexOf(JID)!=-1) return 131;
   //Pobranie stanu kontatu z listy stanow zbieranej przez wtyczke
   int State = ContactsStateList->ReadInteger("State",JID,-1);
   //Jezeli stan kontaktu nie jest zapisany
@@ -6916,6 +6932,24 @@ int __stdcall OnCloseTabMessage(WPARAM wParam, LPARAM lParam)
 }
 //---------------------------------------------------------------------------
 
+//Hook na zmiane kolorystyki AlphaControls
+int __stdcall OnColorChange(WPARAM wParam, LPARAM lParam)
+{
+  //Okno ustawien zostalo juz stworzone
+  if(hSettingsForm)
+  {
+	//Wlaczona zaawansowana stylizacja okien
+	if(ChkSkinEnabled())
+	{
+	  hSettingsForm->sSkinManager->HueOffset = wParam;
+	  hSettingsForm->sSkinManager->Saturation = lParam;
+	}
+  }
+
+  return 0;
+}
+//---------------------------------------------------------------------------
+
 //Hook na zmianê stanu kontaktu
 int __stdcall OnContactsUpdate(WPARAM wParam, LPARAM lParam)
 {
@@ -7236,6 +7270,12 @@ int __stdcall OnFetchAllTabs(WPARAM wParam, LPARAM lParam)
 		//Zmiana ikonki na zakladce
 		PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)132,(LPARAM)FetchAllTabsContact);
 	  }
+	  //Zakladka z botem tweet.IM
+	  else if(JID.Pos("@twitter.tweet.im"))
+	  {
+		//Zmiana ikonki na zakladce
+		PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)131,(LPARAM)FetchAllTabsContact);
+	  }
 	  //Zakladka ze zwyklym kontaktem
 	  else if((!JID.Pos("ischat_"))&&(MiniAvatarsClipTabsChk))
 	  {
@@ -7325,6 +7365,12 @@ int __stdcall OnFetchAllTabsW(WPARAM wParam, LPARAM lParam)
 	  {
 		//Zmiana ikonki na zakladce
 		PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)132,(LPARAM)FetchAllTabsContact);
+	  }
+	  //Zakladka z botem tweet.IM
+	  else if(JID.Pos("@twitter.tweet.im"))
+	  {
+		//Zmiana ikonki na zakladce
+		PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)131,(LPARAM)FetchAllTabsContact);
 	  }
 	  //Zakladka ze zwyklym kontaktem
 	  else if((!FetchAllTabsContact->IsChat)&&(MiniAvatarsClipTabsChk))
@@ -9017,6 +9063,11 @@ int __stdcall OnTabImage(WPARAM wParam, LPARAM lParam)
 			if((JID=="blip@blip.pl")||(JID.Pos("202@plugin.gg")==1))
 			{
 			  return 132;
+			}
+			//Zakladka z botem tweet.IM
+			else if(JID.Pos("@twitter.tweet.im"))
+			{
+			  return 131;
 			}
 			//Zakladka ze zwyklym kontaktem
 			else if(MiniAvatarsClipTabsChk)
@@ -10761,6 +10812,8 @@ extern "C" int __declspec(dllexport) __stdcall Load(PPluginLink Link)
   PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_CLOSETAB,OnCloseTab);
   //Hook na zamkniecie okna rozmowy lub zakladki wraz z wiadomoscia
   PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_CLOSETABMESSAGE,OnCloseTabMessage);
+  //Hook na zmiane kolorystyki AlphaControls
+  PluginLink.HookEvent(AQQ_SYSTEM_COLORCHANGE,OnColorChange);
   //Hook na zmianê stanu kontaktu
   PluginLink.HookEvent(AQQ_CONTACTS_UPDATE,OnContactsUpdate);
   //Hook na zakonczenie ladowania listy kontaktow przy starcie AQQ
@@ -11074,6 +11127,7 @@ extern "C" int __declspec(dllexport) __stdcall Unload()
   PluginLink.UnhookEvent(OnBeforeUnload);
   PluginLink.UnhookEvent(OnCloseTab);
   PluginLink.UnhookEvent(OnCloseTabMessage);
+  PluginLink.UnhookEvent(OnColorChange);
   PluginLink.UnhookEvent(OnContactsUpdate);
   PluginLink.UnhookEvent(OnFetchAllTabs);
   PluginLink.UnhookEvent(OnListReady);
