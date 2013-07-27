@@ -47,6 +47,9 @@ TPluginAction FrmMainClosedTabsButton, FrmSendClosedTabsButton;
 TPluginAction BuildFrmClosedTabsItem[12];
 TPluginAction DestroyFrmClosedTabsItem;
 UnicodeString JustUnClosedJID;
+bool UnCloseTabFromHotKey = false;
+UnicodeString UnCloseTabFromHotKeyJID;
+int UnCloseTabFromHotKeyUserIdx;
 //ClipTabs
 TPluginAction BuildClipTabItem;
 UnicodeString JustUnClipTabJID;
@@ -352,8 +355,7 @@ UnicodeString GetPluginUserDir()
 //---------------------------------------------------------------------------
 UnicodeString GetPluginUserDirW()
 {
-  UnicodeString Dir = (wchar_t*)(PluginLink.CallService(AQQ_FUNCTION_GETPLUGINUSERDIR,0,0));
-  return Dir;
+  return (wchar_t*)(PluginLink.CallService(AQQ_FUNCTION_GETPLUGINUSERDIR,0,0));
 }
 //---------------------------------------------------------------------------
 UnicodeString GetContactsUserDir()
@@ -393,6 +395,11 @@ UnicodeString GetContactNick(UnicodeString JID)
 //Pobieranie stanu kontaktu podajac jego JID
 int GetContactState(UnicodeString JID)
 {
+  //Ikona bota Blip
+  if((JID=="blip@blip.pl")||(JID.Pos("202@plugin.gg")>0))
+  {
+	if(ClipTabsList->IndexOf(JID)!=-1) return 132;
+  }
   int State = ContactsStateList->ReadInteger("State",JID,0);
   //Jezeli stan nie jest zapisany
   if(!State)
@@ -402,7 +409,6 @@ int GetContactState(UnicodeString JID)
 	PluginContact.JID = JID.w_str();
     State = PluginLink.CallService(AQQ_FUNCTION_GETSTATEPNG_INDEX,0,(LPARAM)(&PluginContact));
   }
-
   return State;
 }
 //---------------------------------------------------------------------------
@@ -421,7 +427,6 @@ void DestroyFrmUnsentMsg()
   {
 	//Usuwanie elementow popupmenu
 	UnicodeString ItemName;
-	//for(int Count=0;Count<MsgCount;Count++)
 	for(int Count=0;Count<MsgCount;Count++)
 	{
 	  ItemName = "FrmUnsentMsgItem"+IntToStr(Count);
@@ -1147,6 +1152,9 @@ VOID CALLBACK Timer(HWND hwnd, UINT msg, UINT_PTR idEvent, DWORD dwTime)
 	  //Pokazywanie paska narzedzi
 	  if(idEvent==300)
 	  {
+        //Zatrzymanie timera
+		KillTimer(hFrmMain,300);
+
 		POINT pCur;
 		GetCursorPos(&pCur);
 		HWND hCurActiveFrm = WindowFromPoint(pCur);
@@ -1166,8 +1174,6 @@ VOID CALLBACK Timer(HWND hwnd, UINT msg, UINT_PTR idEvent, DWORD dwTime)
 			SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width(),WindowRect.Height(),SWP_NOMOVE);
 		  }
 		}
-		//Zatrzymanie timera
-		KillTimer(hFrmMain,300);
 	  }
 	  //Przywracanie sesji z czatami
 	  if(idEvent==400)
@@ -1177,7 +1183,9 @@ VOID CALLBACK Timer(HWND hwnd, UINT msg, UINT_PTR idEvent, DWORD dwTime)
 		PluginStateChange.cbSize = sizeof(TPluginStateChange);
 		if(PluginStateChange.NewState!=0)
 		{
-          //Jezeli sa jakies zakladki czatowe do przywrocenia
+          //Zatrzymanie timera
+		  KillTimer(hFrmMain,400);
+		  //Jezeli sa jakies zakladki czatowe do przywrocenia
 		  if(ChatSessionList->Count>0)
 		  {
 			for(int Count=0;Count<ChatSessionList->Count;Count++)
@@ -1201,8 +1209,6 @@ VOID CALLBACK Timer(HWND hwnd, UINT msg, UINT_PTR idEvent, DWORD dwTime)
 			}
 			ChatSessionList->Clear();
 		  }
-		  //Zatrzymanie timera
-		  KillTimer(hFrmMain,400);
 		}
 		//Zatrzymanie timera
 		else if(!ChatSessionList->Count)
@@ -1211,6 +1217,8 @@ VOID CALLBACK Timer(HWND hwnd, UINT msg, UINT_PTR idEvent, DWORD dwTime)
 	  //Zmiana pozycji nowo otwartej przypietej zakladki
 	  if(idEvent==500)
 	  {
+        //Zatrzymanie timera
+		KillTimer(hFrmMain,500);
 		if(ClipTabsList->IndexOf(ActiveTabJID)!=-1)
 		{
 		  //Zmiana miejsca zakladki
@@ -1241,12 +1249,13 @@ VOID CALLBACK Timer(HWND hwnd, UINT msg, UINT_PTR idEvent, DWORD dwTime)
 			}
 		  }
 		}
-		//Zatrzymanie timera
-		KillTimer(hFrmMain,500);
 	  }
 	  //Otwieranie przypietych zakladek wraz z oknem rozmowy
 	  if(idEvent==600)
 	  {
+		//Zatrzymanie timera
+		KillTimer(hFrmMain,600);
+
 		if(ClipTabsList->Count)
 		{
 		  UnicodeString ActiveTab = ActiveTabJID;
@@ -1309,10 +1318,15 @@ VOID CALLBACK Timer(HWND hwnd, UINT msg, UINT_PTR idEvent, DWORD dwTime)
 			PluginLink.CallService(AQQ_FUNCTION_TABMOVE,(WPARAM)&PluginTriple,0);
 		  }
 		}
-		//Zatrzymanie timera
-		KillTimer(hFrmMain,600);
 	  }
-
+	  //Pobieranie ostatniej wiadomosci przy otwieraniu ponownie ostatnio zamknietej zakladki
+	  if(idEvent==700)
+	  {
+        //Zatrzymanie timera
+		KillTimer(hFrmMain,700);
+		//Pobieranie ostatniej wiadomoœci
+		PluginLink.CallService(AQQ_FUNCTION_LOADLASTCONV,(WPARAM)UnCloseTabFromHotKeyJID.w_str(),(LPARAM)UnCloseTabFromHotKeyUserIdx);
+      }
 	  break;
 	}
   }
@@ -1907,11 +1921,8 @@ int __stdcall ServiceQuickQuoteItem (WPARAM wParam, LPARAM lParam)
 
 void DestroyClipTab()
 {
-  if(hFrmSend)
-  {
-	BuildClipTabItem.pszName = L"ClipTabItem";
-	PluginLink.CallService(AQQ_CONTROLS_DESTROYPOPUPMENUITEM ,0,(LPARAM)(&BuildClipTabItem));
-  }
+  BuildClipTabItem.pszName = L"ClipTabItem";
+  PluginLink.CallService(AQQ_CONTROLS_DESTROYPOPUPMENUITEM ,0,(LPARAM)(&BuildClipTabItem));
 }
 //---------------------------------------------------------------------------
 
@@ -2423,6 +2434,12 @@ int __stdcall OnWindowEvent (WPARAM wParam, LPARAM lParam)
   //Zamkniecie okna rozmowy
   if((EventType=="TfrmSend")&&(Event==2))
   {
+    //Przypisanie starej procki do okna rozmowy
+	if(OldFrmSendProc)
+	{
+	  SetWindowLongPtrW(hFrmSend, GWL_WNDPROC,(LONG)OldFrmSendProc);
+	  OldFrmSendProc = NULL;
+	}
 	//Resetowanie zmiennej aktwnie otwartej zakladki
 	ActiveTabJID = "";
 	//Resetowanie uchwytow
@@ -2807,7 +2824,20 @@ int __stdcall OnActiveTab (WPARAM wParam, LPARAM lParam)
 		if((RestoreLastMsgChk)&&(JustUnClosedJID==JID))
 		{
 		  //Pobieranie ostatniej wiadomoœci
-		  if(!Contact->IsChat) PluginLink.CallService(AQQ_FUNCTION_LOADLASTCONV,(WPARAM)JID.w_str(),(LPARAM)Contact->UserIdx);
+		  if(!Contact->IsChat)
+		  {
+			//Natychmiastowe wczytanie
+			if(!UnCloseTabFromHotKey) PluginLink.CallService(AQQ_FUNCTION_LOADLASTCONV,(WPARAM)JID.w_str(),(LPARAM)Contact->UserIdx);
+			//Wczytanie w timerze
+			else
+			{
+			  //Przekazanie zmiennych
+			  UnCloseTabFromHotKeyJID = JID;
+			  UnCloseTabFromHotKeyUserIdx = Contact->UserIdx;
+			  //Wlaczenie timera
+			  SetTimer(hFrmMain,700,500,(TIMERPROC)Timer);
+			}
+		  }
 		  JustUnClosedJID = "";
 		}
 		//Usuwanie interfejsu
@@ -3192,8 +3222,9 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 	  if(JID!=ActiveTabJID)
 	  {
 		Message = (PPluginMessage)lParam;
+
 		//Rodzaj wiadomosci
-		if((Message->Kind==MSGKIND_CHAT)||(Message->Kind==MSGKIND_GROUPCHAT))
+		if((!Message->ShowAsOutgoing)&&((Message->Kind==MSGKIND_CHAT)||(Message->Kind==MSGKIND_GROUPCHAT)))
 		{
 		  UnicodeString Body = (wchar_t*)(Message->Body);
 		  if(!Body.IsEmpty())
@@ -3233,7 +3264,7 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 	  {
 		Message = (PPluginMessage)lParam;
 		//Rodzaj wiadomosci
-		if((Message->Kind==MSGKIND_CHAT)||(Message->Kind==MSGKIND_GROUPCHAT))
+		if((!Message->ShowAsOutgoing)&&((Message->Kind==MSGKIND_CHAT)||(Message->Kind==MSGKIND_GROUPCHAT)))
 		{
 		  UnicodeString Body = (wchar_t*)(Message->Body);
 		  if(!Body.IsEmpty())
@@ -3805,6 +3836,39 @@ int __stdcall OnRestartingAQQ(WPARAM wParam, LPARAM lParam)
 }
 //---------------------------------------------------------------------------
 
+//Otwieranie ponownie ostatnio zamknietej zakladki
+void UnCloseTabHotKeyExecute()
+{
+  UnCloseTabFromHotKey = true;
+  UnicodeString JID = ClosedTabsList->Strings[0];
+  //Zapisawanie JID aktualnie przywracanej zakladki
+  JustUnClosedJID = JID;
+  //Przelaczanie na ostatnio zamknieta zakladke z danym kontektem
+  if(!JID.Pos("ischat_"))
+   PluginLink.CallService(AQQ_FUNCTION_EXECUTEMSG,0,(LPARAM)JID.w_str());
+  //Przelaczanie na ostatnio zamknieta zakladke z czatem
+  else
+  {
+	JID = JID.Delete(1,7);
+	TIniFile *Ini = new TIniFile(SessionFileDir);
+	UnicodeString Channel = Ini->ReadString("Channels",JID,"");
+	delete Ini;
+	if(Channel.IsEmpty())
+	{
+	  Channel = JID;
+	  Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
+	}
+	PluginChatPrep.cbSize = sizeof(TPluginChatPrep);
+	PluginChatPrep.UserIdx = 0;
+	PluginChatPrep.JID = JID.w_str();
+	PluginChatPrep.Channel = Channel.w_str();
+	PluginChatPrep.CreateNew = false;
+	PluginChatPrep.Fast = true;
+	PluginLink.CallService(AQQ_SYSTEM_CHAT,0,(LPARAM)&PluginChatPrep);
+  }
+}
+//---------------------------------------------------------------------------
+
 //Hook na klawiature
 extern "C" LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
@@ -3981,32 +4045,7 @@ extern "C" LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam
 		   {
 			 if(ClosedTabsList->Count>0)
 			 {
-			   UnicodeString JID = ClosedTabsList->Strings[0];
-			   //Zapisawanie JID aktualnie przywracanej zakladki
-			   JustUnClosedJID = JID;
-			   //Przelaczanie na ostatnio zamknieta zakladke z danym kontektem
-			   if(!JID.Pos("ischat_"))
-				PluginLink.CallService(AQQ_FUNCTION_EXECUTEMSG,0,(LPARAM)JID.w_str());
-			   //Przelaczanie na ostatnio zamknieta zakladke z czatem
-			   else
-			   {
-				 JID = JID.Delete(1,7);
-				 TIniFile *Ini = new TIniFile(SessionFileDir);
-				 UnicodeString Channel = Ini->ReadString("Channels",JID,"");
-				 delete Ini;
-				 if(Channel.IsEmpty())
-				 {
-				   Channel = JID;
-				   Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
-				 }
-				 PluginChatPrep.cbSize = sizeof(TPluginChatPrep);
-				 PluginChatPrep.UserIdx = 0;
-				 PluginChatPrep.JID = JID.w_str();
-				 PluginChatPrep.Channel = Channel.w_str();
-				 PluginChatPrep.CreateNew = false;
-				 PluginChatPrep.Fast = true;
-				 PluginLink.CallService(AQQ_SYSTEM_CHAT,0,(LPARAM)&PluginChatPrep);
-			   }
+			   UnCloseTabHotKeyExecute();
 			   return -1;
 			 }
 		   }
@@ -4037,32 +4076,7 @@ extern "C" LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam
 			{
 			  if(ClosedTabsList->Count>0)
 			   {
-				 UnicodeString JID = ClosedTabsList->Strings[0];
-				 //Zapisawanie JID aktualnie przywracanej zakladki
-				 JustUnClosedJID = JID;
-				 //Przelaczanie na ostatnio zamknieta zakladke z danym kontektem
-				 if(!JID.Pos("ischat_"))
-				  PluginLink.CallService(AQQ_FUNCTION_EXECUTEMSG,0,(LPARAM)JID.w_str());
-				 //Przelaczanie na ostatnio zamknieta zakladke z czatem
-				 else
-				 {
-				   JID = JID.Delete(1,7);
-				   TIniFile *Ini = new TIniFile(SessionFileDir);
-				   UnicodeString Channel = Ini->ReadString("Channels",JID,"");
-				   delete Ini;
-				   if(Channel.IsEmpty())
-				   {
-					 Channel = JID;
-					 Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
-				   }
-				   PluginChatPrep.cbSize = sizeof(TPluginChatPrep);
-				   PluginChatPrep.UserIdx = 0;
-				   PluginChatPrep.JID = JID.w_str();
-				   PluginChatPrep.Channel = Channel.w_str();
-				   PluginChatPrep.CreateNew = false;
-				   PluginChatPrep.Fast = true;
-				   PluginLink.CallService(AQQ_SYSTEM_CHAT,0,(LPARAM)&PluginChatPrep);
-				 }
+				 UnCloseTabHotKeyExecute();
 				 return -1;
 			   }
 			}
@@ -4077,32 +4091,7 @@ extern "C" LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam
 			{
 			  if(ClosedTabsList->Count>0)
 			   {
-				 UnicodeString JID = ClosedTabsList->Strings[0];
-				 //Zapisawanie JID aktualnie przywracanej zakladki
-				 JustUnClosedJID = JID;
-				 //Przelaczanie na ostatnio zamknieta zakladke z danym kontektem
-				 if(!JID.Pos("ischat_"))
-				  PluginLink.CallService(AQQ_FUNCTION_EXECUTEMSG,0,(LPARAM)JID.w_str());
-				 //Przelaczanie na ostatnio zamknieta zakladke z czatem
-				 else
-				 {
-				   JID = JID.Delete(1,7);
-				   TIniFile *Ini = new TIniFile(SessionFileDir);
-				   UnicodeString Channel = Ini->ReadString("Channels",JID,"");
-				   delete Ini;
-				   if(Channel.IsEmpty())
-				   {
-					 Channel = JID;
-					 Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
-				   }
-				   PluginChatPrep.cbSize = sizeof(TPluginChatPrep);
-				   PluginChatPrep.UserIdx = 0;
-				   PluginChatPrep.JID = JID.w_str();
-				   PluginChatPrep.Channel = Channel.w_str();
-				   PluginChatPrep.CreateNew = false;
-				   PluginChatPrep.Fast = true;
-				   PluginLink.CallService(AQQ_SYSTEM_CHAT,0,(LPARAM)&PluginChatPrep);
-				 }
+				 UnCloseTabHotKeyExecute();
 				 return -1;
 			   }
 			}
@@ -4117,32 +4106,7 @@ extern "C" LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam
 			{
 			  if(ClosedTabsList->Count>0)
 			   {
-				 UnicodeString JID = ClosedTabsList->Strings[0];
-				 //Zapisawanie JID aktualnie przywracanej zakladki
-				 JustUnClosedJID = JID;
-				 //Przelaczanie na ostatnio zamknieta zakladke z danym kontektem
-				 if(!JID.Pos("ischat_"))
-				  PluginLink.CallService(AQQ_FUNCTION_EXECUTEMSG,0,(LPARAM)JID.w_str());
-				 //Przelaczanie na ostatnio zamknieta zakladke z czatem
-				 else
-				 {
-				   JID = JID.Delete(1,7);
-				   TIniFile *Ini = new TIniFile(SessionFileDir);
-				   UnicodeString Channel = Ini->ReadString("Channels",JID,"");
-				   delete Ini;
-				   if(Channel.IsEmpty())
-				   {
-					 Channel = JID;
-					 Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
-				   }
-				   PluginChatPrep.cbSize = sizeof(TPluginChatPrep);
-				   PluginChatPrep.UserIdx = 0;
-				   PluginChatPrep.JID = JID.w_str();
-				   PluginChatPrep.Channel = Channel.w_str();
-					PluginChatPrep.CreateNew = false;
-				   PluginChatPrep.Fast = true;
-				   PluginLink.CallService(AQQ_SYSTEM_CHAT,0,(LPARAM)&PluginChatPrep);
-				 }
+				 UnCloseTabHotKeyExecute();
 				 return -1;
 			   }
 			}
@@ -4157,32 +4121,7 @@ extern "C" LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam
 			{
 			  if(ClosedTabsList->Count>0)
 			   {
-				 UnicodeString JID = ClosedTabsList->Strings[0];
-				 //Zapisawanie JID aktualnie przywracanej zakladki
-				 JustUnClosedJID = JID;
-				 //Przelaczanie na ostatnio zamknieta zakladke z danym kontektem
-				 if(!JID.Pos("ischat_"))
-				  PluginLink.CallService(AQQ_FUNCTION_EXECUTEMSG,0,(LPARAM)JID.w_str());
-				 //Przelaczanie na ostatnio zamknieta zakladke z czatem
-				 else
-				 {
-				   JID = JID.Delete(1,7);
-				   TIniFile *Ini = new TIniFile(SessionFileDir);
-				   UnicodeString Channel = Ini->ReadString("Channels",JID,"");
-				   delete Ini;
-				   if(Channel.IsEmpty())
-				   {
-					 Channel = JID;
-					 Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
-				   }
-				   PluginChatPrep.cbSize = sizeof(TPluginChatPrep);
-				   PluginChatPrep.UserIdx = 0;
-				   PluginChatPrep.JID = JID.w_str();
-				   PluginChatPrep.Channel = Channel.w_str();
-				   PluginChatPrep.CreateNew = false;
-				   PluginChatPrep.Fast = true;
-				   PluginLink.CallService(AQQ_SYSTEM_CHAT,0,(LPARAM)&PluginChatPrep);
-				 }
+				 UnCloseTabHotKeyExecute();
 				 return -1;
 			   }
 			}
@@ -4197,33 +4136,8 @@ extern "C" LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam
 			{
 			  if(ClosedTabsList->Count>0)
 			   {
-				 UnicodeString JID = ClosedTabsList->Strings[0];
-				 //Zapisawanie JID aktualnie przywracanej zakladki
-				 JustUnClosedJID = JID;
-				 //Przelaczanie na ostatnio zamknieta zakladke z danym kontektem
-				 if(!JID.Pos("ischat_"))
-				  PluginLink.CallService(AQQ_FUNCTION_EXECUTEMSG,0,(LPARAM)JID.w_str());
-				 //Przelaczanie na ostatnio zamknieta zakladke z czatem
-				 else
-				 {
-				   JID = JID.Delete(1,7);
-				   TIniFile *Ini = new TIniFile(SessionFileDir);
-				   UnicodeString Channel = Ini->ReadString("Channels",JID,"");
-				   delete Ini;
-				   if(Channel.IsEmpty())
-				   {
-					 Channel = JID;
-					 Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
-				   }
-				   PluginChatPrep.cbSize = sizeof(TPluginChatPrep);
-				   PluginChatPrep.UserIdx = 0;
-				   PluginChatPrep.JID = JID.w_str();
-				   PluginChatPrep.Channel = Channel.w_str();
-				   PluginChatPrep.CreateNew = false;
-				   PluginChatPrep.Fast = true;
-				   PluginLink.CallService(AQQ_SYSTEM_CHAT,0,(LPARAM)&PluginChatPrep);
-				 }
-			   return -1;
+				 UnCloseTabHotKeyExecute();
+				 return -1;
 			   }
 			}
 		  }
@@ -4237,32 +4151,7 @@ extern "C" LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam
 			{
 			  if(ClosedTabsList->Count>0)
 			   {
-				 UnicodeString JID = ClosedTabsList->Strings[0];
-				 //Zapisawanie JID aktualnie przywracanej zakladki
-				 JustUnClosedJID = JID;
-				 //Przelaczanie na ostatnio zamknieta zakladke z danym kontektem
-				 if(!JID.Pos("ischat_"))
-				  PluginLink.CallService(AQQ_FUNCTION_EXECUTEMSG,0,(LPARAM)JID.w_str());
-				 //Przelaczanie na ostatnio zamknieta zakladke z czatem
-				 else
-				 {
-				   JID = JID.Delete(1,7);
-				   TIniFile *Ini = new TIniFile(SessionFileDir);
-				   UnicodeString Channel = Ini->ReadString("Channels",JID,"");
-				   delete Ini;
-				   if(Channel.IsEmpty())
-				   {
-					 Channel = JID;
-					 Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
-				   }
-				   PluginChatPrep.cbSize = sizeof(TPluginChatPrep);
-				   PluginChatPrep.UserIdx = 0;
-				   PluginChatPrep.JID = JID.w_str();
-				   PluginChatPrep.Channel = Channel.w_str();
-				   PluginChatPrep.CreateNew = false;
-				   PluginChatPrep.Fast = true;
-				   PluginLink.CallService(AQQ_SYSTEM_CHAT,0,(LPARAM)&PluginChatPrep);
-				 }
+				 UnCloseTabHotKeyExecute();
 				 return -1;
 			   }
 			}
@@ -4391,7 +4280,7 @@ void LoadSettings()
   SwitchToNewMsgChk =  Ini->ReadBool("TabsSwitching","SwitchToNewMsg",true);
   SwitchToNewMsgMode = Ini->ReadInteger("TabsSwitching","SwitchToNewMsgMode",1);
   TabsHotKeysChk = Ini->ReadBool("TabsSwitching","TabsHotKeys",true);
-  TabsHotKeysMode = Ini->ReadInteger("TabsSwitching","TabsHotKeysMode",1);
+  TabsHotKeysMode = Ini->ReadInteger("TabsSwitching","TabsHotKeysMode",2);
   //ClosedTabs
   ClosedTabsChk = Ini->ReadBool("ClosedTabs","Enable",true);
   FastAccessClosedTabsChk =  Ini->ReadBool("ClosedTabs","FastAccess",true);
@@ -5210,8 +5099,8 @@ extern "C" __declspec(dllexport) PPluginInfo __stdcall AQQPluginInfo(DWORD AQQVe
 	  MB_OK | MB_ICONEXCLAMATION);
   }
   PluginInfo.cbSize = sizeof(TPluginInfo);
-  PluginInfo.ShortName = (wchar_t*)L"TabKit";
-  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,1,0,8);
+  PluginInfo.ShortName = L"TabKit";
+  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,1,1,0);
   PluginInfo.Description = L"Ulepszenie obs³ugi zak³adek";
   PluginInfo.Author = L"Krzysztof Grochocki (Beherit)";
   PluginInfo.AuthorMail = L"kontakt@beherit.pl";

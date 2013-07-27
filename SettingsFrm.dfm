@@ -384,14 +384,14 @@ object SettingsForm: TSettingsForm
       object ClipTabsPanel: TPanel
         Left = 0
         Top = 0
-        Width = 306
+        Width = 289
         Height = 0
         Align = alClient
         BevelOuter = bvNone
         ShowCaption = False
         TabOrder = 0
         object OpenClipTabsCheckBox: TCheckBox
-          Left = 7
+          Left = 6
           Top = 9
           Width = 280
           Height = 26
@@ -437,7 +437,7 @@ object SettingsForm: TSettingsForm
       Collapsed = True
       TabOrder = 5
       TabStop = True
-      ExpandedHeight = 195
+      ExpandedHeight = 196
       object TitlebarPanel: TPanel
         Left = 0
         Top = 0
@@ -692,27 +692,15 @@ object SettingsForm: TSettingsForm
       Collapsed = True
       TabOrder = 2
       TabStop = True
-      ExpandedHeight = 216
+      ExpandedHeight = 180
       object TabsSwitchingPanel: TPanel
         Left = 0
         Top = 0
         Width = 289
-        Height = 0
+        Height = 154
         Align = alClient
         ShowCaption = False
         TabOrder = 0
-        object TabsSwitchingLabel: TLabel
-          Left = 30
-          Top = 155
-          Width = 233
-          Height = 26
-          Alignment = taCenter
-          Caption = 
-            'Podczas prze'#322#261'czania zak'#322'adek nie s'#261' brane pod uwag'#281' zak'#322'adki z ' +
-            'konferencjami/czatami'
-          Enabled = False
-          WordWrap = True
-        end
         object SwitchToNewMsgCheckBox: TCheckBox
           Left = 6
           Top = 6
@@ -781,9 +769,7 @@ object SettingsForm: TSettingsForm
             Width = 181
             Height = 17
             Caption = 'Klawisze od F1 do  F12'
-            Checked = True
             TabOrder = 0
-            TabStop = True
             OnClick = aTabsSwitchingChkExecute
           end
           object TabsHotKeysMode2RadioButton: TRadioButton
@@ -792,7 +778,9 @@ object SettingsForm: TSettingsForm
             Width = 181
             Height = 17
             Caption = 'Klawisz Ctrl + klawisze od 1 do 9'
+            Checked = True
             TabOrder = 1
+            TabStop = True
             OnClick = aTabsSwitchingChkExecute
           end
         end
@@ -923,16 +911,18 @@ object SettingsForm: TSettingsForm
       Collapsed = True
       TabOrder = 0
       TabStop = True
+      ExplicitWidth = 291
       ExpandedHeight = 372
       object ClosedPanel: TPanel
         Left = 0
         Top = 0
-        Width = 289
-        Height = 346
+        Width = 306
+        Height = 0
         Align = alClient
         BevelOuter = bvNone
         ShowCaption = False
         TabOrder = 0
+        ExplicitWidth = 289
         object CountClosedTabsLabel: TLabel
           Left = 20
           Top = 264
@@ -1016,7 +1006,7 @@ object SettingsForm: TSettingsForm
           OnClick = aClosedTabsChkExecute
         end
         object RestoreLastMsgClosedTabsCheckBox: TCheckBox
-          Left = 22
+          Left = 20
           Top = 283
           Width = 243
           Height = 26
@@ -1094,7 +1084,7 @@ object SettingsForm: TSettingsForm
           OnClick = aClosedTabsChkExecute
         end
         object OnlyConversationTabsCheckBox: TCheckBox
-          Left = 22
+          Left = 20
           Top = 315
           Width = 251
           Height = 26

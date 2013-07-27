@@ -88,7 +88,6 @@ __published:	// IDE-managed Components
 	TAction *aOtherChk;
 	TCheckBox *InactiveNotiferNewMsgCheckBox;
 	TCheckBox *RestoreLastMsgClosedTabsCheckBox;
-	TLabel *TabsSwitchingLabel;
 	TCategoryPanelGroup *CategoryPanelGroup;
 	TCategoryPanel *ClosedCategoryPanel;
 	TCategoryPanel *UnsentMsgCategoryPanel;
