@@ -10,6 +10,11 @@
 #include <ExtCtrls.hpp>
 #include <ActnList.hpp>
 #include "cspin.h"
+#include "IdBaseComponent.hpp"
+#include "IdCoder.hpp"
+#include "IdCoder3to4.hpp"
+#include "IdCoderMIME.hpp"
+#include <FileCtrl.hpp>
 //---------------------------------------------------------------------------
 class TSettingsForm : public TForm
 {
@@ -105,6 +110,21 @@ __published:	// IDE-managed Components
 	TCheckBox *FastClearUnsentMsgCheckBox;
 	TCheckBox *QuickQuoteCheckBox;
 	TCheckBox *ChatStateNotiferNewMsgCheckBox;
+	TCheckBox *AntiSpimCheckBox;
+	TCheckBox *OnlyConversationTabsCheckBox;
+	TCheckBox *HideStatusBarCheckBox;
+	TCheckBox *HideToolBarCheckBox;
+	TIdDecoderMIME *IdDecoderMIME;
+	TCategoryPanel *ClipTabsCategoryPanel;
+	TPanel *ClipTabsPanel;
+	TCheckBox *OpenClipTabsCheckBox;
+	TButton *ClipTabsEraseButton;
+	TCheckBox *InactiveClipTabsCheckBox;
+	TAction *aClipTabsChk;
+	TImage *Image;
+	TButton *MiniAvatarsEraseButton;
+	TFileListBox *FileListBox;
+	TCheckBox *CollapseImagesCheckBox;
 	void __fastcall UnsentMsgTrayIconClick(TObject *Sender);
 	void __fastcall aExitExecute(TObject *Sender);
 	void __fastcall CancelButtonClick(TObject *Sender);
@@ -128,7 +148,14 @@ __published:	// IDE-managed Components
           bool &Handled);
 	void __fastcall FormMouseWheelUp(TObject *Sender, TShiftState Shift, TPoint &MousePos,
           bool &Handled);
+	void __fastcall ClipTabsEraseButtonClick(TObject *Sender);
+	void __fastcall aClipTabsChkExecute(TObject *Sender);
+	void __fastcall ConvertImage(UnicodeString Old, UnicodeString New);
+	void __fastcall MiniAvatarsEraseButtonClick(TObject *Sender);
 private:	// User declarations
+	//Konieczne do inicjalizacji GDIPlus
+	//Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+	//ULONG_PTR gdiplusToken;
 public:		// User declarations
 	__fastcall TSettingsForm(TComponent* Owner);
 };

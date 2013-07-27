@@ -165,6 +165,13 @@ object SettingsForm: TSettingsForm
     ExplicitTop = 227
     ExplicitWidth = 329
   end
+  object Image: TImage
+    Left = 0
+    Top = 0
+    Width = 16
+    Height = 16
+    Visible = False
+  end
   object SaveButton: TButton
     Left = 243
     Top = 374
@@ -172,16 +179,16 @@ object SettingsForm: TSettingsForm
     Height = 25
     Caption = 'Zastosuj'
     Enabled = False
-    TabOrder = 0
+    TabOrder = 1
     OnClick = SaveButtonClick
   end
   object CancelButton: TButton
     Left = 162
-    Top = 375
+    Top = 374
     Width = 75
     Height = 25
     Caption = 'Anuluj'
-    TabOrder = 1
+    TabOrder = 2
     OnClick = CancelButtonClick
   end
   object OkButton: TButton
@@ -190,7 +197,7 @@ object SettingsForm: TSettingsForm
     Width = 75
     Height = 25
     Caption = 'OK'
-    TabOrder = 2
+    TabOrder = 3
     OnClick = OkButtonClick
   end
   object CategoryPanelGroup: TCategoryPanelGroup
@@ -212,39 +219,37 @@ object SettingsForm: TSettingsForm
     HeaderFont.Height = -11
     HeaderFont.Name = 'Tahoma'
     HeaderFont.Style = []
-    TabOrder = 3
+    TabOrder = 0
     TabStop = True
     object OtherCategoryPanel: TCategoryPanel
-      Top = 180
+      Top = 210
       Height = 30
       Caption = 'Inne'
       Color = clWindow
       Collapsed = True
-      TabOrder = 6
+      TabOrder = 7
       TabStop = True
       OnExpand = OtherCategoryPanelExpand
-      ExplicitWidth = 308
-      ExpandedHeight = 244
+      ExpandedHeight = 380
       object OtherPanel: TPanel
         Left = 0
         Top = 0
-        Width = 289
+        Width = 306
         Height = 0
         Align = alClient
         BevelOuter = bvNone
         ShowCaption = False
         TabOrder = 0
-        ExplicitWidth = 306
         object ClearCacheGroupBox: TGroupBox
           AlignWithMargins = True
           Left = 3
-          Top = 114
+          Top = 200
           Width = 284
-          Height = 103
+          Height = 153
           BiDiMode = bdLeftToRight
           Caption = 'Wyczy'#347#263' plik cache z informacji na temat:'
           ParentBiDiMode = False
-          TabOrder = 3
+          TabOrder = 7
           object SessionRememberEraseButton: TButton
             Left = 28
             Top = 72
@@ -275,11 +280,30 @@ object SettingsForm: TSettingsForm
             TabOrder = 1
             OnClick = ClosedTabsEraseButtonClick
           end
+          object ClipTabsEraseButton: TButton
+            Left = 28
+            Top = 98
+            Width = 158
+            Height = 20
+            Caption = 'Przypi'#281'te zak'#322'adki'
+            Enabled = False
+            TabOrder = 3
+            OnClick = ClipTabsEraseButtonClick
+          end
+          object MiniAvatarsEraseButton: TButton
+            Left = 28
+            Top = 124
+            Width = 158
+            Height = 20
+            Caption = 'Usu'#324' / aktualizuj mini awatary'
+            TabOrder = 4
+            OnClick = MiniAvatarsEraseButtonClick
+          end
         end
         object StayOnTopCheckBox: TCheckBox
           Left = 6
           Top = 6
-          Width = 267
+          Width = 271
           Height = 26
           Caption = 
             'Dodaj do okna rozmowy przycisk trzymaj'#261'cy okno zawsze na wierzch' +
@@ -290,25 +314,111 @@ object SettingsForm: TSettingsForm
         end
         object EmuTabsWCheckBox: TCheckBox
           Left = 6
-          Top = 38
-          Width = 251
+          Top = 162
+          Width = 271
           Height = 26
           Caption = 'Ostrzegaj przed zamykaniem wielu zak'#322'adek jednocze'#347'nie'
-          TabOrder = 1
+          TabOrder = 6
           WordWrap = True
           OnClick = aOtherChkExecute
         end
         object QuickQuoteCheckBox: TCheckBox
           Left = 6
-          Top = 70
+          Top = 38
           Width = 271
           Height = 26
           Caption = 
             'Aktywuj skr'#243't klawiaturowy Ctrl+Q do wklejania tekstu ze schowka' +
             ' jako cytat'
-          TabOrder = 2
+          TabOrder = 1
           WordWrap = True
           OnClick = aOtherChkExecute
+        end
+        object AntiSpimCheckBox: TCheckBox
+          Left = 6
+          Top = 70
+          Width = 271
+          Height = 17
+          Caption = 'Wy'#322#261'cz wbudowany w komunikator filtr antyspimowy'
+          TabOrder = 2
+          OnClick = aOtherChkExecute
+        end
+        object HideStatusBarCheckBox: TCheckBox
+          Left = 6
+          Top = 93
+          Width = 271
+          Height = 17
+          Caption = 'Ukryj dolny pasek informacyjny'
+          TabOrder = 3
+          OnClick = aOtherChkExecute
+        end
+        object HideToolBarCheckBox: TCheckBox
+          Left = 6
+          Top = 116
+          Width = 271
+          Height = 17
+          Caption = 'Automatyczne ukrywanie paska narz'#281'dzi'
+          TabOrder = 4
+          OnClick = aOtherChkExecute
+        end
+        object CollapseImagesCheckBox: TCheckBox
+          Left = 6
+          Top = 139
+          Width = 271
+          Height = 17
+          Caption = 'Zwijaj przes'#322'ane obrazki do formy za'#322#261'cznika'
+          TabOrder = 5
+          OnClick = aOtherChkExecute
+        end
+      end
+    end
+    object ClipTabsCategoryPanel: TCategoryPanel
+      Top = 180
+      Height = 30
+      Caption = 'Przypinanie zak'#322'adek'
+      Color = clWindow
+      Collapsed = True
+      TabOrder = 6
+      TabStop = True
+      ExpandedHeight = 94
+      object ClipTabsPanel: TPanel
+        Left = 0
+        Top = 0
+        Width = 306
+        Height = 0
+        Align = alClient
+        BevelOuter = bvNone
+        ShowCaption = False
+        TabOrder = 0
+        object OpenClipTabsCheckBox: TCheckBox
+          Left = 6
+          Top = 7
+          Width = 265
+          Height = 26
+          Caption = 'Otwieraj przypi'#281'te zak'#322'adki wraz z otwarciem okna rozmowy'
+          Checked = True
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          State = cbChecked
+          TabOrder = 0
+          WordWrap = True
+          OnClick = aClipTabsChkExecute
+        end
+        object InactiveClipTabsCheckBox: TCheckBox
+          Left = 6
+          Top = 38
+          Width = 259
+          Height = 26
+          Caption = 
+            'Nie pokazuj licznika nieprzeczytanych wiadomo'#347'ci na przypi'#281'tych ' +
+            'zak'#322'adkach'
+          TabOrder = 1
+          WordWrap = True
+          OnClick = aClosedTabsChkExecute
         end
       end
     end
@@ -320,17 +430,15 @@ object SettingsForm: TSettingsForm
       Collapsed = True
       TabOrder = 5
       TabStop = True
-      ExplicitWidth = 308
       ExpandedHeight = 195
       object TitlebarPanel: TPanel
         Left = 0
         Top = 0
-        Width = 289
+        Width = 306
         Height = 0
         Align = alClient
         ShowCaption = False
         TabOrder = 0
-        ExplicitWidth = 306
         object TweakFrmMainTitlebarCheckBox: TCheckBox
           Left = 6
           Top = 98
@@ -435,7 +543,7 @@ object SettingsForm: TSettingsForm
       Collapsed = True
       TabOrder = 4
       TabStop = True
-      ExpandedHeight = 197
+      ExpandedHeight = 186
       object NewMsgPanel: TPanel
         Left = 0
         Top = 0
@@ -486,13 +594,13 @@ object SettingsForm: TSettingsForm
         end
         object ChatStateNotiferNewMsgCheckBox: TCheckBox
           Left = 6
-          Top = 115
+          Top = 116
           Width = 271
-          Height = 52
+          Height = 39
           Caption = 
-            'Informuj o pisaniu nowej wiadomo'#347'ci przez kontakt z aktywnych za' +
-            'k'#322'adek poprzez zmian'#281' ikony na pasku tytu'#322'u okna rozmowy gdy jes' +
-            't ono zminimalizowane lub nieaktywne'
+            'Informuj graficznie o pisaniu nowej wiadomo'#347'ci na zak'#322'adkach ora' +
+            'z na pasku tytu'#322'u okna gdy jest ono zminimalizowane lub nieaktyw' +
+            'ne'
           Checked = True
           State = cbChecked
           TabOrder = 3
@@ -509,18 +617,16 @@ object SettingsForm: TSettingsForm
       Collapsed = True
       TabOrder = 3
       TabStop = True
-      ExplicitWidth = 308
       ExpandedHeight = 177
       object SessionRememberPanel: TPanel
         Left = 0
         Top = 0
-        Width = 289
+        Width = 306
         Height = 0
         Align = alClient
         BevelOuter = bvNone
         ShowCaption = False
         TabOrder = 0
-        ExplicitWidth = 306
         object RestoreSessionLabel: TLabel
           Left = 20
           Top = 107
@@ -579,17 +685,15 @@ object SettingsForm: TSettingsForm
       Collapsed = True
       TabOrder = 2
       TabStop = True
-      ExplicitWidth = 308
       ExpandedHeight = 216
       object TabsSwitchingPanel: TPanel
         Left = 0
         Top = 0
-        Width = 289
+        Width = 306
         Height = 0
         Align = alClient
         ShowCaption = False
         TabOrder = 0
-        ExplicitWidth = 306
         object TabsSwitchingLabel: TLabel
           Left = 30
           Top = 155
@@ -695,18 +799,16 @@ object SettingsForm: TSettingsForm
       Collapsed = True
       TabOrder = 1
       TabStop = True
-      ExplicitWidth = 308
       ExpandedHeight = 259
       object UnsentMsgPanel: TPanel
         Left = 0
         Top = 0
-        Width = 289
+        Width = 306
         Height = 0
         Align = alClient
         BevelOuter = bvNone
         ShowCaption = False
         TabOrder = 0
-        ExplicitWidth = 306
         object CloudUnsentMsgCheckBox: TCheckBox
           Left = 35
           Top = 61
@@ -814,18 +916,16 @@ object SettingsForm: TSettingsForm
       Collapsed = True
       TabOrder = 0
       TabStop = True
-      ExplicitWidth = 308
-      ExpandedHeight = 341
+      ExpandedHeight = 372
       object ClosedPanel: TPanel
         Left = 0
         Top = 0
-        Width = 289
+        Width = 306
         Height = 0
         Align = alClient
         BevelOuter = bvNone
         ShowCaption = False
         TabOrder = 0
-        ExplicitWidth = 306
         object CountClosedTabsLabel: TLabel
           Left = 20
           Top = 264
@@ -986,8 +1086,30 @@ object SettingsForm: TSettingsForm
           WordWrap = True
           OnClick = aClosedTabsChkExecute
         end
+        object OnlyConversationTabsCheckBox: TCheckBox
+          Left = 22
+          Top = 315
+          Width = 251
+          Height = 26
+          Caption = 
+            'Zapami'#281'tuj wy'#322#261'cznie zak'#322'adki z kontaktami z kt'#243'rymi przeprowadz' +
+            'ili'#347'my rozmow'#281
+          TabOrder = 13
+          WordWrap = True
+          OnClick = aClosedTabsChkExecute
+        end
       end
     end
+  end
+  object FileListBox: TFileListBox
+    Left = 0
+    Top = 0
+    Width = 0
+    Height = 0
+    TabStop = False
+    ItemHeight = 13
+    TabOrder = 4
+    Visible = False
   end
   object UnsentMsgTrayIcon: TTrayIcon
     BalloonFlags = bfInfo
@@ -1192,5 +1314,15 @@ object SettingsForm: TSettingsForm
       Caption = 'aOtherChk'
       OnExecute = aOtherChkExecute
     end
+    object aClipTabsChk: TAction
+      Category = 'Settings'
+      Caption = 'aClipTabsChk'
+      OnExecute = aClipTabsChkExecute
+    end
+  end
+  object IdDecoderMIME: TIdDecoderMIME
+    FillChar = '='
+    Left = 64
+    Top = 368
   end
 end

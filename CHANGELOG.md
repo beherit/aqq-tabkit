@@ -1,3 +1,34 @@
+1.1.0.0
+-----
+* Przypinanie zak³adek.
+* Integracja funkcjonalnoœci wtyczki OffAntiSpim.
+* Opcja zapamiêtywania wy³¹cznie zak³adek z kontaktami z którymi przeprowadziliœmy rozmowê.
+* Nowe ikonki dla powiadomienia o pisaniu nowej wiadomoœci na pasku tytu³u okna rozmowy.
+* Graficzne powiadomienie o pisaniu nowej wiadomoœci na zak³adkach.
+* Rozszerzenie funkcjonalnoœci graficznego powiadomienia o pisaniu nowej wiadomoœci - dodano informacjê spauzowaniu pisania.
+* Pamiêtanie maksymalizacji okna rozmowy. (#4017)
+* Mo¿liwoœæ ukrycia dolnego paska informacyjnego.
+* Funkcja automatycznego ukrywania paska narzêdzi.
+* Dodawanie ostatnio informacji o zamkniêtych zak³adkach do listy wbudowanej w komunikator.
+* Prze³¹czanie zak³adek równie¿ dla czatów/konferencji.
+* Mo¿liwoœæ otwierania ponownie ostatnio zamkniêtych zak³adek czatów.
+* Liczba nieprzeczytanych wiadomoœci równie¿ na nieaktywnych zak³adkach czatów/konferencji.
+* Zapamiêtywanie niewys³anych wiadomoœci na czatach/konferencjach.
+* Funkcja zapamiêtywania sesji dzia³a równie¿ dla czatów.
+* Normalizacja nazw czatów na zak³adkach (funkcja zale¿na od ustawienia normalizacji nazw na liœcie czatów).
+* Mo¿liwoœæ ustawienia na pasku tytu³u g³ównego okna samej nazwy komunikatora.
+* Przy zamykaniu komunikatora aktywne zak³adki dodawane s¹ do listy ostatnio zamkniêtych.
+* Skrót do przywracania ostatnio zamkniêtej zak³adki dzia³a równie¿ w g³ównym oknie komunikatora.
+* Pobieranie ikonek interfejsu wtyczki z aktywnej kompozycji (pliki musz¹ byæ umieszczone w folderze TabKit aktywnej kompozycji).
+* Zwijanie przes³anych obrazków do formy za³¹cznika.
+* Mo¿liwoœæ manualnego ustawienia czasu wyœwietlania siê chmurek informacyjnych oraz wy³¹czenia nadpisywania siê ich (klucz "CloudTimeOut" oraz "CloudTickMode" w sekcji "Other").
+* Licznik nieprzeczytanych wiadomoœci na pasku tytu³u nie powiela siê oraz nie znika przy zmianie stanu kontaktu.
+* Usuniêto krytyczny b³¹d z wy³¹czaniem siê komunikatora przy zamykaniu okna rozmowy.
+* Poprawki usuwaniu tworzonych przez wtyczkê popupmenu w interfejsie AQQ.
+* Ma³e poprawki podczas zapisywania zale¿nych miêdzy sob¹ ustawieñ.
+* Inne mniej wa¿ne poprawki w kodzie.
+* Optymalizacja kodu.
+
 1.0.4.0
 -----
 * Notyfikacja pisania nowej wiadomoœci jako zmiana ikony przypisanej do okna rozmowy.
