@@ -2226,11 +2226,9 @@ object SettingsForm: TSettingsForm
       object ShortenLinksCheckBox: TsCheckBox
         Left = 357
         Top = 281
-        Width = 220
+        Width = 188
         Height = 28
-        Caption = 
-          'Skracaj wy'#347'wietlanie odno'#347'nik'#243'w w oknie rozmowy do wygodniejszej' +
-          ' formy'
+        Caption = 'Skracaj wy'#347'wietlanie odno'#347'nik'#243'w do wygodniejszej formy'
         AutoSize = False
         Checked = True
         State = cbChecked
