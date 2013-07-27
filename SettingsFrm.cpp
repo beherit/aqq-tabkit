@@ -5,6 +5,7 @@
 #include <inifiles.hpp>
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
+#pragma link "cspin"
 #pragma resource "*.dfm"
 TSettingsForm *SettingsForm;
 //---------------------------------------------------------------------------
@@ -73,14 +74,14 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   FastAccessClosedTabsCheckBox->Checked =  Ini->ReadBool("ClosedTabs","FastAccess",true);
   FrmMainClosedTabsCheckBox->Checked =  Ini->ReadBool("ClosedTabs","FrmMain",true);
   FrmSendClosedTabsCheckBox->Checked =  Ini->ReadBool("ClosedTabs","FrmSend",false);
-  UnCloseTabHotKeyCheckBox->Checked =  Ini->ReadBool("ClosedTabs","UnCloseTabHotKey",false);
-  int pUnCloseTabHotKeyMode = Ini->ReadInteger("ClosedTabs","UnCloseTabHotKeyMode",1);
+  UnCloseTabHotKeyCheckBox->Checked =  Ini->ReadBool("ClosedTabs","HotKey",false);
+  int pUnCloseTabHotKeyMode = Ini->ReadInteger("ClosedTabs","HotKeyMode",1);
   if(pUnCloseTabHotKeyMode==1)
    UnCloseTabHotKeyMode1RadioButton->Checked = true;
   else
    UnCloseTabHotKeyMode2RadioButton->Checked = true;
-  UnCloseTabHotKeyInput->HotKey = Ini->ReadInteger("ClosedTabs","UnCloseTabHotKeyDef",0);
-  //Mode potem
+  UnCloseTabHotKeyInput->HotKey = Ini->ReadInteger("ClosedTabs","HotKeyDef",0);
+  CountClosedTabsCSpinEdit->Value = Ini->ReadInteger("ClosedTabs","Count",5);
   delete Ini;
 
   aUnsentMsgChk->Execute();
@@ -196,14 +197,13 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
    Ini->WriteBool("ClosedTabs","FastAccess",FastAccessClosedTabsCheckBox->Checked);
   Ini->WriteBool("ClosedTabs","FrmMain",FrmMainClosedTabsCheckBox->Checked);
   Ini->WriteBool("ClosedTabs","FrmSend",FrmSendClosedTabsCheckBox->Checked);
-  Ini->WriteBool("ClosedTabs","UnCloseTabHotKey",UnCloseTabHotKeyCheckBox->Checked);
+  Ini->WriteBool("ClosedTabs","HotKey",UnCloseTabHotKeyCheckBox->Checked);
   if(UnCloseTabHotKeyMode1RadioButton->Checked)
-   Ini->WriteInteger("ClosedTabs","UnCloseTabHotKeyMode",1);
+   Ini->WriteInteger("ClosedTabs","HotKeyMode",1);
   else
-   Ini->WriteInteger("ClosedTabs","UnCloseTabHotKeyMode",2);
-  Ini->WriteInteger("ClosedTabs","UnCloseTabHotKeyDef",UnCloseTabHotKeyInput->HotKey);
-  //Mode potem
-
+   Ini->WriteInteger("ClosedTabs","HotKeyMode",2);
+  Ini->WriteInteger("ClosedTabs","HotKeyDef",UnCloseTabHotKeyInput->HotKey);
+  Ini->WriteInteger("ClosedTabs","Count",CountClosedTabsCSpinEdit->Value);
   delete Ini;
 }
 //---------------------------------------------------------------------------
@@ -288,6 +288,8 @@ void __fastcall TSettingsForm::aClosedTabsChkExecute(TObject *Sender)
   UnCloseTabHotKeyInput->Enabled = UnCloseTabHotKeyMode2RadioButton->Checked;
   FastAccessClosedTabsCheckBox->Enabled = RememberClosedTabsCheckBox->Checked;
   UnCloseTabHotKeyCheckBox->Enabled = RememberClosedTabsCheckBox->Checked;
+  CountClosedTabsLabel->Enabled = RememberClosedTabsCheckBox->Checked;
+  CountClosedTabsCSpinEdit->Enabled = RememberClosedTabsCheckBox->Checked;
   if(!RememberClosedTabsCheckBox->Checked)
   {
 	FrmMainClosedTabsCheckBox->Enabled = false;
@@ -344,6 +346,12 @@ void __fastcall TSettingsForm::UnCloseTabHotKeyMode2RadioButtonClick(TObject *Se
 //---------------------------------------------------------------------------
 
 void __fastcall TSettingsForm::UnCloseTabHotKeyInputChange(TObject *Sender)
+{
+  aClosedTabsChk->Execute();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TSettingsForm::CountClosedTabsCSpinEditChange(TObject *Sender)
 {
   aClosedTabsChk->Execute();
 }
