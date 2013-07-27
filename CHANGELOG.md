@@ -1,3 +1,7 @@
+1.0.3.6
+-----
+* Kolejna poprawka w systemie licznika nieprzeczytanych wiadomoœci na nieaktywnych zak³adkach.
+
 1.0.3.4
 -----
 * Poprawienie systemu licznika nieprzeczytanych wiadomoœci na nieaktywnych zak³adkach.

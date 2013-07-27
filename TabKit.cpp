@@ -1377,7 +1377,7 @@ int __stdcall OnTabCaption (WPARAM wParam, LPARAM lParam)
 	  int Count = InactiveTabsNewMsgCount->ReadInteger("TabsMsg",JID,0);
 	  if(Count)
 	  {
-		if(!AnsiPos("[" + IntToStr(Count) + "] " + TabCaption,TabCaption))
+		if(AnsiPos("[" + IntToStr(Count) + "] ",TabCaption)!=1)
 		 TabCaption = "[" + IntToStr(Count) + "] " + TabCaption;
 		return (WPARAM)TabCaption.w_str();
 	  }
@@ -2862,7 +2862,7 @@ extern "C" __declspec(dllexport) PPluginInfo __stdcall AQQPluginInfo(DWORD AQQVe
   }
   PluginInfo.cbSize = sizeof(TPluginInfo);
   PluginInfo.ShortName = (wchar_t*)L"TabKit";
-  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,0,3,4);
+  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,0,3,6);
   PluginInfo.Description = (wchar_t*)L"";
   PluginInfo.Author = (wchar_t*)L"Krzysztof Grochocki (Beherit)";
   PluginInfo.AuthorMail = (wchar_t*)L"email@beherit.pl";
