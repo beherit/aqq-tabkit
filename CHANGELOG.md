@@ -1,3 +1,55 @@
+1.4.0.0
+-----
+* Integracja funkcjonalnoœci wtyczki SideSlide
+* Mo¿liwoœæ wy³¹czenia przycisku zamykania zak³adek.
+* Opcja zamykania zak³adek poprzez dwukrotne klikniêcie LPM.
+* Mo¿liwoœæ wy³¹czenia graficznego licznika nieprzeczytanych wiadomoœci na nieaktywnych zak³adkach.
+* Rozszerzono funkcjonalnoœæ zmiany tekstu na pasku tytu³u okna kontaktów o nazwê komputera oraz zasobu g³ównego konta Jabber.
+* Funkcja ustawiania nazwy zasobu na pasku tytu³u okna kontaktów posiada wsparcie dla wtyczki ResourcesChanger.
+* Dodawanie aktywnych zak³adek do listy ostatnio zamkniêtych przy wy³adowywaniu wtyczki.
+* Mo¿liwoœæ wejœcia do ustawieñ wtyczki z poziomu menu szybkiego dostêpu do wtyczek.
+* Ca³kowita przebudowa okna ustawieñ.
+* Wtyczka posiada w³asn¹ ikonê pokazywan¹ w ustawieniach komunikatora na liœcie wtyczek.
+* Opcja ukrywania przycisku z list¹ aktywnych zak³adek z okna rozmowy.
+* Opcja ukrywania strza³ek do przewijania zak³adek w oknie rozmowy.
+* Klikniêcie w chmurkê informuj¹c¹ o niewys³anych wiadomoœciach powoduje otwarcie zak³adek z tymi wiadomoœciami.
+* Opcja otwierania okna rozmowy z now¹ wiadomoœci¹ za pomoc¹ skrótu aktualnie nieprzypisanego do ¿adnej otwartej zak³adki.
+* Wy³¹czanie modalnoœci okna korektora wysy³ania zdjêæ.
+* Uwidoczniona opcja wy³¹czenia wbudowanej w komunikator funkcji pisaka na pasku tytu³u okna rozmowy.
+* Opcja wy³¹czania funkcji szukania na liœcie kontaktów.
+* Zmiany w funkcji informowania o liczbie nieprzeczytanych wiadomoœci na nieaktywnych zak³adkach.
+* Drobne zmiany w przypisywaniu uchwytu do g³ównego okna.
+* Spore zmiany w tworzeniu dynamicznych timerów.
+* Poprawki w trzymaniu okna rozmowy na wierzchu podczas wysy³ania wycinka.
+* Ma³a poprawka w przywracaniu ostatnio zamkniêtej zak³adki za pomoc¹ skrótu Ctrl+LPM.
+* Zmiany w pobieraniu uchwytu do aktywnego okna.
+* Zmiany optymalizacyjne w procedurze wy³adowania wtyczki.
+* Optymalizacja funkcji odœwie¿ania zak³adek.
+* Poprawne przywracanie ikony zak³adki bota Blip po wy³adowaniu wtyczki.
+* Aktualizacja komponentów AlphaControls do najnowszej dostêpnej wersji (7.65).
+* Funkcja trzymania okna na wierzchu blokuje chowanie okna rozmowy za krawêdŸ ekranu.
+* Ma³e optymalizacje w odczytywaniu i zapisywaniu ustawieñ.
+* Poprawki w zapisywaniu aktywnej sesji do pliku.
+* Rozszerzenie opisu wtyczki wyœwietlaj¹cego siê w ustawieniach komunikatora.
+* Poprawki w obs³udze notyfikacji zmiany aktywnej zak³adki.
+* Zmiana sposobu ustawiania modalnoœci formy wysy³ania wycinka.
+* Drobne zmiany w zabezpieczeniu przed zamykaniem wielu zak³adek jednoczeœnie.
+* Dodanie animacji przy pokazywaniu okna ustawieñ.
+* Uwidocznienie zaawansowanych opcji funkcjonalnoœci zwijania przes³anych obrazków do formy za³¹cznika oraz ustawieñ chmurek informacyjnych.
+* Wbudowana w komunikator funkcja pisaka na pasku tytu³u okna rozmowy jest wy³¹czona tylko gdy, aktywowany jest licznik nieprzeczytanych wiadomoœci lub zmieniany pasek tytu³u okna.
+* Usuniêto opcjê blokowania zmiany rozmiaru okna rozmowy z uwagi na liczne b³êdy w jej dzia³aniu.
+* Poprawne szukanie uchwytu do paska zak³adek przy pierwszym otwieraniu okna rozmowy.
+* Ma³e poprawki w zapisywaniu aktualnego stanu kontaktów.
+* Zmiany w ustalaniu lokalizacji awatarów kontaktów dla przypiêtych zak³adek.
+* Nie usuwanie uchwytów kontrolek okna rozmowy po jego zamkniêciu.
+* Inne mniej wa¿ne poprawki optymalizacyjne w kodzie.
+* Hook lokalny na myszkê nie dzia³a, je¿eli jest aktywne jakieœ popumenu.
+* Otwieranie zawiniêtych obrazków do formy za³¹cznika w domyœlnej przegl¹darce graficznej zamiast w przegl¹darce WWW.
+* Drobne zmiany w emulacji stylu za³¹cznika dla zwiniêtych obrazków.
+* Poprawne przywracanie okna rozmowy przy pomocy zdefiniowanego skrótu klawiszowego.
+* Poprawne zawijanie przes³anych obrazów do formy za³¹czników, gdy w wiadomoœci znajduje siê tekst lub parê obrazków.
+* Chmurka informacyjna zawieraj¹ca treœæ nowej wiadomoœci pokazuje dok³adn¹ iloœæ otrzymanych obrazków.
+
 1.3.0.0
 -----
 * Przywracanie ostatnio zamkniêtej zak³adki za pomoc¹ œrodkowego przycisku myszy oraz przycisku Ctrl wraz lewym przyciskiem myszy.
