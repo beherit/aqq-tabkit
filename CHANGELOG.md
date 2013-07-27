@@ -1,3 +1,10 @@
+1.0.3.4
+-----
+* Poprawienie systemu licznika nieprzeczytanych wiadomoœci na nieaktywnych zak³adkach.
+* Usuniêcie informacji w menu kontekstowym o skrócie klawiaturowym Ctrl+Q.
+* Poprawiono system blokowania notyfikacji z treœci¹ nowej wiadomoœci po po³¹czeniu siê z sieci¹.
+* Ma³a poprawka w kodzie.
+
 1.0.3.0
 -----
 * Przebudowa wizualna okna ustawieñ.
