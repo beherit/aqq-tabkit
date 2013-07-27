@@ -19,17 +19,17 @@
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
 			<BCC_IncludePath>$(CG_BOOST_ROOT)\boost\tr1\tr1;$(BDS)\include;$(BDS)\include\dinkumware;$(BDS)\include\vcl;$(CG_BOOST_ROOT);$(BCC_IncludePath)</BCC_IncludePath>
-			<LinkPackageStatics>rtl.lib;vcl.lib;bcbsmp.lib;vclx.lib;IndyCore.lib;IndySystem.lib;xmlrtl.lib;vclactnband.lib;IndyProtocols.lib</LinkPackageStatics>
+			<LinkPackageStatics>rtl.lib;vcl.lib;bcbsmp.lib;vclx.lib;IndyCore.lib;IndySystem.lib;xmlrtl.lib;vclactnband.lib;IndyProtocols.lib;acntCB2010_R.lib;vclimg.lib</LinkPackageStatics>
 			<Multithreaded>true</Multithreaded>
 			<ProjectType>CppDynamicLibrary</ProjectType>
 			<PackageImports>vcl.bpi;rtl.bpi;bcbie.bpi;vclx.bpi;vclactnband.bpi;xmlrtl.bpi;bcbsmp.bpi;vclimg.bpi;dbrtl.bpi;vcldb.bpi;vcldbx.bpi;bdertl.bpi;vcltouch.bpi;dsnap.bpi;dsnapcon.bpi;TeeUI.bpi;TeeDB.bpi;Tee.bpi;adortl.bpi;IndyCore.bpi;IndySystem.bpi;IndyProtocols.bpi;lmdrtl10rt_140.bpi;lmdplugin10rt_140.bpi;lmdrtlx10rt_140.bpi;lmdcore10rt_140.bpi</PackageImports>
 			<OutputExt>dll</OutputExt>
-			<AllPackageLibs>rtl.lib;vcl.lib;bcbsmp.lib;vclx.lib;IndyCore.lib;IndySystem.lib;xmlrtl.lib;vclactnband.lib;IndyProtocols.lib</AllPackageLibs>
+			<AllPackageLibs>rtl.lib;vcl.lib;bcbsmp.lib;vclx.lib;IndyCore.lib;IndySystem.lib;xmlrtl.lib;vclactnband.lib;IndyProtocols.lib;acntCB2010_R.lib;vclimg.lib</AllPackageLibs>
 			<FinalOutputDir>.</FinalOutputDir>
 			<DCC_CBuilderOutput>JPHNE</DCC_CBuilderOutput>
 			<DynamicRTL>true</DynamicRTL>
-			<IncludePath>$(CG_BOOST_ROOT)\boost\tr1\tr1;$(BDS)\include;$(BDS)\include\dinkumware;$(BDS)\include\vcl;$(CG_BOOST_ROOT);$(IncludePath)</IncludePath>
-			<ILINK_LibraryPath>$(BDS)\lib\psdk\;$(BDS)\lib\obj;$(ILINK_LibraryPath)</ILINK_LibraryPath>
+			<IncludePath>$(CG_BOOST_ROOT)\boost\tr1\tr1;$(BDS)\include;$(BDS)\include\dinkumware;$(BDS)\include\vcl;$(CG_BOOST_ROOT);$(BDS)\AlphaControls;$(IncludePath)</IncludePath>
+			<ILINK_LibraryPath>$(BDS)\lib\psdk\;$(BDS)\lib\obj;$(BDS)\AlphaControls;$(ILINK_LibraryPath)</ILINK_LibraryPath>
 			<BCC_wpar>false</BCC_wpar>
 			<BCC_OptimizeForSpeed>true</BCC_OptimizeForSpeed>
 			<BCC_ExtendedErrorInfo>true</BCC_ExtendedErrorInfo>
@@ -60,61 +60,61 @@
 			<TASM_Debugging>None</TASM_Debugging>
 		</PropertyGroup>
 		<ItemGroup>
-			<RcItem Include="Data\ClosedTabsButton.png">
+			<RcItem Include="Data\Pause_Big.ico">
 				<ResourceType>RCData</ResourceType>
-				<ResourceId>CLOSEDTABS</ResourceId>
+				<ResourceId>PAUSE_BIG</ResourceId>
+			</RcItem>
+			<RcItem Include="Data\Composing_Small.ico">
+				<ResourceType>RCData</ResourceType>
+				<ResourceId>COMPOSING_SMALL</ResourceId>
+			</RcItem>
+			<RcItem Include="Data\Composing_Big.ico">
+				<ResourceType>RCData</ResourceType>
+				<ResourceId>COMPOSING_BIG</ResourceId>
+			</RcItem>
+			<RcItem Include="Data\Pause.png">
+				<ResourceType>RCData</ResourceType>
+				<ResourceId>PAUSE</ResourceId>
+			</RcItem>
+			<RcItem Include="Data\Composing.png">
+				<ResourceType>RCData</ResourceType>
+				<ResourceId>COMPOSING</ResourceId>
+			</RcItem>
+			<RcItem Include="Data\Pause_Small.ico">
+				<ResourceType>RCData</ResourceType>
+				<ResourceId>PAUSE_SMALL</ResourceId>
+			</RcItem>
+			<CppCompile Include="TabKit.cpp">
+				<BuildOrder>0</BuildOrder>
+			</CppCompile>
+			<RcItem Include="Data\StayOnTopOn.png">
+				<ResourceType>RCData</ResourceType>
+				<ResourceId>STAYONTOP_ON</ResourceId>
 			</RcItem>
 			<RcItem Include="Data\StayOnTopOff.png">
 				<ResourceType>RCData</ResourceType>
 				<ResourceId>STAYONTOP_OFF</ResourceId>
 			</RcItem>
-			<RcItem Include="Data\StayOnTopOn.png">
+			<RcItem Include="Data\ClosedTabsButton.png">
 				<ResourceType>RCData</ResourceType>
-				<ResourceId>STAYONTOP_ON</ResourceId>
+				<ResourceId>CLOSEDTABS</ResourceId>
 			</RcItem>
 			<CppCompile Include="SettingsFrm.cpp">
 				<Form>SettingsForm</Form>
 				<DependentOn>SettingsFrm.h</DependentOn>
 				<BuildOrder>2</BuildOrder>
 			</CppCompile>
-			<LibFiles Include="C:\Program Files (x86)\RAD Studio\lib\psdk\GdiPlus.lib">
-				<IgnorePath>true</IgnorePath>
-				<BuildOrder>13</BuildOrder>
-			</LibFiles>
+			<ResFiles Include="TabKit.res">
+				<BuildOrder>1</BuildOrder>
+			</ResFiles>
 			<RcItem Include="Data\UnsentMsg.png">
 				<ResourceType>RCData</ResourceType>
 				<ResourceId>UNSENTMSG</ResourceId>
 			</RcItem>
-			<ResFiles Include="TabKit.res">
-				<BuildOrder>1</BuildOrder>
-			</ResFiles>
-			<RcItem Include="Data\Composing_Big.ico">
-				<ResourceType>RCData</ResourceType>
-				<ResourceId>COMPOSING_BIG</ResourceId>
-			</RcItem>
-			<RcItem Include="Data\Composing_Small.ico">
-				<ResourceType>RCData</ResourceType>
-				<ResourceId>COMPOSING_SMALL</ResourceId>
-			</RcItem>
-			<RcItem Include="Data\Pause_Big.ico">
-				<ResourceType>RCData</ResourceType>
-				<ResourceId>PAUSE_BIG</ResourceId>
-			</RcItem>
-			<RcItem Include="Data\Pause.png">
-				<ResourceType>RCData</ResourceType>
-				<ResourceId>PAUSE</ResourceId>
-			</RcItem>
-			<CppCompile Include="TabKit.cpp">
-				<BuildOrder>0</BuildOrder>
-			</CppCompile>
-			<RcItem Include="Data\Pause_Small.ico">
-				<ResourceType>RCData</ResourceType>
-				<ResourceId>PAUSE_SMALL</ResourceId>
-			</RcItem>
-			<RcItem Include="Data\Composing.png">
-				<ResourceType>RCData</ResourceType>
-				<ResourceId>COMPOSING</ResourceId>
-			</RcItem>
+			<LibFiles Include="C:\Program Files (x86)\RAD Studio\lib\psdk\GdiPlus.lib">
+				<IgnorePath>true</IgnorePath>
+				<BuildOrder>13</BuildOrder>
+			</LibFiles>
 			<FormResources Include="SettingsFrm.dfm"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
@@ -138,8 +138,8 @@
 						<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
 						<VersionInfo Name="AutoIncBuild">False</VersionInfo>
 						<VersionInfo Name="MajorVer">1</VersionInfo>
-						<VersionInfo Name="MinorVer">1</VersionInfo>
-						<VersionInfo Name="Release">1</VersionInfo>
+						<VersionInfo Name="MinorVer">2</VersionInfo>
+						<VersionInfo Name="Release">0</VersionInfo>
 						<VersionInfo Name="Build">0</VersionInfo>
 						<VersionInfo Name="Debug">False</VersionInfo>
 						<VersionInfo Name="PreRelease">False</VersionInfo>
@@ -152,13 +152,13 @@
 					<VersionInfoKeys>
 						<VersionInfoKeys Name="CompanyName">Krzysztof Grochocki (Beherit)</VersionInfoKeys>
 						<VersionInfoKeys Name="FileDescription"/>
-						<VersionInfoKeys Name="FileVersion">1.1.1.0</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">1.2.0.0</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName">TabKit</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalCopyright">Krzysztof Grochocki (Beherit)</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks">Krzysztof Grochocki (Beherit)</VersionInfoKeys>
 						<VersionInfoKeys Name="OriginalFilename">TabKit.dll</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductName">TabKit</VersionInfoKeys>
-						<VersionInfoKeys Name="ProductVersion">1.1.1.0</VersionInfoKeys>
+						<VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
 						<VersionInfoKeys Name="Comments"/>
 					</VersionInfoKeys>
 					<Debugging>
@@ -232,9 +232,11 @@
 						<DebugSysEnvironmentVariables Name="USERPROFILE">C:\Users\Beherit</DebugSysEnvironmentVariables>
 						<DebugSysEnvironmentVariables Name="windir">C:\Windows</DebugSysEnvironmentVariables>
 						<DebugSysEnvironmentVariables Name="SESSIONNAME">Console</DebugSysEnvironmentVariables>
+						<DebugSysEnvironmentVariables Name="VBOX_INSTALL_PATH">C:\Program Files\VirtualBox\</DebugSysEnvironmentVariables>
 					</DebugSysEnvironmentVariables>
 					<DebugEnvironmentVariables>
 						<DebugEnvironmentVariables Name="__COMPAT_LAYER">ElevateCreateProcess</DebugEnvironmentVariables>
+						<DebugEnvironmentVariables Name="SESSIONNAME">Console</DebugEnvironmentVariables>
 					</DebugEnvironmentVariables>
 				</CPlusPlusBuilder.Personality>
 			</BorlandProject>

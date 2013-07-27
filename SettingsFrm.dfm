@@ -1,6 +1,7 @@
 object SettingsForm: TSettingsForm
   Left = 0
   Top = 0
+  ActiveControl = CategoryPanelGroup
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'TabKit - ustawienia'
@@ -149,12 +150,13 @@ object SettingsForm: TSettingsForm
     000000000000000000000000000000000000000000000000000000000000}
   OldCreateOrder = False
   Position = poScreenCenter
+  OnCreate = FormCreate
   OnMouseWheelDown = FormMouseWheelDown
   OnMouseWheelUp = FormMouseWheelUp
-  OnShow = aLoadSettingsExecute
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object Bevel: TBevel
+  object Bevel: TsBevel
     Left = 0
     Top = 366
     Width = 326
@@ -172,7 +174,7 @@ object SettingsForm: TSettingsForm
     Height = 16
     Visible = False
   end
-  object SaveButton: TButton
+  object SaveButton: TsButton
     Left = 243
     Top = 374
     Width = 75
@@ -181,8 +183,9 @@ object SettingsForm: TSettingsForm
     Enabled = False
     TabOrder = 1
     OnClick = SaveButtonClick
+    SkinData.SkinSection = 'BUTTON'
   end
-  object CancelButton: TButton
+  object CancelButton: TsButton
     Left = 162
     Top = 374
     Width = 75
@@ -190,8 +193,9 @@ object SettingsForm: TSettingsForm
     Caption = 'Anuluj'
     TabOrder = 2
     OnClick = CancelButtonClick
+    SkinData.SkinSection = 'BUTTON'
   end
-  object OkButton: TButton
+  object OkButton: TsButton
     Left = 81
     Top = 374
     Width = 75
@@ -199,18 +203,20 @@ object SettingsForm: TSettingsForm
     Caption = 'OK'
     TabOrder = 3
     OnClick = OkButtonClick
+    SkinData.SkinSection = 'BUTTON'
   end
   object CategoryPanelGroup: TCategoryPanelGroup
     AlignWithMargins = True
-    Left = 8
-    Top = 8
-    Width = 310
-    Margins.Left = 8
-    Margins.Top = 8
-    Margins.Right = 8
-    Margins.Bottom = 8
+    Left = 6
+    Top = 6
+    Width = 314
+    Height = 354
+    Margins.Left = 6
+    Margins.Top = 6
+    Margins.Right = 6
+    Margins.Bottom = 6
     HorzScrollBar.Visible = False
-    VertScrollBar.Smooth = True
+    VertScrollBar.Increment = 31
     VertScrollBar.Tracking = True
     Align = alClient
     Color = clWindow
@@ -227,149 +233,190 @@ object SettingsForm: TSettingsForm
       Caption = 'Inne'
       Color = clWindow
       Collapsed = True
-      TabOrder = 7
+      TabOrder = 0
       TabStop = True
       OnExpand = OtherCategoryPanelExpand
-      ExpandedHeight = 380
-      object OtherPanel: TPanel
-        Left = 0
-        Top = 0
-        Width = 289
-        Height = 0
-        Align = alClient
-        BevelOuter = bvNone
-        ShowCaption = False
+      ExplicitWidth = 295
+      ExpandedHeight = 428
+      object AntiSpimCheckBox: TsCheckBox
+        Left = 6
+        Top = 70
+        Width = 273
+        Height = 20
+        Caption = 'Wy'#322#261'cz wbudowany w komunikator filtr antyspimowy'
         TabOrder = 0
-        object ClearCacheGroupBox: TGroupBox
-          AlignWithMargins = True
-          Left = 3
-          Top = 200
-          Width = 284
-          Height = 153
-          BiDiMode = bdLeftToRight
-          Caption = 'Wyczy'#347#263' plik cache z informacji na temat:'
-          ParentBiDiMode = False
-          TabOrder = 7
-          object SessionRememberEraseButton: TButton
-            Left = 28
-            Top = 72
-            Width = 158
-            Height = 20
-            Caption = 'Aktywna sesja'
-            Enabled = False
-            TabOrder = 2
-            OnClick = SessionRememberEraseButtonClick
-          end
-          object UnsentMsgEraseButton: TButton
-            Left = 28
-            Top = 20
-            Width = 158
-            Height = 20
-            Caption = 'Niewys'#322'ane wiadomo'#347'ci'
-            Enabled = False
-            TabOrder = 0
-            OnClick = UnsentMsgEraseButtonClick
-          end
-          object ClosedTabsEraseButton: TButton
-            Left = 28
-            Top = 46
-            Width = 158
-            Height = 20
-            Caption = 'Ostatnio zamkni'#281'te zak'#322'adki'
-            Enabled = False
-            TabOrder = 1
-            OnClick = ClosedTabsEraseButtonClick
-          end
-          object ClipTabsEraseButton: TButton
-            Left = 28
-            Top = 98
-            Width = 158
-            Height = 20
-            Caption = 'Przypi'#281'te zak'#322'adki'
-            Enabled = False
-            TabOrder = 3
-            OnClick = ClipTabsEraseButtonClick
-          end
-          object MiniAvatarsEraseButton: TButton
-            Left = 28
-            Top = 124
-            Width = 158
-            Height = 20
-            Caption = 'Usu'#324' / aktualizuj mini awatary'
-            TabOrder = 4
-            OnClick = MiniAvatarsEraseButtonClick
-          end
-        end
-        object StayOnTopCheckBox: TCheckBox
-          Left = 6
-          Top = 6
-          Width = 271
-          Height = 26
-          Caption = 
-            'Dodaj do okna rozmowy przycisk trzymaj'#261'cy okno zawsze na wierzch' +
-            'u'
-          TabOrder = 0
-          WordWrap = True
-          OnClick = aOtherChkExecute
-        end
-        object EmuTabsWCheckBox: TCheckBox
-          Left = 6
-          Top = 162
-          Width = 271
-          Height = 26
-          Caption = 'Ostrzegaj przed zamykaniem wielu zak'#322'adek jednocze'#347'nie'
-          TabOrder = 6
-          WordWrap = True
-          OnClick = aOtherChkExecute
-        end
-        object QuickQuoteCheckBox: TCheckBox
-          Left = 6
-          Top = 38
-          Width = 271
-          Height = 26
-          Caption = 
-            'Aktywuj skr'#243't klawiaturowy Ctrl+Q do wklejania tekstu ze schowka' +
-            ' jako cytat'
-          TabOrder = 1
-          WordWrap = True
-          OnClick = aOtherChkExecute
-        end
-        object AntiSpimCheckBox: TCheckBox
-          Left = 6
-          Top = 70
-          Width = 271
-          Height = 17
-          Caption = 'Wy'#322#261'cz wbudowany w komunikator filtr antyspimowy'
+        OnClick = aOtherChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+      object ClearCacheGroupBox: TGroupBox
+        AlignWithMargins = True
+        Left = 6
+        Top = 246
+        Width = 284
+        Height = 153
+        BiDiMode = bdLeftToRight
+        Caption = 'Wyczy'#347#263' plik cache z informacji na temat:'
+        ParentBiDiMode = False
+        TabOrder = 1
+        object SessionRememberEraseButton: TButton
+          Left = 28
+          Top = 72
+          Width = 158
+          Height = 20
+          Caption = 'Aktywna sesja'
+          Enabled = False
           TabOrder = 2
-          OnClick = aOtherChkExecute
+          OnClick = SessionRememberEraseButtonClick
         end
-        object HideStatusBarCheckBox: TCheckBox
-          Left = 6
-          Top = 93
-          Width = 271
-          Height = 17
-          Caption = 'Ukryj dolny pasek informacyjny'
+        object UnsentMsgEraseButton: TButton
+          Left = 28
+          Top = 20
+          Width = 158
+          Height = 20
+          Caption = 'Niewys'#322'ane wiadomo'#347'ci'
+          Enabled = False
+          TabOrder = 0
+          OnClick = UnsentMsgEraseButtonClick
+        end
+        object ClosedTabsEraseButton: TButton
+          Left = 28
+          Top = 46
+          Width = 158
+          Height = 20
+          Caption = 'Ostatnio zamkni'#281'te zak'#322'adki'
+          Enabled = False
+          TabOrder = 1
+          OnClick = ClosedTabsEraseButtonClick
+        end
+        object ClipTabsEraseButton: TButton
+          Left = 28
+          Top = 98
+          Width = 158
+          Height = 20
+          Caption = 'Przypi'#281'te zak'#322'adki'
+          Enabled = False
           TabOrder = 3
-          OnClick = aOtherChkExecute
+          OnClick = ClipTabsEraseButtonClick
         end
-        object HideToolBarCheckBox: TCheckBox
-          Left = 6
-          Top = 116
-          Width = 271
-          Height = 17
-          Caption = 'Automatyczne ukrywanie paska narz'#281'dzi'
+        object MiniAvatarsEraseButton: TButton
+          Left = 28
+          Top = 124
+          Width = 158
+          Height = 20
+          Caption = 'Usu'#324' / aktualizuj mini awatary'
           TabOrder = 4
-          OnClick = aOtherChkExecute
+          OnClick = MiniAvatarsEraseButtonClick
         end
-        object CollapseImagesCheckBox: TCheckBox
-          Left = 6
-          Top = 139
-          Width = 271
-          Height = 17
-          Caption = 'Zwijaj przes'#322'ane obrazki do formy za'#322#261'cznika'
-          TabOrder = 5
-          OnClick = aOtherChkExecute
-        end
+      end
+      object CollapseImagesCheckBox: TsCheckBox
+        Left = 6
+        Top = 142
+        Width = 233
+        Height = 20
+        Caption = 'Zwijaj przes'#322'ane obrazki do formy za'#322#261'cznika'
+        TabOrder = 2
+        OnClick = aOtherChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+      object EmuTabsWCheckBox: TsCheckBox
+        Left = 6
+        Top = 212
+        Width = 271
+        Height = 28
+        Caption = 'Ostrzegaj przed zamykaniem wielu zak'#322'adek jednocze'#347'nie'
+        AutoSize = False
+        TabOrder = 3
+        OnClick = aOtherChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object HideStatusBarCheckBox: TsCheckBox
+        Left = 6
+        Top = 94
+        Width = 170
+        Height = 20
+        Caption = 'Ukryj dolny pasek informacyjny'
+        TabOrder = 4
+        OnClick = aOtherChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+      object HideToolBarCheckBox: TsCheckBox
+        Left = 6
+        Top = 118
+        Width = 215
+        Height = 20
+        Caption = 'Automatyczne ukrywanie paska narz'#281'dzi'
+        TabOrder = 5
+        OnClick = aOtherChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+      object QuickQuoteCheckBox: TsCheckBox
+        Left = 6
+        Top = 38
+        Width = 271
+        Height = 28
+        Caption = 
+          'Aktywuj skr'#243't klawiaturowy Ctrl+Q do wklejania tekstu ze schowka' +
+          ' jako cytat'
+        AutoSize = False
+        TabOrder = 6
+        OnClick = aOtherChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object StayOnTopCheckBox: TsCheckBox
+        Left = 6
+        Top = 6
+        Width = 271
+        Height = 28
+        Caption = 
+          'Dodaj do okna rozmowy przycisk trzymaj'#261'cy okno zawsze na wierzch' +
+          'u'
+        AutoSize = False
+        TabOrder = 7
+        OnClick = aOtherChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object MinimizeRestoreCheckBox: TsCheckBox
+        Left = 6
+        Top = 166
+        Width = 159
+        Height = 42
+        Caption = 
+          'Minimalizuj / przywracaj okno rozmowy przy pomocy skr'#243'tu klawisz' +
+          'owego'
+        AutoSize = False
+        TabOrder = 8
+        OnClick = aOtherChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object MinimizeRestoreHotKey: THotKey
+        Left = 171
+        Top = 177
+        Width = 115
+        Height = 19
+        HotKey = 24689
+        Modifiers = [hkShift, hkCtrl]
+        TabOrder = 9
+        OnChange = aOtherChkExecute
       end
     end
     object ClipTabsCategoryPanel: TCategoryPanel
@@ -378,55 +425,58 @@ object SettingsForm: TSettingsForm
       Caption = 'Przypinanie zak'#322'adek'
       Color = clWindow
       Collapsed = True
-      TabOrder = 6
+      Ctl3D = True
+      ParentCtl3D = False
+      TabOrder = 1
       TabStop = True
-      ExpandedHeight = 114
-      object ClipTabsPanel: TPanel
-        Left = 0
-        Top = 0
-        Width = 289
-        Height = 0
-        Align = alClient
-        BevelOuter = bvNone
-        ShowCaption = False
+      ExplicitWidth = 295
+      ExpandedHeight = 113
+      object CounterClipTabsCheckBox: TsCheckBox
+        Left = 6
+        Top = 62
+        Width = 267
+        Height = 20
+        Caption = 'Wy'#347'wietlaj licznik znak'#243'w z powiadomienia o pisaniu'
         TabOrder = 0
-        object OpenClipTabsCheckBox: TCheckBox
-          Left = 6
-          Top = 9
-          Width = 280
-          Height = 26
-          Caption = 'Otwieraj przypi'#281'te zak'#322'adki wraz z otwarciem okna rozmowy'
-          Checked = True
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          Font.Style = []
-          ParentFont = False
-          State = cbChecked
-          TabOrder = 0
-          WordWrap = True
-          OnClick = aClipTabsChkExecute
-        end
-        object InactiveClipTabsCheckBox: TCheckBox
-          Left = 6
-          Top = 40
-          Width = 280
-          Height = 17
-          Caption = 'Nie wy'#347'wietlaj licznika nieprzeczytanych wiadomo'#347'ci'
-          TabOrder = 1
-          WordWrap = True
-          OnClick = aClosedTabsChkExecute
-        end
-        object CounterClipTabsCheckBox: TCheckBox
-          Left = 6
-          Top = 63
-          Width = 280
-          Height = 17
-          Caption = 'Wy'#347'wietlaj licznik znak'#243'w z powiadomienia o pisaniu'
-          TabOrder = 2
-          OnClick = aClosedTabsChkExecute
-        end
+        OnClick = aClosedTabsChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+      object InactiveClipTabsCheckBox: TsCheckBox
+        Left = 6
+        Top = 38
+        Width = 268
+        Height = 20
+        Caption = 'Nie wy'#347'wietlaj licznika nieprzeczytanych wiadomo'#347'ci'
+        TabOrder = 1
+        OnClick = aClosedTabsChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object OpenClipTabsCheckBox: TsCheckBox
+        Left = 6
+        Top = 6
+        Width = 280
+        Height = 28
+        Caption = 'Otwieraj przypi'#281'te zak'#322'adki wraz z otwarciem okna rozmowy'
+        AutoSize = False
+        Checked = True
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        State = cbChecked
+        TabOrder = 2
+        OnClick = aClipTabsChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
       end
     end
     object TitlebarCategoryPanel: TCategoryPanel
@@ -435,110 +485,110 @@ object SettingsForm: TSettingsForm
       Caption = 'Pasek tytu'#322'u'
       Color = clWindow
       Collapsed = True
-      TabOrder = 5
+      TabOrder = 2
       TabStop = True
-      ExpandedHeight = 196
-      object TitlebarPanel: TPanel
-        Left = 0
-        Top = 0
-        Width = 289
-        Height = 0
-        Align = alClient
-        ShowCaption = False
+      ExplicitWidth = 295
+      ExpandedHeight = 204
+      object TweakFrmMainTitlebarCheckBox: TsCheckBox
+        Left = 6
+        Top = 102
+        Width = 240
+        Height = 20
+        Caption = 'Zmieniaj tekst na pasku tytu'#322'u g'#322#243'wnego okna'
         TabOrder = 0
-        object TweakFrmMainTitlebarCheckBox: TCheckBox
-          Left = 6
-          Top = 98
-          Width = 259
-          Height = 17
-          Caption = 'Zmieniaj tekst na pasku tytu'#322'u g'#322#243'wnego okna'
+        OnClick = aTitlebarTweakChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+      object TweakFrmMainTitlebarPanel: TPanel
+        Left = 20
+        Top = 128
+        Width = 170
+        Height = 44
+        AutoSize = True
+        BevelOuter = bvNone
+        ShowCaption = False
+        TabOrder = 1
+        object TweakFrmMainTitlebarMode1RadioButton: TRadioButton
+          Left = 0
+          Top = 0
+          Width = 143
+          Height = 20
+          Caption = 'AQQ [%nazwa_profilu%]'
+          Checked = True
+          TabOrder = 0
+          TabStop = True
+          OnClick = aTitlebarTweakChkExecute
+        end
+        object TweakFrmMainTitlebarMode2RadioButton: TRadioButton
+          Left = 0
+          Top = 24
+          Width = 43
+          Height = 20
+          Caption = 'AQQ'
+          TabOrder = 1
+          OnClick = aTitlebarTweakChkExecute
+        end
+        object TweakFrmMainTitlebarMode2Edit: TEdit
+          Left = 49
+          Top = 23
+          Width = 121
+          Height = 21
+          TabOrder = 2
+          TextHint = 'Wpisz tutaj sw'#243'j tekst'
+          OnChange = aTitlebarTweakChkExecute
+        end
+      end
+      object TweakFrmSendTitlebarCheckBox: TsCheckBox
+        Left = 6
+        Top = 6
+        Width = 236
+        Height = 20
+        Caption = 'Zmieniaj tekst na pasku tytu'#322'u okna rozmowy'
+        TabOrder = 2
+        OnClick = aTitlebarTweakChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+      object TweakFrmSendTitlebarPanel: TPanel
+        Left = 20
+        Top = 30
+        Width = 185
+        Height = 68
+        AutoSize = True
+        BevelOuter = bvNone
+        ShowCaption = False
+        TabOrder = 3
+        object TweakFrmSendTitlebarMode1RadioButton: TRadioButton
+          Left = 0
+          Top = 0
+          Width = 143
+          Height = 20
+          Caption = 'Pseudonim i opis kontaktu'
+          Checked = True
+          TabOrder = 0
+          TabStop = True
+          OnClick = aTitlebarTweakChkExecute
+        end
+        object TweakFrmSendTitlebarMode2RadioButton: TRadioButton
+          Left = 0
+          Top = 24
+          Width = 139
+          Height = 20
+          Caption = 'Sam pseudonim kontaktu'
+          TabOrder = 1
+          OnClick = aTitlebarTweakChkExecute
+        end
+        object TweakFrmSendTitlebarMode3RadioButton: TRadioButton
+          Left = 0
+          Top = 48
+          Width = 185
+          Height = 20
+          Caption = 'Pseudonim i identyfikator kontaktu'
           TabOrder = 2
           OnClick = aTitlebarTweakChkExecute
-        end
-        object TweakFrmMainTitlebarPanel: TPanel
-          Left = 20
-          Top = 121
-          Width = 266
-          Height = 44
-          BevelOuter = bvNone
-          ShowCaption = False
-          TabOrder = 3
-          object TweakFrmMainTitlebarMode1RadioButton: TRadioButton
-            Left = 0
-            Top = 0
-            Width = 257
-            Height = 17
-            Caption = 'AQQ [%nazwa_profilu%]'
-            Checked = True
-            TabOrder = 0
-            TabStop = True
-            OnClick = aTitlebarTweakChkExecute
-          end
-          object TweakFrmMainTitlebarMode2RadioButton: TRadioButton
-            Left = 0
-            Top = 23
-            Width = 42
-            Height = 17
-            Caption = 'AQQ'
-            TabOrder = 1
-            OnClick = aTitlebarTweakChkExecute
-          end
-          object TweakFrmMainTitlebarMode2Edit: TEdit
-            Left = 48
-            Top = 21
-            Width = 121
-            Height = 21
-            TabOrder = 2
-            TextHint = 'Wpisz tutaj sw'#243'j tekst'
-            OnChange = aTitlebarTweakChkExecute
-          end
-        end
-        object TweakFrmSendTitlebarCheckBox: TCheckBox
-          Left = 6
-          Top = 6
-          Width = 259
-          Height = 17
-          Caption = 'Zmieniaj tekst na pasku tytu'#322'u okna rozmowy'
-          TabOrder = 0
-          OnClick = aTitlebarTweakChkExecute
-        end
-        object TweakFrmSendTitlebarPanel: TPanel
-          Left = 20
-          Top = 29
-          Width = 266
-          Height = 62
-          BevelOuter = bvNone
-          ShowCaption = False
-          TabOrder = 1
-          object TweakFrmSendTitlebarMode1RadioButton: TRadioButton
-            Left = 0
-            Top = 0
-            Width = 189
-            Height = 17
-            Caption = 'Pseudonim i opis kontaktu'
-            Checked = True
-            TabOrder = 0
-            TabStop = True
-            OnClick = aTitlebarTweakChkExecute
-          end
-          object TweakFrmSendTitlebarMode2RadioButton: TRadioButton
-            Left = 0
-            Top = 23
-            Width = 189
-            Height = 17
-            Caption = 'Sam pseudonim kontaktu'
-            TabOrder = 1
-            OnClick = aTitlebarTweakChkExecute
-          end
-          object TweakFrmSendTitlebarMode3RadioButton: TRadioButton
-            Left = 0
-            Top = 46
-            Width = 189
-            Height = 17
-            Caption = 'Pseudonim i identyfikator kontaktu'
-            TabOrder = 2
-            OnClick = aTitlebarTweakChkExecute
-          end
         end
       end
     end
@@ -548,72 +598,80 @@ object SettingsForm: TSettingsForm
       Caption = 'Nowe wiadomo'#347'ci'
       Color = clWindow
       Collapsed = True
-      TabOrder = 4
+      TabOrder = 3
       TabStop = True
-      ExpandedHeight = 186
-      object NewMsgPanel: TPanel
-        Left = 0
-        Top = 0
-        Width = 289
-        Height = 0
-        Align = alClient
-        BevelOuter = bvNone
+      ExplicitWidth = 295
+      ExpandedHeight = 190
+      object ChatStateNotiferNewMsgCheckBox: TsCheckBox
+        Left = 6
+        Top = 116
+        Width = 271
+        Height = 42
+        Caption = 
+          'Informuj graficznie o pisaniu nowej wiadomo'#347'ci na zak'#322'adkach ora' +
+          'z na pasku tytu'#322'u okna gdy jest ono zminimalizowane lub nieaktyw' +
+          'ne'
+        AutoSize = False
+        Checked = True
+        State = cbChecked
         TabOrder = 0
-        object InactiveFrmNewMsgCheckBox: TCheckBox
-          Left = 6
-          Top = 6
-          Width = 280
-          Height = 40
-          Caption = 
-            'Wy'#347'wietlaj liczb'#281' nieprzeczytanych wiadomo'#347'ci na pasku tytu'#322'u ok' +
-            'na rozmowy gdy jest ono zminimalizowane lub nieaktywne'
-          Checked = True
-          State = cbChecked
-          TabOrder = 0
-          WordWrap = True
-          OnClick = aNewMsgChkExecute
-        end
-        object InactiveNotiferNewMsgCheckBox: TCheckBox
-          Left = 6
-          Top = 84
-          Width = 280
-          Height = 26
-          Caption = 
-            'Pokazuj w chmurce informacyjnej tre'#347#263' nowej wiadomo'#347'ci pochodz'#261'c' +
-            'ej z nieaktywnej zak'#322'adki'
-          TabOrder = 2
-          WordWrap = True
-          OnClick = aNewMsgChkExecute
-        end
-        object InactiveTabsNewMsgCheckBox: TCheckBox
-          Left = 6
-          Top = 52
-          Width = 280
-          Height = 26
-          Caption = 
-            'Wy'#347'wietlaj liczb'#281' nieprzeczytanych wiadomo'#347'ci na nieaktywnych za' +
-            'k'#322'adkach'
-          Checked = True
-          State = cbChecked
-          TabOrder = 1
-          WordWrap = True
-          OnClick = aNewMsgChkExecute
-        end
-        object ChatStateNotiferNewMsgCheckBox: TCheckBox
-          Left = 6
-          Top = 116
-          Width = 271
-          Height = 39
-          Caption = 
-            'Informuj graficznie o pisaniu nowej wiadomo'#347'ci na zak'#322'adkach ora' +
-            'z na pasku tytu'#322'u okna gdy jest ono zminimalizowane lub nieaktyw' +
-            'ne'
-          Checked = True
-          State = cbChecked
-          TabOrder = 3
-          WordWrap = True
-          OnClick = aNewMsgChkExecute
-        end
+        OnClick = aNewMsgChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object InactiveFrmNewMsgCheckBox: TsCheckBox
+        Left = 6
+        Top = 6
+        Width = 280
+        Height = 42
+        Caption = 
+          'Wy'#347'wietlaj liczb'#281' nieprzeczytanych wiadomo'#347'ci na pasku tytu'#322'u ok' +
+          'na rozmowy gdy jest ono zminimalizowane lub nieaktywne'
+        AutoSize = False
+        Checked = True
+        State = cbChecked
+        TabOrder = 1
+        OnClick = aNewMsgChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object InactiveNotiferNewMsgCheckBox: TsCheckBox
+        Left = 6
+        Top = 84
+        Width = 280
+        Height = 28
+        Caption = 
+          'Pokazuj w chmurce informacyjnej tre'#347#263' nowej wiadomo'#347'ci pochodz'#261'c' +
+          'ej z nieaktywnej zak'#322'adki'
+        AutoSize = False
+        TabOrder = 2
+        OnClick = aNewMsgChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object InactiveTabsNewMsgCheckBox: TsCheckBox
+        Left = 6
+        Top = 52
+        Width = 280
+        Height = 28
+        Caption = 
+          'Wy'#347'wietlaj liczb'#281' nieprzeczytanych wiadomo'#347'ci na nieaktywnych za' +
+          'k'#322'adkach'
+        AutoSize = False
+        Checked = True
+        State = cbChecked
+        TabOrder = 3
+        OnClick = aNewMsgChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
       end
     end
     object SessionRememberCategoryPanel: TCategoryPanel
@@ -622,66 +680,68 @@ object SettingsForm: TSettingsForm
       Caption = 'Zapami'#281'tywanie sesji'
       Color = clWindow
       Collapsed = True
-      TabOrder = 3
+      TabOrder = 4
       TabStop = True
-      ExpandedHeight = 177
-      object SessionRememberPanel: TPanel
-        Left = 0
-        Top = 0
-        Width = 289
-        Height = 0
-        Align = alClient
-        BevelOuter = bvNone
-        ShowCaption = False
+      ExplicitWidth = 295
+      ExpandedHeight = 176
+      object RestoreSessionLabel: TsLabel
+        Left = 21
+        Top = 104
+        Width = 251
+        Height = 39
+        Alignment = taCenter
+        Caption = 
+          'Opcja zapami'#281'tywania wpisanego tekstu mo'#380'e w niekt'#243'rych przypadk' +
+          'ach znacznie obni'#380'y'#263' wydajno'#347#263' komunikatora. U'#380'ywaj tej opcj z r' +
+          'ozwag'#261'!'
+        Enabled = False
+        WordWrap = True
+      end
+      object ManualRestoreTabsSessionCheckBox: TsCheckBox
+        Left = 20
+        Top = 52
+        Width = 251
+        Height = 28
+        Caption = 
+          'Przywracaj r'#243'wnie'#380' zak'#322'adki zapami'#281'tane przy r'#281'cznym wy'#322#261'czeniu ' +
+          'AQQ'
+        AutoSize = False
         TabOrder = 0
-        object RestoreSessionLabel: TLabel
-          Left = 20
-          Top = 107
-          Width = 251
-          Height = 39
-          Alignment = taCenter
-          Caption = 
-            'Opcja zapami'#281'tywania wpisanego tekstu mo'#380'e w niekt'#243'rych przypadk' +
-            'ach znacznie obni'#380'y'#263' wydajno'#347#263' komunikatora. U'#380'ywaj tej opcj z r' +
-            'ozwag'#261'!'
-          Enabled = False
-          WordWrap = True
-        end
-        object ManualRestoreTabsSessionCheckBox: TCheckBox
-          Left = 20
-          Top = 52
-          Width = 251
-          Height = 26
-          Caption = 
-            'Przywracaj r'#243'wnie'#380' zak'#322'adki zapami'#281'tane przy r'#281'cznym wy'#322#261'czeniu ' +
-            'AQQ'
-          TabOrder = 1
-          WordWrap = True
-          OnClick = aSessionRememberChkExecute
-        end
-        object RestoreMsgSessionCheckBox: TCheckBox
-          Left = 20
-          Top = 84
-          Width = 237
-          Height = 17
-          Caption = 'Zapami'#281'tuj wpisany tekst w oknie rozmowy'
-          TabOrder = 2
-          OnClick = aSessionRememberChkExecute
-        end
-        object RestoreTabsSessionCheckBox: TCheckBox
-          Left = 6
-          Top = 6
-          Width = 251
-          Height = 40
-          Caption = 
-            'Przywracaj wszystkie otwarte zak'#322'adki utracone w wyniku niepo'#380#261'd' +
-            'anego zamkni'#281'cia lub restartu komunikatora'
-          Checked = True
-          State = cbChecked
-          TabOrder = 0
-          WordWrap = True
-          OnClick = aSessionRememberChkExecute
-        end
+        OnClick = aSessionRememberChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object RestoreMsgSessionCheckBox: TsCheckBox
+        Left = 20
+        Top = 82
+        Width = 227
+        Height = 20
+        Caption = 'Zapami'#281'tuj wpisany tekst w oknie rozmowy'
+        TabOrder = 1
+        OnClick = aSessionRememberChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+      object RestoreTabsSessionCheckBox: TsCheckBox
+        Left = 6
+        Top = 6
+        Width = 251
+        Height = 42
+        Caption = 
+          'Przywracaj wszystkie otwarte zak'#322'adki utracone w wyniku niepo'#380#261'd' +
+          'anego zamkni'#281'cia lub restartu komunikatora'
+        AutoSize = False
+        Checked = True
+        State = cbChecked
+        TabOrder = 2
+        OnClick = aSessionRememberChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
       end
     end
     object TabsSwitchingCategoryPanel: TCategoryPanel
@@ -690,99 +750,100 @@ object SettingsForm: TSettingsForm
       Caption = 'Prze'#322#261'czanie zak'#322'adek'
       Color = clWindow
       Collapsed = True
-      TabOrder = 2
+      TabOrder = 5
       TabStop = True
-      ExpandedHeight = 180
-      object TabsSwitchingPanel: TPanel
-        Left = 0
-        Top = 0
-        Width = 289
-        Height = 154
-        Align = alClient
-        ShowCaption = False
+      ExplicitWidth = 295
+      ExpandedHeight = 174
+      object SwitchToNewMsgCheckBox: TsCheckBox
+        Left = 6
+        Top = 6
+        Width = 280
+        Height = 28
+        Caption = 
+          'Inteligentne prze'#322#261'czanie pomi'#281'dzy zak'#322'adkami przy u'#380'yciu skr'#243'tu' +
+          ' Ctrl+Tab do nieodczytanych wiadomo'#347'ci'
+        AutoSize = False
+        Checked = True
+        State = cbChecked
         TabOrder = 0
-        object SwitchToNewMsgCheckBox: TCheckBox
-          Left = 6
-          Top = 6
-          Width = 280
-          Height = 26
-          Caption = 
-            'Inteligentne prze'#322#261'czanie pomi'#281'dzy zak'#322'adkami przy u'#380'yciu skr'#243'tu' +
-            ' Ctrl+Tab do nieodczytanych wiadomo'#347'ci'
+        OnClick = aTabsSwitchingChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object SwitchToNewMsgModePanel: TPanel
+        Left = 20
+        Top = 38
+        Width = 204
+        Height = 41
+        AutoSize = True
+        BevelOuter = bvNone
+        ShowCaption = False
+        TabOrder = 1
+        object SwitchToNewMsgMode1RadioButton: TRadioButton
+          Left = 0
+          Top = 0
+          Width = 203
+          Height = 20
+          Caption = 'Prze'#322#261'czanie na najstarsz'#261' wiadomo'#347#263
           Checked = True
-          State = cbChecked
           TabOrder = 0
-          WordWrap = True
+          TabStop = True
           OnClick = aTabsSwitchingChkExecute
         end
-        object SwitchToNewMsgModePanel: TPanel
-          Left = 20
-          Top = 38
-          Width = 266
-          Height = 41
-          BevelOuter = bvNone
-          ShowCaption = False
+        object SwitchToNewMsgMode2RadioButton: TRadioButton
+          Left = 0
+          Top = 21
+          Width = 204
+          Height = 20
+          Caption = 'Prze'#322#261'czanie na najnowsz'#261' wiadomo'#347#263
           TabOrder = 1
-          object SwitchToNewMsgMode1RadioButton: TRadioButton
-            Left = 0
-            Top = 0
-            Width = 205
-            Height = 17
-            Caption = 'Prze'#322#261'czanie na najstarsz'#261' wiadomo'#347#263
-            Checked = True
-            TabOrder = 0
-            TabStop = True
-            OnClick = aTabsSwitchingChkExecute
-          end
-          object SwitchToNewMsgMode2RadioButton: TRadioButton
-            Left = 0
-            Top = 23
-            Width = 205
-            Height = 17
-            Caption = 'Prze'#322#261'czanie na najnowsz'#261' wiadomo'#347#263
-            TabOrder = 1
-            OnClick = aTabsSwitchingChkExecute
-          end
-        end
-        object TabsHotKeysCheckBox: TCheckBox
-          Left = 6
-          Top = 85
-          Width = 280
-          Height = 17
-          Caption = 'Przypisz skr'#243'ty klawiszowe do konkretnych zak'#322'adek'
-          Checked = True
-          State = cbChecked
-          TabOrder = 2
           OnClick = aTabsSwitchingChkExecute
         end
-        object TabsHotKeysModePanel: TPanel
-          Left = 20
-          Top = 108
-          Width = 266
-          Height = 41
-          BevelOuter = bvNone
-          ShowCaption = False
-          TabOrder = 3
-          object TabsHotKeysMode1RadioButton: TRadioButton
-            Left = 0
-            Top = 0
-            Width = 181
-            Height = 17
-            Caption = 'Klawisze od F1 do  F12'
-            TabOrder = 0
-            OnClick = aTabsSwitchingChkExecute
-          end
-          object TabsHotKeysMode2RadioButton: TRadioButton
-            Left = 0
-            Top = 23
-            Width = 181
-            Height = 17
-            Caption = 'Klawisz Ctrl + klawisze od 1 do 9'
-            Checked = True
-            TabOrder = 1
-            TabStop = True
-            OnClick = aTabsSwitchingChkExecute
-          end
+      end
+      object TabsHotKeysCheckBox: TsCheckBox
+        Left = 6
+        Top = 80
+        Width = 270
+        Height = 20
+        Caption = 'Przypisz skr'#243'ty klawiszowe do konkretnych zak'#322'adek'
+        Checked = True
+        State = cbChecked
+        TabOrder = 2
+        OnClick = aTabsSwitchingChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+      object TabsHotKeysModePanel: TPanel
+        Left = 20
+        Top = 104
+        Width = 175
+        Height = 41
+        AutoSize = True
+        BevelOuter = bvNone
+        ShowCaption = False
+        TabOrder = 3
+        object TabsHotKeysMode1RadioButton: TRadioButton
+          Left = 0
+          Top = 0
+          Width = 129
+          Height = 20
+          Caption = 'Klawisze od F1 do  F12'
+          TabOrder = 0
+          OnClick = aTabsSwitchingChkExecute
+        end
+        object TabsHotKeysMode2RadioButton: TRadioButton
+          Left = 0
+          Top = 21
+          Width = 175
+          Height = 20
+          Caption = 'Klawisz Ctrl + klawisze od 1 do 9'
+          Checked = True
+          TabOrder = 1
+          TabStop = True
+          OnClick = aTabsSwitchingChkExecute
         end
       end
     end
@@ -792,115 +853,136 @@ object SettingsForm: TSettingsForm
       Caption = 'Niewys'#322'ane wiadomo'#347'ci'
       Color = clWindow
       Collapsed = True
-      TabOrder = 1
+      TabOrder = 6
       TabStop = True
-      ExpandedHeight = 259
-      object UnsentMsgPanel: TPanel
-        Left = 0
-        Top = 0
-        Width = 289
-        Height = 0
-        Align = alClient
-        BevelOuter = bvNone
-        ShowCaption = False
+      ExplicitWidth = 295
+      ExpandedHeight = 267
+      object CloudUnsentMsgCheckBox: TsCheckBox
+        Left = 35
+        Top = 62
+        Width = 127
+        Height = 20
+        Caption = 'Chmurka informacyjna'
+        Checked = True
+        State = cbChecked
         TabOrder = 0
-        object CloudUnsentMsgCheckBox: TCheckBox
-          Left = 35
-          Top = 61
-          Width = 182
-          Height = 17
-          Caption = 'Chmurka informacyjna'
-          Checked = True
-          State = cbChecked
-          TabOrder = 2
-          OnClick = aUnsentMsgChkExecute
-        end
-        object DetailedCloudUnsentMsgCheckBox: TCheckBox
-          Left = 50
-          Top = 84
-          Width = 181
-          Height = 17
-          Caption = 'Pokazuj szczeg'#243#322'owe informacje'
-          TabOrder = 3
-          OnClick = aUnsentMsgChkExecute
-        end
-        object FastAccessUnsentMsgCheckBox: TCheckBox
-          Left = 20
-          Top = 130
-          Width = 227
-          Height = 17
-          Caption = 'Szybki dost'#281'p do niewys'#322'anych wiadomo'#347'ci'
-          Checked = True
-          State = cbChecked
-          TabOrder = 5
-          OnClick = aUnsentMsgChkExecute
-        end
-        object FrmMainUnsentMsgCheckBox: TCheckBox
-          Left = 35
-          Top = 153
-          Width = 182
-          Height = 17
-          Caption = 'W oknie listy kontakt'#243'w'
-          Checked = True
-          State = cbChecked
-          TabOrder = 6
-          OnClick = aUnsentMsgChkExecute
-        end
-        object FrmSendUnsentMsgCheckBox: TCheckBox
-          Left = 35
-          Top = 176
-          Width = 182
-          Height = 17
-          Caption = 'W oknie rozmowy'
-          TabOrder = 7
-          OnClick = aUnsentMsgChkExecute
-        end
-        object InfoUnsentMsgCheckBox: TCheckBox
-          Left = 20
-          Top = 29
-          Width = 211
-          Height = 26
-          Caption = 'Informuj o niewys'#322'anych wiadomo'#347'ciach przy w'#322#261'czeniu AQQ'
-          Checked = True
-          State = cbChecked
-          TabOrder = 1
-          WordWrap = True
-          OnClick = aUnsentMsgChkExecute
-        end
-        object RememberUnsentMsgCheckBox: TCheckBox
-          Left = 6
-          Top = 6
-          Width = 203
-          Height = 17
-          Caption = 'Zapami'#281'tuj niewys'#322'ane wiadomo'#347'ci'
-          Checked = True
-          State = cbChecked
-          TabOrder = 0
-          OnClick = aUnsentMsgChkExecute
-        end
-        object TrayUnsentMsgCheckBox: TCheckBox
-          Left = 35
-          Top = 107
-          Width = 182
-          Height = 17
-          Caption = 'Ikonka w zasobniku systemowym'
-          Checked = True
-          State = cbChecked
-          TabOrder = 4
-          OnClick = aUnsentMsgChkExecute
-        end
-        object FastClearUnsentMsgCheckBox: TCheckBox
-          Left = 35
-          Top = 199
-          Width = 242
-          Height = 26
-          Caption = 
-            'Dodaj element szybkiego czyszczenia listy niewys'#322'anych wiadomo'#347'c' +
-            'i'
-          TabOrder = 8
-          WordWrap = True
-          OnClick = aUnsentMsgChkExecute
-        end
+        OnClick = aUnsentMsgChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+      object DetailedCloudUnsentMsgCheckBox: TsCheckBox
+        Left = 51
+        Top = 86
+        Width = 174
+        Height = 20
+        Caption = 'Pokazuj szczeg'#243#322'owe informacje'
+        TabOrder = 1
+        OnClick = aUnsentMsgChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object FastAccessUnsentMsgCheckBox: TsCheckBox
+        Left = 20
+        Top = 134
+        Width = 226
+        Height = 20
+        Caption = 'Szybki dost'#281'p do niewys'#322'anych wiadomo'#347'ci'
+        Checked = True
+        State = cbChecked
+        TabOrder = 2
+        OnClick = aUnsentMsgChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+      object FastClearUnsentMsgCheckBox: TsCheckBox
+        Left = 35
+        Top = 206
+        Width = 242
+        Height = 28
+        Caption = 
+          'Dodaj element szybkiego czyszczenia listy niewys'#322'anych wiadomo'#347'c' +
+          'i'
+        AutoSize = False
+        TabOrder = 3
+        OnClick = aUnsentMsgChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object FrmMainUnsentMsgCheckBox: TsCheckBox
+        Left = 35
+        Top = 158
+        Width = 133
+        Height = 20
+        Caption = 'W oknie listy kontakt'#243'w'
+        Checked = True
+        State = cbChecked
+        TabOrder = 4
+        OnClick = aUnsentMsgChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+      object FrmSendUnsentMsgCheckBox: TsCheckBox
+        Left = 35
+        Top = 182
+        Width = 104
+        Height = 20
+        Caption = 'W oknie rozmowy'
+        TabOrder = 5
+        OnClick = aUnsentMsgChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+      object InfoUnsentMsgCheckBox: TsCheckBox
+        Left = 20
+        Top = 30
+        Width = 211
+        Height = 28
+        Caption = 'Informuj o niewys'#322'anych wiadomo'#347'ciach przy w'#322#261'czeniu AQQ'
+        AutoSize = False
+        Checked = True
+        State = cbChecked
+        TabOrder = 6
+        OnClick = aUnsentMsgChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object RememberUnsentMsgCheckBox: TsCheckBox
+        Left = 6
+        Top = 6
+        Width = 187
+        Height = 20
+        Caption = 'Zapami'#281'tuj niewys'#322'ane wiadomo'#347'ci'
+        Checked = True
+        State = cbChecked
+        TabOrder = 7
+        OnClick = aUnsentMsgChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+      object TrayUnsentMsgCheckBox: TsCheckBox
+        Left = 35
+        Top = 110
+        Width = 178
+        Height = 20
+        Caption = 'Ikonka w zasobniku systemowym'
+        Checked = True
+        State = cbChecked
+        TabOrder = 8
+        OnClick = aUnsentMsgChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
       end
     end
     object ClosedCategoryPanel: TCategoryPanel
@@ -909,192 +991,238 @@ object SettingsForm: TSettingsForm
       Caption = 'Zamkni'#281'te zak'#322'adki'
       Color = clWindow
       Collapsed = True
-      TabOrder = 0
+      Ctl3D = True
+      ParentCtl3D = False
+      TabOrder = 7
       TabStop = True
-      ExplicitWidth = 291
-      ExpandedHeight = 372
-      object ClosedPanel: TPanel
-        Left = 0
-        Top = 0
-        Width = 306
-        Height = 0
-        Align = alClient
-        BevelOuter = bvNone
-        ShowCaption = False
+      ExplicitWidth = 295
+      ExpandedHeight = 376
+      object ItemsCountClosedTabsLabel: TsLabel
+        Left = 35
+        Top = 110
+        Width = 150
+        Height = 13
+        Caption = 'Ilo'#347#263' wy'#347'wietlanych element'#243'w'
+      end
+      object CountClosedTabsLabel: TsLabel
+        Left = 20
+        Top = 267
+        Width = 163
+        Height = 13
+        Caption = 'Liczba zapami'#281'tywanych zak'#322'adek'
+      end
+      object CountClosedTabsSpinEdit: TsSpinEdit
+        Left = 189
+        Top = 264
+        Width = 36
+        Height = 21
         TabOrder = 0
-        ExplicitWidth = 289
-        object CountClosedTabsLabel: TLabel
-          Left = 20
-          Top = 264
-          Width = 163
-          Height = 13
-          Caption = 'Liczba zapami'#281'tywanych zak'#322'adek'
-        end
-        object ItemsCountClosedTabsLabel: TLabel
-          Left = 35
-          Top = 107
-          Width = 150
-          Height = 13
-          Caption = 'Ilo'#347#263' wy'#347'wietlanych element'#243'w'
-          WordWrap = True
-        end
-        object CountClosedTabsCSpinEdit: TCSpinEdit
-          Left = 189
-          Top = 259
-          Width = 36
-          Height = 22
-          MaxValue = 30
-          MinValue = 5
-          TabOrder = 11
-          Value = 5
-          OnChange = aClosedTabsChkExecute
-        end
-        object FastAccessClosedTabsCheckBox: TCheckBox
-          Left = 20
-          Top = 29
-          Width = 245
-          Height = 26
-          Caption = 
-            'Wy'#347'wietlaj przycisk szybkiego dost'#281'p do ostatnio zamkni'#281'tych zak' +
-            #322'adek'
-          Checked = True
-          State = cbChecked
-          TabOrder = 1
-          WordWrap = True
-          OnClick = aClosedTabsChkExecute
-        end
-        object FrmMainClosedTabsCheckBox: TCheckBox
-          Left = 35
-          Top = 61
-          Width = 228
-          Height = 17
-          Caption = 'W oknie listy kontakt'#243'w'
-          Checked = True
-          State = cbChecked
-          TabOrder = 2
-          OnClick = aClosedTabsChkExecute
-        end
-        object FrmSendClosedTabsCheckBox: TCheckBox
-          Left = 35
-          Top = 84
-          Width = 228
-          Height = 17
-          Caption = 'W oknie rozmowy'
-          TabOrder = 3
-          OnClick = aClosedTabsChkExecute
-        end
-        object ItemsCountClosedTabsCSpinEdit: TCSpinEdit
-          Left = 191
-          Top = 103
-          Width = 36
-          Height = 22
-          MaxValue = 10
-          MinValue = 5
-          TabOrder = 4
-          Value = 5
-          OnChange = aClosedTabsChkExecute
-        end
-        object RememberClosedTabsCheckBox: TCheckBox
-          Left = 6
-          Top = 6
-          Width = 257
-          Height = 17
-          Caption = 'Zapami'#281'tuj ostatnio zamkni'#281'te zak'#322'adki'
-          Checked = True
-          State = cbChecked
-          TabOrder = 0
-          OnClick = aClosedTabsChkExecute
-        end
-        object RestoreLastMsgClosedTabsCheckBox: TCheckBox
-          Left = 20
-          Top = 283
-          Width = 243
-          Height = 26
-          Caption = 
-            'Przy przywracaniu zak'#322'adki wczytuj ostatnio przeprowadzon'#261' rozmo' +
-            'w'#281
-          TabOrder = 12
-          WordWrap = True
-          OnClick = aClosedTabsChkExecute
-        end
-        object UnCloseTabHotKeyCheckBox: TCheckBox
-          Left = 20
-          Top = 181
-          Width = 243
-          Height = 26
-          Caption = 
-            'Przypisz skr'#243't klawiaturowy przywracaj'#261'cy ostatnio zamkni'#281't'#261' zak' +
-            #322'adk'#281
-          Checked = True
-          State = cbChecked
-          TabOrder = 7
-          WordWrap = True
-          OnClick = aClosedTabsChkExecute
-        end
-        object UnCloseTabHotKeyInput: THotKey
-          Left = 134
-          Top = 235
-          Width = 115
-          Height = 19
-          Enabled = False
-          HotKey = 0
-          Modifiers = []
-          TabOrder = 10
-          OnChange = aClosedTabsChkExecute
-        end
-        object UnCloseTabHotKeyMode1RadioButton: TRadioButton
-          Left = 35
-          Top = 213
-          Width = 228
-          Height = 17
-          Caption = 'Ctrl + Backspace'
-          Checked = True
-          TabOrder = 8
-          TabStop = True
-          OnClick = aClosedTabsChkExecute
-        end
-        object UnCloseTabHotKeyMode2RadioButton: TRadioButton
-          Left = 35
-          Top = 236
-          Width = 93
-          Height = 17
-          Caption = 'Wybrany skr'#243't'
-          TabOrder = 9
-          OnClick = aClosedTabsChkExecute
-        end
-        object ShowTimeClosedTabsCheckBox: TCheckBox
-          Left = 35
-          Top = 126
-          Width = 212
-          Height = 17
-          Caption = 'Wy'#347'wietlaj dat'#281' zamkni'#281'cia zak'#322'adek'
-          TabOrder = 5
-          OnClick = aClosedTabsChkExecute
-        end
-        object FastClearClosedTabsCheckBox: TCheckBox
-          Left = 35
-          Top = 149
-          Width = 242
-          Height = 26
-          Caption = 
-            'Dodaj element szybkiego czyszczenia listy ostatnio zamkni'#281'tych z' +
-            'ak'#322'adek'
-          TabOrder = 6
-          WordWrap = True
-          OnClick = aClosedTabsChkExecute
-        end
-        object OnlyConversationTabsCheckBox: TCheckBox
-          Left = 20
-          Top = 315
-          Width = 251
-          Height = 26
-          Caption = 
-            'Zapami'#281'tuj wy'#322#261'cznie zak'#322'adki z kontaktami z kt'#243'rymi przeprowadz' +
-            'ili'#347'my rozmow'#281
-          TabOrder = 13
-          WordWrap = True
-          OnClick = aClosedTabsChkExecute
-        end
+        Text = '5'
+        OnChange = aClosedTabsChkExecute
+        SkinData.SkinSection = 'EDIT'
+        BoundLabel.Indent = 0
+        BoundLabel.Font.Charset = DEFAULT_CHARSET
+        BoundLabel.Font.Color = clWindowText
+        BoundLabel.Font.Height = -11
+        BoundLabel.Font.Name = 'Tahoma'
+        BoundLabel.Font.Style = []
+        BoundLabel.Layout = sclLeft
+        BoundLabel.MaxWidth = 0
+        BoundLabel.UseSkinColor = True
+        MaxValue = 30
+        MinValue = 5
+        Value = 5
+      end
+      object FastAccessClosedTabsCheckBox: TsCheckBox
+        Left = 20
+        Top = 30
+        Width = 245
+        Height = 28
+        Caption = 
+          'Wy'#347'wietlaj przycisk szybkiego dost'#281'p do ostatnio zamkni'#281'tych zak' +
+          #322'adek'
+        AutoSize = False
+        Checked = True
+        State = cbChecked
+        TabOrder = 1
+        OnClick = aClosedTabsChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object FastClearClosedTabsCheckBox: TsCheckBox
+        Left = 35
+        Top = 154
+        Width = 242
+        Height = 28
+        Caption = 
+          'Dodaj element szybkiego czyszczenia listy ostatnio zamkni'#281'tych z' +
+          'ak'#322'adek'
+        AutoSize = False
+        TabOrder = 2
+        OnClick = aClosedTabsChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object FrmMainClosedTabsCheckBox: TsCheckBox
+        Left = 35
+        Top = 62
+        Width = 133
+        Height = 20
+        Caption = 'W oknie listy kontakt'#243'w'
+        Checked = True
+        State = cbChecked
+        TabOrder = 3
+        OnClick = aClosedTabsChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+      object FrmSendClosedTabsCheckBox: TsCheckBox
+        Left = 35
+        Top = 86
+        Width = 104
+        Height = 20
+        Caption = 'W oknie rozmowy'
+        TabOrder = 4
+        OnClick = aClosedTabsChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+      object ItemsCountClosedTabsSpinEdit: TsSpinEdit
+        Left = 191
+        Top = 107
+        Width = 36
+        Height = 21
+        TabOrder = 5
+        Text = '5'
+        OnChange = aClosedTabsChkExecute
+        SkinData.SkinSection = 'EDIT'
+        BoundLabel.Indent = 0
+        BoundLabel.Font.Charset = DEFAULT_CHARSET
+        BoundLabel.Font.Color = clWindowText
+        BoundLabel.Font.Height = -11
+        BoundLabel.Font.Name = 'Tahoma'
+        BoundLabel.Font.Style = []
+        BoundLabel.Layout = sclLeft
+        BoundLabel.MaxWidth = 0
+        BoundLabel.UseSkinColor = True
+        MaxValue = 10
+        MinValue = 5
+        Value = 5
+      end
+      object OnlyConversationTabsCheckBox: TsCheckBox
+        Left = 20
+        Top = 319
+        Width = 251
+        Height = 28
+        Caption = 
+          'Zapami'#281'tuj wy'#322#261'cznie zak'#322'adki z kontaktami z kt'#243'rymi przeprowadz' +
+          'ili'#347'my rozmow'#281
+        AutoSize = False
+        TabOrder = 6
+        OnClick = aClosedTabsChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object RememberClosedTabsCheckBox: TsCheckBox
+        Left = 6
+        Top = 6
+        Width = 207
+        Height = 20
+        Caption = 'Zapami'#281'tuj ostatnio zamkni'#281'te zak'#322'adki'
+        Checked = True
+        State = cbChecked
+        TabOrder = 7
+        OnClick = aClosedTabsChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+      object RestoreLastMsgClosedTabsCheckBox: TsCheckBox
+        Left = 20
+        Top = 289
+        Width = 243
+        Height = 28
+        Caption = 
+          'Przy przywracaniu zak'#322'adki wczytuj ostatnio przeprowadzon'#261' rozmo' +
+          'w'#281
+        AutoSize = False
+        TabOrder = 8
+        OnClick = aClosedTabsChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object ShowTimeClosedTabsCheckBox: TsCheckBox
+        Left = 35
+        Top = 130
+        Width = 196
+        Height = 20
+        Caption = 'Wy'#347'wietlaj dat'#281' zamkni'#281'cia zak'#322'adek'
+        TabOrder = 9
+        OnClick = aClosedTabsChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+      object UnCloseTabHotKeyCheckBox: TsCheckBox
+        Left = 20
+        Top = 186
+        Width = 243
+        Height = 28
+        Caption = 
+          'Przypisz skr'#243't klawiaturowy przywracaj'#261'cy ostatnio zamkni'#281't'#261' zak' +
+          #322'adk'#281
+        AutoSize = False
+        Checked = True
+        State = cbChecked
+        TabOrder = 10
+        OnClick = aClosedTabsChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object UnCloseTabHotKeyInput: THotKey
+        Left = 132
+        Top = 239
+        Width = 115
+        Height = 19
+        Enabled = False
+        HotKey = 0
+        Modifiers = []
+        TabOrder = 11
+        OnChange = aClosedTabsChkExecute
+      end
+      object UnCloseTabHotKeyMode1RadioButton: TsRadioButton
+        Left = 35
+        Top = 218
+        Width = 101
+        Height = 20
+        Caption = 'Ctrl + Backspace'
+        Checked = True
+        TabOrder = 12
+        TabStop = True
+        OnClick = aClosedTabsChkExecute
+        SkinData.SkinSection = 'RADIOBUTTON'
+      end
+      object UnCloseTabHotKeyMode2RadioButton: TsRadioButton
+        Left = 35
+        Top = 239
+        Width = 91
+        Height = 20
+        Caption = 'Wybrany skr'#243't'
+        TabOrder = 13
+        OnClick = aClosedTabsChkExecute
+        SkinData.SkinSection = 'RADIOBUTTON'
       end
     end
   end
@@ -1320,6 +1448,52 @@ object SettingsForm: TSettingsForm
   object IdDecoderMIME: TIdDecoderMIME
     FillChar = '='
     Left = 64
+    Top = 368
+  end
+  object sSkinManager: TsSkinManager
+    ExtendedBorders = True
+    Active = False
+    InternalSkins = <>
+    MenuSupport.IcoLineSkin = 'ICOLINE'
+    MenuSupport.ExtraLineFont.Charset = DEFAULT_CHARSET
+    MenuSupport.ExtraLineFont.Color = clWindowText
+    MenuSupport.ExtraLineFont.Height = -11
+    MenuSupport.ExtraLineFont.Name = 'Tahoma'
+    MenuSupport.ExtraLineFont.Style = []
+    SkinDirectory = 'c:\Skins'
+    SkinInfo = 'N/A'
+    ThirdParty.ThirdEdits = 'TEdit'#13#10'THotKey'#13#10
+    ThirdParty.ThirdButtons = 'TButton'#13#10
+    ThirdParty.ThirdBitBtns = ' '#13#10
+    ThirdParty.ThirdCheckBoxes = 'TRadioButton'#13#10
+    ThirdParty.ThirdGroupBoxes = 'TGroupBox'#13#10
+    ThirdParty.ThirdListViews = ' '#13#10
+    ThirdParty.ThirdPanels = 'TPanel'#13#10
+    ThirdParty.ThirdGrids = ' '#13#10
+    ThirdParty.ThirdTreeViews = ' '#13#10
+    ThirdParty.ThirdComboBoxes = ' '#13#10
+    ThirdParty.ThirdWWEdits = ' '#13#10
+    ThirdParty.ThirdVirtualTrees = ' '#13#10
+    ThirdParty.ThirdGridEh = ' '#13#10
+    ThirdParty.ThirdPageControl = ' '#13#10
+    ThirdParty.ThirdTabControl = ' '#13#10
+    ThirdParty.ThirdToolBar = ' '#13#10
+    ThirdParty.ThirdStatusBar = ' '#13#10
+    ThirdParty.ThirdSpeedButton = ' '#13#10
+    ThirdParty.ThirdScrollControl = ' '#13#10
+    ThirdParty.ThirdUpDown = ' '#13#10
+    Left = 264
+    Top = 368
+  end
+  object sSkinProvider: TsSkinProvider
+    AddedTitle.Font.Charset = DEFAULT_CHARSET
+    AddedTitle.Font.Color = clNone
+    AddedTitle.Font.Height = -11
+    AddedTitle.Font.Name = 'Tahoma'
+    AddedTitle.Font.Style = []
+    SkinData.SkinSection = 'FORM'
+    TitleButtons = <>
+    Left = 296
     Top = 368
   end
 end

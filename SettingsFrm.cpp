@@ -25,11 +25,23 @@
 #pragma link "IdCoder3to4"
 #pragma link "IdCoderMIME"
 //#pragma link "GdiPlus.lib"
+#pragma link "sSkinManager"
+#pragma link "sSkinProvider"
+#pragma link "sBevel"
+#pragma link "sButton"
+#pragma link "sLabel"
+#pragma link "sGroupBox"
+#pragma link "sCheckBox"
+#pragma link "sEdit"
+#pragma link "sRadioButton"
 #pragma resource "*.dfm"
 TSettingsForm *SettingsForm;
 //using std::min;
 //using std::max;
 //---------------------------------------------------------------------------
+__declspec(dllimport)bool ChkSkinEnabled();
+__declspec(dllimport)bool ChkNativeEnabled();
+__declspec(dllimport)UnicodeString GetThemeSkinDir();
 __declspec(dllimport)void LoadSettings();
 __declspec(dllimport)void CheckAntiSpim();
 __declspec(dllimport)void CheckHideStatusBar();
@@ -47,12 +59,26 @@ __declspec(dllimport)void ChangeFrmSendTitlebar();
 __declspec(dllimport)void ChangeFrmMainTitlebar();
 __declspec(dllimport)void EraseClipTabs();
 __declspec(dllimport)void EraseClipTabsIcons();
+__declspec(dllimport)void HookGlobalKeyboard();
+__declspec(dllimport)void MinimizeRestoreExecute();
+__declspec(dllimport)int GetMinimizeRestoreKey();
 __declspec(dllimport)UnicodeString GetPluginUserDir();
 __declspec(dllimport)UnicodeString GetPluginUserDirW();
 //---------------------------------------------------------------------------
 __fastcall TSettingsForm::TSettingsForm(TComponent* Owner)
 	: TForm(Owner)
 {
+}
+//---------------------------------------------------------------------------
+
+void TSettingsForm::WMHotKey(TMessage& Message)
+{
+  if(!MinimizeRestoreHotKey->Focused())
+  {
+	if(Message.WParam==0x0001) MinimizeRestoreExecute();
+  }
+  else
+   MinimizeRestoreHotKey->HotKey = GetMinimizeRestoreKey();
 }
 //---------------------------------------------------------------------------
 
@@ -108,7 +134,7 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   FastAccessClosedTabsCheckBox->Checked =  Ini->ReadBool("ClosedTabs","FastAccess",true);
   FrmMainClosedTabsCheckBox->Checked =  Ini->ReadBool("ClosedTabs","FrmMain",true);
   FrmSendClosedTabsCheckBox->Checked =  Ini->ReadBool("ClosedTabs","FrmSend",false);
-  ItemsCountClosedTabsCSpinEdit->Value = Ini->ReadInteger("ClosedTabs","ItemsCount",5);
+  ItemsCountClosedTabsSpinEdit->Value = Ini->ReadInteger("ClosedTabs","ItemsCount",5);
   ShowTimeClosedTabsCheckBox->Checked = Ini->ReadBool("ClosedTabs","ClosedTime",false);
   FastClearClosedTabsCheckBox->Checked = Ini->ReadBool("ClosedTabs","FastClear",false);
   UnCloseTabHotKeyCheckBox->Checked =  Ini->ReadBool("ClosedTabs","HotKey",false);
@@ -118,7 +144,7 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   else
    UnCloseTabHotKeyMode2RadioButton->Checked = true;
   UnCloseTabHotKeyInput->HotKey = Ini->ReadInteger("ClosedTabs","HotKeyDef",0);
-  CountClosedTabsCSpinEdit->Value = Ini->ReadInteger("ClosedTabs","Count",5);
+  CountClosedTabsSpinEdit->Value = Ini->ReadInteger("ClosedTabs","Count",5);
   RestoreLastMsgClosedTabsCheckBox->Checked = Ini->ReadBool("ClosedTabs","RestoreLastMsg",false);
   OnlyConversationTabsCheckBox->Checked = Ini->ReadBool("ClosedTabs","OnlyConversationTabs",false);
   //SessionRemember
@@ -158,6 +184,23 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   HideStatusBarCheckBox->Checked = Ini->ReadBool("Other","HideStatusBar",false);
   HideToolBarCheckBox->Checked = Ini->ReadBool("Other","HideToolBar",false);
   CollapseImagesCheckBox->Checked = Ini->ReadBool("Other","CollapseImages",false);
+  MinimizeRestoreCheckBox->Checked = Ini->ReadBool("Other","MinimizeRestore",false);
+  MinimizeRestoreHotKey->HotKey = Ini->ReadInteger("Other","MinimizeRestoreHotKey",24689);
+  //Buttons state
+  Ini = new TIniFile(GetPluginUserDir() + "\\\\TabKit\\\\Session.ini");
+  UnsentMsgEraseButton->Enabled = Ini->SectionExists("Messages");
+  ClosedTabsEraseButton->Enabled = Ini->SectionExists("ClosedTabs");
+  if((Ini->SectionExists("Session"))||(Ini->SectionExists("SessionMsg")))
+   SessionRememberEraseButton->Enabled = true;
+  else
+   SessionRememberEraseButton->Enabled = false;
+  ClipTabsEraseButton->Enabled = Ini->SectionExists("ClipTabs");
+  FileListBox->Directory = GetPluginUserDirW() + "\\TabKit\\Avatars";
+  FileListBox->Update();
+  if(FileListBox->Items->Count)
+   MiniAvatarsEraseButton->Enabled = true;
+  else
+   MiniAvatarsEraseButton->Enabled = false;
   delete Ini;
 
   aUnsentMsgChk->Execute();
@@ -260,7 +303,7 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
    Ini->WriteBool("ClosedTabs","FastAccess",FastAccessClosedTabsCheckBox->Checked);
   Ini->WriteBool("ClosedTabs","FrmMain",FrmMainClosedTabsCheckBox->Checked);
   Ini->WriteBool("ClosedTabs","FrmSend",FrmSendClosedTabsCheckBox->Checked);
-  Ini->WriteInteger("ClosedTabs","ItemsCount",ItemsCountClosedTabsCSpinEdit->Value);
+  Ini->WriteInteger("ClosedTabs","ItemsCount",ItemsCountClosedTabsSpinEdit->Value);
   Ini->WriteBool("ClosedTabs","ClosedTime",ShowTimeClosedTabsCheckBox->Checked);
   Ini->WriteBool("ClosedTabs","FastClear",FastClearClosedTabsCheckBox->Checked);
   Ini->WriteBool("ClosedTabs","HotKey",UnCloseTabHotKeyCheckBox->Checked);
@@ -269,7 +312,7 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
   else
    Ini->WriteInteger("ClosedTabs","HotKeyMode",2);
   Ini->WriteInteger("ClosedTabs","HotKeyDef",UnCloseTabHotKeyInput->HotKey);
-  Ini->WriteInteger("ClosedTabs","Count",CountClosedTabsCSpinEdit->Value);
+  Ini->WriteInteger("ClosedTabs","Count",CountClosedTabsSpinEdit->Value);
   Ini->WriteBool("ClosedTabs","RestoreLastMsg",RestoreLastMsgClosedTabsCheckBox->Checked);
   Ini->WriteBool("ClosedTabs","OnlyConversationTabs",OnlyConversationTabsCheckBox->Checked);
   //SessionRemember
@@ -318,6 +361,9 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
   Ini->WriteBool("Other","HideStatusBar",HideStatusBarCheckBox->Checked);
   Ini->WriteBool("Other","HideToolBar",HideToolBarCheckBox->Checked);
   Ini->WriteBool("Other","CollapseImages",CollapseImagesCheckBox->Checked);
+  Ini->WriteBool("Other","MinimizeRestore",MinimizeRestoreCheckBox->Checked);
+  Ini->WriteInteger("Other","MinimizeRestoreHotKey",MinimizeRestoreHotKey->HotKey);
+
 
   delete Ini;
 }
@@ -348,6 +394,7 @@ void __fastcall TSettingsForm::aSaveSettingsWExecute(TObject *Sender)
   DestroyStayOnTop();
   aSaveSettings->Execute();
   LoadSettings();
+  HookGlobalKeyboard();
   CheckAntiSpim();
   CheckHideStatusBar();
   ShowToolBar();
@@ -373,14 +420,14 @@ void __fastcall TSettingsForm::aClosedTabsChkExecute(TObject *Sender)
   ShowTimeClosedTabsCheckBox->Enabled = FastAccessClosedTabsCheckBox->Checked;
   FastClearClosedTabsCheckBox->Enabled = FastAccessClosedTabsCheckBox->Checked;
   ItemsCountClosedTabsLabel->Enabled = FastAccessClosedTabsCheckBox->Checked;
-  ItemsCountClosedTabsCSpinEdit->Enabled = FastAccessClosedTabsCheckBox->Checked;
+  ItemsCountClosedTabsSpinEdit->Enabled = FastAccessClosedTabsCheckBox->Checked;
   UnCloseTabHotKeyMode1RadioButton->Enabled = UnCloseTabHotKeyCheckBox->Checked;
   UnCloseTabHotKeyMode2RadioButton->Enabled = UnCloseTabHotKeyCheckBox->Checked;
   UnCloseTabHotKeyInput->Enabled = UnCloseTabHotKeyMode2RadioButton->Checked;
   FastAccessClosedTabsCheckBox->Enabled = RememberClosedTabsCheckBox->Checked;
   UnCloseTabHotKeyCheckBox->Enabled = RememberClosedTabsCheckBox->Checked;
   CountClosedTabsLabel->Enabled = RememberClosedTabsCheckBox->Checked;
-  CountClosedTabsCSpinEdit->Enabled = RememberClosedTabsCheckBox->Checked;
+  CountClosedTabsSpinEdit->Enabled = RememberClosedTabsCheckBox->Checked;
   RestoreLastMsgClosedTabsCheckBox->Enabled = RememberClosedTabsCheckBox->Checked;
   OnlyConversationTabsCheckBox->Enabled = RememberClosedTabsCheckBox->Checked;
   if(!RememberClosedTabsCheckBox->Checked)
@@ -389,8 +436,7 @@ void __fastcall TSettingsForm::aClosedTabsChkExecute(TObject *Sender)
 	FrmSendClosedTabsCheckBox->Enabled = false;
 	ShowTimeClosedTabsCheckBox->Enabled = false;
 	FastClearClosedTabsCheckBox->Enabled = false;
-	ItemsCountClosedTabsLabel->Enabled = false;
-	ItemsCountClosedTabsCSpinEdit->Enabled = false;
+	ItemsCountClosedTabsSpinEdit->Enabled = false;
 	UnCloseTabHotKeyMode1RadioButton->Enabled = false;
 	UnCloseTabHotKeyMode2RadioButton->Enabled = false;
 	UnCloseTabHotKeyInput->Enabled = false;
@@ -571,3 +617,156 @@ void __fastcall TSettingsForm::MiniAvatarsEraseButtonClick(TObject *Sender)
   MiniAvatarsEraseButton->Enabled = false;
 }
 //---------------------------------------------------------------------------
+
+void __fastcall TSettingsForm::FormCreate(TObject *Sender)
+{
+  if(ChkSkinEnabled())
+  {
+	UnicodeString ThemeSkinDir = GetThemeSkinDir();
+	if((FileExists(ThemeSkinDir + "\\\\Skin.asz"))&&(!ChkNativeEnabled()))
+	{
+	  ThemeSkinDir = StringReplace(ThemeSkinDir, "\\\\", "\\", TReplaceFlags() << rfReplaceAll);
+	  sSkinManager->SkinDirectory = ThemeSkinDir;
+	  sSkinManager->SkinName = "Skin.asz";
+	  sSkinProvider->DrawNonClientArea = true;
+	  sSkinManager->Active = true;
+	}
+	else
+	 sSkinManager->Active = false;
+  }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TSettingsForm::FormShow(TObject *Sender)
+{
+  if(!ChkSkinEnabled())
+  {
+	UnicodeString ThemeSkinDir = GetThemeSkinDir();
+	if((FileExists(ThemeSkinDir + "\\\\Skin.asz"))&&(!ChkNativeEnabled()))
+	{
+	  ThemeSkinDir = StringReplace(ThemeSkinDir, "\\\\", "\\", TReplaceFlags() << rfReplaceAll);
+	  sSkinManager->SkinDirectory = ThemeSkinDir;
+	  sSkinManager->SkinName = "Skin.asz";
+	  sSkinProvider->DrawNonClientArea = false;
+	  sSkinManager->Active = true;
+	}
+	else
+	 sSkinManager->Active = false;
+  }
+
+  if(sSkinManager->Active)
+  {
+	CategoryPanelGroup->ChevronColor = sSkinManager->GetActiveEditFontColor();
+	CategoryPanelGroup->ChevronHotColor = sSkinManager->GetHighLightFontColor();
+	CategoryPanelGroup->Color = sSkinManager->GetActiveEditColor();
+	CategoryPanelGroup->GradientBaseColor = sSkinManager->GetActiveEditColor();
+	CategoryPanelGroup->GradientColor = sSkinManager->GetHighLightColor();
+	CategoryPanelGroup->HeaderFont->Color = sSkinManager->GetActiveEditFontColor();
+	ClipTabsCategoryPanel->Color = sSkinManager->GetGlobalColor();
+	ClipTabsCategoryPanel->Font->Color = sSkinManager->GetGlobalFontColor();
+	ClosedCategoryPanel->Color = sSkinManager->GetGlobalColor();
+	ClosedCategoryPanel->Font->Color = sSkinManager->GetGlobalFontColor();
+	NewMsgCategoryPanel->Color = sSkinManager->GetGlobalColor();
+	NewMsgCategoryPanel->Font->Color = sSkinManager->GetGlobalFontColor();
+	OtherCategoryPanel->Color = sSkinManager->GetGlobalColor();
+	OtherCategoryPanel->Font->Color = sSkinManager->GetGlobalFontColor();
+	SessionRememberCategoryPanel->Color = sSkinManager->GetGlobalColor();
+	SessionRememberCategoryPanel->Font->Color = sSkinManager->GetGlobalFontColor();
+	TabsSwitchingCategoryPanel->Color = sSkinManager->GetGlobalColor();
+	TabsSwitchingCategoryPanel->Font->Color = sSkinManager->GetGlobalFontColor();
+	TitlebarCategoryPanel->Color = sSkinManager->GetGlobalColor();
+	TitlebarCategoryPanel->Font->Color = sSkinManager->GetGlobalFontColor();
+	UnsentMsgCategoryPanel->Color = sSkinManager->GetGlobalColor();
+	UnsentMsgCategoryPanel->Font->Color = sSkinManager->GetGlobalFontColor();
+  }
+  else
+  {
+	CategoryPanelGroup->ChevronColor = clBlack;
+	CategoryPanelGroup->ChevronHotColor = clGray;
+	CategoryPanelGroup->Color = clWindow;
+	CategoryPanelGroup->GradientBaseColor = 0xF0F0F0;
+	CategoryPanelGroup->GradientColor = clSilver;
+	CategoryPanelGroup->HeaderFont->Color = clWindowText;
+	ClipTabsCategoryPanel->Color = clWindow;
+	ClipTabsCategoryPanel->Font->Color = clWindowText;
+	ClosedCategoryPanel->Color = clWindow;
+	ClosedCategoryPanel->Font->Color = clWindowText;
+	NewMsgCategoryPanel->Color = clWindow;
+	NewMsgCategoryPanel->Font->Color = clWindowText;
+	OtherCategoryPanel->Color = clWindow;
+	OtherCategoryPanel->Font->Color = clWindowText;
+	SessionRememberCategoryPanel->Color = clWindow;
+	SessionRememberCategoryPanel->Font->Color = clWindowText;
+	TabsSwitchingCategoryPanel->Color = clWindow;
+	TabsSwitchingCategoryPanel->Font->Color = clWindowText;
+	TitlebarCategoryPanel->Color = clWindow;
+	TitlebarCategoryPanel->Font->Color = clWindowText;
+	UnsentMsgCategoryPanel->Color = clWindow;
+	UnsentMsgCategoryPanel->Font->Color = clWindowText;
+  }
+  //ClosedCategoryPanel
+  RememberClosedTabsCheckBox->TabOrder = 0;
+  FastAccessClosedTabsCheckBox->TabOrder = 1;
+  FrmMainClosedTabsCheckBox->TabOrder = 2;
+  FrmSendClosedTabsCheckBox->TabOrder = 3;
+  ItemsCountClosedTabsSpinEdit->TabOrder = 4;
+  ShowTimeClosedTabsCheckBox->TabOrder = 5;
+  FastClearClosedTabsCheckBox->TabOrder = 6;
+  UnCloseTabHotKeyCheckBox->TabOrder = 7;
+  UnCloseTabHotKeyMode1RadioButton->TabOrder = 8;
+  UnCloseTabHotKeyMode2RadioButton->TabOrder = 9;
+  UnCloseTabHotKeyInput->TabOrder = 10;
+  CountClosedTabsSpinEdit->TabOrder = 11;
+  RestoreLastMsgClosedTabsCheckBox->TabOrder = 12;
+  OnlyConversationTabsCheckBox->TabOrder = 13;
+  //UnsentMsgCategoryPanel
+  RememberUnsentMsgCheckBox->TabOrder = 0;
+  InfoUnsentMsgCheckBox->TabOrder = 1;
+  CloudUnsentMsgCheckBox->TabOrder = 2;
+  DetailedCloudUnsentMsgCheckBox->TabOrder = 3;
+  TrayUnsentMsgCheckBox->TabOrder = 4;
+  FastAccessUnsentMsgCheckBox->TabOrder = 5;
+  FrmMainUnsentMsgCheckBox->TabOrder = 6;
+  FrmSendUnsentMsgCheckBox->TabOrder = 7;
+  FastClearUnsentMsgCheckBox->TabOrder = 8;
+  //TabsSwitchingCategoryPanel
+  SwitchToNewMsgCheckBox->TabOrder = 0;
+  SwitchToNewMsgModePanel->TabOrder = 1;
+  TabsHotKeysCheckBox->TabOrder = 2;
+  TabsHotKeysModePanel->TabOrder = 3;
+  //SessionRememberCategoryPanel
+  RestoreTabsSessionCheckBox->TabOrder = 0;
+  ManualRestoreTabsSessionCheckBox->TabOrder = 1;
+  RestoreMsgSessionCheckBox->TabOrder = 2;
+  //NewMsgCategoryPanel
+  InactiveFrmNewMsgCheckBox->TabOrder = 0;
+  InactiveTabsNewMsgCheckBox->TabOrder = 1;
+  InactiveNotiferNewMsgCheckBox->TabOrder = 2;
+  ChatStateNotiferNewMsgCheckBox->TabOrder = 3;
+  //TitlebarCategoryPanel
+  TweakFrmSendTitlebarCheckBox->TabOrder = 0;
+  TweakFrmSendTitlebarPanel->TabOrder = 1;
+  TweakFrmMainTitlebarCheckBox->TabOrder = 2;
+  TweakFrmMainTitlebarPanel->TabOrder = 3;
+  //ClipTabsCategoryPanel
+  OpenClipTabsCheckBox->TabOrder = 0;
+  InactiveClipTabsCheckBox->TabStop = 1;
+  CounterClipTabsCheckBox->TabOrder = 2;
+  //OtherCategoryPanel
+  StayOnTopCheckBox->TabOrder = 0;
+  QuickQuoteCheckBox->TabOrder = 1;
+  AntiSpimCheckBox->TabOrder = 2;
+  HideStatusBarCheckBox->TabOrder = 3;
+  HideToolBarCheckBox->TabOrder = 4;
+  CollapseImagesCheckBox->TabOrder = 5;
+  MinimizeRestoreCheckBox->TabOrder = 6;
+  MinimizeRestoreHotKey->TabOrder = 7;
+  EmuTabsWCheckBox->TabOrder = 8;
+  ClearCacheGroupBox->TabOrder = 9;
+
+  aLoadSettings->Execute();
+}
+//---------------------------------------------------------------------------
+
+
+
