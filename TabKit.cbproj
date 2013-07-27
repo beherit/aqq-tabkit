@@ -18,13 +18,13 @@
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
-			<LinkPackageStatics>rtl.lib;vcl.lib;bcbsmp.lib;vclx.lib</LinkPackageStatics>
+			<LinkPackageStatics>rtl.lib;vcl.lib;bcbsmp.lib;vclx.lib;IndyCore.lib;IndySystem.lib;xmlrtl.lib;vclactnband.lib</LinkPackageStatics>
 			<Multithreaded>true</Multithreaded>
 			<ProjectType>CppDynamicLibrary</ProjectType>
 			<PackageImports>vcl.bpi;rtl.bpi;bcbie.bpi;vclx.bpi;vclactnband.bpi;xmlrtl.bpi;bcbsmp.bpi;vclimg.bpi;dbrtl.bpi;vcldb.bpi;vcldbx.bpi;bdertl.bpi;vcltouch.bpi;dsnap.bpi;dsnapcon.bpi;TeeUI.bpi;TeeDB.bpi;Tee.bpi;adortl.bpi;IndyCore.bpi;IndySystem.bpi;IndyProtocols.bpi;lmdrtl10rt_140.bpi;lmdplugin10rt_140.bpi;lmdrtlx10rt_140.bpi;lmdcore10rt_140.bpi</PackageImports>
 			<ILINK_GenerateImportLibrary>true</ILINK_GenerateImportLibrary>
 			<OutputExt>dll</OutputExt>
-			<AllPackageLibs>rtl.lib;vcl.lib;bcbsmp.lib;vclx.lib</AllPackageLibs>
+			<AllPackageLibs>rtl.lib;vcl.lib;bcbsmp.lib;vclx.lib;IndyCore.lib;IndySystem.lib;xmlrtl.lib;vclactnband.lib</AllPackageLibs>
 			<FinalOutputDir>.</FinalOutputDir>
 			<DCC_CBuilderOutput>JPHNE</DCC_CBuilderOutput>
 			<DynamicRTL>true</DynamicRTL>
@@ -60,21 +60,6 @@
 			<TASM_Debugging>None</TASM_Debugging>
 		</PropertyGroup>
 		<ItemGroup>
-			<ResFiles Include="TabKit.res">
-				<BuildOrder>1</BuildOrder>
-			</ResFiles>
-			<CppCompile Include="SettingsFrm.cpp">
-				<Form>SettingsForm</Form>
-				<DependentOn>SettingsFrm.h</DependentOn>
-				<BuildOrder>2</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="TabKit.cpp">
-				<BuildOrder>0</BuildOrder>
-			</CppCompile>
-			<RcItem Include="Data\UnsentMsg.png">
-				<ResourceType>RCData</ResourceType>
-				<ResourceId>UNSENTMSG</ResourceId>
-			</RcItem>
 			<RcItem Include="Data\ClosedTabsButton.png">
 				<ResourceType>RCData</ResourceType>
 				<ResourceId>CLOSEDTABS</ResourceId>
@@ -86,6 +71,29 @@
 			<RcItem Include="Data\StayOnTopOn.png">
 				<ResourceType>RCData</ResourceType>
 				<ResourceId>STAYONTOP_ON</ResourceId>
+			</RcItem>
+			<RcItem Include="Data\UnsentMsg.png">
+				<ResourceType>RCData</ResourceType>
+				<ResourceId>UNSENTMSG</ResourceId>
+			</RcItem>
+			<ResFiles Include="TabKit.res">
+				<BuildOrder>1</BuildOrder>
+			</ResFiles>
+			<CppCompile Include="SettingsFrm.cpp">
+				<Form>SettingsForm</Form>
+				<DependentOn>SettingsFrm.h</DependentOn>
+				<BuildOrder>2</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="TabKit.cpp">
+				<BuildOrder>0</BuildOrder>
+			</CppCompile>
+			<RcItem Include="Data\Composing_Big.ico">
+				<ResourceType>RCData</ResourceType>
+				<ResourceId>COMPOSING_BIG</ResourceId>
+			</RcItem>
+			<RcItem Include="Data\Composing_Smal.ico">
+				<ResourceType>RCData</ResourceType>
+				<ResourceId>COMPOSING_SMALL</ResourceId>
 			</RcItem>
 			<FormResources Include="SettingsFrm.dfm"/>
 			<BuildConfiguration Include="Base">
@@ -111,8 +119,8 @@
 						<VersionInfo Name="AutoIncBuild">False</VersionInfo>
 						<VersionInfo Name="MajorVer">1</VersionInfo>
 						<VersionInfo Name="MinorVer">0</VersionInfo>
-						<VersionInfo Name="Release">3</VersionInfo>
-						<VersionInfo Name="Build">6</VersionInfo>
+						<VersionInfo Name="Release">4</VersionInfo>
+						<VersionInfo Name="Build">0</VersionInfo>
 						<VersionInfo Name="Debug">False</VersionInfo>
 						<VersionInfo Name="PreRelease">False</VersionInfo>
 						<VersionInfo Name="Special">False</VersionInfo>
@@ -124,13 +132,13 @@
 					<VersionInfoKeys>
 						<VersionInfoKeys Name="CompanyName">Krzysztof Grochocki (Beherit)</VersionInfoKeys>
 						<VersionInfoKeys Name="FileDescription"/>
-						<VersionInfoKeys Name="FileVersion">1.0.3.6</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">1.0.4.0</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName">TabKit</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalCopyright">Krzysztof Grochocki (Beherit)</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks">Krzysztof Grochocki (Beherit)</VersionInfoKeys>
 						<VersionInfoKeys Name="OriginalFilename">TabKit.dll</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductName">TabKit</VersionInfoKeys>
-						<VersionInfoKeys Name="ProductVersion">1.0.3.6</VersionInfoKeys>
+						<VersionInfoKeys Name="ProductVersion">1.0.4.0</VersionInfoKeys>
 						<VersionInfoKeys Name="Comments"/>
 					</VersionInfoKeys>
 					<Debugging>

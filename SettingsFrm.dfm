@@ -177,7 +177,7 @@ object SettingsForm: TSettingsForm
   end
   object CancelButton: TButton
     Left = 162
-    Top = 374
+    Top = 375
     Width = 75
     Height = 25
     Caption = 'Anuluj'
@@ -220,20 +220,21 @@ object SettingsForm: TSettingsForm
       Caption = 'Inne'
       Color = clWindow
       Collapsed = True
-      TabOrder = 0
+      TabOrder = 6
       TabStop = True
       OnExpand = OtherCategoryPanelExpand
-      ExplicitWidth = 291
+      ExplicitWidth = 308
       ExpandedHeight = 244
       object OtherPanel: TPanel
         Left = 0
         Top = 0
-        Width = 306
+        Width = 289
         Height = 0
         Align = alClient
         BevelOuter = bvNone
         ShowCaption = False
         TabOrder = 0
+        ExplicitWidth = 306
         object ClearCacheGroupBox: TGroupBox
           AlignWithMargins = True
           Left = 3
@@ -311,84 +312,25 @@ object SettingsForm: TSettingsForm
         end
       end
     end
-    object NewMsgCategoryPanel: TCategoryPanel
-      Top = 150
-      Height = 30
-      Caption = 'Nowe wiadomo'#347'ci'
-      Color = clWindow
-      Collapsed = True
-      TabOrder = 1
-      TabStop = True
-      ExplicitWidth = 291
-      ExpandedHeight = 147
-      object NewMsgPanel: TPanel
-        Left = 0
-        Top = 0
-        Width = 306
-        Height = 0
-        Align = alClient
-        BevelOuter = bvNone
-        TabOrder = 0
-        object InactiveFrmNewMsgCheckBox: TCheckBox
-          Left = 6
-          Top = 6
-          Width = 280
-          Height = 40
-          Caption = 
-            'Pokazuj liczb'#281' nieprzeczytanych wiadomo'#347'ci na pasku tytu'#322'u okna ' +
-            'rozmowy gdy jest ono zminimalizowane lub nieaktywne'
-          Checked = True
-          State = cbChecked
-          TabOrder = 0
-          WordWrap = True
-          OnClick = aNewMsgChkExecute
-        end
-        object InactiveNotiferNewMsgCheckBox: TCheckBox
-          Left = 6
-          Top = 84
-          Width = 280
-          Height = 26
-          Caption = 
-            'Pokazuj w chmurce informacyjnej tre'#347#263' nowej wiadomo'#347'ci pochodz'#261'c' +
-            'ej z nieaktywnej zak'#322'adki'
-          TabOrder = 2
-          WordWrap = True
-          OnClick = aNewMsgChkExecute
-        end
-        object InactiveTabsNewMsgCheckBox: TCheckBox
-          Left = 6
-          Top = 52
-          Width = 280
-          Height = 26
-          Caption = 
-            'Pokazuj liczb'#281' nieprzeczytanych wiadomo'#347'ci na nieaktywnych zak'#322'a' +
-            'dkach'
-          Checked = True
-          State = cbChecked
-          TabOrder = 1
-          WordWrap = True
-          OnClick = aNewMsgChkExecute
-        end
-      end
-    end
     object TitlebarCategoryPanel: TCategoryPanel
-      Top = 120
+      Top = 150
       Height = 30
       Caption = 'Pasek tytu'#322'u'
       Color = clWindow
       Collapsed = True
-      TabOrder = 2
+      TabOrder = 5
       TabStop = True
-      ExplicitWidth = 291
+      ExplicitWidth = 308
       ExpandedHeight = 195
       object TitlebarPanel: TPanel
         Left = 0
         Top = 0
-        Width = 306
+        Width = 289
         Height = 0
         Align = alClient
         ShowCaption = False
         TabOrder = 0
+        ExplicitWidth = 306
         object TweakFrmMainTitlebarCheckBox: TCheckBox
           Left = 6
           Top = 98
@@ -485,6 +427,80 @@ object SettingsForm: TSettingsForm
         end
       end
     end
+    object NewMsgCategoryPanel: TCategoryPanel
+      Top = 120
+      Height = 30
+      Caption = 'Nowe wiadomo'#347'ci'
+      Color = clWindow
+      Collapsed = True
+      TabOrder = 4
+      TabStop = True
+      ExpandedHeight = 197
+      object NewMsgPanel: TPanel
+        Left = 0
+        Top = 0
+        Width = 306
+        Height = 0
+        Align = alClient
+        BevelOuter = bvNone
+        TabOrder = 0
+        object InactiveFrmNewMsgCheckBox: TCheckBox
+          Left = 6
+          Top = 6
+          Width = 280
+          Height = 40
+          Caption = 
+            'Pokazuj liczb'#281' nieprzeczytanych wiadomo'#347'ci na pasku tytu'#322'u okna ' +
+            'rozmowy gdy jest ono zminimalizowane lub nieaktywne'
+          Checked = True
+          State = cbChecked
+          TabOrder = 0
+          WordWrap = True
+          OnClick = aNewMsgChkExecute
+        end
+        object InactiveNotiferNewMsgCheckBox: TCheckBox
+          Left = 6
+          Top = 84
+          Width = 280
+          Height = 26
+          Caption = 
+            'Pokazuj w chmurce informacyjnej tre'#347#263' nowej wiadomo'#347'ci pochodz'#261'c' +
+            'ej z nieaktywnej zak'#322'adki'
+          TabOrder = 2
+          WordWrap = True
+          OnClick = aNewMsgChkExecute
+        end
+        object InactiveTabsNewMsgCheckBox: TCheckBox
+          Left = 6
+          Top = 52
+          Width = 280
+          Height = 26
+          Caption = 
+            'Pokazuj liczb'#281' nieprzeczytanych wiadomo'#347'ci na nieaktywnych zak'#322'a' +
+            'dkach'
+          Checked = True
+          State = cbChecked
+          TabOrder = 1
+          WordWrap = True
+          OnClick = aNewMsgChkExecute
+        end
+        object ChatStateNotiferNewMsgCheckBox: TCheckBox
+          Left = 6
+          Top = 115
+          Width = 271
+          Height = 52
+          Caption = 
+            'Informuj o pisaniu nowej wiadomo'#347'ci przez kontakt z aktywnych za' +
+            'k'#322'adek poprzez zmian'#281' ikony na pasku tytu'#322'u okna rozmowy gdy jes' +
+            't ono zminimalizowane lub nieaktywne'
+          Checked = True
+          State = cbChecked
+          TabOrder = 3
+          WordWrap = True
+          OnClick = aNewMsgChkExecute
+        end
+      end
+    end
     object SessionRememberCategoryPanel: TCategoryPanel
       Top = 90
       Height = 30
@@ -493,17 +509,18 @@ object SettingsForm: TSettingsForm
       Collapsed = True
       TabOrder = 3
       TabStop = True
-      ExplicitWidth = 291
+      ExplicitWidth = 308
       ExpandedHeight = 177
       object SessionRememberPanel: TPanel
         Left = 0
         Top = 0
-        Width = 306
+        Width = 289
         Height = 0
         Align = alClient
         BevelOuter = bvNone
         ShowCaption = False
         TabOrder = 0
+        ExplicitWidth = 306
         object RestoreSessionLabel: TLabel
           Left = 20
           Top = 107
@@ -560,18 +577,19 @@ object SettingsForm: TSettingsForm
       Caption = 'Prze'#322#261'czanie zak'#322'adek'
       Color = clWindow
       Collapsed = True
-      TabOrder = 4
+      TabOrder = 2
       TabStop = True
-      ExplicitWidth = 291
+      ExplicitWidth = 308
       ExpandedHeight = 216
       object TabsSwitchingPanel: TPanel
         Left = 0
         Top = 0
-        Width = 306
+        Width = 289
         Height = 0
         Align = alClient
         ShowCaption = False
         TabOrder = 0
+        ExplicitWidth = 306
         object TabsSwitchingLabel: TLabel
           Left = 30
           Top = 155
@@ -675,19 +693,20 @@ object SettingsForm: TSettingsForm
       Caption = 'Niewys'#322'ane wiadomo'#347'ci'
       Color = clWindow
       Collapsed = True
-      TabOrder = 5
+      TabOrder = 1
       TabStop = True
-      ExplicitWidth = 291
+      ExplicitWidth = 308
       ExpandedHeight = 259
       object UnsentMsgPanel: TPanel
         Left = 0
         Top = 0
-        Width = 306
+        Width = 289
         Height = 0
         Align = alClient
         BevelOuter = bvNone
         ShowCaption = False
         TabOrder = 0
+        ExplicitWidth = 306
         object CloudUnsentMsgCheckBox: TCheckBox
           Left = 35
           Top = 61
@@ -793,19 +812,20 @@ object SettingsForm: TSettingsForm
       Caption = 'Zamkni'#281'te zak'#322'adki'
       Color = clWindow
       Collapsed = True
-      TabOrder = 6
+      TabOrder = 0
       TabStop = True
-      ExplicitWidth = 291
+      ExplicitWidth = 308
       ExpandedHeight = 341
       object ClosedPanel: TPanel
         Left = 0
         Top = 0
-        Width = 306
+        Width = 289
         Height = 0
         Align = alClient
         BevelOuter = bvNone
         ShowCaption = False
         TabOrder = 0
+        ExplicitWidth = 306
         object CountClosedTabsLabel: TLabel
           Left = 20
           Top = 264
