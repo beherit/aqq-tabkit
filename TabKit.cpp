@@ -6268,8 +6268,8 @@ int __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 		  }
 	    }
 	  }
-	  //SideSlide - usuwanie JID z kolejki pokazywania wiadomosci przy skrocie Ctrl+Shift+F1
-	  if((FrmMainSlideChk)&&(FrmMainHotKeysShow))
+	  //Usuwanie JID z kolejki pokazywania wiadomosci przy skrocie Ctrl+Shift+F1 lub nieprzypisanym skrotem do zakladki
+	  if((FrmMainSlideChk)||(NewMgsHoyKeyChk))
 	  {
 		if(UnOpenMsgList->IndexOf(JID+Res)!=-1)
 		 UnOpenMsgList->Delete(UnOpenMsgList->IndexOf(JID+Res));
@@ -8478,8 +8478,8 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 	    }
       }
     }
-	//SideSlide - dodawanie JID do kolejki pokazywania wiadomosci przy skrocie Ctrl+Shift+F1
-	if(FrmMainSlideChk)
+	//Dodawanie JID do kolejki pokazywania wiadomosci przy skrocie Ctrl+Shift+F1 lub nieprzypisanym skrotem do zakladki
+	if((FrmMainSlideChk)||(NewMgsHoyKeyChk))
 	{
 	  RecvMsgContact = (PPluginContact)wParam;
 	  UnicodeString JID = (wchar_t*)RecvMsgContact->JID;
@@ -11608,7 +11608,7 @@ extern "C" __declspec(dllexport) PPluginInfo __stdcall AQQPluginInfo(DWORD AQQVe
 {
   PluginInfo.cbSize = sizeof(TPluginInfo);
   PluginInfo.ShortName = L"TabKit";
-  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,6,1,2);
+  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,6,1,4);
   PluginInfo.Description = L"Wtyczka oferuje masê funkcjonalnoœci usprawniaj¹cych korzystanie z komunikatora - np. zapamiêtywanie zamkniêtych zak³adek, inteligentne prze³¹czanie, zapamiêtywanie sesji.";
   PluginInfo.Author = L"Krzysztof Grochocki (Beherit)";
   PluginInfo.AuthorMail = L"kontakt@beherit.pl";
