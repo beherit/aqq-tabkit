@@ -1,3 +1,8 @@
+1.2.0.0
+-----
+* Skórkowanie wiêkszoœci elementów okna ustawieñ wtyczki.
+* Mo¿liwoœæ szybkiej minimalizacji/przywrócenia okna rozmowy za pomoc¹ skrótu klawiszowego.
+
 1.1.1.0
 -----
 * Poprawne rozpoznawanie nadawcy wiadomoœci w przypadku multilogowania w sieci GG.

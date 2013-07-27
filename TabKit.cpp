@@ -122,7 +122,8 @@ UnicodeString TempTitlebar;
 //Klasa okna
 wchar_t WClassName[128];
 //Hook na klawiaturê
-HHOOK hKeyboard;
+HHOOK hThreadKeyboard;
+//HHOOK hGlobalKeyboard;
 //PID procesu
 DWORD PID;
 DWORD ProcessPID;
@@ -207,6 +208,117 @@ bool CollapseImagesChk;
 int CollapseImagesModeChk;
 int CloudTimeOutChk;
 bool CloudTickModeChk;
+bool MinimizeRestoreChk;
+int MinimizeRestoreKey;
+//---------------------------------------------------------------------------
+
+//Pobieranie sciezki do skorki kompozycji
+UnicodeString GetThemeSkinDir()
+{
+  UnicodeString Dir = (wchar_t*)(PluginLink.CallService(AQQ_FUNCTION_GETTHEMEDIR,0,0));
+  Dir = StringReplace(Dir, "\\", "\\\\", TReplaceFlags() << rfReplaceAll);
+  Dir = Dir + "\\\\Skin";
+  return Dir;
+}
+//---------------------------------------------------------------------------
+
+//Sprawdzanie czy wlaczona jest obsluga stylow obramowania okien
+bool ChkSkinEnabled()
+{
+  TStrings* IniList = new TStringList();
+  IniList->SetText((wchar_t*)(PluginLink.CallService(AQQ_FUNCTION_FETCHSETUP,0,0)));
+  TMemIniFile *Settings = new TMemIniFile(ChangeFileExt(Application->ExeName, ".INI"));
+  Settings->SetStrings(IniList);
+  delete IniList;
+  UnicodeString AlphaSkinsEnabled = Settings->ReadString("Settings","UseSkin","1");
+  delete Settings;
+  return StrToBool(AlphaSkinsEnabled);
+}
+//---------------------------------------------------------------------------
+
+//Sprawdzanie czy wlaczony jest natywny styl Windows
+bool ChkNativeEnabled()
+{
+  TStrings* IniList = new TStringList();
+  IniList->SetText((wchar_t*)(PluginLink.CallService(AQQ_FUNCTION_FETCHSETUP,0,0)));
+  TMemIniFile *Settings = new TMemIniFile(ChangeFileExt(Application->ExeName, ".INI"));
+  Settings->SetStrings(IniList);
+  delete IniList;
+  UnicodeString NativeEnabled = Settings->ReadString("Settings","Native","0");
+  delete Settings;
+  return StrToBool(NativeEnabled);
+}
+//---------------------------------------------------------------------------
+
+//Zmiana skorki wtyczki
+void ChangePluginSkin()
+{
+  if(hSettingsForm)
+  {
+	UnicodeString ThemeSkinDir = GetThemeSkinDir();
+	if((FileExists(ThemeSkinDir + "\\\\Skin.asz"))&&(!ChkNativeEnabled()))
+	{
+	  ThemeSkinDir = StringReplace(ThemeSkinDir, "\\\\", "\\", TReplaceFlags() << rfReplaceAll);
+	  hSettingsForm->sSkinManager->SkinDirectory = ThemeSkinDir;
+	  hSettingsForm->sSkinManager->SkinName = "Skin.asz";
+	  hSettingsForm->sSkinProvider->DrawNonClientArea = ChkSkinEnabled();
+	  hSettingsForm->sSkinManager->Active = true;
+	}
+	else
+	 hSettingsForm->sSkinManager->Active = false;
+
+	if(hSettingsForm->sSkinManager->Active)
+	{
+	  hSettingsForm->CategoryPanelGroup->ChevronColor = hSettingsForm->sSkinManager->GetActiveEditFontColor();
+	  hSettingsForm->CategoryPanelGroup->ChevronHotColor = hSettingsForm->sSkinManager->GetHighLightFontColor();
+	  hSettingsForm->CategoryPanelGroup->Color = hSettingsForm->sSkinManager->GetActiveEditColor();
+	  hSettingsForm->CategoryPanelGroup->GradientBaseColor = hSettingsForm->sSkinManager->GetActiveEditColor();
+	  hSettingsForm->CategoryPanelGroup->GradientColor = hSettingsForm->sSkinManager->GetHighLightColor();
+	  hSettingsForm->CategoryPanelGroup->HeaderFont->Color = hSettingsForm->sSkinManager->GetActiveEditFontColor();
+	  hSettingsForm->ClipTabsCategoryPanel->Color = hSettingsForm->sSkinManager->GetGlobalColor();
+	  hSettingsForm->ClipTabsCategoryPanel->Font->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
+	  hSettingsForm->ClosedCategoryPanel->Color = hSettingsForm->sSkinManager->GetGlobalColor();
+	  hSettingsForm->ClosedCategoryPanel->Font->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
+	  hSettingsForm->NewMsgCategoryPanel->Color = hSettingsForm->sSkinManager->GetGlobalColor();
+	  hSettingsForm->NewMsgCategoryPanel->Font->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
+	  hSettingsForm->OtherCategoryPanel->Color = hSettingsForm->sSkinManager->GetGlobalColor();
+	  hSettingsForm->OtherCategoryPanel->Font->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
+	  hSettingsForm->SessionRememberCategoryPanel->Color = hSettingsForm->sSkinManager->GetGlobalColor();
+	  hSettingsForm->SessionRememberCategoryPanel->Font->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
+	  hSettingsForm->TabsSwitchingCategoryPanel->Color = hSettingsForm->sSkinManager->GetGlobalColor();
+	  hSettingsForm->TabsSwitchingCategoryPanel->Font->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
+	  hSettingsForm->TitlebarCategoryPanel->Color = hSettingsForm->sSkinManager->GetGlobalColor();
+	  hSettingsForm->TitlebarCategoryPanel->Font->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
+	  hSettingsForm->UnsentMsgCategoryPanel->Color = hSettingsForm->sSkinManager->GetGlobalColor();
+	  hSettingsForm->UnsentMsgCategoryPanel->Font->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
+	}
+	else
+	{
+	  hSettingsForm->CategoryPanelGroup->ChevronColor = clBlack;
+	  hSettingsForm->CategoryPanelGroup->ChevronHotColor = clGray;
+	  hSettingsForm->CategoryPanelGroup->Color = clWindow;
+	  hSettingsForm->CategoryPanelGroup->GradientBaseColor = 0xF0F0F0;
+	  hSettingsForm->CategoryPanelGroup->GradientColor = clSilver;
+	  hSettingsForm->CategoryPanelGroup->HeaderFont->Color = clWindowText;
+	  hSettingsForm->ClipTabsCategoryPanel->Color = clWindow;
+	  hSettingsForm->ClipTabsCategoryPanel->Font->Color = clWindowText;
+	  hSettingsForm->ClosedCategoryPanel->Color = clWindow;
+	  hSettingsForm->ClosedCategoryPanel->Font->Color = clWindowText;
+	  hSettingsForm->NewMsgCategoryPanel->Color = clWindow;
+	  hSettingsForm->NewMsgCategoryPanel->Font->Color = clWindowText;
+	  hSettingsForm->OtherCategoryPanel->Color = clWindow;
+	  hSettingsForm->OtherCategoryPanel->Font->Color = clWindowText;
+	  hSettingsForm->SessionRememberCategoryPanel->Color = clWindow;
+	  hSettingsForm->SessionRememberCategoryPanel->Font->Color = clWindowText;
+	  hSettingsForm->TabsSwitchingCategoryPanel->Color = clWindow;
+	  hSettingsForm->TabsSwitchingCategoryPanel->Font->Color = clWindowText;
+	  hSettingsForm->TitlebarCategoryPanel->Color = clWindow;
+	  hSettingsForm->TitlebarCategoryPanel->Font->Color = clWindowText;
+	  hSettingsForm->UnsentMsgCategoryPanel->Color = clWindow;
+	  hSettingsForm->UnsentMsgCategoryPanel->Font->Color = clWindowText;
+	}
+  }
+}
 //---------------------------------------------------------------------------
 
 //Szukanie uchwytu do kontrolki TRichEdit
@@ -2577,7 +2689,7 @@ int __stdcall OnTabImage(WPARAM wParam, LPARAM lParam)
 	  //Jezeli nie jest zmieniane na ikonke nowej wiadomosci itp
 	  if((TabImage!=8)&&(TabImage!=COMPOSING)&&(TabImage!=PAUSE))
 	  {
-        //Zmiana ikonki na zakladce
+		//Zmiana ikonki na zakladce
 		if((JID=="blip@blip.pl")||(JID.Pos("202@plugin.gg")>0))
 		{
 		  return 132;
@@ -3409,7 +3521,7 @@ int __stdcall OnPreSendMsg(WPARAM wParam, LPARAM lParam)
   {
 	Contact = (PPluginContact)wParam;
 	UnicodeString JID = (wchar_t*)Contact->JID;
-    if(Contact->IsChat) JID = "ischat_" + JID;
+	if(Contact->IsChat) JID = "ischat_" + JID;
 	if(AcceptClosedTabsList->IndexOf(JID)==-1)
 	{
 	  AcceptClosedTabsList->Add(JID);
@@ -3706,6 +3818,8 @@ int __stdcall OnSystemPopUp (WPARAM wParam, LPARAM lParam)
 //Hook na zmianê kompozycji
 int __stdcall OnThemeChanged (WPARAM wParam, LPARAM lParam)
 {
+  //Zmiana skorki wtyczki
+  ChangePluginSkin();
   //Pobieranie sciezki nowej aktywnej kompozycji
   UnicodeString ThemeDir = (wchar_t*)lParam;//(PluginLink.CallService(AQQ_FUNCTION_GETTHEMEDIR,0,0));
   ThemeDir = StringReplace(ThemeDir, "\\", "\\\\", TReplaceFlags() << rfReplaceAll);
@@ -3869,11 +3983,26 @@ void UnCloseTabHotKeyExecute()
 }
 //---------------------------------------------------------------------------
 
-//Hook na klawiature
-extern "C" LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
+//Minimalizacja / przywracanie okna rozmowy
+void MinimizeRestoreExecute()
+{
+  if((MinimizeRestoreChk)&&(hFrmSend))
+  {
+	if(IsIconic(hFrmSend))
+	{
+	  ShowWindow(hFrmSend,SW_RESTORE);
+	  BringWindowToTop(hFrmSend);
+	}
+	else ShowWindow(hFrmSend,SW_MINIMIZE);
+  }
+}
+//---------------------------------------------------------------------------
+
+//Lokalny hook na klawiature
+extern "C" LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
   //Blad
-  if(nCode<0) return CallNextHookEx(hKeyboard, nCode, wParam, lParam);
+  if(nCode<0) return CallNextHookEx(hThreadKeyboard, nCode, wParam, lParam);
 
   //Inteligentne przelaczenia zakladek
   if(SwitchToNewMsgChk)
@@ -4216,8 +4345,18 @@ extern "C" LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam
 	}
   }
 
-  return CallNextHookEx(hKeyboard, nCode, wParam, lParam);
+  return CallNextHookEx(hThreadKeyboard, nCode, wParam, lParam);
 }
+//---------------------------------------------------------------------------
+
+//Globalny hook na klawiature
+/*extern "C" LRESULT CALLBACK GlobalKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
+{
+  //Blad
+  if(nCode<0) return CallNextHookEx(hGlobalKeyboard, nCode, wParam, lParam);
+
+  return CallNextHookEx(hGlobalKeyboard, nCode, wParam, lParam);
+}*/
 //---------------------------------------------------------------------------
 
 //Sprawdzanie czy funkcjonalnosc EmuTabs ma byc dostepna
@@ -4259,6 +4398,35 @@ void LoadClipTabs()
 	}
   }
   delete Ini;
+}
+//---------------------------------------------------------------------------
+
+void HookGlobalKeyboard()
+{
+  if(!hSettingsForm)
+  {
+	Application->Handle = (HWND)SettingsForm;
+	hSettingsForm = new TSettingsForm(Application);
+  }
+  //Wyladowanie hooka
+  UnregisterHotKey(hSettingsForm->Handle, 0x0001);
+  //Generowanie Mod i Key
+  int Mod = div(MinimizeRestoreKey,256).quot;
+  int Key = MinimizeRestoreKey-Mod*256;
+  if(div(Mod,32).quot==3) Mod = MOD_SHIFT | MOD_CONTROL;
+  else if(div(Mod,32).quot==5) Mod = MOD_SHIFT | MOD_ALT;
+  else if(div(Mod,32).quot==2) Mod = MOD_CONTROL;
+  else if(div(Mod,32).quot==4) Mod = MOD_ALT;
+  else if(div(Mod,32).quot==6) Mod = MOD_ALT | MOD_CONTROL;
+  else if(div(Mod,32).quot==7) Mod = MOD_ALT | MOD_CONTROL | MOD_ALT;
+  //Zaladowanie hooka
+  RegisterHotKey(hSettingsForm->Handle, 0x0001, Mod, Key);
+}
+//---------------------------------------------------------------------------
+
+int GetMinimizeRestoreKey()
+{
+  return MinimizeRestoreKey;
 }
 //---------------------------------------------------------------------------
 
@@ -4329,6 +4497,8 @@ void LoadSettings()
   if(CloudTimeOutChk==6) Ini->WriteInteger("Other","CloudTimeOut",6);
   CloudTickModeChk = Ini->ReadBool("Other","CloudTickMode",true);
   if(CloudTickModeChk) Ini->WriteBool("Other","CloudTickMode",true);
+  MinimizeRestoreChk = Ini->ReadBool("Other","MinimizeRestore",false);
+  MinimizeRestoreKey = Ini->ReadInteger("Other","MinimizeRestoreHotKey",24689);
   delete Ini;
 }
 //---------------------------------------------------------------------------
@@ -4766,10 +4936,13 @@ extern "C" int __declspec(dllexport) __stdcall Load(PPluginLink Link)
   PluginLink.HookEvent(AQQRESTARTER_SYSTEM_RESTARTING,OnRestartingAQQ);
   //Wylaczanie powiadomienia o pisaniu na pasku przy zminimalizowanym oknie rozmowy
   PluginLink.CallService(AQQ_SYSTEM_FUNCTION_SETENABLED,SYS_FUNCTION_TASKBARPEN,0);
-  //Hook na klawiature
-  hKeyboard = SetWindowsHookEx(WH_KEYBOARD,(HOOKPROC)KeyboardProc,HInstance,GetCurrentThreadId());
+  //Hook lokalny na klawiature
+  hThreadKeyboard = SetWindowsHookEx(WH_KEYBOARD,(HOOKPROC)ThreadKeyboardProc,HInstance,GetCurrentThreadId());
+  //hGlobalKeyboard = SetWindowsHookEx(WH_KEYBOARD,(HOOKPROC)GlobalKeyboardProc,HInstance,0);
   //Wczytanie ustawien
   LoadSettings();
+  //Hook globalny na klawiature
+  HookGlobalKeyboard();
   //Wylaczenie/wlaczanie AntiSpim
   CheckAntiSpim();
   //Ladowanie przypietych zakladek
@@ -4949,8 +5122,14 @@ extern "C" int __declspec(dllexport) __stdcall Unload()
   //Wlaczenie AntiSpim
   PluginLink.CallService(AQQ_SYSTEM_FUNCTION_SETENABLED,SYS_FUNCTION_ANTISPIM_LEN,1);
   //Hook systemowy
-  if(hKeyboard!=NULL)
-   UnhookWindowsHookEx(hKeyboard);
+  if(hThreadKeyboard!=NULL) UnhookWindowsHookEx(hThreadKeyboard);
+  //if(hGlobalKeyboard!=NULL) UnhookWindowsHookEx(hGlobalKeyboard);
+  if(!hSettingsForm)
+  {
+	Application->Handle = (HWND)SettingsForm;
+	hSettingsForm = new TSettingsForm(Application);
+  }
+  UnregisterHotKey(hSettingsForm->Handle, 0x0001);
   //Przypisanie starej procki do okna rozmowy
   if(OldFrmSendProc)
   {
@@ -5090,17 +5269,17 @@ extern "C" int __declspec(dllexport)__stdcall Settings()
 extern "C" __declspec(dllexport) PPluginInfo __stdcall AQQPluginInfo(DWORD AQQVersion)
 {
   //Sprawdzanie wersji AQQ
-  if (PLUGIN_COMPARE_VERSION(AQQVersion,PLUGIN_MAKE_VERSION(2,2,5,30))<0)
+  /*if (PLUGIN_COMPARE_VERSION(AQQVersion,PLUGIN_MAKE_VERSION(2,2,5,30))<0)
   {
 	MessageBox(Application->Handle,
 	  "Wymagana wesja AQQ przez wtyczkê to minimum 2.2.5.30!\n"
 	  "Wtyczka TabKit nie bêdzie dzia³aæ poprawnie!",
 	  "Nieprawid³owa wersja AQQ",
 	  MB_OK | MB_ICONEXCLAMATION);
-  }
+  }*/
   PluginInfo.cbSize = sizeof(TPluginInfo);
   PluginInfo.ShortName = L"TabKit";
-  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,1,1,0);
+  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,2,0,0);
   PluginInfo.Description = L"Ulepszenie obs³ugi zak³adek";
   PluginInfo.Author = L"Krzysztof Grochocki (Beherit)";
   PluginInfo.AuthorMail = L"kontakt@beherit.pl";

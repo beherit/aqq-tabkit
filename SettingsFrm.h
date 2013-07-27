@@ -9,85 +9,93 @@
 #include <ComCtrls.hpp>
 #include <ExtCtrls.hpp>
 #include <ActnList.hpp>
-#include "cspin.h"
 #include "IdBaseComponent.hpp"
 #include "IdCoder.hpp"
 #include "IdCoder3to4.hpp"
 #include "IdCoderMIME.hpp"
 #include <FileCtrl.hpp>
+#include "sSkinManager.hpp"
+#include "sSkinProvider.hpp"
+#include "sBevel.hpp"
+#include "sButton.hpp"
+#include "sLabel.hpp"
+#include "sGroupBox.hpp"
+#include "sPanel.hpp"
+#include "sCheckBox.hpp"
+#include "sSpinEdit.hpp"
+#include "sEdit.hpp"
+#include "sRadioButton.hpp"
 //---------------------------------------------------------------------------
 class TSettingsForm : public TForm
 {
 __published:	// IDE-managed Components
-	TBevel *Bevel;
-	TButton *SaveButton;
-	TButton *CancelButton;
-	TCheckBox *RememberUnsentMsgCheckBox;
-	TCheckBox *InfoUnsentMsgCheckBox;
-	TCheckBox *FastAccessUnsentMsgCheckBox;
-	TCheckBox *FrmSendUnsentMsgCheckBox;
-	TCheckBox *FrmMainUnsentMsgCheckBox;
-	TCheckBox *CloudUnsentMsgCheckBox;
-	TCheckBox *TrayUnsentMsgCheckBox;
-	TCheckBox *SwitchToNewMsgCheckBox;
+	TsBevel *Bevel;
+	TsButton *SaveButton;
+	TsButton *CancelButton;
+	TsCheckBox *RememberUnsentMsgCheckBox;
+	TsCheckBox *InfoUnsentMsgCheckBox;
+	TsCheckBox *FastAccessUnsentMsgCheckBox;
+	TsCheckBox *FrmSendUnsentMsgCheckBox;
+	TsCheckBox *FrmMainUnsentMsgCheckBox;
+	TsCheckBox *CloudUnsentMsgCheckBox;
+	TsCheckBox *TrayUnsentMsgCheckBox;
+	TsCheckBox *SwitchToNewMsgCheckBox;
 	TRadioButton *SwitchToNewMsgMode1RadioButton;
 	TRadioButton *SwitchToNewMsgMode2RadioButton;
 	TTrayIcon *UnsentMsgTrayIcon;
-	TCheckBox *DetailedCloudUnsentMsgCheckBox;
+	TsCheckBox *DetailedCloudUnsentMsgCheckBox;
 	TActionList *ActionList;
 	TAction *aExit;
 	TAction *aLoadSettings;
 	TAction *aSaveSettings;
 	TAction *aUnsentMsgChk;
 	TAction *aTabsSwitchingChk;
-	TCheckBox *RememberClosedTabsCheckBox;
-	TCheckBox *TabsHotKeysCheckBox;
+	TsCheckBox *RememberClosedTabsCheckBox;
+	TsCheckBox *TabsHotKeysCheckBox;
 	TRadioButton *TabsHotKeysMode1RadioButton;
 	TRadioButton *TabsHotKeysMode2RadioButton;
 	TPanel *SwitchToNewMsgModePanel;
 	TPanel *TabsHotKeysModePanel;
-	TButton *OkButton;
+	TsButton *OkButton;
 	TAction *aSaveSettingsW;
-	TCheckBox *FastAccessClosedTabsCheckBox;
-	TCheckBox *FrmMainClosedTabsCheckBox;
-	TCheckBox *FrmSendClosedTabsCheckBox;
-	TCheckBox *UnCloseTabHotKeyCheckBox;
-	TRadioButton *UnCloseTabHotKeyMode1RadioButton;
-	TRadioButton *UnCloseTabHotKeyMode2RadioButton;
+	TsCheckBox *FastAccessClosedTabsCheckBox;
+	TsCheckBox *FrmMainClosedTabsCheckBox;
+	TsCheckBox *FrmSendClosedTabsCheckBox;
+	TsCheckBox *UnCloseTabHotKeyCheckBox;
+	TsRadioButton *UnCloseTabHotKeyMode1RadioButton;
+	TsRadioButton *UnCloseTabHotKeyMode2RadioButton;
 	THotKey *UnCloseTabHotKeyInput;
 	TAction *aClosedTabsChk;
-	TLabel *CountClosedTabsLabel;
-	TCSpinEdit *CountClosedTabsCSpinEdit;
-	TCheckBox *RestoreTabsSessionCheckBox;
+	TsSpinEdit *CountClosedTabsSpinEdit;
+	TsCheckBox *RestoreTabsSessionCheckBox;
 	TAction *aSessionRememberChk;
-	TCheckBox *RestoreMsgSessionCheckBox;
-	TLabel *RestoreSessionLabel;
-	TCheckBox *TweakFrmSendTitlebarCheckBox;
+	TsCheckBox *RestoreMsgSessionCheckBox;
+	TsLabel *RestoreSessionLabel;
+	TsCheckBox *TweakFrmSendTitlebarCheckBox;
 	TRadioButton *TweakFrmSendTitlebarMode1RadioButton;
 	TRadioButton *TweakFrmSendTitlebarMode2RadioButton;
 	TRadioButton *TweakFrmSendTitlebarMode3RadioButton;
-	TCheckBox *TweakFrmMainTitlebarCheckBox;
+	TsCheckBox *TweakFrmMainTitlebarCheckBox;
 	TRadioButton *TweakFrmMainTitlebarMode1RadioButton;
 	TRadioButton *TweakFrmMainTitlebarMode2RadioButton;
 	TEdit *TweakFrmMainTitlebarMode2Edit;
 	TPanel *TweakFrmSendTitlebarPanel;
 	TPanel *TweakFrmMainTitlebarPanel;
-	TLabel *ItemsCountClosedTabsLabel;
-	TCSpinEdit *ItemsCountClosedTabsCSpinEdit;
+	TsSpinEdit *ItemsCountClosedTabsSpinEdit;
 	TAction *aTitlebarTweakChk;
-	TCheckBox *InactiveFrmNewMsgCheckBox;
+	TsCheckBox *InactiveFrmNewMsgCheckBox;
 	TButton *UnsentMsgEraseButton;
 	TButton *ClosedTabsEraseButton;
 	TButton *SessionRememberEraseButton;
 	TAction *aNewMsgChk;
-	TCheckBox *InactiveTabsNewMsgCheckBox;
-	TCheckBox *ManualRestoreTabsSessionCheckBox;
-	TCheckBox *StayOnTopCheckBox;
+	TsCheckBox *InactiveTabsNewMsgCheckBox;
+	TsCheckBox *ManualRestoreTabsSessionCheckBox;
+	TsCheckBox *StayOnTopCheckBox;
 	TGroupBox *ClearCacheGroupBox;
 	TAction *aClosedTabs;
 	TAction *aOtherChk;
-	TCheckBox *InactiveNotiferNewMsgCheckBox;
-	TCheckBox *RestoreLastMsgClosedTabsCheckBox;
+	TsCheckBox *InactiveNotiferNewMsgCheckBox;
+	TsCheckBox *RestoreLastMsgClosedTabsCheckBox;
 	TCategoryPanelGroup *CategoryPanelGroup;
 	TCategoryPanel *ClosedCategoryPanel;
 	TCategoryPanel *UnsentMsgCategoryPanel;
@@ -96,35 +104,33 @@ __published:	// IDE-managed Components
 	TCategoryPanel *TitlebarCategoryPanel;
 	TCategoryPanel *NewMsgCategoryPanel;
 	TCategoryPanel *OtherCategoryPanel;
-	TPanel *ClosedPanel;
-	TPanel *UnsentMsgPanel;
-	TPanel *TabsSwitchingPanel;
-	TPanel *SessionRememberPanel;
-	TPanel *TitlebarPanel;
-	TPanel *NewMsgPanel;
-	TPanel *OtherPanel;
-	TCheckBox *EmuTabsWCheckBox;
-	TCheckBox *ShowTimeClosedTabsCheckBox;
-	TCheckBox *FastClearClosedTabsCheckBox;
-	TCheckBox *FastClearUnsentMsgCheckBox;
-	TCheckBox *QuickQuoteCheckBox;
-	TCheckBox *ChatStateNotiferNewMsgCheckBox;
-	TCheckBox *AntiSpimCheckBox;
-	TCheckBox *OnlyConversationTabsCheckBox;
-	TCheckBox *HideStatusBarCheckBox;
-	TCheckBox *HideToolBarCheckBox;
+	TsCheckBox *EmuTabsWCheckBox;
+	TsCheckBox *ShowTimeClosedTabsCheckBox;
+	TsCheckBox *FastClearClosedTabsCheckBox;
+	TsCheckBox *FastClearUnsentMsgCheckBox;
+	TsCheckBox *QuickQuoteCheckBox;
+	TsCheckBox *ChatStateNotiferNewMsgCheckBox;
+	TsCheckBox *AntiSpimCheckBox;
+	TsCheckBox *OnlyConversationTabsCheckBox;
+	TsCheckBox *HideStatusBarCheckBox;
+	TsCheckBox *HideToolBarCheckBox;
 	TIdDecoderMIME *IdDecoderMIME;
 	TCategoryPanel *ClipTabsCategoryPanel;
-	TPanel *ClipTabsPanel;
-	TCheckBox *OpenClipTabsCheckBox;
+	TsCheckBox *OpenClipTabsCheckBox;
 	TButton *ClipTabsEraseButton;
-	TCheckBox *InactiveClipTabsCheckBox;
+	TsCheckBox *InactiveClipTabsCheckBox;
 	TAction *aClipTabsChk;
 	TImage *Image;
 	TButton *MiniAvatarsEraseButton;
 	TFileListBox *FileListBox;
-	TCheckBox *CollapseImagesCheckBox;
-	TCheckBox *CounterClipTabsCheckBox;
+	TsCheckBox *CollapseImagesCheckBox;
+	TsCheckBox *CounterClipTabsCheckBox;
+	TsSkinManager *sSkinManager;
+	TsSkinProvider *sSkinProvider;
+	TsLabel *ItemsCountClosedTabsLabel;
+	TsLabel *CountClosedTabsLabel;
+	TsCheckBox *MinimizeRestoreCheckBox;
+	THotKey *MinimizeRestoreHotKey;
 	void __fastcall UnsentMsgTrayIconClick(TObject *Sender);
 	void __fastcall aExitExecute(TObject *Sender);
 	void __fastcall CancelButtonClick(TObject *Sender);
@@ -152,12 +158,18 @@ __published:	// IDE-managed Components
 	void __fastcall aClipTabsChkExecute(TObject *Sender);
 	void __fastcall ConvertImage(UnicodeString Old, UnicodeString New);
 	void __fastcall MiniAvatarsEraseButtonClick(TObject *Sender);
+	void __fastcall FormCreate(TObject *Sender);
+	void __fastcall FormShow(TObject *Sender);
 private:	// User declarations
 	//Konieczne do inicjalizacji GDIPlus
 	//Gdiplus::GdiplusStartupInput gdiplusStartupInput;
 	//ULONG_PTR gdiplusToken;
 public:		// User declarations
 	__fastcall TSettingsForm(TComponent* Owner);
+	void WMHotKey(TMessage& Message);
+	BEGIN_MESSAGE_MAP
+	MESSAGE_HANDLER(WM_HOTKEY,TMessage,WMHotKey);
+	END_MESSAGE_MAP(TComponent)
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TSettingsForm *SettingsForm;
