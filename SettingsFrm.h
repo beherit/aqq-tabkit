@@ -230,6 +230,9 @@ __published:	// IDE-managed Components
 	TsCheckBox *ShortenLinksCheckBox;
 	TsRadioButton *TweakFrmSendTitlebarMode4RadioButton;
 	TAction *aRefreshPanels;
+	TsCheckBox *ChangeTabAfterSlideInCheckBox;
+	TImage *StarImage;
+	TsWebLabel *StarWebLabel;
 	void __fastcall UnsentMsgTrayIconClick(TObject *Sender);
 	void __fastcall aExitExecute(TObject *Sender);
 	void __fastcall CancelButtonClick(TObject *Sender);
