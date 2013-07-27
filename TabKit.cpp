@@ -2,18 +2,16 @@
 #include <windows.h>
 #pragma hdrstop
 #pragma argsused
-#include "SettingsFrm.h"
 #include <PluginAPI.h>
+#include "SettingsFrm.h"
 #include <inifiles.hpp>
 #include <process.h>
-#include <Clipbrd.hpp>                               `
 #include <IdHashMessageDigest.hpp>
-#include <XMLDoc.hpp>
-#define AQQRESTARTER_SYSTEM_RESTARTING L"AQQRestarter/System/Restarting"
-#define RESOURCESCHANGER_SYSTEM_RESOURCECHANGED L"ResourcesChanger/System/ResourceChanged"
 #include <boost/regex.hpp>
 using namespace boost;
 using namespace std;
+#define AQQRESTARTER_SYSTEM_RESTARTING L"AQQRestarter/System/Restarting"
+#define RESOURCESCHANGER_SYSTEM_RESOURCECHANGED L"ResourcesChanger/System/ResourceChanged"
 
 int WINAPI DllEntryPoint(HINSTANCE hinst, unsigned long reason, void* lpReserved)
 {
@@ -124,7 +122,6 @@ UnicodeString LastOpenedChatClipTab;
 //SideSlide-----------------------------------------------------------------
 //Oryginalny rozmiar+pozycja okna kontaktow
 TRect FrmMainRect;
-TRect FrmMainLRect;
 WINDOWINFO FrmMainInfo;
 int FrmMainRealLeftPos;
 int FrmMainRealRightPos;
@@ -154,7 +151,6 @@ int FrmMain_Shell_TrayWndBottom;
 int FrmMain_Shell_TrayWndTop;
 //Oryginalny rozmiar+pozycja okna rozmowy
 TRect FrmSendRect;
-TRect FrmSendLRect;
 WINDOWINFO FrmSendInfo;
 int FrmSendRealLeftPos;
 int FrmSendRealRightPos;
@@ -195,7 +191,7 @@ HWND LastActiveWindow_WmInactiveFrmMainSlide = NULL;
 HWND LastActiveWindow_PreFrmMainSlideIn = NULL;
 //Blokada okna przy aktywnym popupmenu poza obszarem okna
 bool PopupMenuBlockSlide = false;
-//Blokada przy zmianie pokzycjo okien
+//Blokada przy zmianie pozycji okien
 bool WM_ENTERSIZEMOVE_BLOCK = false;
 //Lista JID z nowymi wiadomosciami
 TStringList *UnOpenMsgList = new TStringList;
@@ -272,24 +268,18 @@ bool ThemeChanging = false;
 //UCHWTY-DO-OKIEN------------------------------------------------------------
 //Uchwyt do okna rozmowy
 HWND hFrmSend;
-//Uchwyt do pseudo okna rozmowy
-HWND hFrmSendL;
 //Uchwyt do pola RichEdit
 HWND hRichEdit;
 //Uchwyt do paska informacyjnego
-HWND hStatusBarPro;
+HWND hStatusBar;
 //Uchwyt do paska narzedzi
 HWND hToolBar;
 //Uchwyt do paska zakladek
 HWND hTabsBar;
-//Uchwyt do przycisku z lista aktywnych zakladek
-HWND hTabListButton;
 //Uchwyty do przyciskow strzalek do przewijania zakladek
 HWND hScrollTabButton[2];
 //Uchwyt do okna kontaktow
 HWND hFrmMain;
-//Uchwyt do pseudo okna kontaktow
-HWND hFrmMainL;
 //Ucwyt do kontrolki IE w oknie kontatkow
 HWND hFrmMainFocus;
 //Uchwyt do okna wyszukiwarki na liscie kontatkow
@@ -307,12 +297,10 @@ HWND Shell_TrayWnd;
 HHOOK hThreadKeyboard;
 //Lokalny hook na myszke
 HHOOK hThreadMouse;
-//Stara procka okna rozmowy i pseudo okna rozmowy
+//Stara procka okna rozmowy
 WNDPROC OldFrmSendProc;
-WNDPROC OldFrmSendLProc;
-//Stara procka okna kontaktow i pseudo okna kontaktow
+//Stara procka okna kontaktow
 WNDPROC OldFrmMainProc;
-WNDPROC OldFrmMainLProc;
 //Stara procka okna wyszukiwarki
 WNDPROC OldFrmSeekOnListProc;
 //IKONY-W-INTERFEJSIE--------------------------------------------------------
@@ -337,28 +325,29 @@ int FASTACCESS;
 #define TIMER_LOADLASTCONV 110
 #define TIMER_CHKSETTINGS 120
 #define TIMER_CLOSEBY2XLPM 130
-#define TIMER_MOUSEPOSITION 140
-#define TIMER_FRMSENDMOUSEPOSITION 150
-#define TIMER_FRMMAINMOUSEPOSITION 160
-#define TIMER_CHKACTIVEWINDOW 170
-#define TIMER_PREFRMSENDSLIDEOUT 180
-#define TIMER_FRMSENDSLIDEOUT 190
-#define TIMER_PREFRMSENDSLIDEIN 200
-#define TIMER_FRMSENDSLIDEIN 210
-#define TIMER_FRMSENDBLOCKSLIDE 220
-#define TIMER_FRMSENDMINIMIZED 230
-#define TIMER_FRMSENDCHANGEPOS 240
-#define TIMER_FRMSENDSETTOPMOST 250
-#define TIMER_FRMSENDSETTOPMOSTANDSLIDE 260
-#define TIMER_FRMSENDUNBLOCKMOUSE 270
-#define TIMER_PREFRMMAINDSLIDEOUT 280
-#define TIMER_FRMMAINSLIDEOUT 290
-#define TIMER_PREFRMMAINSLIDEIN 300
-#define TIMER_FRMMAINSLIDEIN 310
-#define TIMER_FRMMAINBLOCKSLIDE 320
-#define TIMER_FRMMAINSETTOPMOST 330
-#define TIMER_FRMMAINSETTOPMOSTEX 340
-#define TIMER_FRMMAINSETTOPMOSTANDSLIDE 350
+#define TIMER_ACTIVATERICHEDIT 140
+#define TIMER_MOUSEPOSITION 150
+#define TIMER_FRMSENDMOUSEPOSITION 160
+#define TIMER_FRMMAINMOUSEPOSITION 170
+#define TIMER_CHKACTIVEWINDOW 180
+#define TIMER_PREFRMSENDSLIDEOUT 190
+#define TIMER_FRMSENDSLIDEOUT 200
+#define TIMER_PREFRMSENDSLIDEIN 210
+#define TIMER_FRMSENDSLIDEIN 220
+#define TIMER_FRMSENDBLOCKSLIDE 230
+#define TIMER_FRMSENDMINIMIZED 240
+#define TIMER_FRMSENDCHANGEPOS 250
+#define TIMER_FRMSENDSETTOPMOST 260
+#define TIMER_FRMSENDSETTOPMOSTANDSLIDE 270
+#define TIMER_FRMSENDUNBLOCKMOUSE 280
+#define TIMER_PREFRMMAINDSLIDEOUT 290
+#define TIMER_FRMMAINSLIDEOUT 300
+#define TIMER_PREFRMMAINSLIDEIN 310
+#define TIMER_FRMMAINSLIDEIN 320
+#define TIMER_FRMMAINBLOCKSLIDE 330
+#define TIMER_FRMMAINSETTOPMOST 340
+#define TIMER_FRMMAINSETTOPMOSTEX 350
+#define TIMER_FRMMAINSETTOPMOSTANDSLIDE 360
 //SETTINGS-------------------------------------------------------------------
 //ClosedTabs
 bool ClosedTabsChk;
@@ -446,10 +435,8 @@ int CollapseImagesMode;
 bool MinimizeRestoreChk;
 int MinimizeRestoreKey;
 bool StayOnTopChk;
-bool HideStatusBarChk;
 bool HideToolBarChk;
 bool HideTabCloseButtonChk;
-bool HideTabListButtonChk;
 bool HideScrollTabButtonsChk;
 bool CloseBy2xLPMChk;
 bool EmuTabsWChk;
@@ -515,12 +502,9 @@ int __stdcall ServiceTabKitFastSettingsItem(WPARAM wParam, LPARAM lParam);*/
 LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 //FORWARD-WINDOW-PROC--------------------------------------------------------
 LRESULT CALLBACK FrmMainProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-LRESULT CALLBACK FrmMainLProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-LRESULT CALLBACK FrmSendLProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 //FORWARD-OTHER-FUNCTION-----------------------------------------------------
 void RefreshTabs();
-void CheckHideTabListButton();
 void CheckHideScrollTabButtons();
 void LoadSettings();
 //---------------------------------------------------------------------------
@@ -545,38 +529,6 @@ bool CALLBACK FindFrmMain(HWND hWnd, LPARAM)
 	  //Pobieranie oryginalnego titlebar okna
 	  GetWindowTextW(hFrmMain,OryginalTitlebar,sizeof(OryginalTitlebar));
 	  return false;
-	}
-  }
-  return true;
-}
-//---------------------------------------------------------------------------
-
-//Szukanie uchwytu do pseudo okna kontaktow
-bool CALLBACK FindFrmMainL(HWND hWnd, LPARAM)
-{
-  //Pobranie klasy okna
-  wchar_t WClassName[128];
-  GetClassNameW(hWnd, WClassName, sizeof(WClassName));
-  //Sprawdenie klasy okna
-  if((UnicodeString)WClassName=="LayeredWndClass")
-  {
-	//Pobranie tekstu okna
-	GetWindowTextW(hWnd,WClassName,sizeof(WClassName));
-	wchar_t WClassName2[128];
-	GetWindowTextW(hFrmMain,WClassName2,sizeof(WClassName2));
-	//Sprawdzenie tekstu okna
-	if((UnicodeString)WClassName==(UnicodeString)WClassName2)
-	{
-	  //Pobranie PID okna
-	  DWORD PID;
-	  GetWindowThreadProcessId(hWnd, &PID);
-	  //Porownanie PID okna
-	  if(PID==ProcessPID)
-	  {
-		//Przypisanie uchwytu
-		hFrmMainL = hWnd;
-		return false;
-	  }
 	}
   }
   return true;
@@ -635,7 +587,6 @@ bool CALLBACK FindToolBar(HWND hWnd, LPARAM)
 //---------------------------------------------------------------------------
 
 //Szukanie uchwytu do: -kontrolki gdzie znajduja sie zakladki
-//-przycisku z lista aktywnych zakladek
 //-przyciskow strzalek do przewijania zakladek (part II)
 bool CALLBACK FindTabsBarEx(HWND hWnd, LPARAM)
 {
@@ -651,18 +602,6 @@ bool CALLBACK FindTabsBarEx(HWND hWnd, LPARAM)
 	{
 	  //Przypisanie uchwytu
 	  hTabsBar = hWnd;
-	}
-  }
-  //Uchwyt do przycisku z lista aktywnych zakladek
-  if(!hTabListButton)
-  {
-	//Sprawdzenie szerokosci+wysokosci okna
-	if((WindowRect.Width()==22)&&(WindowRect.Height()==27))
-	{
-	  //Przypisanie uchwytu
-	  hTabListButton = hWnd;
-	  //Ukrywanie/pokazywanie przycisku z lista aktywnych zakladek
-	  CheckHideTabListButton();
 	}
   }
   //Uchwyty do przyciskow strzalek przewijania zakladek
@@ -694,51 +633,18 @@ bool CALLBACK FindTabsBar(HWND hWnd, LPARAM)
   wchar_t WClassName[128];
   GetClassNameW(hWnd, WClassName, sizeof(WClassName));
   //Sprawdenie klasy okna
-  if((UnicodeString)WClassName=="TPanel")
+  if((UnicodeString)WClassName=="TsPanel")
   {
 	//Szukanie kontrolki dziecka - paska narzedzi
 	HWND hTempHwnd = FindWindowEx(hWnd,NULL,L"TToolBar",NULL);
 	//Porownanie kontrolek
-	if((hTempHwnd)&&(hTempHwnd==hToolBar))
+	if(hTempHwnd)
 	{
 	  //Pobranie wlasciwego dziecka
 	  hTempHwnd = FindWindowEx(hWnd,NULL,L"TPanel",NULL);
 	  //Uruchomienie drugiej czesci szukania uchwytow
 	  EnumChildWindows(hTempHwnd,(WNDENUMPROC)FindTabsBarEx,0);
 	  return false;
-	}
-  }
-  return true;
-}
-//---------------------------------------------------------------------------
-
-//Szukanie uchwytu do pseudo okna rozmowy
-bool CALLBACK FindFrmSendL(HWND hWnd, LPARAM)
-{
-  //Pobranie klasy okna
-  wchar_t WClassName[128];
-  GetClassNameW(hWnd, WClassName, sizeof(WClassName));
-  //Sprawdenie klasy okna
-  if((UnicodeString)WClassName=="LayeredWndClass")
-  {
-	//Pobranie tekstu okna
-	GetWindowTextW(hWnd,WClassName,sizeof(WClassName));
-	//Sprawdzenie tekstu okna
-	if(((UnicodeString)WClassName=="frmSend")||((UnicodeString)WClassName==(UnicodeString)hFrmSendTextW))
-	{
-	  //Pobranie PID okna
-	  DWORD PID;
-	  GetWindowThreadProcessId(hWnd, &PID);
-	  //Porownanie PID okna
-	  if(PID==ProcessPID)
-	  {
-		//Zmiana caption pseudo okna rozmowy
-		if((UnicodeString)WClassName==(UnicodeString)hFrmSendTextW)
-		 SetWindowTextW(hWnd,L"frmSend");
-		//Przypisanie uchwytu
-		hFrmSendL = hWnd;
-		return false;
-	  }
 	}
   }
   return true;
@@ -997,6 +903,13 @@ int GetContactState(UnicodeString JID)
   }
   //Zwrocenie ikonki stanu kontatku
   return State;
+}
+//---------------------------------------------------------------------------
+
+//Normalizacja nazw kanalow
+UnicodeString NormalizeChannel(UnicodeString Channel)
+{
+  return (wchar_t*)PluginLink.CallService(AQQ_FUNCTION_NORMALIZE,0,(LPARAM)Channel.w_str());
 }
 //---------------------------------------------------------------------------
 
@@ -1867,22 +1780,13 @@ void ChangeFrmMainTitlebar()
 	{
 	  //Nazwa aktywnego profilu
 	  if(TweakFrmMainTitlebarModeEx==0)
-	  {
-        SetWindowTextW(hFrmMain,("AQQ [" + ProfileName + "]").w_str());
-		if(hFrmMainL) SetWindowTextW(hFrmMainL,("AQQ [" + ProfileName + "]").w_str());
-	  }
+	   SetWindowTextW(hFrmMain,("AQQ [" + ProfileName + "]").w_str());
 	  //Nazwa komputera
 	  else if(TweakFrmMainTitlebarModeEx==1)
-	  {
-		SetWindowTextW(hFrmMain,("AQQ [" + ComputerName + "]").w_str());
-		if(hFrmMainL) SetWindowTextW(hFrmMainL,("AQQ [" + ComputerName + "]").w_str());
-	  }
+	   SetWindowTextW(hFrmMain,("AQQ [" + ComputerName + "]").w_str());
 	  //Nazwa zasobu glownego konta Jabber
 	  else
-	  {
-		SetWindowTextW(hFrmMain,("AQQ [" + ResourceName + "]").w_str());
-		if(hFrmMainL) SetWindowTextW(hFrmMainL,("AQQ [" + ResourceName + "]").w_str());
-	  }
+	   SetWindowTextW(hFrmMain,("AQQ [" + ResourceName + "]").w_str());
 	}
 	//Tryb II
 	else
@@ -1890,23 +1794,21 @@ void ChangeFrmMainTitlebar()
 	  //Wlasny tekst
 	  if(!TweakFrmMainTitlebarText.IsEmpty())
 	  {
-		SetWindowTextW(hFrmMain,("AQQ " + TweakFrmMainTitlebarText).w_str());
-		if(hFrmMainL) SetWindowTextW(hFrmMainL,("AQQ " + TweakFrmMainTitlebarText).w_str());
+		//Pusty tekst
+		if(TweakFrmMainTitlebarText=="-")
+		 SetWindowTextW(hFrmMain,L"");
+		//Zdefiniowany tekst
+		else
+		 SetWindowTextW(hFrmMain,("AQQ " + TweakFrmMainTitlebarText).w_str());
 	  }
 	  //Brak wersji komunikatora
 	  else
-	  {
-		SetWindowTextW(hFrmMain,L"AQQ");
-		if(hFrmMainL) SetWindowTextW(hFrmMainL,L"AQQ");
-	  }
+	   SetWindowTextW(hFrmMain,L"AQQ");
 	}
   }
   //Funkcjonalnosc wylaczona - przywracanie oryginalnego tekstu na pasku okna kontaktow
   else
-  {
-	SetWindowTextW(hFrmMain,OryginalTitlebar);
-	if(hFrmMainL) SetWindowTextW(hFrmMainL,OryginalTitlebar);
-  }
+   SetWindowTextW(hFrmMain,OryginalTitlebar);
 }
 //---------------------------------------------------------------------------
 
@@ -2108,94 +2010,65 @@ void GetFrmMainRect()
   //Pobranie rozmiaru+pozycji okna kontaktow
   GetWindowRect(hFrmMain,&FrmMainRect);
   //Pobranie realnego rozmiaru+pozycji oka kontaktow
-  if(!hFrmMainL)
+  GetWindowInfo(hFrmMain,&FrmMainInfo);
+  if(FrmMainSlideEdge==1)
   {
-	GetWindowInfo(hFrmMain,&FrmMainInfo);
-	if(FrmMainSlideEdge==1)
-	{
-	  FrmMainRealLeftPos = FrmMainInfo.rcWindow.left - FrmMainInfo.rcClient.left;
-	  FrmMainRealRightPos = 0;
-	  FrmMainRealBottomPos = 0;
-	  FrmMainRealTopPos = 0;
-	}
-	else if(FrmMainSlideEdge==2)
-	{
-	  FrmMainRealRightPos = FrmMainInfo.rcWindow.right - FrmMainInfo.rcClient.right;
-	  FrmMainRealLeftPos = 0;
-	  FrmMainRealBottomPos = 0;
-	  FrmMainRealTopPos = 0;
-	}
-	else if(FrmMainSlideEdge==3)
-	{
-	  FrmMainRealBottomPos = FrmMainInfo.rcWindow.bottom - FrmMainInfo.rcClient.bottom;
-	  FrmMainRealLeftPos = 0;
-	  FrmMainRealRightPos = 0;
-	  FrmMainRealTopPos = 0;
-	}
-	else
-	{
-      FrmMainRealTopPos = FrmMainInfo.rcWindow.top - FrmMainInfo.rcClient.top;
-	  FrmMainRealLeftPos = 0;
-	  FrmMainRealRightPos = 0;
-	  FrmMainRealBottomPos = 0;
-	}
+	FrmMainRealLeftPos = FrmMainInfo.rcWindow.left - FrmMainInfo.rcClient.left;
+	FrmMainRealRightPos = 0;
+	FrmMainRealBottomPos = 0;
+	FrmMainRealTopPos = 0;
   }
-  else GetWindowRect(hFrmMainL,&FrmMainLRect);
+  else if(FrmMainSlideEdge==2)
+  {
+	FrmMainRealRightPos = FrmMainInfo.rcWindow.right - FrmMainInfo.rcClient.right;
+	FrmMainRealLeftPos = 0;
+	FrmMainRealBottomPos = 0;
+	FrmMainRealTopPos = 0;
+  }
+  else if(FrmMainSlideEdge==3)
+  {
+	FrmMainRealBottomPos = FrmMainInfo.rcWindow.bottom - FrmMainInfo.rcClient.bottom;
+	FrmMainRealLeftPos = 0;
+	FrmMainRealRightPos = 0;
+	FrmMainRealTopPos = 0;
+  }
+  else
+  {
+	FrmMainRealTopPos = FrmMainInfo.rcWindow.top - FrmMainInfo.rcClient.top;
+	FrmMainRealLeftPos = 0;
+	FrmMainRealRightPos = 0;
+	FrmMainRealBottomPos = 0;
+  }
 }
 //---------------------------------------------------------------------------
 
 //Ustawienie poprawnej pozycji okna kontaktow
 void SetFrmMainPos()
 {
-  //Nowe skórkowanie lub brak skorkowania
-  if(!hFrmMainL)
+  //Left
+  if(FrmMainSlideEdge==1)
   {
-	//Left
-	if(FrmMainSlideEdge==1)
-	{
-	  //Wlaczone obramowanie
-	  if(ChkSkinEnabled())
-	  {
-		WINDOWINFO pwi;
-		GetWindowInfo(hFrmMain,&pwi);
-		int RealLeftPos = pwi.rcWindow.left - pwi.rcClient.left;
-		SetWindowPos(hFrmMain,HWND_TOP,0+RealLeftPos+FrmMain_Shell_TrayWndLeft,FrmMainRect.Top,0,0,SWP_NOSIZE);
-	  }
-	  //Obramowanie wylaczone
-	  else
-	   SetWindowPos(hFrmMain,HWND_TOP,0+FrmMain_Shell_TrayWndLeft,FrmMainRect.Top,0,0,SWP_NOSIZE);
-	}
-	//Right
-	else if(FrmMainSlideEdge==2)
-	 SetWindowPos(hFrmMain,HWND_TOP,Screen->Width-FrmMainRect.Width()-FrmMain_Shell_TrayWndRight,FrmMainRect.Top,0,0,SWP_NOSIZE);
-	//Bottom
-	else if(FrmMainSlideEdge==3)
-	 SetWindowPos(hFrmMain,HWND_TOP,FrmMainRect.Left,Screen->Height-FrmMainRect.Height()-FrmMain_Shell_TrayWndBottom,0,0,SWP_NOSIZE);
-	//Top
-	else
-	 SetWindowPos(hFrmMain,HWND_TOP,FrmMainRect.Left,FrmMain_Shell_TrayWndTop,0,0,SWP_NOSIZE);
-  }
-  //Stare skorkowanie
-  else
-  {
-    //Left
-	if(FrmMainSlideEdge==1)
+	//Wlaczone obramowanie
+	if(ChkSkinEnabled())
 	{
 	  WINDOWINFO pwi;
-	  GetWindowInfo(hFrmMainL,&pwi);
+	  GetWindowInfo(hFrmMain,&pwi);
 	  int RealLeftPos = pwi.rcWindow.left - pwi.rcClient.left;
-	  SetWindowPos(hFrmMainL,HWND_TOP,0+RealLeftPos+FrmMain_Shell_TrayWndLeft,FrmMainLRect.Top,0,0,SWP_NOSIZE);
+	  SetWindowPos(hFrmMain,HWND_TOP,0+RealLeftPos+FrmMain_Shell_TrayWndLeft,FrmMainRect.Top,0,0,SWP_NOSIZE);
 	}
-	//Right
-	else if(FrmMainSlideEdge==2)
-	 SetWindowPos(hFrmMainL,HWND_TOP,Screen->Width-FrmMainLRect.Width()-FrmMain_Shell_TrayWndRight,FrmMainLRect.Top,0,0,SWP_NOSIZE);
-	//Bottom
-	else if(FrmMainSlideEdge==3)
-	 SetWindowPos(hFrmMainL,HWND_TOP,FrmMainLRect.Left,Screen->Height-FrmMainLRect.Height()-FrmMain_Shell_TrayWndBottom,0,0,SWP_NOSIZE);
-	//Top
+	//Obramowanie wylaczone
 	else
-	 SetWindowPos(hFrmMainL,HWND_TOP,FrmMainLRect.Left,FrmMain_Shell_TrayWndTop,0,0,SWP_NOSIZE);
+	 SetWindowPos(hFrmMain,HWND_TOP,0+FrmMain_Shell_TrayWndLeft,FrmMainRect.Top,0,0,SWP_NOSIZE);
   }
+  //Right
+  else if(FrmMainSlideEdge==2)
+   SetWindowPos(hFrmMain,HWND_TOP,Screen->Width-FrmMainRect.Width()-FrmMain_Shell_TrayWndRight,FrmMainRect.Top,0,0,SWP_NOSIZE);
+  //Bottom
+  else if(FrmMainSlideEdge==3)
+   SetWindowPos(hFrmMain,HWND_TOP,FrmMainRect.Left,Screen->Height-FrmMainRect.Height()-FrmMain_Shell_TrayWndBottom,0,0,SWP_NOSIZE);
+  //Top
+  else
+   SetWindowPos(hFrmMain,HWND_TOP,FrmMainRect.Left,FrmMain_Shell_TrayWndTop,0,0,SWP_NOSIZE);
 }
 //---------------------------------------------------------------------------
 
@@ -2205,94 +2078,65 @@ void GetFrmSendRect()
   //Pobranie rozmiaru+pozycji okna rozmowy
   GetWindowRect(hFrmSend,&FrmSendRect);
   //Pobranie realnego rozmiaru+pozycji okna rozmowy
-  if(!hFrmSendL)
+  GetWindowInfo(hFrmSend,&FrmSendInfo);
+  if(FrmSendSlideEdge==1)
   {
-	GetWindowInfo(hFrmSend,&FrmSendInfo);
-	if(FrmSendSlideEdge==1)
-	{
-	  FrmSendRealLeftPos = FrmSendInfo.rcWindow.left - FrmSendInfo.rcClient.left;
-	  FrmSendRealRightPos = 0;
-	  FrmSendRealBottomPos = 0;
-	  FrmSendRealTopPos = 0;
-	}
-	else if(FrmSendSlideEdge==2)
-	{
-	  FrmSendRealRightPos = FrmSendInfo.rcWindow.right - FrmSendInfo.rcClient.right;
-	  FrmSendRealLeftPos = 0;
-	  FrmSendRealBottomPos = 0;
-	  FrmSendRealTopPos = 0;
-	}
-	else if(FrmSendSlideEdge==3)
-	{
-	  FrmSendRealBottomPos = FrmSendInfo.rcWindow.bottom - FrmSendInfo.rcClient.bottom;
-	  FrmSendRealLeftPos = 0;
-	  FrmSendRealRightPos = 0;
-	  FrmSendRealTopPos = 0;
-	}
-	else
-	{
-	  FrmSendRealTopPos = FrmSendInfo.rcWindow.top - FrmSendInfo.rcClient.top;
-	  FrmSendRealLeftPos = 0;
-	  FrmSendRealRightPos = 0;
-	  FrmSendRealBottomPos = 0;
-	}
+	FrmSendRealLeftPos = FrmSendInfo.rcWindow.left - FrmSendInfo.rcClient.left;
+	FrmSendRealRightPos = 0;
+	FrmSendRealBottomPos = 0;
+	FrmSendRealTopPos = 0;
   }
-  else GetWindowRect(hFrmSendL,&FrmSendLRect);
+  else if(FrmSendSlideEdge==2)
+  {
+	FrmSendRealRightPos = FrmSendInfo.rcWindow.right - FrmSendInfo.rcClient.right;
+	FrmSendRealLeftPos = 0;
+	FrmSendRealBottomPos = 0;
+	FrmSendRealTopPos = 0;
+  }
+  else if(FrmSendSlideEdge==3)
+  {
+	FrmSendRealBottomPos = FrmSendInfo.rcWindow.bottom - FrmSendInfo.rcClient.bottom;
+	FrmSendRealLeftPos = 0;
+	FrmSendRealRightPos = 0;
+	FrmSendRealTopPos = 0;
+  }
+  else
+  {
+	FrmSendRealTopPos = FrmSendInfo.rcWindow.top - FrmSendInfo.rcClient.top;
+	FrmSendRealLeftPos = 0;
+	FrmSendRealRightPos = 0;
+	FrmSendRealBottomPos = 0;
+  }
 }
 //---------------------------------------------------------------------------
 
 //Ustawienie poprawnej pozycji okna rozmowy
 void SetFrmSendPos()
 {
-  //Nowe skórkowanie lub brak skorkowania
-  if(!hFrmSendL)
+  //Left
+  if(FrmSendSlideEdge==1)
   {
-	//Left
-	if(FrmSendSlideEdge==1)
-	{
-	  //Wlaczone obramowanie
-	  if(ChkSkinEnabled())
-	  {
-		WINDOWINFO pwi;
-		GetWindowInfo(hFrmSend,&pwi);
-		int RealLeftPos = pwi.rcWindow.left - pwi.rcClient.left;
-		SetWindowPos(hFrmSend,HWND_TOP,0+RealLeftPos+FrmSend_Shell_TrayWndLeft,FrmSendRect.Top,0,0,SWP_NOSIZE);
-	  }
-	  //Obramowanie wylaczone
-	  else
-	   SetWindowPos(hFrmSend,HWND_TOP,0+FrmSend_Shell_TrayWndLeft,FrmSendRect.Top,0,0,SWP_NOSIZE);
-	}
-	//Right
-	else if(FrmSendSlideEdge==2)
-	 SetWindowPos(hFrmSend,HWND_TOP,Screen->Width-FrmSendRect.Width()-FrmSend_Shell_TrayWndRight,FrmSendRect.Top,0,0,SWP_NOSIZE);
-	//Bottom
-	else if(FrmSendSlideEdge==3)
-	 SetWindowPos(hFrmSend,HWND_TOP,FrmSendRect.Left,Screen->Height-FrmSendRect.Height()-FrmSend_Shell_TrayWndBottom,0,0,SWP_NOSIZE);
-	//Top
-	else
-	 SetWindowPos(hFrmSend,HWND_TOP,FrmSendRect.Left,FrmSend_Shell_TrayWndTop,0,0,SWP_NOSIZE);
-  }
-  //Stare skorkowanie
-  else
-  {
-	//Left
-	if(FrmSendSlideEdge==1)
+	//Wlaczone obramowanie
+	if(ChkSkinEnabled())
 	{
 	  WINDOWINFO pwi;
-	  GetWindowInfo(hFrmSendL,&pwi);
+	  GetWindowInfo(hFrmSend,&pwi);
 	  int RealLeftPos = pwi.rcWindow.left - pwi.rcClient.left;
-	  SetWindowPos(hFrmSendL,HWND_TOP,0+RealLeftPos+FrmSend_Shell_TrayWndLeft,FrmSendLRect.Top,0,0,SWP_NOSIZE);
+	  SetWindowPos(hFrmSend,HWND_TOP,0+RealLeftPos+FrmSend_Shell_TrayWndLeft,FrmSendRect.Top,0,0,SWP_NOSIZE);
 	}
-	//Right
-	else if(FrmSendSlideEdge==2)
-	 SetWindowPos(hFrmSendL,HWND_TOP,Screen->Width-FrmSendLRect.Width()-FrmSend_Shell_TrayWndRight,FrmSendLRect.Top,0,0,SWP_NOSIZE);
-	//Bottom
-	else if(FrmSendSlideEdge==3)
-	 SetWindowPos(hFrmSendL,HWND_TOP,FrmSendLRect.Left,Screen->Height-FrmSendLRect.Height()-FrmSend_Shell_TrayWndBottom,0,0,SWP_NOSIZE);
-	//Top
+	//Obramowanie wylaczone
 	else
-	 SetWindowPos(hFrmSendL,HWND_TOP,FrmSendLRect.Left,FrmSend_Shell_TrayWndTop,0,0,SWP_NOSIZE);
+	 SetWindowPos(hFrmSend,HWND_TOP,0+FrmSend_Shell_TrayWndLeft,FrmSendRect.Top,0,0,SWP_NOSIZE);
   }
+  //Right
+  else if(FrmSendSlideEdge==2)
+   SetWindowPos(hFrmSend,HWND_TOP,Screen->Width-FrmSendRect.Width()-FrmSend_Shell_TrayWndRight,FrmSendRect.Top,0,0,SWP_NOSIZE);
+  //Bottom
+  else if(FrmSendSlideEdge==3)
+   SetWindowPos(hFrmSend,HWND_TOP,FrmSendRect.Left,Screen->Height-FrmSendRect.Height()-FrmSend_Shell_TrayWndBottom,0,0,SWP_NOSIZE);
+  //Top
+  else
+   SetWindowPos(hFrmSend,HWND_TOP,FrmSendRect.Left,FrmSend_Shell_TrayWndTop,0,0,SWP_NOSIZE);
 }
 //---------------------------------------------------------------------------
 
@@ -2622,91 +2466,26 @@ void MinimizeRestoreFrmMainExecute()
 }
 //---------------------------------------------------------------------------
 
-//Ukrywanie/pokazywanie paska informacyjnego w oknie rozmowy
-void CheckHideStatusBar()
-{
-  //Jezeli okno rozmowy jest otwarte
-  if(hFrmSend)
-  {
-	//Jezeli nieprzypisano uchwytu do paska informacyjnego
-	if(!hStatusBarPro) hStatusBarPro = FindWindowEx(hFrmSend,NULL,L"TStatusBarPro",NULL);
-	//Uchwyt do oaska informacyjnego zostal juz pobrany
-	if(hStatusBarPro)
-	{
-	  //Pobieranie wymiarow paska informacyjnego
-	  TRect WindowRect;
-	  GetWindowRect(hStatusBarPro,&WindowRect);
-      //Ukrywanie
-	  if((HideStatusBarChk)&&(WindowRect.Height()))
-	  {
-		//Pobieranie pozycji okna rozmowy
-		GetWindowRect(hFrmSend,&WindowRect);
-		//Ukrywanie paska
-		SetWindowPos(hStatusBarPro,NULL,0,0,WindowRect.Width(),0,SWP_NOMOVE);
-		ShowWindow(hStatusBarPro,SW_HIDE);
-		//Odswiezanie okna rozmowy
-		SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width()+1,WindowRect.Height(),SWP_NOMOVE);
-		SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width(),WindowRect.Height(),SWP_NOMOVE);
-	  }
-	  //Pokazywanie
-	  else if((!HideStatusBarChk)&&(!WindowRect.Height()))
-	  {
-		//Pobieranie pozycji okna rozmowy
-		GetWindowRect(hFrmSend,&WindowRect);
-		//Pokazywanie paska
-		ShowWindow(hStatusBarPro,SW_SHOW);
-		SetWindowPos(hStatusBarPro,NULL,0,0,WindowRect.Width(),18,SWP_NOMOVE);
-		//Odswiezanie okna rozmowy
-		SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width()+1,WindowRect.Height(),SWP_NOMOVE);
-		SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width(),WindowRect.Height(),SWP_NOMOVE);
-	  }
-	}
-  }
-}
-//---------------------------------------------------------------------------
-
 //Pokazywanie paska narzedzi w oknie rozmowy
 void ShowToolBar()
 {
   if((hFrmSend)&&(hToolBar))
   {
-	//Pobieranie wysokosci paska
+	//Pobieranie pozycji paska narzedzi
 	TRect WindowRect;
 	GetWindowRect(hToolBar,&WindowRect);
-	int ToolBarHeight = WindowRect.Height();
+	//int ToolBarHeight = WindowRect.Height();
 	//Pokazanie paska
-	if(!ToolBarHeight)
+	if(!WindowRect.Height())//ToolBarHeight)
 	{
+	  //Pokazanie paska
+	  SetWindowPos(hToolBar,NULL,0,0,WindowRect.Width(),23,SWP_NOMOVE);
 	  //Pobieranie pozycji okna rozmowy
 	  GetWindowRect(hFrmSend,&WindowRect);
-	  //Pokazanie paska
-	  SetWindowPos(hToolBar,NULL,0,0,WindowRect.Width(),25,SWP_NOMOVE);
 	  //Odswiezenie okna rozmowy
 	  SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width()+1,WindowRect.Height(),SWP_NOMOVE);
 	  SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width(),WindowRect.Height(),SWP_NOMOVE);
 	}
-  }
-}
-//---------------------------------------------------------------------------
-
-//Ukrywanie/pokazywanie przycisku z lista aktywnych zakladek
-void CheckHideTabListButton()
-{
-  //Jezeli okno rozmowy jest otwarte i uchwyt do kontrolki zostal pobrany
-  if((hFrmSend)&&(hTabListButton))
-  {
-	//Ukrycie przycisku z lista aktywnych zakladek
-	if((HideTabListButtonChk)&&(!UnloadExecuted))
-	 SetWindowPos(hTabListButton,NULL,0,0,0,27,SWP_NOMOVE);
-	//Pokazanie przycisku z lista aktywnych zakladek
-	else
-	 SetWindowPos(hTabListButton,NULL,0,0,22,27,SWP_NOMOVE);
-	//Pobieranie pozycji okna rozmowy
-	TRect WindowRect;
-	GetWindowRect(hFrmSend,&WindowRect);
-	//Odswiezanie okna rozmowy
-	SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width()+1,WindowRect.Height(),SWP_NOMOVE);
-	SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width(),WindowRect.Height(),SWP_NOMOVE);
   }
 }
 //---------------------------------------------------------------------------
@@ -2846,23 +2625,10 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	  //Zatrzymanie timera
 	  KillTimer(hTimerFrm,TIMER_FINDSTATUSBARPRO);
 	  //Szukanie paska informacyjnego
-	  hStatusBarPro = FindWindowEx(hFrmSend,NULL,L"TStatusBarPro",NULL);
+	  hStatusBar = FindWindowEx(hFrmSend,NULL,L"TsStatusBar",NULL);
 	  //Ponowne wlaczenie timera
-	  if(!hStatusBarPro)
+	  if(!hStatusBar)
 	   SetTimer(hTimerFrm,TIMER_FINDSTATUSBARPRO,500,(TIMERPROC)TimerFrmProc);
-	  //Ukrywanie paska informacyjnego
-	  else if(HideStatusBarChk)
-	  {
-        //Pobieranie pozycji okna rozmowy
-		TRect WindowRect;
-		GetWindowRect(hFrmSend,&WindowRect);
-		//Ukrycie paska
-		SetWindowPos(hStatusBarPro,NULL,0,0,WindowRect.Width(),0,SWP_NOMOVE);
-		ShowWindow(hStatusBarPro,SW_HIDE);
-		//Odswiezenie okna rozmowy
-		SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width()+1,WindowRect.Height(),SWP_NOMOVE);
-		SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width(),WindowRect.Height(),SWP_NOMOVE);
-      }
 	}
 	//Szukanie paska narzedzi
 	else if(wParam==TIMER_FINDTOOLBAR)
@@ -2877,11 +2643,13 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	  //Ukrywanie paska narzedzi
 	  else if(HideToolBarChk)
 	  {
-		//Pobieranie pozycji okna rozmowy
+		//Pobieranie pozycji paska narzedzi
 		TRect WindowRect;
-		GetWindowRect(hFrmSend,&WindowRect);
+		GetWindowRect(hToolBar,&WindowRect);
 		//Ukrycie paska narzedzi
 		SetWindowPos(hToolBar,NULL,0,0,WindowRect.Width(),0,SWP_NOMOVE);
+		//Pobieranie pozycji okna rozmowy
+		GetWindowRect(hFrmSend,&WindowRect);
 		//Odswiezenie okna rozmowy
 		SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width()+1,WindowRect.Height(),SWP_NOMOVE);
 		SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width(),WindowRect.Height(),SWP_NOMOVE);
@@ -2895,7 +2663,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	  //Szukanie paska zakladek
 	  EnumChildWindows(hFrmSend,(WNDENUMPROC)FindTabsBar,0);
 	  //Ponowne wlaczenie timera
-	  if((!hTabsBar)||(!hTabListButton)||(!hScrollTabButton[0])||(!hScrollTabButton[1]))
+	  if((!hTabsBar)||(!hScrollTabButton[0])||(!hScrollTabButton[1]))
 	   SetTimer(hTimerFrm,TIMER_FINDTABSBAR,500,(TIMERPROC)TimerFrmProc);
 	}
 	//StayOnTop
@@ -2913,12 +2681,8 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	  KillTimer(hTimerFrm,TIMER_TURNOFFMODAL);
 	  //Wylaczenie modalnosci dla okna kontatkow
 	  EnableWindow(hFrmMain,true);
-	   //Wylaczenie modalnosci dla pseudo okna kontatkow
-	  if(hFrmMainL) EnableWindow(hFrmMainL,true);
 	  //Wylaczenie modalnosci dla okna rozmowy
 	  EnableWindow(hFrmSend,true);
-	  //Wylaczenie modalnosci dla pseudo okna rozmowy
-	  if(hFrmSendL) EnableWindow(hFrmSendL,true);
 	}
 	//InactiveNotifer
 	else if(wParam==TIMER_INACTIVENOTIFER)
@@ -2938,15 +2702,16 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	  //Jezeli okno rozmowy jest aktywne
 	  if((GetActiveWindow()==hFrmSend)&&((hCurActiveFrm==hFrmSend)||(IsChild(hFrmSend,hCurActiveFrm))))
 	  {
-		//Wysokosc paska narzedzi
+		//Pobieranie pozycji paska narzedzi
 		TRect WindowRect;
 		GetWindowRect(hToolBar,&WindowRect);
+		//Sprawdzenie wysokosci paska narzedzi
 		if(!WindowRect.Height())
 		{
+		  //Pokazanie paska
+		  SetWindowPos(hToolBar,NULL,0,0,WindowRect.Width(),23,SWP_NOMOVE);
 		  //Pobieranie pozycji okna rozmowy
 		  GetWindowRect(hFrmSend,&WindowRect);
-		  //Pokazanie paska
-		  SetWindowPos(hToolBar,NULL,0,0,WindowRect.Width(),25,SWP_NOMOVE);
 		  //Odswiezenie okna rozmowy
 		  SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width()+1,WindowRect.Height(),SWP_NOMOVE);
 		  SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width(),WindowRect.Height(),SWP_NOMOVE);
@@ -3210,10 +2975,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		if(TweakFrmMainTitlebarChk)
 		{
 		  if((TweakFrmMainTitlebarMode==1)&&(TweakFrmMainTitlebarModeEx==2))
-		  {
-			SetWindowTextW(hFrmMain,("AQQ [" + ResourceName + "]").w_str());
-			if(hFrmMainL) SetWindowTextW(hFrmMainL,("AQQ [" + ResourceName + "]").w_str());
-		  }
+		   SetWindowTextW(hFrmMain,("AQQ [" + ResourceName + "]").w_str());
 		}
 	  }
 	  //Tworzenie timera
@@ -3228,6 +2990,21 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		mouse_event(MOUSEEVENTF_MIDDLEUP,0,0,0,0);
 		LBUTTONDBLCLK = false;
 	  }
+	}
+	//Emulacja klikniecia myszka w pole tekstowe
+	else if(wParam==TIMER_ACTIVATERICHEDIT)
+	{
+	  //Zatrzymanie timera
+	  KillTimer(hTimerFrm,TIMER_ACTIVATERICHEDIT);
+	  //Emulacja klikniecia
+	  TRect RichEditRect;
+	  GetWindowRect(hRichEdit,&RichEditRect);
+	  POINT pCur;
+	  GetCursorPos(&pCur);
+	  SetCursorPos(RichEditRect.Left+1,RichEditRect.Top+1);
+	  mouse_event(MOUSEEVENTF_LEFTDOWN,RichEditRect.Left+1,RichEditRect.Top+1,0,0);
+	  mouse_event(MOUSEEVENTF_LEFTUP,RichEditRect.Left+1,RichEditRect.Top+1,0,0);
+	  SetCursorPos(pCur.x,pCur.y);
 	}
 	//Sprawdzanie pozycji myszki
 	else if(wParam==TIMER_MOUSEPOSITION)
@@ -3248,8 +3025,8 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			||((FrmSendSlideEdge==4)&&(Mouse->CursorPos.y==0)))
 			{
 			  //Gdy kursor znajduje sie przy krawedzi ekranu z uwglednieniem miejsca schowania okna rozmowy
-			  if((((FrmSendSlideEdge==1)||(FrmSendSlideEdge==2))&&(((!hFrmSendL)&&(FrmSendRect.Top<=Mouse->CursorPos.y)&&(Mouse->CursorPos.y<=FrmSendRect.Bottom))||((hFrmSendL)&&(FrmSendLRect.Top<=Mouse->CursorPos.y)&&(Mouse->CursorPos.y<=FrmSendLRect.Bottom))))
-			  ||(((FrmSendSlideEdge==3)||(FrmSendSlideEdge==4))&&(((!hFrmSendL)&&(FrmSendRect.Left<=Mouse->CursorPos.x)&&(Mouse->CursorPos.x<=FrmSendRect.Right))||((hFrmSendL)&&(FrmSendLRect.Left<=Mouse->CursorPos.x)&&(Mouse->CursorPos.x<=FrmSendLRect.Right)))))
+			  if((((FrmSendSlideEdge==1)||(FrmSendSlideEdge==2))&&((FrmSendRect.Top<=Mouse->CursorPos.y)&&(Mouse->CursorPos.y<=FrmSendRect.Bottom)))
+			  ||(((FrmSendSlideEdge==3)||(FrmSendSlideEdge==4))&&((FrmSendRect.Left<=Mouse->CursorPos.x)&&(Mouse->CursorPos.x<=FrmSendRect.Right))))
 			  {
 				//Kursor nie znajduje sie w obrebie menu start
 				wchar_t WClassName[128];
@@ -3287,23 +3064,23 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		  //Tymczasowa blokada wysuwania okna
 		  else if(FrmSendSlideInDelay<1000)
 		  {
-            //Left or Right or Bottom or Top
+			//Left or Right or Bottom or Top
 			if(((FrmSendSlideEdge==1)&&(Mouse->CursorPos.x==0))
 			||((FrmSendSlideEdge==2)&&(Mouse->CursorPos.x==Screen->Width-1))
 			||((FrmSendSlideEdge==3)&&(Mouse->CursorPos.y==Screen->Height-1))
 			||((FrmSendSlideEdge==4)&&(Mouse->CursorPos.y==0)))
 			{
-              //Gdy kursor znajduje sie przy krawedzi ekranu z uwglednieniem miejsca schowania okna rozmowy
-			  if((((FrmSendSlideEdge==1)||(FrmSendSlideEdge==2))&&(((!hFrmSendL)&&(FrmSendRect.Top<=Mouse->CursorPos.y)&&(Mouse->CursorPos.y<=FrmSendRect.Bottom))||((hFrmSendL)&&(FrmSendLRect.Top<=Mouse->CursorPos.y)&&(Mouse->CursorPos.y<=FrmSendLRect.Bottom))))
-			  ||(((FrmSendSlideEdge==3)||(FrmSendSlideEdge==4))&&(((!hFrmSendL)&&(FrmSendRect.Left<=Mouse->CursorPos.x)&&(Mouse->CursorPos.x<=FrmSendRect.Right))||((hFrmSendL)&&(FrmSendLRect.Left<=Mouse->CursorPos.x)&&(Mouse->CursorPos.x<=FrmSendLRect.Right)))))
+			  //Gdy kursor znajduje sie przy krawedzi ekranu z uwglednieniem miejsca schowania okna rozmowy
+			  if((((FrmSendSlideEdge==1)||(FrmSendSlideEdge==2))&&((FrmSendRect.Top<=Mouse->CursorPos.y)&&(Mouse->CursorPos.y<=FrmSendRect.Bottom)))
+			  ||(((FrmSendSlideEdge==3)||(FrmSendSlideEdge==4))&&((FrmSendRect.Left<=Mouse->CursorPos.x)&&(Mouse->CursorPos.x<=FrmSendRect.Right))))
 			  {
 				//Wlaczenie tymczasowej blokady wysuwania okna
 				FrmSendBlockMousePositionTimer = true;
 				//Wlaczenie timera wylaczajacego blokade
 				SetTimer(hTimerFrm,TIMER_FRMSENDMOUSEPOSITION,1000,(TIMERPROC)TimerFrmProc);
-              }
-            }
-          }
+			  }
+			}
+		  }
 		}
 		//FrmSendSlideOut (gdy kursor opusci okno)
 		if(FrmSendSlideHideMode==3)
@@ -3312,8 +3089,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		  if((FrmSendVisible)&&(!PreFrmSendSlideOut)&&(!FrmSendSlideOut)&&(!FrmSendSlideIn)&&(!FrmSendBlockSlide))
 		  {
 			//Gdy kursor znajduje sie poza oknem rozmowy
-			if(((!hFrmSendL)&&((Mouse->CursorPos.y<FrmSendRect.Top+FrmSendRealTopPos-FrmSend_Shell_TrayWndTop)||(FrmSendRect.Bottom+FrmSendRealBottomPos+FrmSend_Shell_TrayWndBottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmSendRect.Left+FrmSendRealLeftPos-FrmSend_Shell_TrayWndLeft)||(FrmSendRect.Right+FrmSendRealRightPos+FrmSend_Shell_TrayWndRight<Mouse->CursorPos.x)))
-			||((hFrmSendL)&&((Mouse->CursorPos.y<FrmSendLRect.Top-FrmSend_Shell_TrayWndTop)||(FrmSendLRect.Bottom+FrmSend_Shell_TrayWndBottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmSendLRect.Left-FrmSend_Shell_TrayWndLeft)||(FrmSendLRect.Right+FrmSend_Shell_TrayWndRight<Mouse->CursorPos.x))))
+			if((Mouse->CursorPos.y<FrmSendRect.Top+FrmSendRealTopPos-FrmSend_Shell_TrayWndTop)||(FrmSendRect.Bottom+FrmSendRealBottomPos+FrmSend_Shell_TrayWndBottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmSendRect.Left+FrmSendRealLeftPos-FrmSend_Shell_TrayWndLeft)||(FrmSendRect.Right+FrmSendRealRightPos+FrmSend_Shell_TrayWndRight<Mouse->CursorPos.x))
 			{
 			  //Sprawdzenia okna w ktorym znajduje sie kursor
 			  HWND hCurActiveFrm = WindowFromPoint(Mouse->CursorPos);
@@ -3352,8 +3128,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		  else if((FrmSendVisible)&&(PreFrmSendSlideOut)&&(FrmSendSlideOut)&&(!FrmSendSlideIn)&&(!FrmSendBlockSlide))
 		  {
 			//Gdy kursor znajduje sie w oknie rozmowy
-			if(((!hFrmSendL)&&((Mouse->CursorPos.y>FrmSendRect.Top+FrmSendRealTopPos-FrmSend_Shell_TrayWndTop)&&(FrmSendRect.Bottom+FrmSendRealBottomPos+FrmSend_Shell_TrayWndBottom>Mouse->CursorPos.y)&&(Mouse->CursorPos.x>FrmSendRect.Left+FrmSendRealLeftPos-FrmSend_Shell_TrayWndLeft)&&(FrmSendRect.Right+FrmSendRealRightPos+FrmSend_Shell_TrayWndRight>Mouse->CursorPos.x)))
-			||((hFrmSendL)&&((Mouse->CursorPos.y>FrmSendLRect.Top-FrmSend_Shell_TrayWndTop)&&(FrmSendLRect.Bottom+FrmSend_Shell_TrayWndBottom>Mouse->CursorPos.y)&&(Mouse->CursorPos.x>FrmSendLRect.Left-FrmSend_Shell_TrayWndLeft)&&(FrmSendLRect.Right+FrmSend_Shell_TrayWndRight>Mouse->CursorPos.x))))
+			if((Mouse->CursorPos.y>FrmSendRect.Top+FrmSendRealTopPos-FrmSend_Shell_TrayWndTop)&&(FrmSendRect.Bottom+FrmSendRealBottomPos+FrmSend_Shell_TrayWndBottom>Mouse->CursorPos.y)&&(Mouse->CursorPos.x>FrmSendRect.Left+FrmSendRealLeftPos-FrmSend_Shell_TrayWndLeft)&&(FrmSendRect.Right+FrmSendRealRightPos+FrmSend_Shell_TrayWndRight>Mouse->CursorPos.x))
 			{
 			  //Zatrzymanie timera
 			  KillTimer(hTimerFrm,TIMER_PREFRMSENDSLIDEOUT);
@@ -3380,8 +3155,8 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			||((FrmMainSlideEdge==4)&&(Mouse->CursorPos.y==0)))
 			{
 			  //Gdy kursor znajduje sie przy krawedzi ekranu z uwglednieniem miejsca schowania okna kontaktow
-			  if((((FrmMainSlideEdge==1)||(FrmMainSlideEdge==2))&&(((!hFrmMainL)&&(FrmMainRect.Top<=Mouse->CursorPos.y)&&(Mouse->CursorPos.y<=FrmMainRect.Bottom))||((hFrmMainL)&&(FrmMainLRect.Top<=Mouse->CursorPos.y)&&(Mouse->CursorPos.y<=FrmMainLRect.Bottom))))
-			  ||(((FrmMainSlideEdge==3)||(FrmMainSlideEdge==4))&&(((!hFrmMainL)&&(FrmMainRect.Left<=Mouse->CursorPos.x)&&(Mouse->CursorPos.x<=FrmMainRect.Right))||((hFrmMainL)&&(FrmMainLRect.Left<=Mouse->CursorPos.x)&&(Mouse->CursorPos.x<=FrmMainLRect.Right)))))
+			  if((((FrmMainSlideEdge==1)||(FrmMainSlideEdge==2))&&((FrmMainRect.Top<=Mouse->CursorPos.y)&&(Mouse->CursorPos.y<=FrmMainRect.Bottom)))
+			  ||(((FrmMainSlideEdge==3)||(FrmMainSlideEdge==4))&&((FrmMainRect.Left<=Mouse->CursorPos.x)&&(Mouse->CursorPos.x<=FrmMainRect.Right))))
 			  {
 				//Kursor nie znajduje sie w obrebie menu start
 				wchar_t WClassName[128];
@@ -3426,8 +3201,8 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			||((FrmMainSlideEdge==4)&&(Mouse->CursorPos.y==0)))
 			{
               //Gdy kursor znajduje sie przy krawedzi ekranu z uwglednieniem miejsca schowania okna kontaktow
-			  if((((FrmMainSlideEdge==1)||(FrmMainSlideEdge==2))&&(((!hFrmMainL)&&(FrmMainRect.Top<=Mouse->CursorPos.y)&&(Mouse->CursorPos.y<=FrmMainRect.Bottom))||((hFrmMainL)&&(FrmMainLRect.Top<=Mouse->CursorPos.y)&&(Mouse->CursorPos.y<=FrmMainLRect.Bottom))))
-			  ||(((FrmMainSlideEdge==3)||(FrmMainSlideEdge==4))&&(((!hFrmMainL)&&(FrmMainRect.Left<=Mouse->CursorPos.x)&&(Mouse->CursorPos.x<=FrmMainRect.Right))||((hFrmMainL)&&(FrmMainLRect.Left<=Mouse->CursorPos.x)&&(Mouse->CursorPos.x<=FrmMainLRect.Right)))))
+			  if((((FrmMainSlideEdge==1)||(FrmMainSlideEdge==2))&&((FrmMainRect.Top<=Mouse->CursorPos.y)&&(Mouse->CursorPos.y<=FrmMainRect.Bottom)))
+			  ||(((FrmMainSlideEdge==3)||(FrmMainSlideEdge==4))&&((FrmMainRect.Left<=Mouse->CursorPos.x)&&(Mouse->CursorPos.x<=FrmMainRect.Right))))
 			  {
 				//Wlaczenie tymczasowej blokady wysuwania okna
 				FrmMainBlockMousePositionTimer = true;
@@ -3444,8 +3219,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		  if((FrmMainVisible)&&(!CurPreFrmMainSlideOut)&&(!FrmMainSlideOut)&&(!FrmMainSlideIn)&&(!FrmMainBlockSlide))
 		  {
 			//Gdy kursor znajduje sie poza oknem kontaktow
-			if(((!hFrmMainL)&&((Mouse->CursorPos.y<FrmMainRect.Top+FrmMainRealTopPos-FrmMain_Shell_TrayWndTop)||(FrmMainRect.Bottom+FrmMainRealBottomPos+FrmMain_Shell_TrayWndBottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmMainRect.Left+FrmMainRealLeftPos-FrmMain_Shell_TrayWndLeft)||(FrmMainRect.Right+FrmMainRealRightPos+FrmMain_Shell_TrayWndRight<Mouse->CursorPos.x)))
-			||((hFrmMainL)&&((Mouse->CursorPos.y<FrmMainLRect.Top-FrmMain_Shell_TrayWndTop)||(FrmMainLRect.Bottom+FrmMain_Shell_TrayWndBottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmMainLRect.Left-FrmMain_Shell_TrayWndLeft)||(FrmMainLRect.Right+FrmMain_Shell_TrayWndRight<Mouse->CursorPos.x))))
+			if((Mouse->CursorPos.y<FrmMainRect.Top+FrmMainRealTopPos-FrmMain_Shell_TrayWndTop)||(FrmMainRect.Bottom+FrmMainRealBottomPos+FrmMain_Shell_TrayWndBottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmMainRect.Left+FrmMainRealLeftPos-FrmMain_Shell_TrayWndLeft)||(FrmMainRect.Right+FrmMainRealRightPos+FrmMain_Shell_TrayWndRight<Mouse->CursorPos.x))
 			{
 			  //Sprawdzenia okna w ktorym znajduje sie kursor
 			  HWND hCurActiveFrm = WindowFromPoint(Mouse->CursorPos);
@@ -3482,8 +3256,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		  else if((FrmMainVisible)&&(CurPreFrmMainSlideOut)&&(!FrmMainSlideOut)&&(!FrmMainSlideIn)&&(!FrmMainBlockSlide))
 		  {
 			//Gdy kursor znajduje sie w oknie kontaktow
-			if(((!hFrmMainL)&&((Mouse->CursorPos.y>FrmMainRect.Top+FrmMainRealTopPos-FrmMain_Shell_TrayWndTop)&&(FrmMainRect.Bottom+FrmMainRealBottomPos+FrmMain_Shell_TrayWndBottom>Mouse->CursorPos.y)&&(Mouse->CursorPos.x>FrmMainRect.Left+FrmMainRealLeftPos-FrmMain_Shell_TrayWndLeft)&&(FrmMainRect.Right+FrmMainRealRightPos+FrmMain_Shell_TrayWndRight>Mouse->CursorPos.x)))
-			||((hFrmMainL)&&((Mouse->CursorPos.y>FrmMainLRect.Top-FrmMain_Shell_TrayWndTop)&&(FrmMainLRect.Bottom+FrmMain_Shell_TrayWndBottom>Mouse->CursorPos.y)&&(Mouse->CursorPos.x>FrmMainLRect.Left-FrmMain_Shell_TrayWndLeft)&&(FrmMainLRect.Right+FrmMain_Shell_TrayWndRight>Mouse->CursorPos.x))))
+			if((Mouse->CursorPos.y>FrmMainRect.Top+FrmMainRealTopPos-FrmMain_Shell_TrayWndTop)&&(FrmMainRect.Bottom+FrmMainRealBottomPos+FrmMain_Shell_TrayWndBottom>Mouse->CursorPos.y)&&(Mouse->CursorPos.x>FrmMainRect.Left+FrmMainRealLeftPos-FrmMain_Shell_TrayWndLeft)&&(FrmMainRect.Right+FrmMainRealRightPos+FrmMain_Shell_TrayWndRight>Mouse->CursorPos.x))
 			{
 			  //Zatrzymanie timera
 			  KillTimer(hTimerFrm,TIMER_PREFRMMAINDSLIDEOUT);
@@ -3565,8 +3338,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		if((FrmSendVisible)&&(!FrmSendBlockSlide)&&(!FrmSendSlideOut)&&(!FrmSendSlideIn))
 		{
 		  //Gdy kursor znajduje sie poza oknem rozmowy
-		  if(((!hFrmSendL)&&((Mouse->CursorPos.y<FrmSendRect.Top)||(FrmSendRect.Bottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmSendRect.Left)||(FrmSendRect.Right<Mouse->CursorPos.x)))
-		  ||((hFrmSendL)&&((Mouse->CursorPos.y<FrmSendLRect.Top)||(FrmSendLRect.Bottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmSendLRect.Left)||(FrmSendLRect.Right<Mouse->CursorPos.x))))
+		  if((Mouse->CursorPos.y<FrmSendRect.Top)||(FrmSendRect.Bottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmSendRect.Left)||(FrmSendRect.Right<Mouse->CursorPos.x))
 		  {
 			//Gdy okno nie jest innym oknem aplikacji
 			if(PID!=ProcessPID)
@@ -3592,8 +3364,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		if((FrmMainVisible)&&(!FrmMainBlockSlide)&&(!FrmMainSlideOut)&&(!FrmMainSlideIn))
 		{
 		  //Gdy kursor znajduje sie poza oknem rozmowy
-		  if(((!hFrmMainL)&&((Mouse->CursorPos.y<FrmMainRect.Top)||(FrmMainRect.Bottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmMainRect.Left)||(FrmMainRect.Right<Mouse->CursorPos.x)))
-		  ||((hFrmMainL)&&((Mouse->CursorPos.y<FrmMainLRect.Top)||(FrmMainLRect.Bottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmMainLRect.Left)||(FrmMainLRect.Right<Mouse->CursorPos.x))))
+		  if((Mouse->CursorPos.y<FrmMainRect.Top)||(FrmMainRect.Bottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmMainRect.Left)||(FrmMainRect.Right<Mouse->CursorPos.x))
 		  {
 			//Gdy okno nie jest innym oknem aplikacji
 			if(PID!=ProcessPID)
@@ -3648,16 +3419,8 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	  //Pobranie rozmiaru+pozycji okna rozmowy
 	  GetFrmSendRect();
 	  //Poczatkowa pozycja okna rozmowy podczas SlideIn/SlideOut
-	  if(!hFrmSendL)
-	  {
-		FrmSendSlideLeft = FrmSendRect.Left;
-		FrmSendSlideTop = FrmSendRect.Top;
-	  }
-	  else
-	  {
-		FrmSendSlideLeft = FrmSendLRect.Left;
-		FrmSendSlideTop = FrmSendLRect.Top;
-      }
+	  FrmSendSlideLeft = FrmSendRect.Left;
+	  FrmSendSlideTop = FrmSendRect.Top;
 	  //Wlacznie FrmSendSlideIn (part II)
 	  SetTimer(hTimerFrm,TIMER_FRMSENDSLIDEOUT,FrmSendStepInterval,(TIMERPROC)TimerFrmProc);
 	}
@@ -3670,43 +3433,31 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	  if((FrmSendSlideEdge==1)||(FrmSendSlideEdge==2))
 	  {
 		//Ustalanie ilosci krokow
-		if(!hFrmSendL) Steps = (FrmSendRect.Width()+FrmSend_Shell_TrayWndRight+FrmSend_Shell_TrayWndLeft)/Steps;
-		else Steps = (FrmSendLRect.Width()+FrmSend_Shell_TrayWndRight+FrmSend_Shell_TrayWndLeft)/Steps;
+		Steps = (FrmSendRect.Width()+FrmSend_Shell_TrayWndRight+FrmSend_Shell_TrayWndLeft)/Steps;
 		//Left
 		if(FrmSendSlideEdge==1) FrmSendSlideLeft = FrmSendSlideLeft - Steps;
 		//Right
 		else FrmSendSlideLeft = FrmSendSlideLeft + Steps;
 		//Zmiana pozycji okna rozmowy
-		if(!hFrmSendL) SetWindowPos(hFrmSend,HWND_TOPMOST,FrmSendSlideLeft,FrmSendRect.Top,0,0,SWP_ASYNCWINDOWPOS|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
-		else
-		{
-		  SetWindowPos(hFrmSendL,HWND_TOPMOST,FrmSendSlideLeft,FrmSendLRect.Top,0,0,SWP_ASYNCWINDOWPOS|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
-		  SetWindowPos(hFrmSend,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
-		}
+		SetWindowPos(hFrmSend,HWND_TOPMOST,FrmSendSlideLeft,FrmSendRect.Top,0,0,SWP_ASYNCWINDOWPOS|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
 	  }
 	  //Bottom or Top
 	  else
 	  {
 		//Ustalanie ilosci krokow
-		if(!hFrmSendL) Steps = (FrmSendRect.Height()+FrmSend_Shell_TrayWndBottom+FrmSend_Shell_TrayWndTop)/Steps;
-		else Steps = (FrmSendLRect.Height()+FrmSend_Shell_TrayWndBottom+FrmSend_Shell_TrayWndTop)/Steps;
+		Steps = (FrmSendRect.Height()+FrmSend_Shell_TrayWndBottom+FrmSend_Shell_TrayWndTop)/Steps;
 		//Bottom
 		if(FrmSendSlideEdge==3) FrmSendSlideTop = FrmSendSlideTop + Steps;
 		//Top
 		else FrmSendSlideTop = FrmSendSlideTop - Steps;
 		//Zmiana pozycji okna rozmowy
-		if(!hFrmSendL) SetWindowPos(hFrmSend,HWND_TOPMOST,FrmSendRect.Left,FrmSendSlideTop,0,0,SWP_ASYNCWINDOWPOS|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
-		else
-		{
-		  SetWindowPos(hFrmSendL,HWND_TOPMOST,FrmSendLRect.Left,FrmSendSlideTop,0,0,SWP_ASYNCWINDOWPOS|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
-		  SetWindowPos(hFrmSend,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
-		}
+		SetWindowPos(hFrmSend,HWND_TOPMOST,FrmSendRect.Left,FrmSendSlideTop,0,0,SWP_ASYNCWINDOWPOS|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
 	  }
 	  //Koncowy etap
-	  if(((FrmSendSlideEdge==1)&&(((!hFrmSendL)&&(FrmSendSlideLeft<(0-FrmSendRect.Right)))||((hFrmSendL)&&(FrmSendSlideLeft<(0-FrmSendLRect.Right)))))
+	  if(((FrmSendSlideEdge==1)&&(FrmSendSlideLeft<(0-FrmSendRect.Right)))
 	  ||((FrmSendSlideEdge==2)&&(FrmSendSlideLeft>Screen->Width))
 	  ||((FrmSendSlideEdge==3)&&(FrmSendSlideTop>Screen->Height))
-	  ||((FrmSendSlideEdge==4)&&(((!hFrmSendL)&&(FrmSendSlideTop<(0-FrmSendRect.Bottom)))||((hFrmSendL)&&(FrmSendSlideTop<(0-FrmSendLRect.Bottom))))))
+	  ||((FrmSendSlideEdge==4)&&(FrmSendSlideTop<(0-FrmSendRect.Bottom))))
 	  {
 		//Zatrzymanie timera
 		KillTimer(hTimerFrm,TIMER_FRMSENDSLIDEOUT);
@@ -3741,8 +3492,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			if((FrmMainSlideChk)&&(FrmMainSlideHideMode==3)&&(FrmSendSlideHideMode==3)&&(FrmMainVisible)&&(!FrmMainSlideOut)&&(!FrmMainSlideIn))
 			{
 			  //Gdy kursor znajduje sie w oknie kontaktow
-			  if(((!hFrmMainL)&&((Mouse->CursorPos.y>FrmMainRect.Top)&&(FrmMainRect.Bottom>Mouse->CursorPos.y)&&(Mouse->CursorPos.x>FrmMainRect.Left)&&(FrmMainRect.Right>Mouse->CursorPos.x)))
-			  ||((hFrmMainL)&&((Mouse->CursorPos.y>FrmMainLRect.Top)&&(FrmMainLRect.Bottom>Mouse->CursorPos.y)&&(Mouse->CursorPos.x>FrmMainLRect.Left)&&(FrmMainLRect.Right>Mouse->CursorPos.x))))
+			  if((Mouse->CursorPos.y>FrmMainRect.Top)&&(FrmMainRect.Bottom>Mouse->CursorPos.y)&&(Mouse->CursorPos.x>FrmMainRect.Left)&&(FrmMainRect.Right>Mouse->CursorPos.x))
 			  {
 				//Aktywacja okna kontaktow
 				BringWindowToTop(hFrmMain);
@@ -3845,86 +3595,46 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	  if((FrmSendSlideEdge==1)||(FrmSendSlideEdge==2))
 	  {
         //Ustalanie ilosci krokow
-		if(!hFrmSendL) Steps = (FrmSendRect.Width()+FrmSend_Shell_TrayWndRight+FrmSend_Shell_TrayWndLeft)/Steps;
-		else Steps = (FrmSendLRect.Width()+FrmSend_Shell_TrayWndRight+FrmSend_Shell_TrayWndLeft)/Steps;
+		Steps = (FrmSendRect.Width()+FrmSend_Shell_TrayWndRight+FrmSend_Shell_TrayWndLeft)/Steps;
 		//Left
 		if(FrmSendSlideEdge==1)
 		{
 		  FrmSendSlideLeft = FrmSendSlideLeft + Steps;
-		  if(!hFrmSendL)
-		  {
-			if(FrmSendSlideLeft>FrmSendRect.Left) FrmSendSlideLeft = FrmSendRect.Left;
-		  }
-		  else
-		  {
-            if(FrmSendSlideLeft>FrmSendLRect.Left) FrmSendSlideLeft = FrmSendLRect.Left;
-          }
+		  if(FrmSendSlideLeft>FrmSendRect.Left) FrmSendSlideLeft = FrmSendRect.Left;
 		}
 		//Right
 		else
 		{
 		  FrmSendSlideLeft = FrmSendSlideLeft - Steps;
-		  if(!hFrmSendL)
-		  {
-			if(FrmSendSlideLeft<FrmSendRect.Left) FrmSendSlideLeft = FrmSendRect.Left;
-		  }
-		  else
-		  {
-			if(FrmSendSlideLeft<FrmSendLRect.Left) FrmSendSlideLeft = FrmSendLRect.Left;
-          }
+		  if(FrmSendSlideLeft<FrmSendRect.Left) FrmSendSlideLeft = FrmSendRect.Left;
 		}
 		if(!IsWindowVisible(hFrmSend)) ShowWindow(hFrmSend, SW_SHOWNA);
 		//Zmiana pozycji okna rozmowy
-		if(!hFrmSendL) SetWindowPos(hFrmSend,HWND_TOPMOST,FrmSendSlideLeft,FrmSendRect.Top,0,0,SWP_ASYNCWINDOWPOS|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
-		else
-		{
-		  SetWindowPos(hFrmSendL,HWND_TOPMOST,FrmSendSlideLeft,FrmSendLRect.Top,0,0,SWP_ASYNCWINDOWPOS|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
-		  SetWindowPos(hFrmSend,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
-		}
+		SetWindowPos(hFrmSend,HWND_TOPMOST,FrmSendSlideLeft,FrmSendRect.Top,0,0,SWP_ASYNCWINDOWPOS|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
 	  }
 	  else
 	  {
 		//Ustalanie ilosci krokow
-		if(!hFrmSendL) Steps = (FrmSendRect.Height()+FrmSend_Shell_TrayWndBottom+FrmSend_Shell_TrayWndTop)/Steps;
-		else Steps = (FrmSendLRect.Height()+FrmSend_Shell_TrayWndBottom+FrmSend_Shell_TrayWndTop)/Steps;
+		Steps = (FrmSendRect.Height()+FrmSend_Shell_TrayWndBottom+FrmSend_Shell_TrayWndTop)/Steps;
 		//Bottom
 		if(FrmSendSlideEdge==3)
 		{
 		  FrmSendSlideTop = FrmSendSlideTop - Steps;
-		  if(!hFrmSendL)
-		  {
-			if(FrmSendSlideTop<FrmSendRect.Top) FrmSendSlideTop = FrmSendRect.Top;
-		  }
-		  else
-		  {
-			if(FrmSendSlideTop<FrmSendLRect.Top) FrmSendSlideTop = FrmSendLRect.Top;
-          }
+		  if(FrmSendSlideTop<FrmSendRect.Top) FrmSendSlideTop = FrmSendRect.Top;
 		}
 		//Top
 		else
 		{
 		  FrmSendSlideTop = FrmSendSlideTop + Steps;
-		  if(!hFrmSendL)
-		  {
-			if(FrmSendSlideTop>FrmSendRect.Top) FrmSendSlideTop = FrmSendRect.Top;
-		  }
-		  else
-		  {
-			if(FrmSendSlideTop>FrmSendLRect.Top) FrmSendSlideTop = FrmSendLRect.Top;
-          }
+		  if(FrmSendSlideTop>FrmSendRect.Top) FrmSendSlideTop = FrmSendRect.Top;
 		}
 		if(!IsWindowVisible(hFrmSend)) ShowWindow(hFrmSend, SW_SHOWNA);
 		//Zmiana pozycji okna rozmowy
-		if(!hFrmSendL) SetWindowPos(hFrmSend,HWND_TOPMOST,FrmSendRect.Left,FrmSendSlideTop,0,0,SWP_ASYNCWINDOWPOS|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
-		else
-		{
-		  SetWindowPos(hFrmSendL,HWND_TOPMOST,FrmSendLRect.Left,FrmSendSlideTop,0,0,SWP_ASYNCWINDOWPOS|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
-		  SetWindowPos(hFrmSend,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
-		}
+		SetWindowPos(hFrmSend,HWND_TOPMOST,FrmSendRect.Left,FrmSendSlideTop,0,0,SWP_ASYNCWINDOWPOS|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
 	  }
 	  //Koncowy etap
-	  if((((FrmSendSlideEdge==1)||(FrmSendSlideEdge==2))&&(((!hFrmSendL)&&(FrmSendSlideLeft==FrmSendRect.Left))||((hFrmSendL)&&(FrmSendSlideLeft==FrmSendLRect.Left))))
-	  ||(((FrmSendSlideEdge==3)||(FrmSendSlideEdge==4))&&(((!hFrmSendL)&&(FrmSendSlideTop==FrmSendRect.Top))||((hFrmSendL)&&(FrmSendSlideTop==FrmSendLRect.Top)))))
+	  if((((FrmSendSlideEdge==1)||(FrmSendSlideEdge==2))&&(FrmSendSlideLeft==FrmSendRect.Left))
+	  ||(((FrmSendSlideEdge==3)||(FrmSendSlideEdge==4))&&(FrmSendSlideTop==FrmSendRect.Top)))
 	  {
 		//Aplikacja pelno ekranowa
 		if(FullScreenMode)
@@ -4171,16 +3881,8 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	  //Pobranie rozmiaru+pozycji okna kontatkow
 	  GetFrmMainRect();
 	  //Poczatkowa pozycja okna kontaktow podczas SlideIn/SlideOut
-	  if(!hFrmMainL)
-	  {
-		FrmMainSlideLeft = FrmMainRect.Left;
-		FrmMainSlideTop = FrmMainRect.Top;
-	  }
-	  else
-	  {
-		FrmMainSlideLeft = FrmMainLRect.Left;
-		FrmMainSlideTop = FrmMainLRect.Top;
-	  }
+	  FrmMainSlideLeft = FrmMainRect.Left;
+	  FrmMainSlideTop = FrmMainRect.Top;
 	  //Wlacznie FrmSendSlideIn (part II)
 	  SetTimer(hTimerFrm,TIMER_FRMMAINSLIDEOUT,FrmSendStepInterval,(TIMERPROC)TimerFrmProc);
 	}
@@ -4193,8 +3895,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	  if((FrmMainSlideEdge==1)||(FrmMainSlideEdge==2))
 	  {
 		//Ustalanie ilosci krokow
-		if(!hFrmMainL) Steps = (FrmMainRect.Width()+FrmMain_Shell_TrayWndRight+FrmMain_Shell_TrayWndLeft)/Steps;
-		else Steps = (FrmMainLRect.Width()+FrmMain_Shell_TrayWndRight+FrmMain_Shell_TrayWndLeft)/Steps;
+		Steps = (FrmMainRect.Width()+FrmMain_Shell_TrayWndRight+FrmMain_Shell_TrayWndLeft)/Steps;
 		//Left
 		if(FrmMainSlideEdge==1) FrmMainSlideLeft = FrmMainSlideLeft - Steps;
 		//Right
@@ -4207,19 +3908,13 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		SetActiveWindow(hFrmMain);
 		FrmMainSlideOutWndActiv = false;
 		//Zmiana pozycji okna kontaktow
-		if(!hFrmMainL) SetWindowPos(hFrmMain,HWND_TOPMOST,FrmMainSlideLeft,FrmMainRect.Top,0,0,SWP_ASYNCWINDOWPOS|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
-		else
-		{
-		  SetWindowPos(hFrmMainL,HWND_TOPMOST,FrmMainSlideLeft,FrmMainLRect.Top,0,0,SWP_ASYNCWINDOWPOS|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
-		  SetWindowPos(hFrmMain,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
-		}
+		SetWindowPos(hFrmMain,HWND_TOPMOST,FrmMainSlideLeft,FrmMainRect.Top,0,0,SWP_ASYNCWINDOWPOS|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
 	  }
 	  //Bottom or Top
 	  else
 	  {
 		//Ustalanie ilosci krokow
-		if(!hFrmMainL) Steps = (FrmMainRect.Height()+FrmMain_Shell_TrayWndBottom+FrmMain_Shell_TrayWndTop)/Steps;
-		else Steps = (FrmMainLRect.Height()+FrmMain_Shell_TrayWndBottom+FrmMain_Shell_TrayWndTop)/Steps;
+		Steps = (FrmMainRect.Height()+FrmMain_Shell_TrayWndBottom+FrmMain_Shell_TrayWndTop)/Steps;
 		//Bottom
 		if(FrmMainSlideEdge==3) FrmMainSlideTop = FrmMainSlideTop + Steps;
 		//Top
@@ -4232,18 +3927,13 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		SetActiveWindow(hFrmMain);
 		FrmMainSlideOutWndActiv = false;
 		//Zmiana pozycji okna kontaktow
-		if(!hFrmMainL) SetWindowPos(hFrmMain,HWND_TOPMOST,FrmMainRect.Left,FrmMainSlideTop,0,0,SWP_ASYNCWINDOWPOS|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
-		else
-		{
-		  SetWindowPos(hFrmMainL,HWND_TOPMOST,FrmMainLRect.Left,FrmMainSlideTop,0,0,SWP_ASYNCWINDOWPOS|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
-		  SetWindowPos(hFrmMain,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
-		}
+		SetWindowPos(hFrmMain,HWND_TOPMOST,FrmMainRect.Left,FrmMainSlideTop,0,0,SWP_ASYNCWINDOWPOS|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
 	  }
 	  //Koncowy etap
-	  if(((FrmMainSlideEdge==1)&&(((!hFrmMainL)&&(FrmMainSlideLeft<(0-FrmMainRect.Right)))||((hFrmMainL)&&(FrmMainSlideLeft<(0-FrmMainLRect.Right)))))
+	  if(((FrmMainSlideEdge==1)&&(FrmMainSlideLeft<(0-FrmMainRect.Right)))
 	  ||((FrmMainSlideEdge==2)&&(FrmMainSlideLeft>Screen->Width))
 	  ||((FrmMainSlideEdge==3)&&(FrmMainSlideTop>Screen->Height))
-	  ||((FrmMainSlideEdge==4)&&(((!hFrmMainL)&&(FrmMainSlideTop<(0-FrmMainRect.Bottom)))||((hFrmMainL)&&(FrmMainSlideTop<(0-FrmMainLRect.Bottom))))))
+	  ||((FrmMainSlideEdge==4)&&(FrmMainSlideTop<(0-FrmMainRect.Bottom))))
 	  {
 		//Aplikacja pelno ekranowa
 		if(FullScreenMode)
@@ -4386,87 +4076,47 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	  //Left or Right
 	  if((FrmMainSlideEdge==1)||(FrmMainSlideEdge==2))
 	  {
-        //Ustalanie ilosci krokow
-		if(!hFrmMainL) Steps = (FrmMainRect.Width()+FrmMain_Shell_TrayWndRight+FrmMain_Shell_TrayWndLeft)/Steps;
-		else Steps = (FrmMainLRect.Width()+FrmMain_Shell_TrayWndRight+FrmMain_Shell_TrayWndLeft)/Steps;
+		//Ustalanie ilosci krokow
+		Steps = (FrmMainRect.Width()+FrmMain_Shell_TrayWndRight+FrmMain_Shell_TrayWndLeft)/Steps;
 		//Left
 		if(FrmMainSlideEdge==1)
 		{
 		  FrmMainSlideLeft = FrmMainSlideLeft + Steps;
-		  if(!hFrmMainL)
-		  {
-			if(FrmMainSlideLeft>FrmMainRect.Left) FrmMainSlideLeft = FrmMainRect.Left;
-		  }
-		  else
-          {
-			if(FrmMainSlideLeft>FrmMainLRect.Left) FrmMainSlideLeft = FrmMainLRect.Left;
-          }
+		  if(FrmMainSlideLeft>FrmMainRect.Left) FrmMainSlideLeft = FrmMainRect.Left;
 		}
 		//Right
 		else
 		{
 		  FrmMainSlideLeft = FrmMainSlideLeft - Steps;
-		  if(!hFrmMainL)
-		  {
-			if(FrmMainSlideLeft<FrmMainRect.Left) FrmMainSlideLeft = FrmMainRect.Left;
-		  }
-		  else
-		  {
-			if(FrmMainSlideLeft<FrmMainLRect.Left) FrmMainSlideLeft = FrmMainLRect.Left;
-		  }
+		  if(FrmMainSlideLeft<FrmMainRect.Left) FrmMainSlideLeft = FrmMainRect.Left;
 		}
 		if(!IsWindowVisible(hFrmMain)) ShowWindow(hFrmMain, SW_SHOWNA);
 		//Zmiana pozycji okna rozmowy
-		if(!hFrmMainL) SetWindowPos(hFrmMain,HWND_TOPMOST,FrmMainSlideLeft,FrmMainRect.Top,0,0,SWP_ASYNCWINDOWPOS|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
-		else
-		{
-		  SetWindowPos(hFrmMainL,HWND_TOPMOST,FrmMainSlideLeft,FrmMainLRect.Top,0,0,SWP_ASYNCWINDOWPOS|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
-		  SetWindowPos(hFrmMain,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
-        }
+		SetWindowPos(hFrmMain,HWND_TOPMOST,FrmMainSlideLeft,FrmMainRect.Top,0,0,SWP_ASYNCWINDOWPOS|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
 	  }
 	  else
 	  {
         //Ustalanie ilosci krokow
-		if(!hFrmMainL) Steps = (FrmMainRect.Height()+FrmMain_Shell_TrayWndBottom+FrmMain_Shell_TrayWndTop)/Steps;
-		else Steps = (FrmMainLRect.Height()+FrmMain_Shell_TrayWndBottom+FrmMain_Shell_TrayWndTop)/Steps;
+		Steps = (FrmMainRect.Height()+FrmMain_Shell_TrayWndBottom+FrmMain_Shell_TrayWndTop)/Steps;
 		//Bottom
 		if(FrmMainSlideEdge==3)
 		{
 		  FrmMainSlideTop = FrmMainSlideTop - Steps;
-		  if(!hFrmMainL)
-		  {
-			if(FrmMainSlideTop<FrmMainRect.Top) FrmMainSlideTop = FrmMainRect.Top;
-		  }
-		  else
-		  {
-			if(FrmMainSlideTop<FrmMainLRect.Top) FrmMainSlideTop = FrmMainLRect.Top;
-		  }
+		  if(FrmMainSlideTop<FrmMainRect.Top) FrmMainSlideTop = FrmMainRect.Top;
 		}
 		//Top
 		else
 		{
 		  FrmMainSlideTop = FrmMainSlideTop + Steps;
-		  if(!hFrmMainL)
-		  {
-			if(FrmMainSlideTop>FrmMainRect.Top) FrmMainSlideTop = FrmMainRect.Top;
-		  }
-		  else
-		  {
-            if(FrmMainSlideTop>FrmMainLRect.Top) FrmMainSlideTop = FrmMainLRect.Top;
-          }
+		  if(FrmMainSlideTop>FrmMainRect.Top) FrmMainSlideTop = FrmMainRect.Top;
 		}
 		if(!IsWindowVisible(hFrmMain)) ShowWindow(hFrmMain, SW_SHOWNA);
 		//Zmiana pozycji okna rozmowy
-		if(!hFrmMainL) SetWindowPos(hFrmMain,HWND_TOPMOST,FrmMainRect.Left,FrmMainSlideTop,0,0,SWP_ASYNCWINDOWPOS|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
-		else
-		{
-		  SetWindowPos(hFrmMainL,HWND_TOPMOST,FrmMainLRect.Left,FrmMainSlideTop,0,0,SWP_ASYNCWINDOWPOS|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
-		  SetWindowPos(hFrmMain,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
-		}
+		SetWindowPos(hFrmMain,HWND_TOPMOST,FrmMainRect.Left,FrmMainSlideTop,0,0,SWP_ASYNCWINDOWPOS|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
 	  }
 	  //Koncowy etap
-	  if((((FrmMainSlideEdge==1)||(FrmMainSlideEdge==2))&&(((!hFrmMainL)&&(FrmMainSlideLeft==FrmMainRect.Left))||((hFrmMainL)&&(FrmMainSlideLeft==FrmMainLRect.Left))))
-	  ||(((FrmMainSlideEdge==3)||(FrmMainSlideEdge==4))&&(((!hFrmMainL)&&(FrmMainSlideTop==FrmMainRect.Top))||((hFrmMainL)&&(FrmMainSlideTop==FrmMainLRect.Top)))))
+	  if((((FrmMainSlideEdge==1)||(FrmMainSlideEdge==2))&&(FrmMainSlideLeft==FrmMainRect.Left))
+	  ||(((FrmMainSlideEdge==3)||(FrmMainSlideEdge==4))&&(FrmMainSlideTop==FrmMainRect.Top)))
 	  {
 		//Aplikacja pelno ekranowa
 		if(FullScreenMode)
@@ -4531,7 +4181,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	//SideSlide - ustawienie okna kontaktow na wierzchu
 	else if(wParam==TIMER_FRMMAINSETTOPMOSTEX)
 	{
-      //Pobranie PID okna
+	  //Pobranie PID okna
 	  DWORD PID;
 	  GetWindowThreadProcessId(GetForegroundWindow(), &PID);
 	  //Porownanie PID okna
@@ -4590,11 +4240,15 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 }
 //---------------------------------------------------------------------------
 
-//Procka okna rozmowy
+//Procka okna kontaktow
 LRESULT CALLBACK FrmMainProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
   if((!ThemeChanging)&&(!ForceUnloadExecuted))
   {
+	//Poprawka na znikanie popupmenu podczas pisania wiadomosci przez kontakt
+	if((uMsg==WM_SETICON)&&(FrmMainSlideChk)&&(FrmMainSlideHideMode!=2)&&(FrmMainVisible))
+	 return 1;
+	//Aktywacja okna kontatow
 	if((uMsg==WM_ACTIVATE)&&(!LoadExecuted))
 	{
 	  //SideSlide dla okna kontaktow
@@ -4609,8 +4263,7 @@ LRESULT CALLBACK FrmMainProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		  if((FrmMainVisible)&&(!PreFrmMainSlideOut)&&(!FrmMainBlockSlide)&&(!FrmMainSlideOut)&&(!FrmMainSlideIn))
 		  {
 			//Gdy kursor znajduje sie poza oknem rozmowy
-			if(((!hFrmMainL)&&((Mouse->CursorPos.y<FrmMainRect.Top)||(FrmMainRect.Bottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmMainRect.Left)||(FrmMainRect.Right<Mouse->CursorPos.x)))
-			||((hFrmMainL)&&((Mouse->CursorPos.y<FrmMainLRect.Top)||(FrmMainLRect.Bottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmMainLRect.Left)||(FrmMainLRect.Right<Mouse->CursorPos.x))))
+			if((Mouse->CursorPos.y<FrmMainRect.Top)||(FrmMainRect.Bottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmMainRect.Left)||(FrmMainRect.Right<Mouse->CursorPos.x))
 			{
 			  //Chowanie gdy aplikacja straci fokus
 			  if(FrmMainSlideHideMode==2)
@@ -4703,8 +4356,7 @@ LRESULT CALLBACK FrmMainProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		  //Wylaczenie FrmMainSlideOut
 		  else if((FrmMainVisible)&&(PreFrmMainSlideOut)&&(FrmMainSlideOut)&&(!FrmMainSlideIn)&&(!FrmMainBlockSlide))
 		  {
-			if(((!hFrmMainL)&&((Mouse->CursorPos.y>FrmMainRect.Top)&&(FrmMainRect.Bottom>Mouse->CursorPos.y)&&(Mouse->CursorPos.x>FrmMainRect.Left)&&(FrmMainRect.Right>Mouse->CursorPos.x)))
-			||((hFrmMainL)&&((Mouse->CursorPos.y>FrmMainLRect.Top)&&(FrmMainLRect.Bottom>Mouse->CursorPos.y)&&(Mouse->CursorPos.x>FrmMainLRect.Left)&&(FrmMainLRect.Right>Mouse->CursorPos.x))))
+			if((Mouse->CursorPos.y>FrmMainRect.Top)&&(FrmMainRect.Bottom>Mouse->CursorPos.y)&&(Mouse->CursorPos.x>FrmMainRect.Left)&&(FrmMainRect.Right>Mouse->CursorPos.x))
 			{
 			  //Zatrymanie timera
 			  KillTimer(hTimerFrm,TIMER_PREFRMMAINDSLIDEOUT);
@@ -4747,10 +4399,10 @@ LRESULT CALLBACK FrmMainProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			}
 		  }
 		}
+		//Ustawianie na wierzchu okna wyszukiwarki
+		if((hFrmSeekOnList)&&((wParam==WA_ACTIVE)||(wParam==WA_CLICKACTIVE)))
+		 SetWindowPos(hFrmSeekOnList,HWND_TOPMOST,0,0,0,0,SWP_NOACTIVATE|SWP_NOSIZE|SWP_NOMOVE);
 	  }
-	  //Ustawianie na wierzchu okna wyszukiwarki
-	  if((hFrmSeekOnList)&&((wParam==WA_ACTIVE)||(wParam==WA_CLICKACTIVE)))
-	   SetWindowPos(hFrmSeekOnList,HWND_TOPMOST,0,0,0,0,SWP_NOACTIVATE|SWP_NOSIZE|SWP_NOMOVE);
 	}
 	//Zabezpieczenie przed "zamknieciem" okna przy aktywnym SideSlide
 	else if(uMsg==WM_CLOSE)
@@ -4803,43 +4455,6 @@ LRESULT CALLBACK FrmMainProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 }
 //---------------------------------------------------------------------------
 
-//Procka pseudo okna kontaktow
-LRESULT CALLBACK FrmMainLProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-  if((!ThemeChanging)&&(!ForceUnloadExecuted))
-  {
-	//SideSlide - wlaczenie tymczasowej blokady FrmMainSlideOut
-	if((uMsg==WM_ENTERSIZEMOVE)&&(FrmMainSlideChk)&&(FrmMainVisible)&&(!FrmMainSlideIn)&&(!FrmMainSlideOut))
-	{
-	  FrmMainBlockSlide = true;
-	  FrmMainBlockSlideWndEvent = true;
-	  WM_ENTERSIZEMOVE_BLOCK = true;
-	}
-	//SideSlide - wylaczenie tymczasowej blokady FrmMainSlideOut
-	else if((uMsg==WM_EXITSIZEMOVE)&&(WM_ENTERSIZEMOVE_BLOCK))
-	{
-	  WM_ENTERSIZEMOVE_BLOCK = false;
-	  //Pobranie rozmiaru+pozycji okna kontaktow
-	  GetFrmMainRect();
-	  //Ustawienie poprawnej pozycji okna kontaktow
-	  SetFrmMainPos();
-	  //Pobranie rozmiaru+pozycji okna kontatkow
-	  GetFrmMainRect();
-	  //Wylaczenie tymczasowej blokady
-	  if(FrmMainSlideHideMode==3)
-	   SetTimer(hTimerFrm,TIMER_FRMMAINBLOCKSLIDE,1500,(TIMERPROC)TimerFrmProc);
-	  else
-	  {
-		FrmMainBlockSlide = false;
-		FrmMainBlockSlideWndEvent = false;
-	  }
-	}
-  }
-
-  return CallWindowProc(OldFrmMainLProc, hwnd, uMsg, wParam, lParam);
-}
-//---------------------------------------------------------------------------
-
 //Procka okna rozmowy
 LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -4856,7 +4471,7 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		 SetWindowTextW(hFrmSend,("["+IntToStr(InactiveFrmNewMsgCount)+"] "+TempTitlebar).w_str());
 	  }
 	}
-    //Blokowanie ustawiania domyslnego tekstu na belce okna
+	//Blokowanie ustawiania domyslnego tekstu na belce okna
 	else if(uMsg==0x000000ae)
 	{
 	  //Wlaczona jest opcja zmiany caption okna rozmowy
@@ -4901,10 +4516,10 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		  if(hIconSmall)
 		  {
 			//Ustawienie oryginalnej malej ikonki
-			SendMessage(hFrmSend, WM_SETICON, (WPARAM)ICON_SMALL, (LPARAM)hIconSmall);
+			SendMessage(hFrmSend, WM_SETICON, ICON_SMALL, (LPARAM)hIconSmall);
 			hIconSmall = NULL;
 			//Ustawienie oryginalnej duzej ikonki
-			SendMessage(hFrmSend, WM_SETICON, (WPARAM)ICON_BIG, (LPARAM)hIconBig);
+			SendMessage(hFrmSend, WM_SETICON, ICON_BIG, (LPARAM)hIconBig);
 			hIconBig = NULL;
 			//Resetowanie poprzedniego stanu ikonek
 			LastChatState = 0;
@@ -4934,8 +4549,7 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		  if((FrmSendVisible)&&(!PreFrmSendSlideOut)&&(!FrmSendBlockSlide)&&(!FrmSendSlideOut)&&(!FrmSendSlideIn))
 		  {
 			//Gdy kursor znajduje sie poza oknem rozmowy
-			if(((!hFrmSendL)&&((Mouse->CursorPos.y<FrmSendRect.Top)||(FrmSendRect.Bottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmSendRect.Left)||(FrmSendRect.Right<Mouse->CursorPos.x)))
-			||((hFrmSendL)&&((Mouse->CursorPos.y<FrmSendLRect.Top)||(FrmSendLRect.Bottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmSendLRect.Left)||(FrmSendLRect.Right<Mouse->CursorPos.x))))
+			if((Mouse->CursorPos.y<FrmSendRect.Top)||(FrmSendRect.Bottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmSendRect.Left)||(FrmSendRect.Right<Mouse->CursorPos.x))
 			{
 			  //Chowanie gdy aplikacja straci fokus
 			  if(FrmSendSlideHideMode==2)
@@ -5022,8 +4636,7 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		  //Wylaczenie FrmSendSlideOut
 		  else if((FrmSendVisible)&&(PreFrmSendSlideOut)&&(FrmSendSlideOut)&&(!FrmSendSlideIn)&&(!FrmSendBlockSlide))
 		  {
-			if(((!hFrmSendL)&&((Mouse->CursorPos.y>FrmSendRect.Top)&&(FrmSendRect.Bottom>Mouse->CursorPos.y)&&(Mouse->CursorPos.x>FrmSendRect.Left)&&(FrmSendRect.Right>Mouse->CursorPos.x)))
-			||((hFrmSendL)&&((Mouse->CursorPos.y>FrmSendLRect.Top)&&(FrmSendLRect.Bottom>Mouse->CursorPos.y)&&(Mouse->CursorPos.x>FrmSendLRect.Left)&&(FrmSendLRect.Right>Mouse->CursorPos.x))))
+			if((Mouse->CursorPos.y>FrmSendRect.Top)&&(FrmSendRect.Bottom>Mouse->CursorPos.y)&&(Mouse->CursorPos.x>FrmSendRect.Left)&&(FrmSendRect.Right>Mouse->CursorPos.x))
 			{
 			  //Zatrzymanie timera
 			  KillTimer(hTimerFrm,TIMER_PREFRMSENDSLIDEOUT);
@@ -5068,9 +4681,6 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		  }
 		}
 	  }
-	  //Ustawianie na wierzchu okna wyszukiwarki
-	  if((hFrmSeekOnList)&&((wParam==WA_ACTIVE)||(wParam==WA_CLICKACTIVE)))
-	   SetWindowPos(hFrmSeekOnList,HWND_TOPMOST,0,0,0,0,SWP_NOACTIVATE|SWP_NOSIZE|SWP_NOMOVE);
 	}
 	//Zabezpieczenie przed zamykaniem wielu zakladek jednoczesnie
 	else if(uMsg==WM_CLOSE)
@@ -5162,8 +4772,8 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		  //Pozycja kursora w oknie rozmowy
 		  int CursorPos = WindowBottom - CursorY;
 		  //Wysokoœæ paska informacyjnego
-		  if(!hStatusBarPro) hStatusBarPro = FindWindowEx(hFrmSend,NULL,L"TStatusBarPro",NULL);
-		  GetWindowRect(hStatusBarPro,&WindowRect);
+		  if(!hStatusBar) hStatusBar = FindWindowEx(hFrmSend,NULL,L"TsStatusBar",NULL);
+		  GetWindowRect(hStatusBar,&WindowRect);
 		  int StatusBarHeight = WindowRect.Height();
 		  //Pokazywanie paska narzedzi
 		  if(CursorPos<32+StatusBarHeight)
@@ -5195,10 +4805,10 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			GetWindowRect(hToolBar,&WindowRect);
 			if(WindowRect.Height())
 			{
-			  //Pobieranie pozycji okna rozmowy
-			  GetWindowRect(hFrmSend,&WindowRect);
 			  //Ukrycie paska
 			  SetWindowPos(hToolBar,NULL,0,0,WindowRect.Width(),0,SWP_NOMOVE);
+			  //Pobieranie pozycji okna rozmowy
+			  GetWindowRect(hFrmSend,&WindowRect);
 			  //Odswiezenie okna rozmowy
 			  SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width()+1,WindowRect.Height(),SWP_NOMOVE);
 			  SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width(),WindowRect.Height(),SWP_NOMOVE);
@@ -5237,44 +4847,6 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
   }
 
   return CallWindowProc(OldFrmSendProc, hwnd, uMsg, wParam, lParam);
-}
-//---------------------------------------------------------------------------
-
-//Procka pseudo okna rozmowy
-LRESULT CALLBACK FrmSendLProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-  if((!ThemeChanging)&&(!ForceUnloadExecuted))
-  {
-	//SideSlide - wlaczenie tymczasowej blokady FrmSendSlideOut
-	if((uMsg==WM_ENTERSIZEMOVE)&&(FrmSendSlideChk)&&(FrmSendVisible)&&(!FrmSendSlideIn)&&(!FrmSendSlideOut))
-	{
-	  FrmSendBlockSlide = true;
-	  FrmSendBlockSlideWndEvent = true;
-	  WM_ENTERSIZEMOVE_BLOCK = true;
-	}
-	//SideSlide - wylaczenie tymczasowej blokady FrmSendSlideOut
-	else if((uMsg==WM_EXITSIZEMOVE)&&(WM_ENTERSIZEMOVE_BLOCK))
-	{
-	  WM_ENTERSIZEMOVE_BLOCK = false;
-	  //Pobranie rozmiaru+pozycji okna rozmowy
-	  GetFrmSendRect();
-	  //Ustawienie poprawnej pozycji okna rozmowy
-	  SetFrmSendPos();
-	  //Pobranie rozmiaru+pozycji okna rozmowy
-	  GetFrmSendRect();
-	  //Wlaczenie timera wylaczanie tymczasowej blokady
-	  if(FrmSendSlideHideMode==3)
-	   SetTimer(hTimerFrm,TIMER_FRMSENDBLOCKSLIDE,2000,(TIMERPROC)TimerFrmProc);
-	  //Wylaczenie tymczasowej blokady
-	  else
-	  {
-		FrmSendBlockSlide = false;
-		FrmSendBlockSlideWndEvent = false;
-	  }
-	}
-  }
-
-  return CallWindowProc(OldFrmSendLProc, hwnd, uMsg, wParam, lParam);
 }
 //---------------------------------------------------------------------------
 
@@ -6860,18 +6432,18 @@ int __stdcall OnCloseTab(WPARAM wParam, LPARAM lParam)
 {
   if(!ForceUnloadExecuted)
   {
-    //Zamkniecie zakladki poprzez 2xLPM
+	//Zamkniecie zakladki poprzez 2xLPM
 	if(LBUTTONDBLCLK)
-    {
+	{
 	  KillTimer(hTimerFrm,TIMER_CLOSEBY2XLPM);
 	  mouse_event(MOUSEEVENTF_MIDDLEUP,0,0,0,0);
 	  LBUTTONDBLCLK = false;
 	}
-    //Przywracanie zakladki za pomoca myszki
-    TabClosing = true;
-    //Blok zmiany tekstu na zakladce
-    ClosingTab = true;
-    //Pobieranie danych dt. kontaktu
+	//Przywracanie zakladki za pomoca myszki
+	TabClosing = true;
+	//Blok zmiany tekstu na zakladce
+	ClosingTab = true;
+	//Pobieranie danych dt. kontaktu
 	CloseTabContact = (PPluginContact)lParam;
 	UnicodeString JID = (wchar_t*)CloseTabContact->JID;
 	UnicodeString Res = (wchar_t*)CloseTabContact->Resource;
@@ -6886,46 +6458,46 @@ int __stdcall OnCloseTab(WPARAM wParam, LPARAM lParam)
 	{
 	  int State = PluginLink.CallService(AQQ_FUNCTION_GETSTATEPNG_INDEX,0,(LPARAM)(CloseTabContact));
 	  ContactsStateList->WriteInteger("State",JID,State);
-    }
-    //Usuwanie JID z listy aktywnych zakladek/okien
+	}
+	//Usuwanie JID z listy aktywnych zakladek/okien
 	if(ResTabsList->IndexOf(JID+Res)!=-1)
 	{
 	  if(TabsList->IndexOf(JID)!=-1) TabsList->Delete(TabsList->IndexOf(JID));
 	  ResTabsList->Delete(ResTabsList->IndexOf(JID+Res));
 	}
-    //Zapisywanie sesji
+	//Zapisywanie sesji
 	if(RestoreTabsSessionChk)
-    {
+	{
 	  TIniFile *Ini = new TIniFile(SessionFileDir);
 	  Ini->EraseSection("Session");
 	  if(TabsList->Count>0)
 	  {
-  	    //Petla zapisywania otwartych zakladek
-	    for(int Count=0;Count<TabsList->Count;Count++)
-	    {
+		//Petla zapisywania otwartych zakladek
+		for(int Count=0;Count<TabsList->Count;Count++)
+		{
 		  if(((TabsList->Strings[Count].Pos("@plugin"))&&(TabsList->Strings[Count].Pos("ischat_")))||(TabsList->Strings[Count]=="aqq.eu"))
 		  { /* Blokada czatu pochodzacego z wtyczki oraz bota aqq.eu */ }
 		  else
 		   Ini->WriteString("Session","Tab"+IntToStr(Count+1),TabsList->Strings[Count]);
-	    }
+		}
 	  }
-    }
-    //Usuwanie JID z kolejki
-    if(SwitchToNewMsgChk)
-    {
+	}
+	//Usuwanie JID z kolejki
+	if(SwitchToNewMsgChk)
+	{
 	  if(MsgList->IndexOf(JID+Res)!=-1)
 	   MsgList->Delete(MsgList->IndexOf(JID+Res));
 	  if(MsgList->IndexOf(JID)!=-1)
 	   MsgList->Delete(MsgList->IndexOf(JID));
-    }
-    //Dodawanie JID do listy ostatnio zamknietych zakladek
-    if(ClosedTabsChk)
-    {
+	}
+	//Dodawanie JID do listy ostatnio zamknietych zakladek
+	if(ClosedTabsChk)
+	{
 	  //Sprawdzanie przeprowadzono z kontaktem rozmowe
 	  if(OnlyConversationTabsChk)
 	  {
-	    if(AcceptClosedTabsList->IndexOf(JID)==-1)
-	     goto SkipClosedTabsChk;
+		if(AcceptClosedTabsList->IndexOf(JID)==-1)
+		 goto SkipClosedTabsChk;
 	  }
 	  //Sprawdzanie czy kontakt jest czatem z wtyczki lub botem aqq.eu
 	  if(((CloseTabContact->IsChat)&&(CloseTabContact->FromPlugin))||(JID=="aqq.eu"))
@@ -6933,32 +6505,31 @@ int __stdcall OnCloseTab(WPARAM wParam, LPARAM lParam)
 	  //Jezeli kontakt nie znajduje sie na liscie ostatnio zamknietych zakladek
 	  if(ClosedTabsList->IndexOf(JID)==-1)
 	  {
-	    //Usuwanie JID z listy z ktorymi przeprowadzono rozmowe
-	    if(AcceptClosedTabsList->IndexOf(JID)!=-1)
-	     AcceptClosedTabsList->Delete(AcceptClosedTabsList->IndexOf(JID));
-	    //Usuwanie interfejsu
+		//Usuwanie JID z listy z ktorymi przeprowadzono rozmowe
+		if(AcceptClosedTabsList->IndexOf(JID)!=-1)
+		 AcceptClosedTabsList->Delete(AcceptClosedTabsList->IndexOf(JID));
+		//Usuwanie interfejsu
 		DestroyFrmClosedTabs();
-	    //Dodawanie JID do tablicy
+		//Dodawanie JID do tablicy
 		ClosedTabsList->Insert(0,JID);
 		TDateTime ClosedTime = TDateTime::CurrentDateTime();
 		UnicodeString ClosedTimeStr = ClosedTime.FormatString("ddd d mmm, h:nn");
 		ClosedTabsTimeList->Insert(0,ClosedTimeStr);
-	    //Maks pamietanych X elementów
-	    if(ClosedTabsList->Count>CountUnCloseTabVal)
-	    {
+		//Maks pamietanych X elementów
+		if(ClosedTabsList->Count>CountUnCloseTabVal)
+		{
 		  while(ClosedTabsList->Count>CountUnCloseTabVal)
 		  {
-		    ClosedTabsList->Delete(CountUnCloseTabVal);
-		    ClosedTabsTimeList->Delete(CountUnCloseTabVal);
+			ClosedTabsList->Delete(CountUnCloseTabVal);
+			ClosedTabsTimeList->Delete(CountUnCloseTabVal);
 		  }
-	    }
-	    SaveClosedTabs();
-	    //Tworzenie interfejsu
+		}
+		SaveClosedTabs();
+		//Tworzenie interfejsu
 		BuildFrmClosedTabs();
 	  }
-	  SkipClosedTabsChk:
-	  //Skip
-    }
+	  SkipClosedTabsChk: { /* Skip */ }
+	}
   }
 
   return 0;
@@ -7076,25 +6647,17 @@ int __stdcall OnFetchAllTabs(WPARAM wParam, LPARAM lParam)
 	  }
 	  //Okno rozmowy na pierwszy plan
 	  SetForegroundWindow(hFrmSend);
-	  //Szukanie pseudo okna rozmowy
-	  if((!FileExists(GetThemeSkinDir()+"\\\\Skin.asz"))&&(ChkSkinEnabled())&&(!ChkNativeEnabled()))
-	  {
-		GetWindowTextW(hFrmSend,hFrmSendTextW,sizeof(hFrmSendTextW));
-		EnumWindows((WNDENUMPROC)FindFrmSendL,0);
-	  }
 	  //Szukanie pola wiadomosci
 	  if(!hRichEdit) EnumChildWindows(hFrmSend,(WNDENUMPROC)FindRichEdit,0);
 	  //Szukanie paska informacyjnego
-	  if(!hStatusBarPro) hStatusBarPro = FindWindowEx(hFrmSend,NULL,L"TStatusBarPro",NULL);
+	  if(!hStatusBar) hStatusBar = FindWindowEx(hFrmSend,NULL,L"TsStatusBar",NULL);
 	  //Szukanie paska narzedzi
 	  if(!hToolBar) EnumChildWindows(hFrmSend,(WNDENUMPROC)FindToolBar,0);
 	  //Szukanie paska zakladek + innych pod kontrolek
-	  if((!hTabsBar)||(!hTabListButton)||(!hScrollTabButton[0])||(!hScrollTabButton[1]))
+	  if((!hTabsBar)||(!hScrollTabButton[0])||(!hScrollTabButton[1]))
 	   EnumChildWindows(hFrmSend,(WNDENUMPROC)FindTabsBar,0);
 	  //Przypisanie nowej procki dla okna rozmowy
-	  OldFrmSendProc = (WNDPROC)SetWindowLongPtrW(hFrmSend, GWL_WNDPROC,(LONG)FrmSendProc);
-	  //Przypisanie nowej procki dla pseudo okna rozmowy
-	  if(hFrmSendL) OldFrmSendLProc = (WNDPROC)SetWindowLongPtrW(hFrmSendL, GWL_WNDPROC,(LONG)FrmSendLProc);
+	  OldFrmSendProc = (WNDPROC)SetWindowLongPtrW(hFrmSend, GWLP_WNDPROC,(LONG)FrmSendProc);
 	  //Pobranie rozmiaru+pozycji okna rozmowy
 	  GetFrmSendRect();
 	  //Ustawienie poprawnej pozycji okna
@@ -7139,33 +6702,17 @@ int __stdcall OnFetchAllTabs(WPARAM wParam, LPARAM lParam)
 	  }
 	  //Ustawienie statusu okna
 	  else FrmSendVisible = true;
-	  //Ukrywanie paska informacyjnego
-	  if(HideStatusBarChk)
-	  {
-		//Brak uchwytu do paska informacyjnego
-		if(!hStatusBarPro) hStatusBarPro = FindWindowEx(hFrmSend,NULL,L"TStatusBarPro",NULL);
-		//Pobieranie pozycji okna rozmowy
-		TRect WindowRect;
-		GetWindowRect(hFrmSend,&WindowRect);
-		//Ukrycie paska informacyjnego
-		SetWindowPos(hStatusBarPro,NULL,0,0,WindowRect.Width(),0,SWP_NOMOVE);
-		ShowWindow(hStatusBarPro,SW_HIDE);
-	  }
-	  //Ukrycie paska narzedzi
+	   //Ukrycie paska narzedzi
 	  if(HideToolBarChk)
 	  {
 		//Brak uchwytu do paska narzedzi
 		if(!hToolBar) EnumChildWindows(hFrmSend,(WNDENUMPROC)FindToolBar,0);
-		//Pobieranie pozycji okna rozmowy
+		//Pobieranie pozycji paska narzedzi
 		TRect WindowRect;
-		GetWindowRect(hFrmSend,&WindowRect);
+		GetWindowRect(hToolBar,&WindowRect);
 		//Ukrycie paska narzedzi
 		SetWindowPos(hToolBar,NULL,0,0,WindowRect.Width(),0,SWP_NOMOVE);
-	  }
-	  if((HideStatusBarChk)||(HideToolBarChk))
-	  {
 		//Pobieranie pozycji okna rozmowy
-		TRect WindowRect;
 		GetWindowRect(hFrmSend,&WindowRect);
 		//Odswiezenie okna rozmowy
 		SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width()+1,WindowRect.Height(),SWP_NOMOVE);
@@ -7544,8 +7091,7 @@ int __stdcall OnMsgComposing(WPARAM wParam, LPARAM lParam)
 	  if((FrmSendVisible)&&(!FrmSendSlideOut)&&(!FrmSendSlideIn))
 	  {
 		//Gdy kursor znajduje sie poza oknem rozmowy
-		if(((!hFrmSendL)&&((Mouse->CursorPos.y<FrmSendRect.Top)||(FrmSendRect.Bottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmSendRect.Left)||(FrmSendRect.Right<Mouse->CursorPos.x)))
-		||((hFrmSendL)&&((Mouse->CursorPos.y<FrmSendLRect.Top)||(FrmSendLRect.Bottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmSendLRect.Left)||(FrmSendLRect.Right<Mouse->CursorPos.x))))
+		if((Mouse->CursorPos.y<FrmSendRect.Top)||(FrmSendRect.Bottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmSendRect.Left)||(FrmSendRect.Right<Mouse->CursorPos.x))
 		{
 		  //Zatrzymanie timera wylaczanie tymczasowej blokady
 		  KillTimer(hTimerFrm,TIMER_FRMSENDBLOCKSLIDE);
@@ -7712,25 +7258,17 @@ int __stdcall OnPrimaryTab(WPARAM wParam, LPARAM lParam)
 		}
 		//Okno rozmowy na pierwszy plan
 		SetForegroundWindow(hFrmSend);
-		//Szukanie pseudo okna rozmowy
-		if((!FileExists(GetThemeSkinDir()+"\\\\Skin.asz"))&&(ChkSkinEnabled())&&(!ChkNativeEnabled()))
-		{
-		  GetWindowTextW(hFrmSend,hFrmSendTextW,sizeof(hFrmSendTextW));
-		  EnumWindows((WNDENUMPROC)FindFrmSendL,0);
-		}
 		//Szukanie pola wiadomosci
 		if(!hRichEdit) EnumChildWindows(hFrmSend,(WNDENUMPROC)FindRichEdit,0);
 		//Szukanie paska informacyjnego
-		if(!hStatusBarPro) hStatusBarPro = FindWindowEx(hFrmSend,NULL,L"TStatusBarPro",NULL);
+		if(!hStatusBar) hStatusBar = FindWindowEx(hFrmSend,NULL,L"TsStatusBar",NULL);
 		//Szukanie paska narzedzi
 		if(!hToolBar) EnumChildWindows(hFrmSend,(WNDENUMPROC)FindToolBar,0);
 		//Szukanie paska zakladek + innych pod kontrolek
-		if((!hTabsBar)||(!hTabListButton)||(!hScrollTabButton[0])||(!hScrollTabButton[1]))
+		if((!hTabsBar)||(!hScrollTabButton[0])||(!hScrollTabButton[1]))
 		 EnumChildWindows(hFrmSend,(WNDENUMPROC)FindTabsBar,0);
 		//Przypisanie nowej procki dla okna rozmowy
-		OldFrmSendProc = (WNDPROC)SetWindowLongPtrW(hFrmSend, GWL_WNDPROC,(LONG)FrmSendProc);
-		//Przypisanie nowej procki dla pseudo okna rozmowy
-		if(hFrmSendL) OldFrmSendLProc = (WNDPROC)SetWindowLongPtrW(hFrmSendL, GWL_WNDPROC,(LONG)FrmSendLProc);
+		OldFrmSendProc = (WNDPROC)SetWindowLongPtrW(hFrmSend, GWLP_WNDPROC,(LONG)FrmSendProc);
 		//Pobranie rozmiaru+pozycji okna rozmowy
 		GetFrmSendRect();
 		//Ustawienie poprawnej pozycji okna
@@ -7775,34 +7313,17 @@ int __stdcall OnPrimaryTab(WPARAM wParam, LPARAM lParam)
 		}
 		//Ustawienie statusu okna
 		else FrmSendVisible = true;
-		//Ukrywanie paska informacyjnego
-		if(HideStatusBarChk)
-		{
-		  //Brak uchwytu do paska informacyjnego
-		  if(!hStatusBarPro) hStatusBarPro = FindWindowEx(hFrmSend,NULL,L"TStatusBarPro",NULL);
-		  //Pobieranie pozycji okna rozmowy
-		  TRect WindowRect;
-		  GetWindowRect(hFrmSend,&WindowRect);
-		  //Ukrycie paska
-		  SetWindowPos(hStatusBarPro,NULL,0,0,WindowRect.Width(),0,SWP_NOMOVE);
-		  ShowWindow(hStatusBarPro,SW_HIDE);
-		}
 		//Ukrycie paska narzedzi
 		if(HideToolBarChk)
 		{
 		  //Brak uchwytu do paska narzedzi
 		  if(!hToolBar) EnumChildWindows(hFrmSend,(WNDENUMPROC)FindToolBar,0);
-		  //Pobieranie pozycji okna rozmowy
+		  //Pobieranie pozycji paska narzedzi
 		  TRect WindowRect;
-		  GetWindowRect(hFrmSend,&WindowRect);
+		  GetWindowRect(hToolBar,&WindowRect);
 		  //Ukrycie paska narzedzi
 		  SetWindowPos(hToolBar,NULL,0,0,WindowRect.Width(),0,SWP_NOMOVE);
-		}
-		//Odswiezenie okna rozmowy
-		if((HideStatusBarChk)||(HideToolBarChk))
-		{
 		  //Pobieranie pozycji okna rozmowy
-		  TRect WindowRect;
 		  GetWindowRect(hFrmSend,&WindowRect);
 		  //Odswiezenie okna rozmowy
 		  SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width()+1,WindowRect.Height(),SWP_NOMOVE);
@@ -7951,19 +7472,19 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 	  {
 		RecvMsgMessage = (PPluginMessage)lParam;
 		//Rodzaj wiadomosci
-	    if(RecvMsgMessage->Kind!=MSGKIND_RTT)
-	    {
+		if(RecvMsgMessage->Kind!=MSGKIND_RTT)
+		{
 		  //Jezeli wiadomosc nie jest pusta
 		  if(!((UnicodeString)((wchar_t*)RecvMsgMessage->Body)).IsEmpty())
 		  {
-		    //Dodawanie JID do kolejki nowych wiadomosci
+			//Dodawanie JID do kolejki nowych wiadomosci
 			if(MsgList->IndexOf(JID+Res)==-1)
 			 MsgList->Add(JID+Res);
 		  }
-	    }
+		}
 	  }
 	}
-    //Licznik nieprzeczytanych wiadomosci na pasku tytulu okna rozmowy
+	//Licznik nieprzeczytanych wiadomosci na pasku tytulu okna rozmowy
 	if(InactiveFrmNewMsgChk)
 	{
 	  RecvMsgContact = (PPluginContact)wParam;
@@ -7978,44 +7499,44 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 	  //Jezeli zakladka jest otwarta
 	  if(ResTabsList->IndexOf(JID+Res)!=-1)
 	  {
-	    //Jezeli okno rozmowy jest nieaktywne
-	    if(hFrmSend!=GetActiveWindow())
+		//Jezeli okno rozmowy jest nieaktywne
+		if(hFrmSend!=GetActiveWindow())
 		{
 		  RecvMsgMessage = (PPluginMessage)lParam;
 		  //Rodzaj wiadomosci
 		  if(RecvMsgMessage->Kind!=MSGKIND_RTT)
 		  {
-		    //Jezeli wiadomosc nie jest pusta
+			//Jezeli wiadomosc nie jest pusta
 			if(!((UnicodeString)((wchar_t*)RecvMsgMessage->Body)).IsEmpty())
 			{
 			  //Pobranie oryginalnego tekstu paska tytulu okna rozmowy
 			  if((TempTitlebar.IsEmpty())&&(!InactiveFrmNewMsgCount))
 			  {
-			    wchar_t TempTitlebarW[128];
-			    GetWindowTextW(hFrmSend,TempTitlebarW,sizeof(TempTitlebarW));
-			    TempTitlebar = (wchar_t*)TempTitlebarW;
+				wchar_t TempTitlebarW[128];
+				GetWindowTextW(hFrmSend,TempTitlebarW,sizeof(TempTitlebarW));
+				TempTitlebar = (wchar_t*)TempTitlebarW;
 			  }
 			  //Dodanie 1 do licznika nieprzeczytachy wiadomosci
 			  InactiveFrmNewMsgCount++;
 			  //Ustawianie nowego tekstu paska tytulu okna rozmowy
 			  SetWindowTextW(hFrmSend,("[" + IntToStr(InactiveFrmNewMsgCount)+ "] " + TempTitlebar).w_str());
-		    }
+			}
 		  }
-	    }
-	    else
-	    {
+		}
+		else
+		{
 		  //Kasowanie licznika nowych wiadomosci
 		  InactiveFrmNewMsgCount = 0;
 		  //Przywracanie oryginalnego tekstu paska tytulu okna rozmowy
 		  if(!TempTitlebar.IsEmpty())
 		  {
-		    SetWindowTextW(hFrmSend,TempTitlebar.w_str());
-		    TempTitlebar = "";
+			SetWindowTextW(hFrmSend,TempTitlebar.w_str());
+			TempTitlebar = "";
 		  }
-	    }
+		}
 	  }
 	}
-    //Licznik nieprzeczytanych wiadomosci na zakladkach
+	//Licznik nieprzeczytanych wiadomosci na zakladkach
 	if(InactiveTabsNewMsgChk)
 	{
 	  RecvMsgContact = (PPluginContact)wParam;
@@ -8034,33 +7555,33 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 	  if((JID+Res!=ActiveTabJIDRes)&&(ResTabsList->IndexOf(JID+Res)!=-1))
 	  {
 		RecvMsgMessage = (PPluginMessage)lParam;
-	    //Rodzaj wiadomosci
+		//Rodzaj wiadomosci
 		if(RecvMsgMessage->Kind!=MSGKIND_RTT)
-	    {
+		{
 		  //Jezeli wiadomosc nie jest pusta
 		  if(!((UnicodeString)((wchar_t*)RecvMsgMessage->Body)).IsEmpty())
 		  {
-		    //Pobieranie stanu nowych wiadomosci
+			//Pobieranie stanu nowych wiadomosci
 			int InactiveTabsCount = InactiveTabsNewMsgCount->ReadInteger("TabsMsg",JID+Res,0);
-		    //Zmiana stanu nowych wiadomosci
-		    InactiveTabsCount++;
-		    //Zapisywanie stanu nowych wiadomosci
+			//Zmiana stanu nowych wiadomosci
+			InactiveTabsCount++;
+			//Zapisywanie stanu nowych wiadomosci
 			InactiveTabsNewMsgCount->WriteInteger("TabsMsg",JID+Res,InactiveTabsCount);
-		    //Ustawianie tekstu na zakladce
-		    UnicodeString TabCaption;
-		    //Jezeli zakladka jest przypiera
-		    if(ClipTabsList->IndexOf(JID)!=-1) TabCaption = "";
-		    //Jezeli zakladka nie jest przypieta
-		    else
+			//Ustawianie tekstu na zakladce
+			UnicodeString TabCaption;
+			//Jezeli zakladka jest przypiera
+			if(ClipTabsList->IndexOf(JID)!=-1) TabCaption = "";
+			//Jezeli zakladka nie jest przypieta
+			else
 			{
 			  //Zakladka ze zwyklyum
 			  if(!RecvMsgContact->IsChat) TabCaption = (wchar_t*)RecvMsgContact->Nick;
 			  //Zakladka z czatem
 			  else
 			  {
-			    //Czat nie ze wtyczki
+				//Czat nie ze wtyczki
 				if(!RecvMsgContact->FromPlugin)
-			    {
+				{
 				  UnicodeString tmpJID = JID;
 				  tmpJID = tmpJID.Delete(1,7);
 				  TIniFile *Ini = new TIniFile(SessionFileDir);
@@ -8068,13 +7589,13 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 				  delete Ini;
 				  if(TabCaption.IsEmpty())
 				  {
-				    TabCaption = tmpJID;
-				    TabCaption = TabCaption.Delete(TabCaption.Pos("@"),TabCaption.Length());
+					TabCaption = tmpJID;
+					TabCaption = TabCaption.Delete(TabCaption.Pos("@"),TabCaption.Length());
 				  }
-			    }
-			    //Czat z wtyczki
-			    else
-			    {
+				}
+				//Czat z wtyczki
+				else
+				{
 				  TabCaption = JID;
 				  TabCaption = TabCaption.Delete(1,7);
 				  TabCaption = TabCaption.Delete(TabCaption.Pos("@"),TabCaption.Length());
@@ -8104,22 +7625,21 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 				  wstring result2 = regex_replace( input2, expr2, replace2, match_default | format_sed);
 				  Number = result2.c_str();
 				  TabCaption = TabCaption + " [nr" + Number + "]";
-			    }
+				}
 			  }
-		    }
-		    //Dodanie licznka do tekstu na zakladce
+			}
+			//Dodanie licznka do tekstu na zakladce
 			TabCaption = "[" + IntToStr(InactiveTabsCount) + "] " + TabCaption;
 			//Ustawianie nowego tekstu zakladki
 			PluginLink.UnhookEvent(OnTabCaption);
 			PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)TabCaption.w_str(),(LPARAM)RecvMsgContact);
 			PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_TABCAPTION,OnTabCaption);
 		  }
-	    }
+		}
 	  }
-	  SkipInactiveTabsNewMsgChk:
-	  //Skip
+	  SkipInactiveTabsNewMsgChk: { /* Skip */ }
 	}
-    //Notyfikacja nowej wiadomosci w chmurce
+	//Notyfikacja nowej wiadomosci w chmurce
 	if((InactiveNotiferNewMsgChk)&&(!BlockInactiveNotiferNewMsg)&&(!SecureMode))
 	{
 	  RecvMsgContact = (PPluginContact)wParam;
@@ -8134,30 +7654,30 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 	  //Jezeli zakladka jest otwarta
 	  if(ResTabsList->IndexOf(JID+Res)!=-1)
 	  {
-  	    //Jezeli JID wiadomosci jest inny niz JID aktwnej zakladki
-	    if(JID!=ActiveTabJID)
-	    {
+		//Jezeli JID wiadomosci jest inny niz JID aktwnej zakladki
+		if(JID!=ActiveTabJID)
+		{
 		  RecvMsgMessage = (PPluginMessage)lParam;
 		  //Rodzaj wiadomosci
 		  if((!RecvMsgMessage->ShowAsOutgoing)&&((RecvMsgMessage->Kind==MSGKIND_CHAT)||(RecvMsgMessage->Kind==MSGKIND_GROUPCHAT)))
 		  {
-		    UnicodeString Body = (wchar_t*)RecvMsgMessage->Body;
-		    //Jezeli wiadomosc nie jest pusta
-		    if(!Body.IsEmpty())
-		    {
+			UnicodeString Body = (wchar_t*)RecvMsgMessage->Body;
+			//Jezeli wiadomosc nie jest pusta
+			if(!Body.IsEmpty())
+			{
 			  //Pobieranie danych kontaktu
 			  UnicodeString Nick = (wchar_t*)RecvMsgContact->Nick;
 			  int UserIdx = RecvMsgContact->UserIdx;
 			  //Jezeli w wiadomosci znajduje sie obrazek
 			  if(Body.Pos("<AQQ_CACHE_ITEM")>0)
 			  {
-                //Ilosc obrazkow w wiadomosci
-			    int ItemsCount = 0;
-			    //Pobieranie tresci wiadomosci
-			    UnicodeString BodyTmp = Body;
-			    //Petla na wystepowanie obrazkow w wiadomosci
-			    while(BodyTmp.Pos("<AQQ_CACHE_ITEM"))
-			    {
+				//Ilosc obrazkow w wiadomosci
+				int ItemsCount = 0;
+				//Pobieranie tresci wiadomosci
+				UnicodeString BodyTmp = Body;
+				//Petla na wystepowanie obrazkow w wiadomosci
+				while(BodyTmp.Pos("<AQQ_CACHE_ITEM"))
+				{
 				  //Ustalenie ilosci obrazkow w wiadomosci
 				  ItemsCount++;
 				  //Tymczasowe usuwanie obrazka z wiadomosci
@@ -8165,12 +7685,12 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 				  ImgBodyTmp = ImgBodyTmp.Delete(1,ImgBodyTmp.Pos("<AQQ_CACHE_ITEM")-1);
 				  ImgBodyTmp = ImgBodyTmp.Delete(ImgBodyTmp.Pos(">")+1,ImgBodyTmp.Length());
 				  BodyTmp = StringReplace(BodyTmp, ImgBodyTmp, "", TReplaceFlags());
-			    }
-  			    //Usuwanie bialych znakow
-  			    BodyTmp.Trim();
-			    //Sprawdzanie zawartosci wiadomosci
-			    if(BodyTmp.IsEmpty())
-			    {
+				}
+				//Usuwanie bialych znakow
+				BodyTmp.Trim();
+				//Sprawdzanie zawartosci wiadomosci
+				if(BodyTmp.IsEmpty())
+				{
 				  //1 obrazek
 				  if(ItemsCount==1)
 				   Body = "[" + Nick + " przesy³a obrazek]";
@@ -8180,20 +7700,20 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 				  //5+ obrazkow
 				  else
 				   Body = "[" + Nick + " przesy³a "+IntToStr(ItemsCount)+" obrazków]";
-			    }
-			    //Obrazki wraz z tekstem
-			    else
-			    {
+				}
+				//Obrazki wraz z tekstem
+				else
+				{
 				  //Petla na wystepowanie obrazkow w wiadomosci
 				  while(Body.Pos("<AQQ_CACHE_ITEM"))
 				  {
-				    //Tymczasowe usuwanie obrazka z wiadomosci
-				    UnicodeString ImgBodyTmp = BodyTmp;
-				    ImgBodyTmp = ImgBodyTmp.Delete(1,ImgBodyTmp.Pos("<AQQ_CACHE_ITEM")-1);
-				    ImgBodyTmp = ImgBodyTmp.Delete(ImgBodyTmp.Pos(">")+1,ImgBodyTmp.Length());
-				    Body = StringReplace(Body, ImgBodyTmp, "[Obrazek]", TReplaceFlags());
+					//Tymczasowe usuwanie obrazka z wiadomosci
+					UnicodeString ImgBodyTmp = BodyTmp;
+					ImgBodyTmp = ImgBodyTmp.Delete(1,ImgBodyTmp.Pos("<AQQ_CACHE_ITEM")-1);
+					ImgBodyTmp = ImgBodyTmp.Delete(ImgBodyTmp.Pos(">")+1,ImgBodyTmp.Length());
+					Body = StringReplace(Body, ImgBodyTmp, "[Obrazek]", TReplaceFlags());
 				  }
-			    }
+				}
 			  }
 			  //Generowanie ID dla chmurek
 			  DWORD TickID = GetTickCount();
@@ -8201,7 +7721,7 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 			  TPluginShowInfo PluginShowInfo;
 			  PluginShowInfo.cbSize = sizeof(TPluginShowInfo);
 			  if(CloudTickModeChk) PluginShowInfo.Event = tmeMsg;
-  			  else PluginShowInfo.Event = tmePseudoMsg;
+			  else PluginShowInfo.Event = tmePseudoMsg;
 			  PluginShowInfo.Text = Nick.w_str();
 			  PluginShowInfo.ImagePath = (wchar_t*)PluginLink.CallService(AQQ_FUNCTION_GETPNG_FILEPATH,8,0);
 			  PluginShowInfo.TimeOut = 1000 * CloudTimeOut;
@@ -8220,43 +7740,43 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 			  else PluginShowInfo.Tick = 0;
 			  PluginShowInfo.ActionID = ("EXEC_MSG:" + IntToStr(UserIdx) + ";" + JID + "/" + Res).w_str();
 			  PluginLink.CallService(AQQ_FUNCTION_SHOWINFO,0,(LPARAM)(&PluginShowInfo));
-		    }
+			}
 		  }
-	    }
-	    //Jezeli okno rozmowy nie jest aktywne
-	    else if(hFrmSend!=GetActiveWindow())
-	    {
+		}
+		//Jezeli okno rozmowy nie jest aktywne
+		else if(hFrmSend!=GetActiveWindow())
+		{
 		  RecvMsgMessage = (PPluginMessage)lParam;
 		  //Rodzaj wiadomosci
 		  if((!RecvMsgMessage->ShowAsOutgoing)&&((RecvMsgMessage->Kind==MSGKIND_CHAT)||(RecvMsgMessage->Kind==MSGKIND_GROUPCHAT)))
 		  {
 			UnicodeString Body = (wchar_t*)RecvMsgMessage->Body;
 			//Jezeli wiadomosc nie jest pusta
-		    if(!Body.IsEmpty())
-		    {
+			if(!Body.IsEmpty())
+			{
 			  //Pobieranie danych kontaktu
 			  UnicodeString Nick = (wchar_t*)RecvMsgContact->Nick;
 			  int UserIdx = RecvMsgContact->UserIdx;
 			  //Jezeli w wiadomosci znajduje sie obrazek
 			  if(Body.Pos("<AQQ_CACHE_ITEM")>0)
 			  {
-                //Ilosc obrazkow w wiadomosci
-			    int ItemsCount = 0;
-			    //Pobieranie tresci wiadomosci
-			    UnicodeString BodyTmp = Body;
-			    //Petla na wystepowanie obrazkow w wiadomosci
-			    while(BodyTmp.Pos("<AQQ_CACHE_ITEM"))
-			    {
-                  //Ustalenie ilosci obrazkow w wiadomosci
+				//Ilosc obrazkow w wiadomosci
+				int ItemsCount = 0;
+				//Pobieranie tresci wiadomosci
+				UnicodeString BodyTmp = Body;
+				//Petla na wystepowanie obrazkow w wiadomosci
+				while(BodyTmp.Pos("<AQQ_CACHE_ITEM"))
+				{
+				  //Ustalenie ilosci obrazkow w wiadomosci
 				  ItemsCount++;
 				  //Tymczasowe usuwanie obrazka z wiadomosci
 				  UnicodeString ImgBodyTmp = BodyTmp;
 				  ImgBodyTmp = ImgBodyTmp.Delete(1,ImgBodyTmp.Pos("<AQQ_CACHE_ITEM")-1);
 				  ImgBodyTmp = ImgBodyTmp.Delete(ImgBodyTmp.Pos(">")+1,ImgBodyTmp.Length());
 				  BodyTmp = StringReplace(BodyTmp, ImgBodyTmp, "", TReplaceFlags());
-			    }
-			    //Usuwanie bialych znakow
-			    BodyTmp.Trim();
+				}
+				//Usuwanie bialych znakow
+				BodyTmp.Trim();
 			    //Sprawdzanie zawartosci wiadomosci
 			    if(BodyTmp.IsEmpty())
 			    {
@@ -8280,7 +7800,7 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 				    UnicodeString ImgBodyTmp = Body;
 				    ImgBodyTmp = ImgBodyTmp.Delete(1,ImgBodyTmp.Pos("<AQQ_CACHE_ITEM")-1);
 				    ImgBodyTmp = ImgBodyTmp.Delete(ImgBodyTmp.Pos(">")+1,ImgBodyTmp.Length());
-				    Body = StringReplace(Body, ImgBodyTmp, "[Obrazek]", TReplaceFlags());
+					Body = StringReplace(Body, ImgBodyTmp, "[Obrazek]", TReplaceFlags());
 				  }
 			    }
 			  }
@@ -8314,7 +7834,7 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 	    }
 	  }
 	}
-    //Notyfikcja pisania wiadomosci
+	//Notyfikcja pisania wiadomosci
 	if(ChatStateNotiferNewMsgChk)
 	{
 	  RecvMsgContact = (PPluginContact)wParam;
@@ -8328,38 +7848,38 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 	    int ChatState = RecvMsgMessage->ChatState;
 	    //Jezeli okno rozmowy jest nieaktywne
 	    if(hFrmSend!=GetActiveWindow())
-	    {
-  		  //Pisanie wiadomosci
+		{
+		  //Pisanie wiadomosci
 		  if((ChatState==2)&&(LastChatState!=ChatState))
 		  {
-		    //Zapamietywanie aktualnego stanu ikonek
-		    LastChatState = ChatState;
-		    //Pobranie aktualnych ikonek
-		    if(!hIconSmall)
-		    {
-  			  hIconSmall = (HICON)SendMessage(hFrmSend, WM_GETICON, (WPARAM)ICON_SMALL, 0);
-			  hIconBig = (HICON)SendMessage(hFrmSend, WM_GETICON, (WPARAM)ICON_BIG, 0);
-		    }
+			//Zapamietywanie aktualnego stanu ikonek
+			LastChatState = ChatState;
+			//Pobranie aktualnych ikonek
+			if(!hIconSmall)
+			{
+			  hIconSmall = (HICON)SendMessage(hFrmSend, WM_GETICON, ICON_SMALL, 0);
+			  hIconBig = (HICON)SendMessage(hFrmSend, WM_GETICON, ICON_BIG, 0);
+			}
 			//Ustawienie nowej malej ikonki
-			SendMessage(hFrmSend, WM_SETICON, (WPARAM)ICON_SMALL, (LPARAM)LoadImage(0, ComposingIconSmall.w_str(), IMAGE_ICON, 16, 16, LR_LOADFROMFILE));
-		    //Ustawienie nowej duzej ikonki
-		    SendMessage(hFrmSend, WM_SETICON, (WPARAM)ICON_BIG, (LPARAM)LoadImage(0, ComposingIconBig.w_str(), IMAGE_ICON, 32, 32, LR_LOADFROMFILE));
+			SendMessage(hFrmSend, WM_SETICON, ICON_SMALL, (LPARAM)LoadImage(0, ComposingIconSmall.w_str(), IMAGE_ICON, 16, 16, LR_LOADFROMFILE));
+			//Ustawienie nowej duzej ikonki
+			SendMessage(hFrmSend, WM_SETICON, ICON_BIG, (LPARAM)LoadImage(0, ComposingIconBig.w_str(), IMAGE_ICON, 32, 32, LR_LOADFROMFILE));
 		  }
 		  //Spauzowanie
 		  else if((ChatState==5)&&(LastChatState!=ChatState))
 		  {
-		    //Zapamietywanie aktualnego stanu ikonek
-		    LastChatState = ChatState;
-		    //Pobranie aktualnych ikonek
-		    if(!hIconSmall)
-		    {
-			  hIconSmall = (HICON)SendMessage(hFrmSend, WM_GETICON, (WPARAM)ICON_SMALL, 0);
-			  hIconBig = (HICON)SendMessage(hFrmSend, WM_GETICON, (WPARAM)ICON_BIG, 0);
-		    }
-		    //Ustawienie nowej malej ikonki
-		    SendMessage(hFrmSend, WM_SETICON, (WPARAM)ICON_SMALL, (LPARAM)LoadImage(0, PauseIconSmall.w_str(), IMAGE_ICON, 16, 16, LR_LOADFROMFILE));
+			//Zapamietywanie aktualnego stanu ikonek
+			LastChatState = ChatState;
+			//Pobranie aktualnych ikonek
+			if(!hIconSmall)
+			{
+			  hIconSmall = (HICON)SendMessage(hFrmSend, WM_GETICON, ICON_SMALL, 0);
+			  hIconBig = (HICON)SendMessage(hFrmSend, WM_GETICON, ICON_BIG, 0);
+			}
+			//Ustawienie nowej malej ikonki
+			SendMessage(hFrmSend, WM_SETICON, ICON_SMALL, (LPARAM)LoadImage(0, PauseIconSmall.w_str(), IMAGE_ICON, 16, 16, LR_LOADFROMFILE));
 		    //Ustawienie nowej duzej ikonki
-		    SendMessage(hFrmSend, WM_SETICON, (WPARAM)ICON_BIG, (LPARAM)LoadImage(0, PauseIconBig.w_str(), IMAGE_ICON, 32, 32, LR_LOADFROMFILE));
+		    SendMessage(hFrmSend, WM_SETICON, ICON_BIG, (LPARAM)LoadImage(0, PauseIconBig.w_str(), IMAGE_ICON, 32, 32, LR_LOADFROMFILE));
 		  }
 		  //Inny stan
 		  else if(LastChatState!=ChatState)
@@ -8367,18 +7887,18 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
             //Zapamietywanie aktualnego stanu ikonek
 		    LastChatState = ChatState;
   		    //Pobranie aktualnych ikonek
-		    if(hIconSmall)
+			if(hIconSmall)
 		    {
   			  //Ustawienie oryginalnej malej ikonki
-			  SendMessage(hFrmSend, WM_SETICON, (WPARAM)ICON_SMALL, (LPARAM)hIconSmall);
+			  SendMessage(hFrmSend, WM_SETICON, ICON_SMALL, (LPARAM)hIconSmall);
 			  hIconSmall = NULL;
 			  //Ustawienie oryginalnej duzej ikonki
-			  SendMessage(hFrmSend, WM_SETICON, (WPARAM)ICON_BIG, (LPARAM)hIconBig);
+			  SendMessage(hFrmSend, WM_SETICON, ICON_BIG, (LPARAM)hIconBig);
 			  hIconBig = NULL;
 		    }
 		  }
 	    }
-	    //Notyfikacja na zakladkach
+		//Notyfikacja na zakladkach
 	    //Pisanie wiadomosci
 	    if((ChatState==2)&&(ChatState!=PreMsgStateList->ReadInteger("PreMsgState",JID+Res,0)))
 	    {
@@ -8424,7 +7944,7 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 	  }
     }
     //SideSlide - wysuwanie okna rozmowy zza krawedzi ekranu
-    if((FrmSendSlideChk)&&(SlideInAtNewMsgChk)&&(!FrmSendVisible)&&(!FrmSendBlockSlide))
+	if((FrmSendSlideChk)&&(SlideInAtNewMsgChk)&&(!FrmSendVisible)&&(!FrmSendBlockSlide))
 	{
 	  RecvMsgContact = (PPluginContact)wParam;
 	  UnicodeString JID = (wchar_t*)RecvMsgContact->JID;
@@ -8435,28 +7955,28 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 	  if(ResTabsList->IndexOf(JID+Res)!=-1)
 	  {
 		RecvMsgMessage = (PPluginMessage)lParam;
-	    //Rodzaj wiadomosci
+		//Rodzaj wiadomosci
 		if((!RecvMsgMessage->ShowAsOutgoing)&&((RecvMsgMessage->Kind==MSGKIND_CHAT)||(RecvMsgMessage->Kind==MSGKIND_GROUPCHAT)))
-	    {
+		{
 		  //Jezeli wiadomosc nie jest pusta
 		  if(!((UnicodeString)((wchar_t*)RecvMsgMessage->Body)).IsEmpty())
 		  {
-		    //Sprawdzanie czy aktywna jest aplikacja pelno ekranowa
-		    ChkFullScreenMode();
-		    //Blokowanie wysuwania przy aplikacji pelnoekranowej
-		    if((FullScreenMode)&&(!SideSlideFullScreenMode))
-		    {
+			//Sprawdzanie czy aktywna jest aplikacja pelno ekranowa
+			ChkFullScreenMode();
+			//Blokowanie wysuwania przy aplikacji pelnoekranowej
+			if((FullScreenMode)&&(!SideSlideFullScreenMode))
+			{
 			  //Blokada FrmSendSlideIn
 			  FullScreenMode = false;
-		    }
-		    else
-		    {
+			}
+			else
+			{
 			  //Status FrmSendSlideIn
-  			  FrmSendSlideIn = true;
+			  FrmSendSlideIn = true;
 			  //Pobieranie pozycji okna rozmowy
 			  TRect WindowRect;
 			  GetWindowRect(hFrmSend,&WindowRect);
-    		  //Odswiezenie okna rozmowy
+			  //Odswiezenie okna rozmowy
 			  SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width(),WindowRect.Height()+1,SWP_NOMOVE);
 			  SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width(),WindowRect.Height(),SWP_NOMOVE);
 			  //Wlacznie FrmSendSlideIn (part II)
@@ -8464,20 +7984,20 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 			  //Schowanie okna kontaktow
 			  if((FrmMainSlideChk)&&(FrmMainSlideHideMode==1))
 			  {
-			    if((FrmMainVisible)&&(!FrmMainBlockSlide)&&(!FrmMainSlideOut)&&(!FrmMainSlideIn))
-			    {
+				if((FrmMainVisible)&&(!FrmMainBlockSlide)&&(!FrmMainSlideOut)&&(!FrmMainSlideIn))
+				{
 				  //Status FrmMainSlideOut
 				  FrmMainSlideOut = true;
-  				  FrmMainSlideOutActivFrmSend = true;
+				  FrmMainSlideOutActivFrmSend = true;
 				  //Wlaczenie FrmMainSlideOut (part I)
 				  SetTimer(hTimerFrm,TIMER_PREFRMMAINDSLIDEOUT,1,(TIMERPROC)TimerFrmProc);
-			    }
+				}
 			  }
-		    }
+			}
 		  }
-	    }
-      }
-    }
+		}
+	  }
+	}
 	//Dodawanie JID do kolejki pokazywania wiadomosci przy skrocie Ctrl+Shift+F1 lub nieprzypisanym skrotem do zakladki
 	if((FrmMainSlideChk)||(NewMgsHoyKeyChk))
 	{
@@ -8494,13 +8014,13 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 	  if(ResTabsList->IndexOf(JID+Res)==-1)
 	  {
 		RecvMsgMessage = (PPluginMessage)lParam;
-	    //Rodzaj wiadomosci
+		//Rodzaj wiadomosci
 		if(RecvMsgMessage->Kind!=MSGKIND_RTT)
 		{
 		  //Jezeli wiadomosc nie jest pusta
 		  if(!((UnicodeString)((wchar_t*)RecvMsgMessage->Body)).IsEmpty())
 		  {
-		    //Dodawanie JID do kolejki nowych wiadomosci
+			//Dodawanie JID do kolejki nowych wiadomosci
 			if(UnOpenMsgList->IndexOf(JID+Res)==-1)
 			 UnOpenMsgList->Add(JID+Res);
 			//Pobieranie i zapisywanie indeksu kontatku
@@ -8601,10 +8121,7 @@ int __stdcall OnResourceChanged(WPARAM wParam, LPARAM lParam)
 	if(TweakFrmMainTitlebarChk)
 	{
 	  if((TweakFrmMainTitlebarMode==1)&&(TweakFrmMainTitlebarModeEx==2))
-	  {
-		if(hFrmMain) SetWindowTextW(hFrmMain,("AQQ [" + ResourceName + "]").w_str());
-		if(hFrmMainL) SetWindowTextW(hFrmMainL,("AQQ [" + ResourceName + "]").w_str());
-	  }
+	   SetWindowTextW(hFrmMain,("AQQ [" + ResourceName + "]").w_str());
 	}
 	//Ustawienie poprawnej pozycji okna kontaktow
 	if(FrmMainSlideChk)
@@ -9267,39 +8784,12 @@ int __stdcall OnThemeChanged(WPARAM wParam, LPARAM lParam)
   //Zmiany w oknie rozmowy
   if(hFrmSend)
   {
-	//Przypisanie starej procki do pseudo okna rozmowy
-	if(OldFrmSendLProc)
-	{
-	  SetWindowLongPtrW(hFrmSendL, GWL_WNDPROC,(LONG)OldFrmSendLProc);
-	  OldFrmSendLProc = NULL;
-	  hFrmSendL = NULL;
-	}
-	//Szukanie pseudo okna rozmowy
-	if((!FileExists(ThemeDir+"\\\\Skin\\\\Skin.asz"))&&(ChkSkinEnabled())&&(!ChkNativeEnabled()))
-	{
-	  GetWindowTextW(hFrmSend,hFrmSendTextW,sizeof(hFrmSendTextW));
-	  EnumWindows((WNDENUMPROC)FindFrmSendL,0);
-	}
 	//Szukanie pola wiadomosci
 	EnumChildWindows(hFrmSend,(WNDENUMPROC)FindRichEdit,0);
-	//Przypisanie nowej procki dla pseudo okna rozmowy
-	if(hFrmSendL) OldFrmSendLProc = (WNDPROC)SetWindowLongPtrW(hFrmSendL, GWL_WNDPROC,(LONG)FrmSendLProc);
   }
   //Zmiany w oknie kontaktow
-  //Przypisanie starej procki do pseudo okna kontaktow
-  if(OldFrmMainLProc)
-  {
-	SetWindowLongPtrW(hFrmMainL, GWL_WNDPROC,(LONG)OldFrmMainLProc);
-	OldFrmMainLProc = NULL;
-	hFrmMainL = NULL;
-  }
-  //Szukanie pseudo okna kontatkow
-  if((!FileExists(ThemeDir+"\\\\Skin\\\\Skin.asz"))&&(ChkSkinEnabled())&&(!ChkNativeEnabled()))
-   EnumWindows((WNDENUMPROC)FindFrmMainL,0);
   //Szukanie uchwytu do kontrolki IE w oknie kontatkow
   EnumChildWindows(hFrmMain,(WNDENUMPROC)FindFrmMainFocus,0);
-  //Przypisanie nowej procki dla pseudo okna kontaktow
-  if(hFrmMainL) OldFrmMainLProc = (WNDPROC)SetWindowLongPtrW(hFrmMainL, GWL_WNDPROC,(LONG)FrmMainLProc);
   //Ustawianie poprawnej pozycji okna rozmowy
   if((FrmSendSlideChk)&&(hFrmSend))
   {
@@ -9443,8 +8933,6 @@ int __stdcall OnTrayClick(WPARAM wParam, LPARAM lParam)
 }
 //---------------------------------------------------------------------------
 
-int Test = 0;
-
 //Hook na zamkniecie/otwarcie okien
 int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 {
@@ -9462,9 +8950,6 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  hFrmMain = (HWND)(int)WindowEvent->Handle;
 	  //Pobieranie oryginalnego titlebar glownego okna
 	  GetWindowTextW(hFrmMain,OryginalTitlebar,sizeof(OryginalTitlebar));
-	  //Szukanie uchwytu do pseudo okna glownego
-	  if((!FileExists(GetThemeSkinDir()+"\\\\Skin.asz"))&&(ChkSkinEnabled())&&(!ChkNativeEnabled()))
-	   EnumWindows((WNDENUMPROC)FindFrmMainL,0);
 	  //Szukanie uchwytu do kontrolki IE w oknie kontatkow
 	  EnumChildWindows(hFrmMain,(WNDENUMPROC)FindFrmMainFocus,0);
 	  //Pobranie rozmiaru+pozycji okna kontatkow
@@ -9472,12 +8957,12 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  //Zmiana pozycji okna kontatkow
 	  if(FrmMainSlideChk)
 	  {
-	    //Zmiana stanu okna kontatkow
-	    SetWindowPos(hFrmMain,HWND_NOTOPMOST,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
-	    //Ustawienie poprawnej pozycji okna kontaktow
-	    SetFrmMainPos();
-	    //Pobranie rozmiaru+pozycji okna kontatkow
-	    GetFrmMainRect();
+		//Zmiana stanu okna kontatkow
+		SetWindowPos(hFrmMain,HWND_NOTOPMOST,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
+		//Ustawienie poprawnej pozycji okna kontaktow
+		SetFrmMainPos();
+		//Pobranie rozmiaru+pozycji okna kontatkow
+		GetFrmMainRect();
 	    //Aktywacja okna kontaktow
 	    BringWindowToTop(hFrmMain);
 	    SetForegroundWindow(hFrmMain);
@@ -9490,7 +8975,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	    SaveSetup.Value = IntToStr((int)FrmMainRect.Left).w_str();
 	    PluginLink.CallService(AQQ_FUNCTION_SAVESETUP,1,(LPARAM)(&SaveSetup));
 	    SaveSetup.Section = L"Position";
-	    SaveSetup.Ident = L"MainTop";
+		SaveSetup.Ident = L"MainTop";
 	    SaveSetup.Value = IntToStr((int)FrmMainRect.Top).w_str();
 	    PluginLink.CallService(AQQ_FUNCTION_SAVESETUP,1,(LPARAM)(&SaveSetup));
 	    //Odswiezenie ustawien
@@ -9500,9 +8985,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  FrmMainVisible = true;
 	  FrmMainBlockSlide = false;
 	  //Przypisanie nowej procki dla okna kontatkow
-	  OldFrmMainProc = (WNDPROC)SetWindowLongPtrW(hFrmMain, GWL_WNDPROC,(LONG)FrmMainProc);
-	  //Przypisanie nowej procki dla pseudo okna kontatkow
-	  if(hFrmMainL) OldFrmMainLProc = (WNDPROC)SetWindowLongPtrW(hFrmMainL, GWL_WNDPROC,(LONG)FrmMainLProc);
+	  OldFrmMainProc = (WNDPROC)SetWindowLongPtrW(hFrmMain, GWLP_WNDPROC,(LONG)FrmMainProc);
 	  //Odczytywanie sesji
 	  if(RestoreTabsSessionChk)
 	  {
@@ -9568,38 +9051,30 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	    {
 		  //Nazwa aktywnego profilu
 		  if(TweakFrmMainTitlebarModeEx==0)
-		  {
-		    SetWindowTextW(hFrmMain,("AQQ [" + ProfileName + "]").w_str());
-		    if(hFrmMainL) SetWindowTextW(hFrmMainL,("AQQ [" + ProfileName + "]").w_str());
-		  }
+		   SetWindowTextW(hFrmMain,("AQQ [" + ProfileName + "]").w_str());
 		  //Nazwa komputera
 		  else if(TweakFrmMainTitlebarModeEx==1)
-		  {
-		    SetWindowTextW(hFrmMain,("AQQ [" + ComputerName + "]").w_str());
-		    if(hFrmMainL) SetWindowTextW(hFrmMainL,("AQQ [" + ComputerName + "]").w_str());
-		  }
+		   SetWindowTextW(hFrmMain,("AQQ [" + ComputerName + "]").w_str());
 		  //Nazwa zasobu glownego konta Jabber
 		  else
-		  {
-		    SetWindowTextW(hFrmMain,("AQQ [" + ResourceName + "]").w_str());
-		    if(hFrmMainL) SetWindowTextW(hFrmMainL,("AQQ [" + ResourceName + "]").w_str());
-	      }
-	    }
-	    //Tryb II
-	    else if(TweakFrmMainTitlebarMode==2)
-	    {
+		   SetWindowTextW(hFrmMain,("AQQ [" + ResourceName + "]").w_str());
+		}
+		//Tryb II
+		else if(TweakFrmMainTitlebarMode==2)
+		{
 		  //Wlasny tekst
 		  if(!TweakFrmMainTitlebarText.IsEmpty())
 		  {
-		    SetWindowTextW(hFrmMain,("AQQ " + TweakFrmMainTitlebarText).w_str());
-		    if(hFrmMainL) SetWindowTextW(hFrmMainL,("AQQ " + TweakFrmMainTitlebarText).w_str());
+			//Pusty tekst
+			if(TweakFrmMainTitlebarText=="-")
+			 SetWindowTextW(hFrmMain,L"");
+			//Zdefiniowany tekst
+			else
+			 SetWindowTextW(hFrmMain,("AQQ " + TweakFrmMainTitlebarText).w_str());
 		  }
 		  //Brak wersji komunikatora
 		  else
-		  {
-		    SetWindowTextW(hFrmMain,L"AQQ");
-		    if(hFrmMainL) SetWindowTextW(hFrmMainL,L"AQQ");
-		  }
+		   SetWindowTextW(hFrmMain,L"AQQ");
 		}
 	  }
 	}
@@ -9609,18 +9084,11 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  //Przypisanie starej procki do okna rozmowy
 	  if(OldFrmMainProc)
 	  {
-		SetWindowLongPtrW(hFrmMain, GWL_WNDPROC,(LONG)OldFrmMainProc);
-	    OldFrmMainProc = NULL;
-	  }
-	  if(OldFrmMainLProc)
-	  {
-	    SetWindowLongPtrW(hFrmMainL, GWL_WNDPROC,(LONG)OldFrmMainLProc);
-	    OldFrmMainLProc = NULL;
+		SetWindowLongPtrW(hFrmMain, GWLP_WNDPROC,(LONG)OldFrmMainProc);
+		OldFrmMainProc = NULL;
 	  }
 	  //Usuniecie uchwytu do okna kontaktow
 	  hFrmMain = NULL;
-	  //Usuniecie uchwytu do pseudo okna kontaktow
-	  hFrmMainL = NULL;
 	}
 
 	//Otwarcie okna rozmowy
@@ -9631,21 +9099,15 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	    //Ustawianie stanu okna
 	    FrmSendOpening = true;
 	    //Przypisanie uchwytu do okna rozmowy
-	    hFrmSend = (HWND)WindowEvent->Handle;
-	    //Szukanie pseudo okna rozmowy
-	    if((!FileExists(GetThemeSkinDir()+"\\\\Skin.asz"))&&(ChkSkinEnabled())&&(!ChkNativeEnabled()))
-	    {
-          GetWindowTextW(hFrmSend,hFrmSendTextW,sizeof(hFrmSendTextW));
-		  EnumWindows((WNDENUMPROC)FindFrmSendL,0);;
-	    }
-	    //Szukanie pola wiadomosci
+		hFrmSend = (HWND)WindowEvent->Handle;
+		//Szukanie pola wiadomosci
 	    if(!hRichEdit) EnumChildWindows(hFrmSend,(WNDENUMPROC)FindRichEdit,0);
 	    //Szukanie paska informacyjnego
-	    if(!hStatusBarPro) SetTimer(hTimerFrm,TIMER_FINDSTATUSBARPRO,500,(TIMERPROC)TimerFrmProc);
+		if(!hStatusBar) SetTimer(hTimerFrm,TIMER_FINDSTATUSBARPRO,500,(TIMERPROC)TimerFrmProc);
 	    //Szuknie paska narzedzi
 	    if(!hToolBar) SetTimer(hTimerFrm,TIMER_FINDTOOLBAR,500,(TIMERPROC)TimerFrmProc);
 	    //Wlaczenie timera szukania paska zakladek + innych pod kontrolek
-	    if((!hTabsBar)||(!hTabListButton)||(!hScrollTabButton[0])||(!hScrollTabButton[1]))
+		if((!hTabsBar)||(!hScrollTabButton[0])||(!hScrollTabButton[1]))
 	     SetTimer(hTimerFrm,TIMER_FINDTABSBAR,500,(TIMERPROC)TimerFrmProc);
 	    //Pobranie rozmiaru+pozycji okna rozmowy
 		GetFrmSendRect();
@@ -9660,10 +9122,8 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 		//Ustawienie statusu okna
 	    else FrmSendVisible = true;
 		//Przypisanie nowej procki dla okna rozmowy
-		OldFrmSendProc = (WNDPROC)SetWindowLongPtrW(hFrmSend, GWL_WNDPROC,(LONG)FrmSendProc);
-		//Przypisanie nowej procki dla pseudo okna rozmowy
-		if(hFrmSendL) OldFrmSendLProc = (WNDPROC)SetWindowLongPtrW(hFrmSendL, GWL_WNDPROC,(LONG)FrmSendLProc);
-	    //Tworzenie interfejsu tworzenia okna rozmowy na wierzchu
+		OldFrmSendProc = (WNDPROC)SetWindowLongPtrW(hFrmSend, GWLP_WNDPROC,(LONG)FrmSendProc);
+		//Tworzenie interfejsu tworzenia okna rozmowy na wierzchu
 	    BuildStayOnTop();
 	    //Tworzenie elementu przypinania zakladek
 	    BuildClipTab();
@@ -9694,14 +9154,8 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  //Przypisanie starej procki do okna rozmowy
 	  if(OldFrmSendProc)
 	  {
-	    SetWindowLongPtrW(hFrmSend, GWL_WNDPROC,(LONG)OldFrmSendProc);
+	    SetWindowLongPtrW(hFrmSend, GWLP_WNDPROC,(LONG)OldFrmSendProc);
 	    OldFrmSendProc = NULL;
-	  }
-	  //Przypisanie starej procki do pseudo okna rozmowy
-	  if(OldFrmSendLProc)
-	  {
-  	    SetWindowLongPtrW(hFrmSendL, GWL_WNDPROC,(LONG)OldFrmSendLProc);
-	    OldFrmSendLProc = NULL;
 	  }
 	  //Ustawienie statusu okna dla SideSlide
 	  FrmSendSlideIn = false;
@@ -9713,8 +9167,6 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  ActiveTabJIDRes = "";
 	  //Usuniecie uchwytu do okna rozmowy
 	  hFrmSend = NULL;
-	  //Usuniecie uchwytu do pseudo okna rozmowy
-	  hFrmSendL = NULL;
 	  //Szybki dostep niewyslanych wiadomosci
 	  DestroyFrmUnsentMsg();
 	  BuildFrmUnsentMsg();
@@ -9779,10 +9231,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	    if(TweakFrmMainTitlebarChk)
 	    {
 		  if((TweakFrmMainTitlebarMode==1)&&(TweakFrmMainTitlebarModeEx==2))
-		  {
-		    SetWindowTextW(hFrmMain,("AQQ [" + ResourceName + "]").w_str());
-		    if(hFrmMainL) SetWindowTextW(hFrmMainL,("AQQ [" + ResourceName + "]").w_str());
-		  }
+		   SetWindowTextW(hFrmMain,("AQQ [" + ResourceName + "]").w_str());
 	    }
 	  }
 	  //Ponowne przypisanie globalnych uchwytow
@@ -9791,7 +9240,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 
     //Otworzenie okna emotek
 	if((EventType=="TfrmGraphic")&&(Event==WINDOW_EVENT_CREATE))
-    {
+	{
 	  //Zatrzymanie timerow wylaczanie tymczasowej blokady
 	  KillTimer(hTimerFrm,TIMER_FRMSENDBLOCKSLIDE);
 	  KillTimer(hTimerFrm,TIMER_FRMMAINBLOCKSLIDE);
@@ -9803,30 +9252,21 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  //Trzymanie okna na wierzchu
 	  if(((StayOnTopChk)&&(SetStayOnTop))||(FrmSendSlideChk))
 	   SetWindowPos((HWND)(int)WindowEvent->Handle,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE | SWP_NOSIZE);
-    }
+	}
 	//Zamkniecie okna emotek
-    if((EventType=="TfrmGraphic")&&(Event==WINDOW_EVENT_CLOSE))
-    {
+	if((EventType=="TfrmGraphic")&&(Event==WINDOW_EVENT_CLOSE))
+	{
 	  //Ustawienie statusu okna dla SideSlide
 	  if((FrmSendSlideChk)&&(!SetStayOnTop)) FrmSendBlockSlide = false;
 	  FrmMainBlockSlide = false;
 	  FrmSendBlockSlideWndEvent = false;
 	  FrmMainBlockSlideWndEvent = false;
-	  //Emulacja klikniecia myszka w pole tekstowe
+	  //Tworzenie timera emulacji klikniecia myszka w pole tekstowe
 	  if((!FrmSetStateExist)&&(hRichEdit))
-	  {
-		TRect RichEditRect;
-		GetWindowRect(hRichEdit,&RichEditRect);
-		POINT pCur;
-		GetCursorPos(&pCur);
-		SetCursorPos(RichEditRect.Left+1,RichEditRect.Top+1);
-		mouse_event(MOUSEEVENTF_LEFTDOWN,RichEditRect.Left+1,RichEditRect.Top+1,0,0);
-		mouse_event(MOUSEEVENTF_LEFTUP,RichEditRect.Left+1,RichEditRect.Top+1,0,0);
-		SetCursorPos(pCur.x,pCur.y);
-	  }
+	   SetTimer(hTimerFrm,TIMER_ACTIVATERICHEDIT,500,(TIMERPROC)TimerFrmProc);
 	}
 
-    //Otworzenie okna szybkich emotek
+	//Otworzenie okna szybkich emotek
 	if((EventType=="TfrmCompletion")&&(Event==WINDOW_EVENT_CREATE))
 	{
 	  //Zatrzymanie timera wylaczanie tymczasowej blokady
@@ -9845,8 +9285,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  if(((StayOnTopChk)&&(SetStayOnTop))||((FrmSendSlideChk)&&(FrmSendSlideHideMode!=2)))
 	   SetWindowPos(hFrmSend,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 	  //Gdy kursor znajduje sie poza oknem rozmowy
-	  if(((!hFrmSendL)&&((Mouse->CursorPos.y<FrmSendRect.Top)||(FrmSendRect.Bottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmSendRect.Left)||(FrmSendRect.Right<Mouse->CursorPos.x)))
-	  ||((hFrmSendL)&&((Mouse->CursorPos.y<FrmSendLRect.Top)||(FrmSendLRect.Bottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmSendLRect.Left)||(FrmSendLRect.Right<Mouse->CursorPos.x))))
+	  if((Mouse->CursorPos.y<FrmSendRect.Top)||(FrmSendRect.Bottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmSendRect.Left)||(FrmSendRect.Right<Mouse->CursorPos.x))
 	  {
 		//Wlaczenie timera wylaczanie tymczasowej blokady
 		SetTimer(hTimerFrm,TIMER_FRMSENDBLOCKSLIDE,2000,(TIMERPROC)TimerFrmProc);
@@ -9977,31 +9416,31 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  {
 	    //Pobieranie uchwytu do okna wyszukiwarki
 	    hFrmSeekOnList = (HWND)(int)WindowEvent->Handle;
-	    //Ustawienie okna wyszukiwarki na wierzchu
-	    SetWindowPos(hFrmSeekOnList,HWND_TOPMOST,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
-	    //Przypisanie nowej procki dla okna
-	    OldFrmSeekOnListProc = (WNDPROC)SetWindowLongPtrW((HWND)(int)WindowEvent->Handle, GWL_WNDPROC,(LONG)FrmSeekOnListProc);
+		//Ustawienie okna wyszukiwarki na wierzchu
+		SetWindowPos(hFrmSeekOnList,HWND_TOPMOST,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
+		//Przypisanie nowej procki dla okna
+		OldFrmSeekOnListProc = (WNDPROC)SetWindowLongPtrW((HWND)(int)WindowEvent->Handle, GWLP_WNDPROC,(LONG)FrmSeekOnListProc);
 	  }
-    }
-    //Zamkniecie okna wyszukiwarki kontaktow
-    if((EventType=="TfrmSeekOnList")&&(Event==WINDOW_EVENT_CLOSE))
-    {
+	}
+	//Zamkniecie okna wyszukiwarki kontaktow
+	if((EventType=="TfrmSeekOnList")&&(Event==WINDOW_EVENT_CLOSE))
+	{
 	  //Ustawienie statusu okna dla SideSlide
 	  FrmMainBlockSlide = false;
 	  FrmMainBlockSlideWndEvent = false;
 	  //Zabezpieczenie przed chowaniem okna kontaktow
 	  if(FrmMainSlideChk)
 	  {
-        //Przypisanie starej procki dla okna
-	    if(OldFrmSeekOnListProc)
-	    {
-		  SetWindowLongPtrW((HWND)(int)WindowEvent->Handle, GWL_WNDPROC,(LONG)OldFrmSeekOnListProc);
+		//Przypisanie starej procki dla okna
+		if(OldFrmSeekOnListProc)
+		{
+		  SetWindowLongPtrW((HWND)(int)WindowEvent->Handle, GWLP_WNDPROC,(LONG)OldFrmSeekOnListProc);
 		  OldFrmSeekOnListProc = NULL;
-	    }
-	    //Zatrzymanie timera
-	    KillTimer(hTimerFrm,TIMER_FRMMAINSETTOPMOSTEX);
-	    //Usuniecie uchwytu do okna wyszukiwarki
-	    hFrmSeekOnList = NULL;
+		}
+		//Zatrzymanie timera
+		KillTimer(hTimerFrm,TIMER_FRMMAINSETTOPMOSTEX);
+		//Usuniecie uchwytu do okna wyszukiwarki
+		hFrmSeekOnList = NULL;
 	    //Ustawienie okna kontaktow na wierzchu
 	    if(FrmMainSlideHideMode!=2)
 	     SetWindowPos(hFrmMain,HWND_TOPMOST,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
@@ -10033,37 +9472,21 @@ int __stdcall OnXMLIDDebug(WPARAM wParam, LPARAM lParam)
 {
   if(!ForceUnloadExecuted)
   {
-    UnicodeString XML = (wchar_t*)wParam;
-    //Jezeli jest to pakiet z lista czatow
-    if(XML.Pos("<query xmlns='http://jabber.org/protocol/disco#items'>"))
-    {
-  	  XML = UTF8ToUnicodeString(XML.w_str());
-	  _di_IXMLDocument XMLDoc = LoadXMLData(XML);
-	  _di_IXMLNode Nodes = XMLDoc->DocumentElement;
-	  Nodes = Nodes->ChildNodes->GetNode(0);
-	  int ItemsCount = Nodes->ChildNodes->GetCount();
-	  TIniFile *Ini = new TIniFile(SessionFileDir);
-	  for(int Count=0;Count<ItemsCount;Count++)
+	UnicodeString XML = (wchar_t*)wParam;
+	//Jezeli jest to pakiet z lista czatow
+	if(XML.Pos("<query xmlns='http://jabber.org/protocol/disco#items'>"))
+	{
+	  //Przypisanie uchwytu do formy ustawien
+	  if(!hSettingsForm)
 	  {
-	    //Parsowanie XML
-	    _di_IXMLNode ChildNodes = Nodes->ChildNodes->GetNode(Count);
-	    UnicodeString JID = ChildNodes->Attributes["jid"];
-	    UnicodeString Channel = ChildNodes->Attributes["name"];
-	    Channel = Channel.Delete(Channel.LastDelimiter("("),Channel.Length());
-	    Channel = Channel.Trim();
-	    //Kodowanie HTML
-	    Channel = StringReplace(Channel, "&quot;", '"', TReplaceFlags() << rfReplaceAll);
-	    Channel = StringReplace(Channel, "&apos;", "'", TReplaceFlags() << rfReplaceAll);
-	    Channel = StringReplace(Channel, "&amp;", "&", TReplaceFlags() << rfReplaceAll);
-	    Channel = StringReplace(Channel, "&lt;", "<", TReplaceFlags() << rfReplaceAll);
-	    Channel = StringReplace(Channel, "&gt;", ">", TReplaceFlags() << rfReplaceAll);
-	    //Normalizacja nazw kanalow
-	    Channel = (wchar_t*)PluginLink.CallService(AQQ_FUNCTION_NORMALIZE,0,(LPARAM)Channel.w_str());
-	    //Zapisywanie nazwy kanalu
-	    Ini->WriteString("Channels",JID,Channel);
+		Application->Handle = (HWND)SettingsForm;
+		hSettingsForm = new TSettingsForm(Application);
 	  }
-	  delete Ini;
-    }
+	  //Przekazanie XMLa na forme
+	  hSettingsForm->XML = XML;
+	  //Uruchomienie watku
+	  hSettingsForm->IdThreadComponent->Start();
+	}
   }
 
   return 0;
@@ -10103,18 +9526,14 @@ bool CheckEmuTabsWSupport()
 //---------------------------------------------------------------------------
 
 //Zapisywanie zasobów
-bool SaveResourceToFile(wchar_t* FileName, wchar_t* Res)
+void ExtractRes(wchar_t* FileName, wchar_t* ResName, wchar_t* ResType)
 {
-  HRSRC hrsrc = FindResource(HInstance, Res, RT_RCDATA);
-  if(!hrsrc) return false;
-  DWORD size = SizeofResource(HInstance, hrsrc);
-  HGLOBAL hglob = LoadResource(HInstance, hrsrc);
-  LPVOID rdata = LockResource(hglob);
-  HANDLE hFile = CreateFile(FileName, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-  DWORD writ;
-  WriteFile(hFile, rdata, size, &writ, NULL);
-  CloseHandle(hFile);
-  return true;
+  TPluginTwoFlagParams PluginTwoFlagParams;
+  PluginTwoFlagParams.cbSize = sizeof(TPluginTwoFlagParams);
+  PluginTwoFlagParams.Param1 = ResName;
+  PluginTwoFlagParams.Param2 = ResType;
+  PluginTwoFlagParams.Flag1 = (int)HInstance;
+  PluginLink.CallService(AQQ_FUNCTION_SAVERESOURCE,(WPARAM)&PluginTwoFlagParams,(LPARAM)FileName);
 }
 //---------------------------------------------------------------------------
 
@@ -10317,59 +9736,29 @@ void LoadSettings()
 	//Przywrocenie poczatkowej pozycji okna przy zmianie prostopadlych krawedzi
 	if(((pFrmMainSlideEdge==1)||(pFrmMainSlideEdge==2))&&((FrmMainSlideEdge==3)||(FrmMainSlideEdge==4)))
 	{
-      if(!hFrmMainL)
+	  //Left
+	  if(pFrmMainSlideEdge==1)
 	  {
-		//Left
-		if(pFrmMainSlideEdge==1)
-		{
-		  //Zmienna z informacjami o oknie
-		  WINDOWINFO pwi;
-		  GetWindowInfo(hFrmMain,&pwi);
-		  int RealLeftPos = pwi.rcWindow.left - pwi.rcClient.left;
-		  SetWindowPos(hFrmMain,HWND_TOP,0+RealLeftPos+FrmMain_Shell_TrayWndLeft,FrmMainRect.Top,0,0,SWP_NOSIZE);
-		}
-		//Right
-		else
-		 SetWindowPos(hFrmMain,HWND_TOP,Screen->Width-FrmMainRect.Width()-FrmMain_Shell_TrayWndRight,FrmMainRect.Top,0,0,SWP_NOSIZE);
+		//Zmienna z informacjami o oknie
+		WINDOWINFO pwi;
+		GetWindowInfo(hFrmMain,&pwi);
+		int RealLeftPos = pwi.rcWindow.left - pwi.rcClient.left;
+		SetWindowPos(hFrmMain,HWND_TOP,0+RealLeftPos+FrmMain_Shell_TrayWndLeft,FrmMainRect.Top,0,0,SWP_NOSIZE);
 	  }
+	  //Right
 	  else
-	  {
-		//Left
-		if(FrmMainSlideEdge==1)
-		{
-		  //Zmienna z informacjami o oknie
-		  WINDOWINFO pwi;
-		  GetWindowInfo(hFrmMainL,&pwi);
-		  int RealLeftPos = pwi.rcWindow.left - pwi.rcClient.left;
-		  SetWindowPos(hFrmMainL,HWND_TOP,0+RealLeftPos+FrmMain_Shell_TrayWndLeft,FrmMainLRect.Top,0,0,SWP_NOSIZE);
-		}
-		//Right
-		else
-		 SetWindowPos(hFrmMainL,HWND_TOP,Screen->Width-FrmMainLRect.Width()-FrmMain_Shell_TrayWndRight,FrmMainLRect.Top,0,0,SWP_NOSIZE);
-	  }
+	   SetWindowPos(hFrmMain,HWND_TOP,Screen->Width-FrmMainRect.Width()-FrmMain_Shell_TrayWndRight,FrmMainRect.Top,0,0,SWP_NOSIZE);
 	  //Pobranie rozmiaru+pozycji okna kontatkow
 	  GetFrmMainRect();
-    }
+	}
 	else if(((pFrmMainSlideEdge==3)||(pFrmMainSlideEdge==4))&&((FrmMainSlideEdge==1)||(FrmMainSlideEdge==2)))
 	{
-      if(!hFrmMainL)
-	  {
-		//Bottom
-		if(FrmMainSlideEdge==3)
-		 SetWindowPos(hFrmMain,HWND_TOP,FrmMainRect.Left,Screen->Height-FrmMainRect.Height()-FrmMain_Shell_TrayWndBottom,0,0,SWP_NOSIZE);
-		//Top
-		else
-		 SetWindowPos(hFrmMain,HWND_TOP,FrmMainRect.Left,FrmMain_Shell_TrayWndTop,0,0,SWP_NOSIZE);
-	  }
+	  //Bottom
+	  if(FrmMainSlideEdge==3)
+	   SetWindowPos(hFrmMain,HWND_TOP,FrmMainRect.Left,Screen->Height-FrmMainRect.Height()-FrmMain_Shell_TrayWndBottom,0,0,SWP_NOSIZE);
+	  //Top
 	  else
-	  {
-		//Bottom
-		if(FrmMainSlideEdge==3)
-		 SetWindowPos(hFrmMainL,HWND_TOP,FrmMainLRect.Left,Screen->Height-FrmMainLRect.Height()-FrmMain_Shell_TrayWndBottom,0,0,SWP_NOSIZE);
-		//Top
-		else
-		 SetWindowPos(hFrmMainL,HWND_TOP,FrmMainLRect.Left,FrmMain_Shell_TrayWndTop,0,0,SWP_NOSIZE);
-	  }
+	   SetWindowPos(hFrmMain,HWND_TOP,FrmMainRect.Left,FrmMain_Shell_TrayWndTop,0,0,SWP_NOSIZE);
 	  //Pobranie rozmiaru+pozycji okna kontatkow
 	  GetFrmMainRect();
 	}
@@ -10499,59 +9888,29 @@ void LoadSettings()
 	  //Przywrocenie poczatkowej pozycji okna przy zmianie prostopadlych krawedzi
 	  if(((pFrmSendSlideEdge==1)||(pFrmSendSlideEdge==2))&&((FrmSendSlideEdge==3)||(FrmSendSlideEdge==4)))
 	  {
-		if(!hFrmSendL)
+		//Left
+		if(pFrmSendSlideEdge==1)
 		{
-		  //Left
-		  if(pFrmSendSlideEdge==1)
-		  {
-			//Zmienna z informacjami o oknie
-			WINDOWINFO pwi;
-			GetWindowInfo(hFrmSend,&pwi);
-			int RealLeftPos = pwi.rcWindow.left - pwi.rcClient.left;
-			SetWindowPos(hFrmSend,HWND_TOP,0+RealLeftPos+FrmSend_Shell_TrayWndLeft,FrmSendRect.Top,0,0,SWP_NOSIZE);
-		  }
-		  //Right
-		  else
-		   SetWindowPos(hFrmSend,HWND_TOP,Screen->Width-FrmSendRect.Width()-FrmSend_Shell_TrayWndRight,FrmSendRect.Top,0,0,SWP_NOSIZE);
+		  //Zmienna z informacjami o oknie
+		  WINDOWINFO pwi;
+		  GetWindowInfo(hFrmSend,&pwi);
+		  int RealLeftPos = pwi.rcWindow.left - pwi.rcClient.left;
+		  SetWindowPos(hFrmSend,HWND_TOP,0+RealLeftPos+FrmSend_Shell_TrayWndLeft,FrmSendRect.Top,0,0,SWP_NOSIZE);
 		}
+		//Right
 		else
-		{
-		  //Left
-		  if(pFrmSendSlideEdge==1)
-		  {
-			//Zmienna z informacjami o oknie
-			WINDOWINFO pwi;
-			GetWindowInfo(hFrmSendL,&pwi);
-			int RealLeftPos = pwi.rcWindow.left - pwi.rcClient.left;
-			SetWindowPos(hFrmSendL,HWND_TOP,0+RealLeftPos+FrmSend_Shell_TrayWndLeft,FrmSendLRect.Top,0,0,SWP_NOSIZE);
-		  }
-		  //Right
-		  else
-		   SetWindowPos(hFrmSendL,HWND_TOP,Screen->Width-FrmSendLRect.Width()-FrmSend_Shell_TrayWndRight,FrmSendLRect.Top,0,0,SWP_NOSIZE);	//
-		}
+		 SetWindowPos(hFrmSend,HWND_TOP,Screen->Width-FrmSendRect.Width()-FrmSend_Shell_TrayWndRight,FrmSendRect.Top,0,0,SWP_NOSIZE);
 		//Pobranie rozmiaru+pozycji okna rozmowy
 		GetFrmSendRect();
 	  }
 	  else if(((pFrmSendSlideEdge==3)||(pFrmSendSlideEdge==4))&&((FrmSendSlideEdge==1)||(FrmSendSlideEdge==2)))
 	  {
-        if(!hFrmSendL)
-		{
-		  //Bottom
-		  if(pFrmSendSlideEdge==3)
-		   SetWindowPos(hFrmSend,HWND_TOP,FrmSendRect.Left,Screen->Height-FrmSendRect.Height()-FrmSend_Shell_TrayWndBottom,0,0,SWP_NOSIZE);
-		  //Top
-		  else
-		   SetWindowPos(hFrmSend,HWND_TOP,FrmSendRect.Left,FrmSend_Shell_TrayWndTop,0,0,SWP_NOSIZE);
-		}
+		//Bottom
+		if(pFrmSendSlideEdge==3)
+		 SetWindowPos(hFrmSend,HWND_TOP,FrmSendRect.Left,Screen->Height-FrmSendRect.Height()-FrmSend_Shell_TrayWndBottom,0,0,SWP_NOSIZE);
+		//Top
 		else
-		{
-          //Bottom
-		  if(pFrmSendSlideEdge==3)
-		   SetWindowPos(hFrmSendL,HWND_TOP,FrmSendLRect.Left,Screen->Height-FrmSendLRect.Height()-FrmSend_Shell_TrayWndBottom,0,0,SWP_NOSIZE);
-		  //Top
-		  else
-		   SetWindowPos(hFrmSendL,HWND_TOP,FrmSendLRect.Left,FrmSend_Shell_TrayWndTop,0,0,SWP_NOSIZE);
-		}
+		 SetWindowPos(hFrmSend,HWND_TOP,FrmSendRect.Left,FrmSend_Shell_TrayWndTop,0,0,SWP_NOSIZE);
 		//Pobranie rozmiaru+pozycji okna rozmowy
 		GetFrmSendRect();
 	  }
@@ -10590,11 +9949,9 @@ void LoadSettings()
   MinimizeRestoreChk = Ini->ReadBool("Other","MinimizeRestore",false);
   MinimizeRestoreKey = Ini->ReadInteger("Other","MinimizeRestoreHotKey",24689);
   StayOnTopChk = Ini->ReadBool("Other","StayOnTop",false);
-  HideStatusBarChk = Ini->ReadBool("Other","HideStatusBar",false);
   HideToolBarChk = Ini->ReadBool("Other","HideToolBar",false);
   HideTabCloseButtonChk = Ini->ReadBool("Other","HideTabCloseButton",false);
   PluginLink.CallService(AQQ_SYSTEM_FUNCTION_SETENABLED,SYS_FUNCTION_CLOSEBTN,!HideTabCloseButtonChk);
-  HideTabListButtonChk = Ini->ReadBool("Other"," HideTabListButton",false);
   HideScrollTabButtonsChk = Ini->ReadBool("Other","HideScrollTabButtons",false);
   CloseBy2xLPMChk = Ini->ReadBool("Other","CloseBy2xLPM",false);
   EmuTabsWChk = Ini->ReadBool("Other","EmuTabsW",false);
@@ -10785,22 +10142,8 @@ extern "C" int __declspec(dllexport) __stdcall Load(PPluginLink Link)
 	//Usuwanie wtyczki OffAntiSpim z wyjatkow
 	PluginLink.CallService(AQQ_SYSTEM_PLUGIN_EXCLUDE,1,(LPARAM)(GetPluginUserDirW() + "\\OffAntiSpim.dll").w_str());
   }
-  //Usuwanie wtyczki CzasoWstrzymywacz
-  if(FileExists(PluginUserDir + "\\\CzasoWstrzymywacz.dll"))
-  {
-	//Wlaczanie funkcjonalnosci CzasoWstrzymywacz w TabKit
-	TIniFile *Ini = new TIniFile(SettingsFileDir);
-	Ini->WriteBool("Other","HideStatusBar",true);
-	delete Ini;
-	//Wylaczenie wtyczki CzasoWstrzymywacz
-	PluginLink.CallService(AQQ_SYSTEM_PLUGIN_ACTIVE,0,(LPARAM)(GetPluginUserDirW() + "\\CzasoWstrzymywacz.dll").w_str());
-	//Usuwanie wtyczki CzasoWstrzymywacz
-	DeleteFile(PluginUserDir + "\\\\CzasoWstrzymywacz.dll");
-	//Usuwanie wtyczki CzasoWstrzymywacz z wyjatkow
-	PluginLink.CallService(AQQ_SYSTEM_PLUGIN_EXCLUDE,1,(LPARAM)(GetPluginUserDirW() + "\\CzasoWstrzymywacz.dll").w_str());
-  }
   //Usuwanie wtyczki SideSlide
-  if(FileExists(PluginUserDir + "\\\SideSlide.dll"))
+  if(FileExists(PluginUserDir + "\\\\SideSlide.dll"))
   {
 	//Odczytanie ustawien SideSlide + wlaczanie funkcjonalnosci SideSlide w TabKit
 	TIniFile *SideSlideIni = new TIniFile(PluginUserDir + "\\\\SideSlide\\\\settings.ini");
@@ -10857,83 +10200,83 @@ extern "C" int __declspec(dllexport) __stdcall Load(PPluginLink Link)
   //Wypakiwanie ikonki ClosedTabsButton.png
   //1298BD768C95081257A09FF8A5590536
   if(!FileExists(PluginUserDir + "\\\\TabKit\\\\ClosedTabsButton.png"))
-   SaveResourceToFile((PluginUserDir + "\\\\TabKit\\\\ClosedTabsButton.png").w_str(),L"CLOSEDTABS");
+   ExtractRes((PluginUserDir + "\\\\TabKit\\\\ClosedTabsButton.png").w_str(),L"CLOSEDTABS",L"DATA");
   else if(MD5File(PluginUserDir + "\\\\TabKit\\\\ClosedTabsButton.png")!="1298BD768C95081257A09FF8A5590536")
-   SaveResourceToFile((PluginUserDir + "\\\\TabKit\\\\ClosedTabsButton.png").w_str(),L"CLOSEDTABS");
+   ExtractRes((PluginUserDir + "\\\\TabKit\\\\ClosedTabsButton.png").w_str(),L"CLOSEDTABS",L"DATA");
   //Wypakiwanie ikonki UnsentMsg.png
   //8D6126252C378C198BDA6A2F249B2B7C
   if(!FileExists(PluginUserDir + "\\\\TabKit\\\\UnsentMsg.png"))
-   SaveResourceToFile((PluginUserDir + "\\\\TabKit\\\\UnsentMsg.png").w_str(),L"UNSENTMSG");
+   ExtractRes((PluginUserDir + "\\\\TabKit\\\\UnsentMsg.png").w_str(),L"UNSENTMSG",L"DATA");
   else if(MD5File(PluginUserDir + "\\\\TabKit\\\\UnsentMsg.png")!="8D6126252C378C198BDA6A2F249B2B7C")
-   SaveResourceToFile((PluginUserDir + "\\\\TabKit\\\\UnsentMsg.png").w_str(),L"UNSENTMSG");
+   ExtractRes((PluginUserDir + "\\\\TabKit\\\\UnsentMsg.png").w_str(),L"UNSENTMSG",L"DATA");
   //Wypakiwanie ikonki UnsentMsg.ico
   //B2E390A8457BF6AED7B68240C0034566
   if(!FileExists(PluginUserDir + "\\\\TabKit\\\\UnsentMsg.ico"))
-   SaveResourceToFile((PluginUserDir + "\\\\TabKit\\\\UnsentMsg.ico").w_str(),L"UNSENTMSGICO");
+   ExtractRes((PluginUserDir + "\\\\TabKit\\\\UnsentMsg.ico").w_str(),L"UNSENTMSGICO",L"DATA");
   else if(MD5File(PluginUserDir + "\\\\TabKit\\\\UnsentMsg.ico")!="B2E390A8457BF6AED7B68240C0034566")
-   SaveResourceToFile((PluginUserDir + "\\\\TabKit\\\\UnsentMsg.ico").w_str(),L"UNSENTMSGICO");
+   ExtractRes((PluginUserDir + "\\\\TabKit\\\\UnsentMsg.ico").w_str(),L"UNSENTMSGICO",L"DATA");
   //Wypakiwanie ikonki Composing.png
   //73BB34FBD1BE53599C470D9A408EF854
   if(!FileExists(PluginUserDir + "\\\\TabKit\\\\Composing.png"))
-   SaveResourceToFile((PluginUserDir + "\\\\TabKit\\\\Composing.png").w_str(),L"COMPOSING");
+   ExtractRes((PluginUserDir + "\\\\TabKit\\\\Composing.png").w_str(),L"COMPOSING",L"DATA");
   else if(MD5File(PluginUserDir + "\\\\TabKit\\\\Composing.png")!="73BB34FBD1BE53599C470D9A408EF854")
-   SaveResourceToFile((PluginUserDir + "\\\\TabKit\\\\Composing.png").w_str(),L"COMPOSING");
+   ExtractRes((PluginUserDir + "\\\\TabKit\\\\Composing.png").w_str(),L"COMPOSING",L"DATA");
   //Wypakiwanie ikonki Pause.ico
   //756722004F72913D6248D58176EBB788
   if(!FileExists(PluginUserDir + "\\\\TabKit\\\\Pause.png"))
-   SaveResourceToFile((PluginUserDir + "\\\\TabKit\\\\Pause.png").w_str(),L"PAUSE");
+   ExtractRes((PluginUserDir + "\\\\TabKit\\\\Pause.png").w_str(),L"PAUSE",L"DATA");
   else if(MD5File(PluginUserDir + "\\\\TabKit\\\\Pause.png")!="756722004F72913D6248D58176EBB788")
-   SaveResourceToFile((PluginUserDir + "\\\\TabKit\\\\Pause.png").w_str(),L"PAUSE");
+   ExtractRes((PluginUserDir + "\\\\TabKit\\\\Pause.png").w_str(),L"PAUSE",L"DATA");
   //Wypakiwanie ikonki Composing_Small.ico
   //986AD6EB91C11CC47833CDC0778523F5
   if(!FileExists(PluginUserDir + "\\\\TabKit\\\\Composing_Small.ico"))
-   SaveResourceToFile((PluginUserDir + "\\\\TabKit\\\\Composing_Small.ico").w_str(),L"COMPOSING_SMALL");
+   ExtractRes((PluginUserDir + "\\\\TabKit\\\\Composing_Small.ico").w_str(),L"COMPOSING_SMALL",L"DATA");
   else if(MD5File(PluginUserDir + "\\\\TabKit\\\\Composing_Small.ico")!="986AD6EB91C11CC47833CDC0778523F5")
-   SaveResourceToFile((PluginUserDir + "\\\\TabKit\\\\Composing_Small.ico").w_str(),L"COMPOSING_SMALL");
+   ExtractRes((PluginUserDir + "\\\\TabKit\\\\Composing_Small.ico").w_str(),L"COMPOSING_SMALL",L"DATA");
   //Wypakiwanie ikonki Composing_Big.ico
   //BEC55EC214FB058B97AFE463D15818D4
   if(!FileExists(PluginUserDir + "\\\\TabKit\\\\Composing_Big.ico"))
-   SaveResourceToFile((PluginUserDir + "\\\\TabKit\\\\Composing_Big.ico").w_str(),L"COMPOSING_BIG");
+   ExtractRes((PluginUserDir + "\\\\TabKit\\\\Composing_Big.ico").w_str(),L"COMPOSING_BIG",L"DATA");
   else if(MD5File(PluginUserDir + "\\\\TabKit\\\\Composing_Big.ico")!="BEC55EC214FB058B97AFE463D15818D4")
-   SaveResourceToFile((PluginUserDir + "\\\\TabKit\\\\Composing_Big.ico").w_str(),L"COMPOSING_BIG");
+   ExtractRes((PluginUserDir + "\\\\TabKit\\\\Composing_Big.ico").w_str(),L"COMPOSING_BIG",L"DATA");
   //Wypakiwanie ikonki Pause_Small.ico
   //46D62DD885A071E17F9BF8CCE101649F
   if(!FileExists(PluginUserDir + "\\\\TabKit\\\\Pause_Small.ico"))
-   SaveResourceToFile((PluginUserDir + "\\\\TabKit\\\\Pause_Small.ico").w_str(),L"PAUSE_SMALL");
+   ExtractRes((PluginUserDir + "\\\\TabKit\\\\Pause_Small.ico").w_str(),L"PAUSE_SMALL",L"DATA");
   else if(MD5File(PluginUserDir + "\\\\TabKit\\\\Pause_Small.ico")!="46D62DD885A071E17F9BF8CCE101649F")
-   SaveResourceToFile((PluginUserDir + "\\\\TabKit\\\\Pause_Small.ico").w_str(),L"PAUSE_SMALL");
+   ExtractRes((PluginUserDir + "\\\\TabKit\\\\Pause_Small.ico").w_str(),L"PAUSE_SMALL",L"DATA");
   //Wypakiwanie ikonki Pause_Big.ico
   //F1FF8A4FF8DCD54BE7A0A34F4187CF48
   if(!FileExists(PluginUserDir + "\\\\TabKit\\\\Pause_Big.ico"))
-   SaveResourceToFile((PluginUserDir + "\\\\TabKit\\\\Pause_Big.ico").w_str(),L"PAUSE_BIG");
+   ExtractRes((PluginUserDir + "\\\\TabKit\\\\Pause_Big.ico").w_str(),L"PAUSE_BIG",L"DATA");
   else if(MD5File(PluginUserDir + "\\\\TabKit\\\\Pause_Big.ico")!="F1FF8A4FF8DCD54BE7A0A34F4187CF48")
-   SaveResourceToFile((PluginUserDir + "\\\\TabKit\\\\Pause_Big.ico").w_str(),L"PAUSE_BIG");
+   ExtractRes((PluginUserDir + "\\\\TabKit\\\\Pause_Big.ico").w_str(),L"PAUSE_BIG",L"DATA");
   //Wypakowanie ikonki StayOnTopOff.png
   //439D5BC24FDC9CBB95EC4D4D9B7D5B57
   if(!FileExists(PluginUserDir + "\\\\TabKit\\\\StayOnTopOff.png"))
-   SaveResourceToFile((PluginUserDir + "\\\\TabKit\\\\StayOnTopOff.png").w_str(),L"STAYONTOP_OFF");
+   ExtractRes((PluginUserDir + "\\\\TabKit\\\\StayOnTopOff.png").w_str(),L"STAYONTOP_OFF",L"DATA");
   else if(MD5File(PluginUserDir + "\\\\TabKit\\\\StayOnTopOff.png")!="439D5BC24FDC9CBB95EC4D4D9B7D5B57")
-   SaveResourceToFile((PluginUserDir + "\\\\TabKit\\\\StayOnTopOff.png").w_str(),L"STAYONTOP_OFF");
+   ExtractRes((PluginUserDir + "\\\\TabKit\\\\StayOnTopOff.png").w_str(),L"STAYONTOP_OFF",L"DATA");
   //Wypakiwanie ikonki StayOnTopOn.png
   //2B252A5BFB248BE10277CB97DB0AD437
   if(!FileExists(PluginUserDir + "\\\\TabKit\\\\StayOnTopOn.png"))
-   SaveResourceToFile((PluginUserDir + "\\\\TabKit\\\\StayOnTopOn.png").w_str(),L"STAYONTOP_ON");
+   ExtractRes((PluginUserDir + "\\\\TabKit\\\\StayOnTopOn.png").w_str(),L"STAYONTOP_ON",L"DATA");
   else if(MD5File(PluginUserDir + "\\\\TabKit\\\\StayOnTopOn.png")!="2B252A5BFB248BE10277CB97DB0AD437")
-   SaveResourceToFile((PluginUserDir + "\\\\TabKit\\\\StayOnTopOn.png").w_str(),L"STAYONTOP_ON");
+   ExtractRes((PluginUserDir + "\\\\TabKit\\\\StayOnTopOn.png").w_str(),L"STAYONTOP_ON",L"DATA");
   //Wypakiwanie ikonki TabKit.dll.png
   //992F252A9087DBD036BA98B6D5DE2A08
   if(!DirectoryExists(PluginUserDir + "\\\\Shared"))
    CreateDir(PluginUserDir + "\\\\Shared");
   if(!FileExists(PluginUserDir + "\\\\Shared\\\\TabKit.dll.png"))
-   SaveResourceToFile((PluginUserDir + "\\\\Shared\\\\TabKit.dll.png").w_str(),L"PLUGIN_RES");
+   ExtractRes((PluginUserDir + "\\\\Shared\\\\TabKit.dll.png").w_str(),L"PLUGIN_RES",L"DATA");
   else if(MD5File(PluginUserDir + "\\\\Shared\\\\TabKit.dll.png")!="992F252A9087DBD036BA98B6D5DE2A08")
-   SaveResourceToFile((PluginUserDir + "\\\\Shared\\\\TabKit.dll.png").w_str(),L"PLUGIN_RES");
+   ExtractRes((PluginUserDir + "\\\\Shared\\\\TabKit.dll.png").w_str(),L"PLUGIN_RES",L"DATA");
   //Wypakiwanie ikonki FastAccess.png
   //1DF8A978FA63D5C1EBEDB23BA94A1C3D
   if(!FileExists(PluginUserDir + "\\\\TabKit\\\\FastAccess.png"))
-   SaveResourceToFile((PluginUserDir + "\\\\TabKit\\\\FastAccess.png").w_str(),L"FASTACCESS");
+   ExtractRes((PluginUserDir + "\\\\TabKit\\\\FastAccess.png").w_str(),L"FASTACCESS",L"DATA");
   else if(MD5File(PluginUserDir + "\\\\TabKit\\\\FastAccess.png")!="1DF8A978FA63D5C1EBEDB23BA94A1C3D")
-   SaveResourceToFile((PluginUserDir + "\\\\TabKit\\\\FastAccess.png").w_str(),L"FASTACCESS");
+   ExtractRes((PluginUserDir + "\\\\TabKit\\\\FastAccess.png").w_str(),L"FASTACCESS",L"DATA");
   //Przypisanie ikonek do interfejsu AQQ
   //CLOSEDTABS
   if(!FileExists(ThemeDir + "ClosedTabsButton.png"))
@@ -11118,9 +10461,6 @@ extern "C" int __declspec(dllexport) __stdcall Load(PPluginLink Link)
   {
     //Szukanie uchwytu do okna kontaktowa
 	EnumWindows((WNDENUMPROC)FindFrmMain,0);
-	//Szukanie uchwytu do pseudo okna kontaktow
-	if((!FileExists(GetThemeSkinDir()+"\\\\Skin.asz"))&&(ChkSkinEnabled())&&(!ChkNativeEnabled()))
-	 EnumWindows((WNDENUMPROC)FindFrmMainL,0);
 	//Szukanie uchwytu do kontrolki IE w oknie kontatkow
 	EnumChildWindows(hFrmMain,(WNDENUMPROC)FindFrmMainFocus,0);
 	//Pobranie rozmiaru+pozycji okna kontaktow
@@ -11137,9 +10477,7 @@ extern "C" int __declspec(dllexport) __stdcall Load(PPluginLink Link)
 	FrmMainVisible = true;
 	FrmMainBlockSlide = false;
 	//Przypisanie nowej procki dla okna kontaktow
-	OldFrmMainProc = (WNDPROC)SetWindowLongPtrW(hFrmMain, GWL_WNDPROC,(LONG)FrmMainProc);
-	//Przypisanie nowej procki dla pseudo okna kontaktow
-	if(hFrmMainL) OldFrmMainLProc = (WNDPROC)SetWindowLongPtrW(hFrmMainL, GWL_WNDPROC,(LONG)FrmMainLProc);
+	OldFrmMainProc = (WNDPROC)SetWindowLongPtrW(hFrmMain, GWLP_WNDPROC,(LONG)FrmMainProc);
 	//Pobieranie ostatnio zamknietych zakladek
 	GetClosedTabs();
 	//Hook na pobieranie aktywnych zakladek
@@ -11181,22 +10519,13 @@ extern "C" int __declspec(dllexport) __stdcall Load(PPluginLink Link)
 	  {
 		//Nazwa aktywnego profilu
 		if(TweakFrmMainTitlebarModeEx==0)
-		{
-		  SetWindowTextW(hFrmMain,("AQQ [" + ProfileName + "]").w_str());
-		  if(hFrmMainL) SetWindowTextW(hFrmMainL,("AQQ [" + ProfileName + "]").w_str());
-		}
+		 SetWindowTextW(hFrmMain,("AQQ [" + ProfileName + "]").w_str());
 		//Nazwa komputera
 		else if(TweakFrmMainTitlebarModeEx==1)
-		{
-		  SetWindowTextW(hFrmMain,("AQQ [" + ComputerName + "]").w_str());
-		  if(hFrmMainL) SetWindowTextW(hFrmMainL,("AQQ [" + ComputerName + "]").w_str());
-		}
+		 SetWindowTextW(hFrmMain,("AQQ [" + ComputerName + "]").w_str());
 		//Nazwa zasobu glownego konta Jabber
 		else
-		{
-		  SetWindowTextW(hFrmMain,("AQQ [" + ResourceName + "]").w_str());
-		  if(hFrmMainL) SetWindowTextW(hFrmMainL,("AQQ [" + ResourceName + "]").w_str());
-		}
+		 SetWindowTextW(hFrmMain,("AQQ [" + ResourceName + "]").w_str());
 	  }
 	  //Tryb II
 	  else if(TweakFrmMainTitlebarMode==2)
@@ -11204,15 +10533,16 @@ extern "C" int __declspec(dllexport) __stdcall Load(PPluginLink Link)
 		//Wlasny tekst
 		if(!TweakFrmMainTitlebarText.IsEmpty())
 		{
-		  SetWindowTextW(hFrmMain,("AQQ " + TweakFrmMainTitlebarText).w_str());
-		  if(hFrmMainL) SetWindowTextW(hFrmMainL,("AQQ " + TweakFrmMainTitlebarText).w_str());
+		  //Pusty tekst
+		  if(TweakFrmMainTitlebarText=="-")
+		   SetWindowTextW(hFrmMain,L"");
+		  //Zdefiniowany tekst
+		  else
+		   SetWindowTextW(hFrmMain,("AQQ " + TweakFrmMainTitlebarText).w_str());
 		}
 		//Brak wersji komunikatora
 		else
-		{
-		  SetWindowTextW(hFrmMain,L"AQQ");
-		  if(hFrmMainL) SetWindowTextW(hFrmMainL,L"AQQ");
-		}
+		 SetWindowTextW(hFrmMain,L"AQQ");
 	  }
 	}
 	//Odswiezenie listy kontaktow - skracanie wyœwietlania odnoœników na liscie kontaktow do wygodniejszej formy
@@ -11263,29 +10593,17 @@ extern "C" int __declspec(dllexport) __stdcall Unload()
   //Przypisanie starej procki do okna rozmowy
   if(OldFrmSendProc)
   {
-	SetWindowLongPtrW(hFrmSend, GWL_WNDPROC,(LONG)OldFrmSendProc);
+	SetWindowLongPtrW(hFrmSend, GWLP_WNDPROC,(LONG)OldFrmSendProc);
 	OldFrmSendProc = NULL;
-  }
-  //Przypisanie starej procki do pseudo okna rozmowy
-  if(OldFrmSendLProc)
-  {
-	SetWindowLongPtrW(hFrmSendL, GWL_WNDPROC,(LONG)OldFrmSendLProc);
-	OldFrmSendLProc = NULL;
   }
   //Przypisanie starej procki do okna kontaktow
   if(OldFrmMainProc)
   {
-	SetWindowLongPtrW(hFrmMain, GWL_WNDPROC,(LONG)OldFrmMainProc);
+	SetWindowLongPtrW(hFrmMain, GWLP_WNDPROC,(LONG)OldFrmMainProc);
 	OldFrmMainProc = NULL;
   }
-  //Przypisanie starej procki do pseudo okna kontaktow
-  if(OldFrmMainLProc)
-  {
-	SetWindowLongPtrW(hFrmMainL, GWL_WNDPROC,(LONG)OldFrmMainLProc);
-	OldFrmMainLProc = NULL;
-  }
   //Wyladowanie timerow
-  for(int TimerID=10;TimerID<=350;TimerID=TimerID+10) KillTimer(hTimerFrm,TimerID);
+  for(int TimerID=10;TimerID<=360;TimerID=TimerID+10) KillTimer(hTimerFrm,TimerID);
   //Usuwanie okna timera
   DestroyWindow(hTimerFrm);
   //Wyrejestowanie klasy okna timera
@@ -11454,8 +10772,7 @@ extern "C" int __declspec(dllexport) __stdcall Unload()
 		  }
 		}
 	  }
-	  SkipClosedTabsChk:
-	  //Skip
+	  SkipClosedTabsChk: { /* Skip */ }
 	}
 	//Zapisywanie ostatnio zamknietych zakladek
 	TIniFile *Ini = new TIniFile(SessionFileDir);
@@ -11479,10 +10796,7 @@ extern "C" int __declspec(dllexport) __stdcall Unload()
   }
   //Przywracanie oryginalnego tekstu na pasku okna kontaktow
   if((TweakFrmMainTitlebarChk)&&(!ForceUnloadExecuted)&&(!FrmInstallAddonExist))
-  {
-	SetWindowTextW(hFrmMain,OryginalTitlebar);
-	if(hFrmMainL) SetWindowTextW(hFrmMainL,OryginalTitlebar);
-  }
+   SetWindowTextW(hFrmMain,OryginalTitlebar);
   //Przywracanie oryginalnego tekstu na pasku okna rozmowy
   if((TweakFrmSendTitlebarChk)&&(!ForceUnloadExecuted)&&(!FrmInstallAddonExist))
   {
@@ -11490,10 +10804,8 @@ extern "C" int __declspec(dllexport) __stdcall Unload()
 	PluginLink.CallService(AQQ_CONTACTS_BUDDY_FETCHALLTABS,0,0);
 	PluginLink.UnhookEvent(OnPrimaryTab);
   }
-  //Przywracanie przycisku z lista aktywnych zakladek
-  if((!ForceUnloadExecuted)&&(!FrmInstallAddonExist)) CheckHideTabListButton();
   //Przywracanie przyciskow strzalek do przewijania zakladek
-  if((!ForceUnloadExecuted)&&(!FrmInstallAddonExist)) CheckHideScrollTabButtons();
+  if(!ForceUnloadExecuted) CheckHideScrollTabButtons();
   //Przywracanie okna rozmowy do "normalnosci"
   if(hFrmSend) SetWindowPos(hFrmSend,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE | SWP_NOSIZE);
   if((hFrmSend)&&(FrmSendSlideChk))
@@ -11513,36 +10825,15 @@ extern "C" int __declspec(dllexport) __stdcall Unload()
   //Przywracanie paska narzedzi do "normalnosci"
   if((HideToolBarChk)&&(hToolBar)&&(!ForceUnloadExecuted)&&(!FrmInstallAddonExist))
   {
-	//Pobieranie wysokosci paska
+	//Pobieranie pozycji paska narzedzi
 	TRect WindowRect;
 	GetWindowRect(hToolBar,&WindowRect);
-	int ToolBarHeight = WindowRect.Height();
 	//Pokazanie paska
-	if(!ToolBarHeight)
-	{
-	  //Pobieranie pozycji okna rozmowy
-	  GetWindowRect(hFrmSend,&WindowRect);
-	  //Pokazywanie paska
-	  SetWindowPos(hToolBar,NULL,0,0,WindowRect.Width(),25,SWP_NOMOVE);
-	}
+	if(!WindowRect.Height())
+	 SetWindowPos(hToolBar,NULL,0,0,WindowRect.Width(),23,SWP_NOMOVE);
 	else
 	 HideToolBarChk = false;
-  }
-  //Przywracanie paska informacyjnego do "normalnosci"
-  if((HideStatusBarChk)&&(hStatusBarPro)&&(!ForceUnloadExecuted)&&(!FrmInstallAddonExist))
-  {
 	//Pobieranie pozycji okna rozmowy
-	TRect WindowRect;
-	GetWindowRect(hFrmSend,&WindowRect);
-	//Pokazywanie paska
-	SetWindowPos(hStatusBarPro,NULL,0,0,WindowRect.Width(),18,SWP_NOMOVE);
-	ShowWindow(hStatusBarPro,SW_SHOW);
-  }
-  //Odswiezenie okna rozmowy
-  if((((HideStatusBarChk)&&(hStatusBarPro))||((HideToolBarChk)&&(hToolBar)))&&(!ForceUnloadExecuted)&&(!FrmInstallAddonExist))
-  {
-	//Pobieranie pozycji okna rozmowy
-	TRect WindowRect;
 	GetWindowRect(hFrmSend,&WindowRect);
 	//Odswiezenie okna rozmowy
 	SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width()+1,WindowRect.Height(),SWP_NOMOVE);
@@ -11604,11 +10895,11 @@ extern "C" int __declspec(dllexport)__stdcall Settings()
 //---------------------------------------------------------------------------
 
 //Informacje o wtyczce
-extern "C" __declspec(dllexport) PPluginInfo __stdcall AQQPluginInfo(DWORD AQQVersion)
+extern "C" PPluginInfo __declspec(dllexport) __stdcall AQQPluginInfo(DWORD AQQVersion)
 {
   PluginInfo.cbSize = sizeof(TPluginInfo);
   PluginInfo.ShortName = L"TabKit";
-  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,6,1,4);
+  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,7,0,0);
   PluginInfo.Description = L"Wtyczka oferuje masê funkcjonalnoœci usprawniaj¹cych korzystanie z komunikatora - np. zapamiêtywanie zamkniêtych zak³adek, inteligentne prze³¹czanie, zapamiêtywanie sesji.";
   PluginInfo.Author = L"Krzysztof Grochocki (Beherit)";
   PluginInfo.AuthorMail = L"kontakt@beherit.pl";

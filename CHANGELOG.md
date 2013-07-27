@@ -1,3 +1,18 @@
+1.7.0.0
+-----
+* Dodanie 64-bitowej wersji wtyczki.
+* Mo¿liwoœæ usuniêcia ca³kowicie tekstu na pasku tytu³u okna kontaktów (minus w zdefiniowanym w³asnym tekœcie).
+* Usuniêcie wsparcia dla starego systemu skórkowania.
+* Poprawne pobieranie uchwytu do panelu z zak³adkami oraz paska statusu.
+* Nie znikanie licznika nowych wiadomoœci na belce okna rozmowy przy zmianie statusu kontaktu z aktywnej zak³adki.
+* Poprawne nadawanie fokusa pola do wpisywania wiadomoœci po zamkniêciu okna z wyborem emotek.
+* Drobne zmiany w usuwaniu graficznej informacji o pisaniu nowej wiadomoœci na pasku tytu³u okna rozmowy.
+* Odczyt listy dostêpnych pokojów rozmów na osobnym w¹tku.
+* Usuniêto uci¹¿liwy b³¹d ze znikaniem popup menu w oknie kontaktów, gdy ktoœ do nas pisa³.
+* Inne mniej wa¿ne zmiany w kodzie.
+* Aktualizacja komponentów AlphaControls do najnowszej dostêpnej wersji (8.16).
+* Usuniêcie mo¿liwoœci ukrywania paska statusu oraz przycisku z list¹ zak³adek.
+
 1.6.1.4
 -----
 * Poprawiono przywracanie okna kontaktów z zasobnika systemowego.
