@@ -57,11 +57,12 @@
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
+        <VerInfo_Release>1</VerInfo_Release>
         <VerInfo_MinorVer>7</VerInfo_MinorVer>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <ILINK_GenerateImportLibrary>true</ILINK_GenerateImportLibrary>
-        <VerInfo_Keys>FileVersion=1.7.0.0;InternalName=;LegalCopyright=Krzysztof Grochocki (Beherit);LegalTrademarks=;OriginalFilename=;ProductName=TabKit;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
-        <AllPackageLibs>rtl.lib;vcl.lib;IndyProtocols.lib;IndyCore.lib;IndySystem.lib;xmlrtl.lib;vclx.lib;acntBuilderXE3_R.lib;vclimg.lib</AllPackageLibs>
+        <VerInfo_Keys>FileVersion=1.7.1.0;InternalName=;LegalCopyright=Krzysztof Grochocki (Beherit);LegalTrademarks=;OriginalFilename=;ProductName=TabKit;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <AllPackageLibs>rtl.lib;vcl.lib;IndyProtocols.lib;IndyCore.lib;IndySystem.lib;xmlrtl.lib;vclx.lib;acntXE3_R.lib;vclimg.lib</AllPackageLibs>
         <_TCHARMapping>wchar_t</_TCHARMapping>
         <Multithreaded>true</Multithreaded>
         <VerInfo_Locale>1045</VerInfo_Locale>
@@ -77,9 +78,9 @@
         <ILINK_TranslatedLibraryPath>$(BDSLIB)\$(PLATFORM)\release\$(LANGDIR);$(ILINK_TranslatedLibraryPath)</ILINK_TranslatedLibraryPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
-        <VerInfo_Keys>FileVersion=1.7.0.0;InternalName=;LegalTrademarks=;OriginalFilename=;ProductName=TabKit;ProductVersion=1.0.0.0;Comments=;LegalCopyright=Krzysztof Grochocki (Beherit)</VerInfo_Keys>
+        <VerInfo_Keys>FileVersion=1.7.1.0;InternalName=;LegalTrademarks=;OriginalFilename=;ProductName=TabKit;ProductVersion=1.0.0.0;Comments=;LegalCopyright=Krzysztof Grochocki (Beherit)</VerInfo_Keys>
         <IncludePath>$(BDSINCLUDE)\windows\vcl;$(IncludePath)</IncludePath>
-        <PackageImports>acntBuilderXE3;bindcompfmx;vcldbx;fmx;rtl;dbrtl;IndySystem;TeeDB;acntBuilderXE3_R;bindcomp;inetdb;vclib;inetdbbde;DBXInterBaseDriver;Tee;DataSnapCommon;xmlrtl;ibxpress;DbxCommonDriver;vclimg;IndyProtocols;dbxcds;MetropolisUILiveTile;soaprtl;vclactnband;bindengine;vcldb;bindcompdbx;vcldsnap;bindcompvcl;FMXTee;TeeUI;vclie;vcltouch;bcbsmp;websnap;CustomIPTransport;vclribbon;dsnap;IndyIPServer;fmxase;vcl;IndyCore;IndyIPCommon;dsnapcon;FmxTeeUI;inet;fmxobj;vclx;inetdbxpress;webdsnap;fmxdae;bdertl;dbexpress;bcbie;adortl;IndyIPClient;$(PackageImports)</PackageImports>
+        <PackageImports>acntXE3;bindcompfmx;vcldbx;fmx;rtl;dbrtl;IndySystem;TeeDB;acntXE3_R;bindcomp;inetdb;vclib;inetdbbde;DBXInterBaseDriver;Tee;DataSnapCommon;xmlrtl;ibxpress;DbxCommonDriver;vclimg;IndyProtocols;dbxcds;MetropolisUILiveTile;soaprtl;vclactnband;bindengine;vcldb;bindcompdbx;vcldsnap;bindcompvcl;FMXTee;TeeUI;vclie;vcltouch;bcbsmp;websnap;CustomIPTransport;vclribbon;dsnap;IndyIPServer;fmxase;vcl;IndyCore;IndyIPCommon;dsnapcon;FmxTeeUI;inet;fmxobj;vclx;inetdbxpress;webdsnap;fmxdae;bdertl;dbexpress;bcbie;adortl;IndyIPClient;$(PackageImports)</PackageImports>
         <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
         <ILINK_LibraryPath>C:\Program Files (x86)\RAD Studio XE3\lib\win32\release\psdk\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
     </PropertyGroup>
@@ -110,27 +111,27 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
         <Defines>_DEBUG;$(Defines)</Defines>
-        <VerInfo_Keys>FileVersion=1.7.0.0;InternalName=;LegalTrademarks=;OriginalFilename=;ProductName=TabKit;ProductVersion=1.0.0.0;Comments=;LegalCopyright=Krzysztof Grochocki (Beherit)</VerInfo_Keys>
-        <LinkPackageImports>rtl.bpi;vcl.bpi;IndyProtocols.bpi;IndyCore.bpi;IndySystem.bpi;xmlrtl.bpi;vclx.bpi;acntBuilderXE3_R.bpi;vclimg.bpi</LinkPackageImports>
+        <VerInfo_Keys>FileVersion=1.7.1.0;InternalName=;LegalTrademarks=;OriginalFilename=;ProductName=TabKit;ProductVersion=1.0.0.0;Comments=;LegalCopyright=Krzysztof Grochocki (Beherit)</VerInfo_Keys>
+        <LinkPackageImports>rtl.bpi;vcl.bpi;IndyProtocols.bpi;IndyCore.bpi;IndySystem.bpi;xmlrtl.bpi;vclx.bpi;acntXE3_R.bpi;vclimg.bpi</LinkPackageImports>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
         <Defines>_DEBUG;$(Defines)</Defines>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
-        <VerInfo_Release>0</VerInfo_Release>
+        <VerInfo_Release>1</VerInfo_Release>
         <VerInfo_MinorVer>7</VerInfo_MinorVer>
         <VerInfo_Build>0</VerInfo_Build>
-        <VerInfo_Keys>FileVersion=1.7.0.0;InternalName=;LegalCopyright=Krzysztof Grochocki (Beherit);LegalTrademarks=;OriginalFilename=;ProductName=TabKit;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>FileVersion=1.7.1.0;InternalName=;LegalCopyright=Krzysztof Grochocki (Beherit);LegalTrademarks=;OriginalFilename=;ProductName=TabKit;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <TASM_Debugging>None</TASM_Debugging>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
         <Defines>NDEBUG;$(Defines)</Defines>
-        <VerInfo_Keys>FileVersion=1.7.0.0;InternalName=;LegalTrademarks=;OriginalFilename=;ProductName=TabKit;ProductVersion=1.0.0.0;Comments=;LegalCopyright=Krzysztof Grochocki (Beherit)</VerInfo_Keys>
+        <VerInfo_Keys>FileVersion=1.7.1.0;InternalName=;LegalTrademarks=;OriginalFilename=;ProductName=TabKit;ProductVersion=1.0.0.0;Comments=;LegalCopyright=Krzysztof Grochocki (Beherit)</VerInfo_Keys>
         <DynamicRTL>false</DynamicRTL>
-        <LinkPackageStatics>rtl.lib;vcl.lib;IndyProtocols.lib;IndyCore.lib;IndySystem.lib;xmlrtl.lib;vclx.lib;acntBuilderXE3_R.lib;vclimg.lib</LinkPackageStatics>
+        <LinkPackageStatics>rtl.lib;vcl.lib;IndyProtocols.lib;IndyCore.lib;IndySystem.lib;xmlrtl.lib;vclx.lib;acntXE3_R.lib;vclimg.lib</LinkPackageStatics>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
-        <LinkPackageStatics>rtl.lib;vcl.lib;IndyProtocols.lib;IndyCore.lib;IndySystem.lib;xmlrtl.lib;vclx.lib;acntBuilderXE3_R.lib;vclimg.lib</LinkPackageStatics>
+        <LinkPackageStatics>rtl.lib;vcl.lib;IndyProtocols.lib;IndyCore.lib;IndySystem.lib;xmlrtl.lib;vclx.lib;acntXE3_R.lib;vclimg.lib</LinkPackageStatics>
         <Defines>NDEBUG;$(Defines)</Defines>
     </PropertyGroup>
     <ItemGroup>
@@ -153,6 +154,10 @@
         <RcItem Include="Data\FastAccess.png">
             <ResourceType>DATA</ResourceType>
             <ResourceId>FASTACCESS</ResourceId>
+        </RcItem>
+        <RcItem Include="Data\Gone.png">
+            <ResourceType>DATA</ResourceType>
+            <ResourceId>GONE</ResourceId>
         </RcItem>
         <RcItem Include="Data\Pause.png">
             <ResourceType>DATA</ResourceType>
@@ -191,6 +196,12 @@
             <DependentOn>SettingsFrm.h</DependentOn>
             <BuildOrder>2</BuildOrder>
         </CppCompile>
+        <CppCompile Include="SideSlideExceptionsFrm.cpp">
+            <Form>SideSlideExceptionsForm</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>SideSlideExceptionsFrm.h</DependentOn>
+            <BuildOrder>17</BuildOrder>
+        </CppCompile>
         <CppCompile Include="TabKit.cpp">
             <BuildOrder>1</BuildOrder>
         </CppCompile>
@@ -198,6 +209,7 @@
             <BuildOrder>0</BuildOrder>
         </PCHCompile>
         <FormResources Include="SettingsFrm.dfm"/>
+        <FormResources Include="SideSlideExceptionsFrm.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
