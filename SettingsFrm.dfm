@@ -234,7 +234,7 @@ object SettingsForm: TSettingsForm
       object OtherPanel: TPanel
         Left = 0
         Top = 0
-        Width = 306
+        Width = 289
         Height = 0
         Align = alClient
         BevelOuter = bvNone
@@ -380,7 +380,7 @@ object SettingsForm: TSettingsForm
       Collapsed = True
       TabOrder = 6
       TabStop = True
-      ExpandedHeight = 94
+      ExpandedHeight = 114
       object ClipTabsPanel: TPanel
         Left = 0
         Top = 0
@@ -391,9 +391,9 @@ object SettingsForm: TSettingsForm
         ShowCaption = False
         TabOrder = 0
         object OpenClipTabsCheckBox: TCheckBox
-          Left = 6
-          Top = 7
-          Width = 265
+          Left = 7
+          Top = 9
+          Width = 280
           Height = 26
           Caption = 'Otwieraj przypi'#281'te zak'#322'adki wraz z otwarciem okna rozmowy'
           Checked = True
@@ -410,14 +410,21 @@ object SettingsForm: TSettingsForm
         end
         object InactiveClipTabsCheckBox: TCheckBox
           Left = 6
-          Top = 38
-          Width = 259
-          Height = 26
-          Caption = 
-            'Nie pokazuj licznika nieprzeczytanych wiadomo'#347'ci na przypi'#281'tych ' +
-            'zak'#322'adkach'
+          Top = 40
+          Width = 280
+          Height = 17
+          Caption = 'Nie wy'#347'wietlaj licznika nieprzeczytanych wiadomo'#347'ci'
           TabOrder = 1
           WordWrap = True
+          OnClick = aClosedTabsChkExecute
+        end
+        object CounterClipTabsCheckBox: TCheckBox
+          Left = 6
+          Top = 63
+          Width = 280
+          Height = 17
+          Caption = 'Wy'#347'wietlaj licznik znak'#243'w z powiadomienia o pisaniu'
+          TabOrder = 2
           OnClick = aClosedTabsChkExecute
         end
       end
@@ -434,7 +441,7 @@ object SettingsForm: TSettingsForm
       object TitlebarPanel: TPanel
         Left = 0
         Top = 0
-        Width = 306
+        Width = 289
         Height = 0
         Align = alClient
         ShowCaption = False
@@ -547,7 +554,7 @@ object SettingsForm: TSettingsForm
       object NewMsgPanel: TPanel
         Left = 0
         Top = 0
-        Width = 306
+        Width = 289
         Height = 0
         Align = alClient
         BevelOuter = bvNone
@@ -558,8 +565,8 @@ object SettingsForm: TSettingsForm
           Width = 280
           Height = 40
           Caption = 
-            'Pokazuj liczb'#281' nieprzeczytanych wiadomo'#347'ci na pasku tytu'#322'u okna ' +
-            'rozmowy gdy jest ono zminimalizowane lub nieaktywne'
+            'Wy'#347'wietlaj liczb'#281' nieprzeczytanych wiadomo'#347'ci na pasku tytu'#322'u ok' +
+            'na rozmowy gdy jest ono zminimalizowane lub nieaktywne'
           Checked = True
           State = cbChecked
           TabOrder = 0
@@ -584,8 +591,8 @@ object SettingsForm: TSettingsForm
           Width = 280
           Height = 26
           Caption = 
-            'Pokazuj liczb'#281' nieprzeczytanych wiadomo'#347'ci na nieaktywnych zak'#322'a' +
-            'dkach'
+            'Wy'#347'wietlaj liczb'#281' nieprzeczytanych wiadomo'#347'ci na nieaktywnych za' +
+            'k'#322'adkach'
           Checked = True
           State = cbChecked
           TabOrder = 1
@@ -621,7 +628,7 @@ object SettingsForm: TSettingsForm
       object SessionRememberPanel: TPanel
         Left = 0
         Top = 0
-        Width = 306
+        Width = 289
         Height = 0
         Align = alClient
         BevelOuter = bvNone
@@ -689,7 +696,7 @@ object SettingsForm: TSettingsForm
       object TabsSwitchingPanel: TPanel
         Left = 0
         Top = 0
-        Width = 306
+        Width = 289
         Height = 0
         Align = alClient
         ShowCaption = False
@@ -803,7 +810,7 @@ object SettingsForm: TSettingsForm
       object UnsentMsgPanel: TPanel
         Left = 0
         Top = 0
-        Width = 306
+        Width = 289
         Height = 0
         Align = alClient
         BevelOuter = bvNone
@@ -920,8 +927,8 @@ object SettingsForm: TSettingsForm
       object ClosedPanel: TPanel
         Left = 0
         Top = 0
-        Width = 306
-        Height = 0
+        Width = 289
+        Height = 346
         Align = alClient
         BevelOuter = bvNone
         ShowCaption = False
@@ -1068,9 +1075,9 @@ object SettingsForm: TSettingsForm
         object ShowTimeClosedTabsCheckBox: TCheckBox
           Left = 35
           Top = 126
-          Width = 196
+          Width = 212
           Height = 17
-          Caption = 'Pokazuj dat'#281' zamkni'#281'cia zak'#322'adek'
+          Caption = 'Wy'#347'wietlaj dat'#281' zamkni'#281'cia zak'#322'adek'
           TabOrder = 5
           OnClick = aClosedTabsChkExecute
         end

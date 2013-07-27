@@ -125,6 +125,7 @@ __published:	// IDE-managed Components
 	TButton *MiniAvatarsEraseButton;
 	TFileListBox *FileListBox;
 	TCheckBox *CollapseImagesCheckBox;
+	TCheckBox *CounterClipTabsCheckBox;
 	void __fastcall UnsentMsgTrayIconClick(TObject *Sender);
 	void __fastcall aExitExecute(TObject *Sender);
 	void __fastcall CancelButtonClick(TObject *Sender);

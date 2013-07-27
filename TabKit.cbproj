@@ -60,61 +60,61 @@
 			<TASM_Debugging>None</TASM_Debugging>
 		</PropertyGroup>
 		<ItemGroup>
-			<RcItem Include="Data\ClosedTabsButton.png">
+			<RcItem Include="Data\Pause_Big.ico">
 				<ResourceType>RCData</ResourceType>
-				<ResourceId>CLOSEDTABS</ResourceId>
+				<ResourceId>PAUSE_BIG</ResourceId>
+			</RcItem>
+			<RcItem Include="Data\Composing_Small.ico">
+				<ResourceType>RCData</ResourceType>
+				<ResourceId>COMPOSING_SMALL</ResourceId>
+			</RcItem>
+			<RcItem Include="Data\Composing_Big.ico">
+				<ResourceType>RCData</ResourceType>
+				<ResourceId>COMPOSING_BIG</ResourceId>
+			</RcItem>
+			<RcItem Include="Data\Pause.png">
+				<ResourceType>RCData</ResourceType>
+				<ResourceId>PAUSE</ResourceId>
+			</RcItem>
+			<RcItem Include="Data\Composing.png">
+				<ResourceType>RCData</ResourceType>
+				<ResourceId>COMPOSING</ResourceId>
+			</RcItem>
+			<RcItem Include="Data\Pause_Small.ico">
+				<ResourceType>RCData</ResourceType>
+				<ResourceId>PAUSE_SMALL</ResourceId>
+			</RcItem>
+			<CppCompile Include="TabKit.cpp">
+				<BuildOrder>0</BuildOrder>
+			</CppCompile>
+			<RcItem Include="Data\StayOnTopOn.png">
+				<ResourceType>RCData</ResourceType>
+				<ResourceId>STAYONTOP_ON</ResourceId>
 			</RcItem>
 			<RcItem Include="Data\StayOnTopOff.png">
 				<ResourceType>RCData</ResourceType>
 				<ResourceId>STAYONTOP_OFF</ResourceId>
 			</RcItem>
-			<RcItem Include="Data\StayOnTopOn.png">
+			<RcItem Include="Data\ClosedTabsButton.png">
 				<ResourceType>RCData</ResourceType>
-				<ResourceId>STAYONTOP_ON</ResourceId>
+				<ResourceId>CLOSEDTABS</ResourceId>
 			</RcItem>
 			<CppCompile Include="SettingsFrm.cpp">
 				<Form>SettingsForm</Form>
 				<DependentOn>SettingsFrm.h</DependentOn>
 				<BuildOrder>2</BuildOrder>
 			</CppCompile>
-			<LibFiles Include="C:\Program Files (x86)\RAD Studio\lib\psdk\GdiPlus.lib">
-				<IgnorePath>true</IgnorePath>
-				<BuildOrder>13</BuildOrder>
-			</LibFiles>
+			<ResFiles Include="TabKit.res">
+				<BuildOrder>1</BuildOrder>
+			</ResFiles>
 			<RcItem Include="Data\UnsentMsg.png">
 				<ResourceType>RCData</ResourceType>
 				<ResourceId>UNSENTMSG</ResourceId>
 			</RcItem>
-			<ResFiles Include="TabKit.res">
-				<BuildOrder>1</BuildOrder>
-			</ResFiles>
-			<RcItem Include="Data\Composing_Big.ico">
-				<ResourceType>RCData</ResourceType>
-				<ResourceId>COMPOSING_BIG</ResourceId>
-			</RcItem>
-			<RcItem Include="Data\Composing_Small.ico">
-				<ResourceType>RCData</ResourceType>
-				<ResourceId>COMPOSING_SMALL</ResourceId>
-			</RcItem>
-			<RcItem Include="Data\Pause_Big.ico">
-				<ResourceType>RCData</ResourceType>
-				<ResourceId>PAUSE_BIG</ResourceId>
-			</RcItem>
-			<RcItem Include="Data\Pause.png">
-				<ResourceType>RCData</ResourceType>
-				<ResourceId>PAUSE</ResourceId>
-			</RcItem>
-			<CppCompile Include="TabKit.cpp">
-				<BuildOrder>0</BuildOrder>
-			</CppCompile>
-			<RcItem Include="Data\Pause_Small.ico">
-				<ResourceType>RCData</ResourceType>
-				<ResourceId>PAUSE_SMALL</ResourceId>
-			</RcItem>
-			<RcItem Include="Data\Composing.png">
-				<ResourceType>RCData</ResourceType>
-				<ResourceId>COMPOSING</ResourceId>
-			</RcItem>
+			<LibFiles Include="C:\Program Files (x86)\RAD Studio\lib\psdk\GdiPlus.lib">
+				<IgnorePath>true</IgnorePath>
+				<BuildOrder>13</BuildOrder>
+			</LibFiles>
 			<FormResources Include="SettingsFrm.dfm"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
@@ -140,7 +140,7 @@
 						<VersionInfo Name="MajorVer">1</VersionInfo>
 						<VersionInfo Name="MinorVer">1</VersionInfo>
 						<VersionInfo Name="Release">0</VersionInfo>
-						<VersionInfo Name="Build">0</VersionInfo>
+						<VersionInfo Name="Build">2</VersionInfo>
 						<VersionInfo Name="Debug">False</VersionInfo>
 						<VersionInfo Name="PreRelease">False</VersionInfo>
 						<VersionInfo Name="Special">False</VersionInfo>
@@ -152,13 +152,13 @@
 					<VersionInfoKeys>
 						<VersionInfoKeys Name="CompanyName">Krzysztof Grochocki (Beherit)</VersionInfoKeys>
 						<VersionInfoKeys Name="FileDescription"/>
-						<VersionInfoKeys Name="FileVersion">1.1.0.0</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">1.1.0.2</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName">TabKit</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalCopyright">Krzysztof Grochocki (Beherit)</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks">Krzysztof Grochocki (Beherit)</VersionInfoKeys>
 						<VersionInfoKeys Name="OriginalFilename">TabKit.dll</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductName">TabKit</VersionInfoKeys>
-						<VersionInfoKeys Name="ProductVersion">1.1.0.0</VersionInfoKeys>
+						<VersionInfoKeys Name="ProductVersion">1.1.0.2</VersionInfoKeys>
 						<VersionInfoKeys Name="Comments"/>
 					</VersionInfoKeys>
 					<Debugging>
