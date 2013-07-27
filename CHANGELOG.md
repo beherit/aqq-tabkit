@@ -1,3 +1,7 @@
+1.4.4.2
+-----
+* Ca³kowite usuniêcie odœwie¿ania listy kontaktów przy wy³adowaniu wtyczki.
+
 1.4.4.0
 -----
 * Nieodœwie¿anie listy kontaktów przy zamykaniu komunikatora.
