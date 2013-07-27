@@ -51,7 +51,7 @@ __declspec(dllimport)void BuildStayOnTop();
 __declspec(dllimport)void DestroyFrmUnsentMsg();
 __declspec(dllimport)void BuildFrmUnsentMsg();
 __declspec(dllimport)void EraseUnsentMsg();
-__declspec(dllimport)void ShowUnsentMsg();
+__declspec(dllimport)bool ShowUnsentMsg();
 __declspec(dllimport)void DestroyFrmClosedTabs();
 __declspec(dllimport)void BuildFrmClosedTabs();
 __declspec(dllimport)void EraseClosedTabs();
@@ -61,6 +61,8 @@ __declspec(dllimport)void EraseClipTabs();
 __declspec(dllimport)void EraseClipTabsIcons();
 __declspec(dllimport)void HookGlobalKeyboard();
 __declspec(dllimport)void MinimizeRestoreExecute();
+__declspec(dllimport)void DestroyBlockFrmSendResize();
+__declspec(dllimport)void BuildBlockFrmSendResize();
 __declspec(dllimport)int GetMinimizeRestoreKey();
 __declspec(dllimport)UnicodeString GetPluginUserDir();
 __declspec(dllimport)UnicodeString GetPluginUserDirW();
@@ -84,8 +86,8 @@ void TSettingsForm::WMHotKey(TMessage& Message)
 
 void __fastcall TSettingsForm::UnsentMsgTrayIconClick(TObject *Sender)
 {
-  ShowUnsentMsg();
-  UnsentMsgTrayIcon->Visible = false;
+  if(ShowUnsentMsg())
+   UnsentMsgTrayIcon->Visible = false;
 }
 //---------------------------------------------------------------------------
 
@@ -144,6 +146,8 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   else
    UnCloseTabHotKeyMode2RadioButton->Checked = true;
   UnCloseTabHotKeyInput->HotKey = Ini->ReadInteger("ClosedTabs","HotKeyDef",0);
+  UnCloseTabSPMouseCheckBox->Checked = Ini->ReadBool("ClosedTabs","SPMouse",true);
+  UnCloseTabLPMouseCheckBox->Checked = Ini->ReadBool("ClosedTabs","LPMouse",false);
   CountClosedTabsSpinEdit->Value = Ini->ReadInteger("ClosedTabs","Count",5);
   RestoreLastMsgClosedTabsCheckBox->Checked = Ini->ReadBool("ClosedTabs","RestoreLastMsg",false);
   OnlyConversationTabsCheckBox->Checked = Ini->ReadBool("ClosedTabs","OnlyConversationTabs",false);
@@ -186,6 +190,7 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   CollapseImagesCheckBox->Checked = Ini->ReadBool("Other","CollapseImages",false);
   MinimizeRestoreCheckBox->Checked = Ini->ReadBool("Other","MinimizeRestore",false);
   MinimizeRestoreHotKey->HotKey = Ini->ReadInteger("Other","MinimizeRestoreHotKey",24689);
+  EnableBlockFrmSendResizeCheckBox->Checked = Ini->ReadBool("Other","EnableBlockFrmSendResize",false);
   //Buttons state
   Ini = new TIniFile(GetPluginUserDir() + "\\\\TabKit\\\\Session.ini");
   UnsentMsgEraseButton->Enabled = Ini->SectionExists("Messages");
@@ -312,6 +317,8 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
   else
    Ini->WriteInteger("ClosedTabs","HotKeyMode",2);
   Ini->WriteInteger("ClosedTabs","HotKeyDef",UnCloseTabHotKeyInput->HotKey);
+  Ini->WriteBool("ClosedTabs","SPMouse",UnCloseTabSPMouseCheckBox->Checked);
+  Ini->WriteBool("ClosedTabs","LPMouse",UnCloseTabLPMouseCheckBox->Checked);
   Ini->WriteInteger("ClosedTabs","Count",CountClosedTabsSpinEdit->Value);
   Ini->WriteBool("ClosedTabs","RestoreLastMsg",RestoreLastMsgClosedTabsCheckBox->Checked);
   Ini->WriteBool("ClosedTabs","OnlyConversationTabs",OnlyConversationTabsCheckBox->Checked);
@@ -363,7 +370,7 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
   Ini->WriteBool("Other","CollapseImages",CollapseImagesCheckBox->Checked);
   Ini->WriteBool("Other","MinimizeRestore",MinimizeRestoreCheckBox->Checked);
   Ini->WriteInteger("Other","MinimizeRestoreHotKey",MinimizeRestoreHotKey->HotKey);
-
+  Ini->WriteBool("Other","EnableBlockFrmSendResize",EnableBlockFrmSendResizeCheckBox->Checked);
 
   delete Ini;
 }
@@ -392,6 +399,7 @@ void __fastcall TSettingsForm::aSaveSettingsWExecute(TObject *Sender)
   DestroyFrmUnsentMsg();
   DestroyFrmClosedTabs();
   DestroyStayOnTop();
+  DestroyBlockFrmSendResize();
   aSaveSettings->Execute();
   LoadSettings();
   HookGlobalKeyboard();
@@ -401,6 +409,7 @@ void __fastcall TSettingsForm::aSaveSettingsWExecute(TObject *Sender)
   BuildStayOnTop();
   BuildFrmUnsentMsg();
   BuildFrmClosedTabs();
+  BuildBlockFrmSendResize();
   ChangeFrmSendTitlebar();
   ChangeFrmMainTitlebar();
 }
@@ -430,6 +439,8 @@ void __fastcall TSettingsForm::aClosedTabsChkExecute(TObject *Sender)
   CountClosedTabsSpinEdit->Enabled = RememberClosedTabsCheckBox->Checked;
   RestoreLastMsgClosedTabsCheckBox->Enabled = RememberClosedTabsCheckBox->Checked;
   OnlyConversationTabsCheckBox->Enabled = RememberClosedTabsCheckBox->Checked;
+  UnCloseTabSPMouseCheckBox->Enabled = RememberClosedTabsCheckBox->Checked;
+  UnCloseTabLPMouseCheckBox->Enabled = RememberClosedTabsCheckBox->Checked;
   if(!RememberClosedTabsCheckBox->Checked)
   {
 	FrmMainClosedTabsCheckBox->Enabled = false;
@@ -684,7 +695,7 @@ void __fastcall TSettingsForm::FormShow(TObject *Sender)
 	CategoryPanelGroup->ChevronColor = clBlack;
 	CategoryPanelGroup->ChevronHotColor = clGray;
 	CategoryPanelGroup->Color = clWindow;
-	CategoryPanelGroup->GradientBaseColor = 0xF0F0F0;
+	CategoryPanelGroup->GradientBaseColor = (TColor)0xF0F0F0;
 	CategoryPanelGroup->GradientColor = clSilver;
 	CategoryPanelGroup->HeaderFont->Color = clWindowText;
 	ClipTabsCategoryPanel->Color = clWindow;
@@ -716,9 +727,11 @@ void __fastcall TSettingsForm::FormShow(TObject *Sender)
   UnCloseTabHotKeyMode1RadioButton->TabOrder = 8;
   UnCloseTabHotKeyMode2RadioButton->TabOrder = 9;
   UnCloseTabHotKeyInput->TabOrder = 10;
-  CountClosedTabsSpinEdit->TabOrder = 11;
-  RestoreLastMsgClosedTabsCheckBox->TabOrder = 12;
-  OnlyConversationTabsCheckBox->TabOrder = 13;
+  UnCloseTabSPMouseCheckBox->TabOrder = 11;
+  UnCloseTabLPMouseCheckBox->TabOrder = 12;
+  CountClosedTabsSpinEdit->TabOrder = 13;
+  RestoreLastMsgClosedTabsCheckBox->TabOrder = 14;
+  OnlyConversationTabsCheckBox->TabOrder = 15;
   //UnsentMsgCategoryPanel
   RememberUnsentMsgCheckBox->TabOrder = 0;
   InfoUnsentMsgCheckBox->TabOrder = 1;
@@ -761,8 +774,9 @@ void __fastcall TSettingsForm::FormShow(TObject *Sender)
   CollapseImagesCheckBox->TabOrder = 5;
   MinimizeRestoreCheckBox->TabOrder = 6;
   MinimizeRestoreHotKey->TabOrder = 7;
-  EmuTabsWCheckBox->TabOrder = 8;
-  ClearCacheGroupBox->TabOrder = 9;
+  EnableBlockFrmSendResizeCheckBox->TabOrder = 8;
+  EmuTabsWCheckBox->TabOrder = 9;
+  ClearCacheGroupBox->TabOrder = 10;
 
   aLoadSettings->Execute();
 }

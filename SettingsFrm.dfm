@@ -237,7 +237,7 @@ object SettingsForm: TSettingsForm
       TabStop = True
       OnExpand = OtherCategoryPanelExpand
       ExplicitWidth = 295
-      ExpandedHeight = 428
+      ExpandedHeight = 459
       object AntiSpimCheckBox: TsCheckBox
         Left = 6
         Top = 70
@@ -253,7 +253,7 @@ object SettingsForm: TSettingsForm
       object ClearCacheGroupBox: TGroupBox
         AlignWithMargins = True
         Left = 6
-        Top = 246
+        Top = 278
         Width = 284
         Height = 153
         BiDiMode = bdLeftToRight
@@ -324,7 +324,7 @@ object SettingsForm: TSettingsForm
       end
       object EmuTabsWCheckBox: TsCheckBox
         Left = 6
-        Top = 212
+        Top = 244
         Width = 271
         Height = 28
         Caption = 'Ostrzegaj przed zamykaniem wielu zak'#322'adek jednocze'#347'nie'
@@ -417,6 +417,22 @@ object SettingsForm: TSettingsForm
         Modifiers = [hkShift, hkCtrl]
         TabOrder = 9
         OnChange = aOtherChkExecute
+      end
+      object EnableBlockFrmSendResizeCheckBox: TsCheckBox
+        Left = 6
+        Top = 212
+        Width = 259
+        Height = 28
+        Caption = 
+          'Pokazuj opcj'#281' blokowania zmiany rozmiaru okna rozmowy w menu szy' +
+          'bkiego dost'#281'pu do wtyczek'
+        AutoSize = False
+        TabOrder = 10
+        OnClick = aOtherChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
       end
     end
     object ClipTabsCategoryPanel: TCategoryPanel
@@ -996,7 +1012,7 @@ object SettingsForm: TSettingsForm
       TabOrder = 7
       TabStop = True
       ExplicitWidth = 295
-      ExpandedHeight = 376
+      ExpandedHeight = 456
       object ItemsCountClosedTabsLabel: TsLabel
         Left = 35
         Top = 110
@@ -1006,14 +1022,21 @@ object SettingsForm: TSettingsForm
       end
       object CountClosedTabsLabel: TsLabel
         Left = 20
-        Top = 267
+        Top = 337
         Width = 163
         Height = 13
         Caption = 'Liczba zapami'#281'tywanych zak'#322'adek'
       end
+      object UnCloseMouseLabel: TsLabel
+        Left = 20
+        Top = 265
+        Width = 245
+        Height = 13
+        Caption = 'Przywracaj ostatnio zamkni'#281't'#261' zak'#322'adk'#281' za pomoc'#261
+      end
       object CountClosedTabsSpinEdit: TsSpinEdit
         Left = 189
-        Top = 264
+        Top = 334
         Width = 36
         Height = 21
         TabOrder = 0
@@ -1117,7 +1140,7 @@ object SettingsForm: TSettingsForm
       end
       object OnlyConversationTabsCheckBox: TsCheckBox
         Left = 20
-        Top = 319
+        Top = 395
         Width = 251
         Height = 28
         Caption = 
@@ -1147,7 +1170,7 @@ object SettingsForm: TSettingsForm
       end
       object RestoreLastMsgClosedTabsCheckBox: TsCheckBox
         Left = 20
-        Top = 289
+        Top = 361
         Width = 243
         Height = 28
         Caption = 
@@ -1175,7 +1198,7 @@ object SettingsForm: TSettingsForm
       end
       object UnCloseTabHotKeyCheckBox: TsCheckBox
         Left = 20
-        Top = 186
+        Top = 188
         Width = 243
         Height = 28
         Caption = 
@@ -1223,6 +1246,34 @@ object SettingsForm: TSettingsForm
         TabOrder = 13
         OnClick = aClosedTabsChkExecute
         SkinData.SkinSection = 'RADIOBUTTON'
+      end
+      object UnCloseTabSPMouseCheckBox: TsCheckBox
+        Left = 35
+        Top = 284
+        Width = 159
+        Height = 20
+        Caption = #347'rodkowego przycisku myszki'
+        Checked = True
+        State = cbChecked
+        TabOrder = 14
+        OnClick = aClosedTabsChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object UnCloseTabLPMouseCheckBox: TsCheckBox
+        Left = 35
+        Top = 310
+        Width = 207
+        Height = 20
+        Caption = 'przycisku Ctrl i lewego przycisku myszki'
+        TabOrder = 15
+        OnClick = aClosedTabsChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
       end
     end
   end

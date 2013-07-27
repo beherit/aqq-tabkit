@@ -131,6 +131,10 @@ __published:	// IDE-managed Components
 	TsLabel *CountClosedTabsLabel;
 	TsCheckBox *MinimizeRestoreCheckBox;
 	THotKey *MinimizeRestoreHotKey;
+	TsCheckBox *UnCloseTabSPMouseCheckBox;
+	TsCheckBox *UnCloseTabLPMouseCheckBox;
+	TsLabel *UnCloseMouseLabel;
+	TsCheckBox *EnableBlockFrmSendResizeCheckBox;
 	void __fastcall UnsentMsgTrayIconClick(TObject *Sender);
 	void __fastcall aExitExecute(TObject *Sender);
 	void __fastcall CancelButtonClick(TObject *Sender);

@@ -1,3 +1,17 @@
+1.3.0.0
+-----
+* Przywracanie ostatnio zamkniêtej zak³adki za pomoc¹ œrodkowego przycisku myszy oraz przycisku Ctrl wraz lewym przyciskiem myszy.
+* Mo¿liwoœæ zablokowania zmiany rozmiaru okna rozmowy.
+* Dodanie zabezpieczenia przed wy³¹czeniem obs³ugi zak³adek w oknie rozmowy - opcji niezbêdnej do poprawnego dzia³ania wtyczki.
+* Odœwie¿anie okna rozmowy po ukryciu paska informacyjnego.
+* Drobne zmiany w funkcji informowania o pisaniu nowej wiadomoœci na zak³adkach.
+* Poprawne ustalanie ostatnio zamkniêtych zak³adek po przywróceniu sesji.
+* Zablokowanie dzia³ania skrótu przywracaj¹cego okno rozmowy przy zabezpieczonym komunikatorze.
+* Zamykanie okna ustawieñ wtyczki przy zabezpieczonym komunikatorze.
+* Zablokowanie niektórych funkcjonalnoœci wtyczki przy zabezpieczonym komunikatorze.
+* Aktualizacja komponentów AlphaControls do najnowszej dostêpnej wersji (7.60).
+* Inne mniej wa¿ne poprawki w kodzie.
+
 1.2.0.0
 -----
 * Skórkowanie wiêkszoœci elementów okna ustawieñ wtyczki.
