@@ -224,6 +224,10 @@ __published:	// IDE-managed Components
 	TsCheckBox *NewMgsHoyKeyCheckBox;
 	TsCheckBox *TaskbarPenCheckBox;
 	TsCheckBox *SearchOnListCheckBox;
+	TsCheckBox *ExcludeClipTabsFromTabSwitchingCheckBox;
+	TsCheckBox *ExcludeClipTabsFromSwitchToNewMsgCheckBox;
+	TsCheckBox *ExcludeClipTabsFromTabsHotKeysCheckBox;
+	TsCheckBox *ShortenLinksCheckBox;
 	void __fastcall UnsentMsgTrayIconClick(TObject *Sender);
 	void __fastcall aExitExecute(TObject *Sender);
 	void __fastcall CancelButtonClick(TObject *Sender);
