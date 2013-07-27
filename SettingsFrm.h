@@ -233,6 +233,7 @@ __published:	// IDE-managed Components
 	TsCheckBox *ChangeTabAfterSlideInCheckBox;
 	TImage *StarImage;
 	TsWebLabel *StarWebLabel;
+	TsCheckBox *NoMiniAvatarsClipTabsCheckBox;
 	void __fastcall UnsentMsgTrayIconClick(TObject *Sender);
 	void __fastcall aExitExecute(TObject *Sender);
 	void __fastcall CancelButtonClick(TObject *Sender);
