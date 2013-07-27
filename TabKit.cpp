@@ -96,7 +96,6 @@ UnicodeString SessionFileDir;
 UnicodeString ActiveProfileName;
 //Uchwyt do okna rozmowy
 HWND hFrmSend;
-//HWND hFrmSendOld;
 HWND hActiveFrm;
 //Stan okna rozmowy
 bool FrmSendMaximized = false;
@@ -1141,13 +1140,25 @@ VOID CALLBACK Timer(HWND hwnd, UINT msg, UINT_PTR idEvent, DWORD dwTime)
 	  //Pokazywanie paska narzedzi
 	  if(idEvent==300)
 	  {
-		//Pokazanie paska
-		SetWindowPos(hToolBar,NULL,0,0,0,25,SWP_NOMOVE);
-		ShowWindow(hToolBar,SW_SHOW);
-		//Oswiezenia okna
-		GetWindowRect(hFrmSend,&WindowRect);
-		SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width()+1,WindowRect.Height(),SWP_NOMOVE);
-		SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width(),WindowRect.Height(),SWP_NOMOVE);
+		POINT pCur;
+		GetCursorPos(&pCur);
+		HWND hCurActiveFrm = WindowFromPoint(pCur);
+		//Jezeli okno rozmowy jest aktywne
+		if((GetForegroundWindow()==hFrmSend)&&((hCurActiveFrm==hFrmSend)||(IsChild(hFrmSend,hCurActiveFrm))))
+		{
+          //Wysokosc paska narzedzi
+		  GetWindowRect(hToolBar,&WindowRect);
+		  if(!WindowRect.Height())
+		  {
+			//Pobieranie pozycji okna rozmowy
+			GetWindowRect(hFrmSend,&WindowRect);
+			//Pokazanie paska
+			SetWindowPos(hToolBar,NULL,0,0,WindowRect.Width(),25,SWP_NOMOVE);
+			//Oswiezenia okna
+			SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width()+1,WindowRect.Height(),SWP_NOMOVE);
+			SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width(),WindowRect.Height(),SWP_NOMOVE);
+		  }
+		}
 		//Zatrzymanie timera
 		KillTimer(hFrmMain,300);
 	  }
@@ -1367,11 +1378,11 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT mesg, WPARAM wParam, LPARAM lParam)
 	  //Ukrywanie paska narzedzi
 	  if(HideToolBarChk)
 	  {
-		//Ukrycie paska
-		SetWindowPos(hToolBar,NULL,0,0,0,0,SWP_NOMOVE);
-		ShowWindow(hToolBar,SW_HIDE);
-		//Odswiezenie okna rozmowy
+		//Pobieranie pozycji okna rozmowy
 		GetWindowRect(hFrmSend,&WindowRect);
+		//Ukrycie paska
+		SetWindowPos(hToolBar,NULL,0,0,WindowRect.Width(),0,SWP_NOMOVE);
+		//Odswiezenie okna rozmowy
 		SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width()+1,WindowRect.Height(),SWP_NOMOVE);
 		SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width(),WindowRect.Height(),SWP_NOMOVE);
 	  }
@@ -1407,9 +1418,13 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT mesg, WPARAM wParam, LPARAM lParam)
   {
 	if(HideToolBarChk)
 	{
+      POINT pCur;
+	  GetCursorPos(&pCur);
+	  HWND hCurActiveFrm = WindowFromPoint(pCur);
 	  //Jezeli okno rozmowy jest aktywne
-	  if(hFrmSend==GetForegroundWindow())
+	  if((GetForegroundWindow()==hFrmSend)&&((hCurActiveFrm==hFrmSend)||(IsChild(hFrmSend,hCurActiveFrm))))
 	  {
+		//Pobieranie pozycji okna rozmowy
 		GetWindowRect(hFrmSend,&WindowRect);
 		int WindowBottom = WindowRect.Bottom;
 		POINT pCur;
@@ -1421,18 +1436,21 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT mesg, WPARAM wParam, LPARAM lParam)
 		if(!hStatusBarPro) hStatusBarPro = FindWindowEx(hFrmSend,NULL,"TStatusBarPro",NULL);
 		GetWindowRect(hStatusBarPro,&WindowRect);
 		int StatusBarHeight = WindowRect.Height();
-
 		//Pokazywanie paska narzedzi
-		if(CursorPos<28+StatusBarHeight)
+		if(CursorPos<32+StatusBarHeight)
 		{
-		  //Wysokosc paska narzedzi
-		  GetWindowRect(hToolBar,&WindowRect);
-		  if(!WindowRect.Height())
+          //Jezeli timer nie zostal wlaczony
+		  if(!ToolBarShowing)
 		  {
-			//Tworzenie timera
-			ToolBarShowing = true;
-			KillTimer(hFrmMain,300);
-			SetTimer(hFrmMain,300,500,(TIMERPROC)Timer);
+			//Wysokosc paska narzedzi
+			GetWindowRect(hToolBar,&WindowRect);
+			if(!WindowRect.Height())
+			{
+			  //Tworzenie timera
+			  ToolBarShowing = true;
+			  KillTimer(hFrmMain,300);
+			  SetTimer(hFrmMain,300,500,(TIMERPROC)Timer);
+			}
 		  }
 		}
 		//Ukrywanie paska narzedzi
@@ -1448,11 +1466,12 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT mesg, WPARAM wParam, LPARAM lParam)
 		  GetWindowRect(hToolBar,&WindowRect);
 		  if(WindowRect.Height())
 		  {
-			//Ukrycie paska
-			SetWindowPos(hToolBar,NULL,0,0,0,0,SWP_NOMOVE);
-			ShowWindow(hToolBar,SW_HIDE);
-			//Odswiezenie okna
+			//Pobieranie pozycji okna rozmowy
 			GetWindowRect(hFrmSend,&WindowRect);
+			//Ukrycie paska
+			SetWindowPos(hToolBar,NULL,0,0,WindowRect.Width(),0,SWP_NOMOVE);
+			//Odswiezenie okna
+			//GetWindowRect(hFrmSend,&WindowRect);
 			SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width()+1,WindowRect.Height(),SWP_NOMOVE);
 			SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width(),WindowRect.Height(),SWP_NOMOVE);
 		  }
@@ -1630,30 +1649,31 @@ int __stdcall OnFetchAllTabs (WPARAM wParam, LPARAM lParam)
 	  //Szukanie paska narzedzi
 	  EnumChildWindows(hFrmSend,(WNDENUMPROC)FindToolBar,0);
 	  //Przypisanie nowej procki dla okna rozmowy
-	  OldFrmSendProc = (WNDPROC)SetWindowLongPtr(hFrmSend, GWL_WNDPROC,(LONG)FrmSendProc);
+	  OldFrmSendProc = (WNDPROC)SetWindowLongPtrW(hFrmSend, GWL_WNDPROC,(LONG)FrmSendProc);
 	  //Ukrywanie paska informacyjnego
 	  if(HideStatusBarChk)
 	  {
+        //Pobieranie pozycji okna rozmowy
+		GetWindowRect(hFrmSend,&WindowRect);
+		//Ukrycie paska
 		if(!hStatusBarPro) hStatusBarPro = FindWindowEx(hFrmSend,NULL,"TStatusBarPro",NULL);
-		if(hStatusBarPro)
-		{
-		  //Ukrycie paska
-		  SetWindowPos(hStatusBarPro,NULL,0,0,0,0,SWP_NOMOVE);
-		  ShowWindow(hStatusBarPro,SW_HIDE);
-		}
+		SetWindowPos(hStatusBarPro,NULL,0,0,WindowRect.Width(),0,SWP_NOMOVE);
+		ShowWindow(hStatusBarPro,SW_HIDE);
 	  }
 	  //Ukrycie paska narzedzi
 	  if(HideToolBarChk)
 	  {
+		//Pobieranie pozycji okna rozmowy
+		GetWindowRect(hFrmSend,&WindowRect);
+		//Ukrycie paska narzedzi
 		if(!hToolBar) EnumChildWindows(hFrmSend,(WNDENUMPROC)FindToolBar,0);
-		//Pokazanie paska
-		SetWindowPos(hToolBar,NULL,0,0,0,0,SWP_NOMOVE);
-		ShowWindow(hToolBar,SW_HIDE);
+		SetWindowPos(hToolBar,NULL,0,0,WindowRect.Width(),0,SWP_NOMOVE);
 	  }
 	  if((HideStatusBarChk)||(HideToolBarChk))
 	  {
-		//Odswiezenie okna rozmowy
+		//Pobieranie pozycji okna rozmowy
 		GetWindowRect(hFrmSend,&WindowRect);
+		//Odswiezenie okna rozmowy
 		SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width()+1,WindowRect.Height(),SWP_NOMOVE);
 		SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width(),WindowRect.Height(),SWP_NOMOVE);
 	  }
@@ -1671,8 +1691,44 @@ int __stdcall OnPrimaryTab (WPARAM wParam, LPARAM lParam)
   UnicodeString JID = (wchar_t*)(Contact->JID);
   if(Contact->IsChat) JID = "ischat_" + JID;
   ActiveTabJID = JID;
-  //Przypisanie uchwytu okna rozmowy
-  if(!hFrmSend) hFrmSend = (HWND)wParam;
+  if(!hFrmSend)
+  {
+	//Przypisanie uchwytu okna rozmowy
+	hFrmSend = (HWND)wParam;
+	//Szukanie pola wiadomosci
+	EnumChildWindows(hFrmSend,(WNDENUMPROC)FindRichEdit,0);
+	//Szukanie paska narzedzi
+	EnumChildWindows(hFrmSend,(WNDENUMPROC)FindToolBar,0);
+	//Przypisanie nowej procki dla okna rozmowy
+	OldFrmSendProc = (WNDPROC)SetWindowLongPtrW(hFrmSend, GWL_WNDPROC,(LONG)FrmSendProc);
+	//Ukrywanie paska informacyjnego
+	if(HideStatusBarChk)
+	{
+	  //Pobieranie pozycji okna rozmowy
+	  GetWindowRect(hFrmSend,&WindowRect);
+	  //Ukrycie paska
+	  if(!hStatusBarPro) hStatusBarPro = FindWindowEx(hFrmSend,NULL,"TStatusBarPro",NULL);
+	  SetWindowPos(hStatusBarPro,NULL,0,0,WindowRect.Width(),0,SWP_NOMOVE);
+	  ShowWindow(hStatusBarPro,SW_HIDE);
+	}
+	//Ukrycie paska narzedzi
+	if(HideToolBarChk)
+	{
+	  //Pobieranie pozycji okna rozmowy
+	  GetWindowRect(hFrmSend,&WindowRect);
+	  //Ukrycie paska narzedzi
+	  if(!hToolBar) EnumChildWindows(hFrmSend,(WNDENUMPROC)FindToolBar,0);
+	  SetWindowPos(hToolBar,NULL,0,0,WindowRect.Width(),0,SWP_NOMOVE);
+	}
+	if((HideStatusBarChk)||(HideToolBarChk))
+	{
+	  //Pobieranie pozycji okna rozmowy
+	  GetWindowRect(hFrmSend,&WindowRect);
+	  //Odswiezenie okna rozmowy
+	  SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width()+1,WindowRect.Height(),SWP_NOMOVE);
+	  SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width(),WindowRect.Height(),SWP_NOMOVE);
+	}
+  }
   //Zmiana caption okna rozmowy
   if(!Contact->IsChat)
   {
@@ -2184,18 +2240,24 @@ void CheckHideStatusBar()
       //Ukrywanie
 	  if((HideStatusBarChk)&&(WindowRect.Height()))
 	  {
+		//Pobieranie pozycji okna rozmowy
+		GetWindowRect(hFrmSend,&WindowRect);
+		//Ukrywanie paska
 		SetWindowPos(hStatusBarPro,NULL,0,0,0,0,SWP_NOMOVE);
 		ShowWindow(hStatusBarPro,SW_HIDE);
-		GetWindowRect(hFrmSend,&WindowRect);
+		//Odswiezanie okna rozmowy
 		SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width()+1,WindowRect.Height(),SWP_NOMOVE);
 		SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width(),WindowRect.Height(),SWP_NOMOVE);
 	  }
 	  //Pokazywanie
 	  else if((!HideStatusBarChk)&&(!WindowRect.Height()))
 	  {
-		ShowWindow(hStatusBarPro,SW_SHOW);
-		SetWindowPos(hStatusBarPro,NULL,0,0,0,18,SWP_NOMOVE);
+		//Pobieranie pozycji okna rozmowy
 		GetWindowRect(hFrmSend,&WindowRect);
+		//Pokazywanie paska
+		ShowWindow(hStatusBarPro,SW_SHOW);
+		SetWindowPos(hStatusBarPro,NULL,0,0,WindowRect.Width(),18,SWP_NOMOVE);
+		//Odswiezanie okna rozmowy
 		SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width()+1,WindowRect.Height(),SWP_NOMOVE);
 		SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width(),WindowRect.Height(),SWP_NOMOVE);
 	  }
@@ -2215,12 +2277,14 @@ void ShowToolBar()
 	//Pokazanie paska
 	if(!ToolBarHeight)
 	{
-	  SetWindowPos(hToolBar,NULL,0,0,0,25,SWP_NOMOVE);
-	  ShowWindow(hToolBar,SW_SHOW);
+	  //Pobieranie pozycji okna rozmowy
+	  GetWindowRect(hFrmSend,&WindowRect);
+	  //Pokazanie paska
+	  SetWindowPos(hToolBar,NULL,0,0,WindowRect.Width(),25,SWP_NOMOVE);
 	  //Oswiezenia okna
-	 GetWindowRect(hFrmSend,&WindowRect);
-	 SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width()+1,WindowRect.Height(),SWP_NOMOVE);
-	 SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width(),WindowRect.Height(),SWP_NOMOVE);
+	  GetWindowRect(hFrmSend,&WindowRect);
+	  SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width()+1,WindowRect.Height(),SWP_NOMOVE);
+	  SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width(),WindowRect.Height(),SWP_NOMOVE);
 	}
   }
 }
@@ -2336,7 +2400,7 @@ int __stdcall OnWindowEvent (WPARAM wParam, LPARAM lParam)
 		BuildFrmClosedTabs();
 	  }
 	  //Przypisanie nowej procki dla okna rozmowy
-	  OldFrmSendProc = (WNDPROC)SetWindowLongPtr(hFrmSend, GWL_WNDPROC,(LONG)FrmSendProc);
+	  OldFrmSendProc = (WNDPROC)SetWindowLongPtrW(hFrmSend, GWL_WNDPROC,(LONG)FrmSendProc);
 	  //Usuniêcie uchwytow do ikonek okna rozmowy
 	  hIconSmall = NULL;
 	  hIconBig = NULL;
@@ -3120,7 +3184,7 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 			//Body
 			PluginShowInfo.cbSize = sizeof(TPluginShowInfo);
 			if(CloudTickModeChk) PluginShowInfo.Event = tmeMsgCap;
-			else PluginShowInfo.Event = tmeInfo;
+			else PluginShowInfo.Event = tmePseudoMsgCap;//tmeInfo;
 			PluginShowInfo.Text = Body.w_str();
 			PluginShowInfo.ImagePath = L"";
 			PluginShowInfo.TimeOut = 1000 * CloudTimeOutChk;
@@ -3142,6 +3206,8 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 			UnicodeString Nick = (wchar_t*)(Contact->Nick);
 			UnicodeString Res = (wchar_t*)(Contact->Resource);
 			int UserIdx = Contact->UserIdx;
+
+			UnicodeString NotiferJID =  JID + "/" + Res;
 			//Czy nie jest to obrazek?
 			if(Body.Pos("AQQ_CACHE_ITEM")>0)
 			 Body = "[" + Nick + " przesy³a obrazek]";
@@ -3160,7 +3226,7 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 			//Body
 			PluginShowInfo.cbSize = sizeof(TPluginShowInfo);
 			if(CloudTickModeChk) PluginShowInfo.Event = tmeMsgCap;
-			else PluginShowInfo.Event = tmeInfo;
+			else PluginShowInfo.Event = tmePseudoMsgCap;//tmeInfo;
 			PluginShowInfo.Text = Body.w_str();
 			PluginShowInfo.ImagePath = L"";
 			PluginShowInfo.TimeOut = 1000 * CloudTimeOutChk;
@@ -4883,8 +4949,10 @@ extern "C" int __declspec(dllexport) __stdcall Unload()
 	//Pokazanie paska
 	if(!ToolBarHeight)
 	{
-	  SetWindowPos(hToolBar,NULL,0,0,0,25,SWP_NOMOVE);
-	  ShowWindow(hToolBar,SW_SHOW);
+      //Pobieranie pozycji okna rozmowy
+	  GetWindowRect(hFrmSend,&WindowRect);
+	  //Pokazywanie paska
+	  SetWindowPos(hToolBar,NULL,0,0,WindowRect.Width(),25,SWP_NOMOVE);
 	}
 	else
 	 HideToolBarChk = false;
@@ -4892,14 +4960,16 @@ extern "C" int __declspec(dllexport) __stdcall Unload()
   //Przywracanie paska informacyjnego do "normalnosci"
   if((HideStatusBarChk)&&(hStatusBarPro))
   {
+	//Pobieranie pozycji okna rozmowy
+	GetWindowRect(hFrmSend,&WindowRect);
 	//Pokazywanie paska
-	SetWindowPos(hStatusBarPro,NULL,0,0,0,18,SWP_NOMOVE);
+	SetWindowPos(hStatusBarPro,NULL,0,0,WindowRect.Width(),18,SWP_NOMOVE);
 	ShowWindow(hStatusBarPro,SW_SHOW);
   }
   //Odswiezenie okna rozmowy
   if(((HideStatusBarChk)&&(hStatusBarPro))||((HideToolBarChk)&&(hToolBar)))
   {
-    GetWindowRect(hFrmSend,&WindowRect);
+	GetWindowRect(hFrmSend,&WindowRect);
 	SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width()+1,WindowRect.Height(),SWP_NOMOVE);
 	SetWindowPos(hFrmSend,NULL,0,0,WindowRect.Width(),WindowRect.Height(),SWP_NOMOVE);
   }
@@ -4959,7 +5029,7 @@ extern "C" int __declspec(dllexport) __stdcall Unload()
   //Przypisanie starej procki do okna rozmowy
   if(OldFrmSendProc)
   {
-	SetWindowLongPtr(hFrmSend, GWL_WNDPROC,(LONG)OldFrmSendProc);
+	SetWindowLongPtrW(hFrmSend, GWL_WNDPROC,(LONG)OldFrmSendProc);
 	OldFrmSendProc = NULL;
   }
   //Sprawdzanie czy wtyczka ma pamietac sesje
@@ -5105,7 +5175,7 @@ extern "C" __declspec(dllexport) PPluginInfo __stdcall AQQPluginInfo(DWORD AQQVe
   }
   PluginInfo.cbSize = sizeof(TPluginInfo);
   PluginInfo.ShortName = (wchar_t*)L"TabKit";
-  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,1,0,2);
+  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,1,0,4);
   PluginInfo.Description = (wchar_t*)L"";
   PluginInfo.Author = (wchar_t*)L"Krzysztof Grochocki (Beherit)";
   PluginInfo.AuthorMail = (wchar_t*)L"kontakt@beherit.pl";
