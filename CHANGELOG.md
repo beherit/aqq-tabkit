@@ -1,3 +1,22 @@
+1.5.0.0
+-----
+* Opcja pokazywania nazwy zasobu kontaktu na pasku tytu³u okna rozmowy.
+* Wymuszona jedno-sekundowa blokada wysuwania okna rozmowy/kontaktów po zablokowaniu wysuwania okna przez wciœniêty klawisz Ctrl oraz lewy/prawy przycisk myszy.
+* Przepisanie wtyczki pod kompilator Embarcadero C++ Builder XE3.
+* Optymalizacja zmieniania treœci pasku tytu³u okna rozmowy.
+* Poprawki w aktywacji nowego okna po schowaniu okna kontaktów.
+* Odœwie¿anie listy kontaktów przy wy³adowaniu wtyczki (nie dzia³a przy wy³¹czaniu komunikatora).
+* Podczas zamykania komunikatora nie s¹ wywo³ywane wszystkie rzeczy w funkcji wy³adowania wtyczki.
+* Podczas zamykania komunikatora blokowane s¹ niektóre notyfikacje komunikatora oraz systemowe hooki.
+* Przywracanie domyœlnego tekstu na belce pseudo okna rozmowy podczas zmiany kompozycji.
+* Aktywne zak³adki nie s¹ ju¿ dodawane do listy ostatnio zamkniêtych przy wy³adowaniu wtyczki, gdzie nie nastêpuje zamykanie komunikatora.
+* Poprawne usuwanie znaku nowej linii w ustawianym tekœcie na belce okna rozmowy.
+* Poprawki w tworzeniu elementów menu w interfejsie komunikatora.
+* Poprawne wysuwanie/chowanie okna kontaktów po klikniêciu LPM w ikonê tray.
+* Poprawki w skórkowaniu panelu z przyciskami.
+* Aktualizacja komponentów AlphaControls do najnowszej dostêpnej wersji (7.70).
+* Inne mniej wa¿nie poprawki optymalizacyjne w kodzie.
+
 1.4.4.2
 -----
 * Ca³kowite usuniêcie odœwie¿ania listy kontaktów przy wy³adowaniu wtyczki.
