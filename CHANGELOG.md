@@ -1,3 +1,24 @@
+1.6.1.0
+-----
+* Opcja nieustanawiania mini awatara na przypiêtych zak³adkach.
+* Zwiêkszenie interwa³u po którym zmieniana jest pozycja nowo otwartych przypiêtych zak³adek czatowych.
+* Prawid³owe przywracanie zak³adek czatowych nie pochodz¹cych z g³ównego konta Jabber.
+* Poprawne usuwanie tekstu na przypiêtej zak³adce czatu.
+* Usuniêto b³¹d z blokowaniem mo¿liwoœci otwarcia wiadomoœci z zasobnika systemowego.
+* Poprawki w aktywacji pola tekstowego okna rozmowy po wysuniêciu okna.
+* Niewywo³ywanie niektórych funkcji przy zamykaniu okna rozmowy.
+* Mini awatar nie jest pokazywany na formie ustawieñ podczas jego generowania.
+* Poprawne ustawianie pozycji okna rozmowy/kontaktów po lewej stronie stronie ekranu przy wy³¹czonym obramowaniu.
+* Drobne zmiany w procesie otwierania przypiêtych zak³adek wraz z otwarciem okna rozmowy.
+* Timer przywracaj¹cy sesjê z czatami dzia³a a¿ zak³adki siê poprawnie otworz¹.
+* Poprawki w tymczasowym blokowaniu okna rozmowy.
+* Optymalizacja zmiany ikonek oraz tekstu zak³adek podczas ich przypinania/odpinania.
+* Poprawne pobieranie uchwytu do okna rozmowy podczas ³adowania wtyczki.
+* Poprawki w pobieraniu uchwytu do okna rozmowy/kontaktów.
+* Optymalizacja odœwie¿ania zak³adek podczas ³adowania/wy³adowywania wtyczki.
+* Otwieranie przypiêtych zak³adek wraz z otwarciem okna rozmowy nie powoduje utraty fokusa na zak³adce otwartej pierwotnie.
+* Podczas przywracania sesji zwyk³e zak³adki s¹ otwierane w tle.
+
 1.6.0.0
 -----
 * Rozró¿nianie kontaktów równie¿ po ich zasobach.

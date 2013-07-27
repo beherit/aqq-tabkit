@@ -53,6 +53,7 @@ __declspec(dllimport)void CheckHideTabListButton();
 __declspec(dllimport)void CheckHideScrollTabButtons();
 //---------------------------------------------------------------------------
 bool pHideTabCloseButtonChk;
+bool pMiniAvatarsClipTabsChk;
 bool pRefreshTabs = false;
 //---------------------------------------------------------------------------
 __fastcall TSettingsForm::TSettingsForm(TComponent* Owner)
@@ -312,6 +313,8 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   ExcludeClipTabsFromTabSwitchingCheckBox->Checked = Ini->ReadBool("ClipTabs","ExcludeFromTabSwitching",false);
   ExcludeClipTabsFromSwitchToNewMsgCheckBox->Checked = !Ini->ReadBool("ClipTabs","ExcludeFromSwitchToNewMsg",true);
   ExcludeClipTabsFromTabsHotKeysCheckBox->Checked = Ini->ReadBool("ClipTabs","ExcludeFromTabsHotKeys",false);
+  NoMiniAvatarsClipTabsCheckBox->Checked = !Ini->ReadBool("ClipTabs","MiniAvatars",true);
+  pMiniAvatarsClipTabsChk = NoMiniAvatarsClipTabsCheckBox->Checked;
   //SideSlide
   SlideFrmMainCheckBox->Checked = Ini->ReadBool("SideSlide","SlideFrmMain",false);
   switch(Ini->ReadInteger("SideSlide","FrmMainEdge",2))
@@ -558,6 +561,7 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
   Ini->WriteBool("ClipTabs","ExcludeFromTabSwitching",ExcludeClipTabsFromTabSwitchingCheckBox->Checked);
   Ini->WriteBool("ClipTabs","ExcludeFromSwitchToNewMsg",!ExcludeClipTabsFromSwitchToNewMsgCheckBox->Checked);
   Ini->WriteBool("ClipTabs","ExcludeFromTabsHotKeys",ExcludeClipTabsFromTabsHotKeysCheckBox->Checked);
+  Ini->WriteBool("ClipTabs","MiniAvatars",!NoMiniAvatarsClipTabsCheckBox->Checked);
   //SideSlide
   Ini->WriteBool("SideSlide","SlideFrmMain",SlideFrmMainCheckBox->Checked);
   if(FrmMainEdgeLeftRadioButton->Checked)
@@ -650,7 +654,11 @@ void __fastcall TSettingsForm::aSaveSettingsWExecute(TObject *Sender)
   ShowToolBar();
   CheckHideTabListButton();
   CheckHideScrollTabButtons();
-  if(pHideTabCloseButtonChk!=HideTabCloseButtonCheckBox->Checked) RefreshTabs();
+  //Odswiezenie wszystkich zakladek
+  if((pMiniAvatarsClipTabsChk!=NoMiniAvatarsClipTabsCheckBox->Checked)
+  ||(pHideTabCloseButtonChk!=HideTabCloseButtonCheckBox->Checked))
+   RefreshTabs();
+  pMiniAvatarsClipTabsChk = NoMiniAvatarsClipTabsCheckBox->Checked;
   pHideTabCloseButtonChk = HideTabCloseButtonCheckBox->Checked;
 }
 //---------------------------------------------------------------------------
@@ -911,6 +919,8 @@ void __fastcall TSettingsForm::ClipTabsEraseButtonClick(TObject *Sender)
 
 void __fastcall TSettingsForm::MiniAvatarsEraseButtonClick(TObject *Sender)
 {
+  FileListBox->Directory = GetPluginUserDirW() + "\\TabKit\\Avatars";
+  FileListBox->Update();
   for(int Count=0;Count<FileListBox->Items->Count;Count++)
   {
 	DeleteFile(FileListBox->Items->Strings[Count]);
@@ -955,7 +965,7 @@ void __fastcall TSettingsForm::ConvertImage(UnicodeString Old, UnicodeString New
   Gdiplus::Graphics Grphx(Handle);
   Gdiplus::Image OrgImage(Old.w_str());
   Gdiplus::Image* Thumbnail = OrgImage.GetThumbnailImage(16, 16, NULL, NULL);
-  Grphx.DrawImage(Thumbnail, 0, 0,Thumbnail->GetWidth(), Thumbnail->GetHeight());
+  Grphx.DrawImage(Thumbnail, 0, 432,Thumbnail->GetWidth(), Thumbnail->GetHeight());
   CLSID gifClsid;
   GetEncoderClsid(L"image/png", &gifClsid);
   Thumbnail->Save(New.w_str(), &gifClsid, NULL);
