@@ -1,3 +1,11 @@
+1.1.0.6
+-----
+* Poprawki w parsowaniu pakietu XML zawieraj¹cego listê czatów.
+* Brak "migania zak³adki" przy prze³¹czaniu na nieprzypiêt¹ zak³adkê czatow¹.
+* Licznik znaków nie jest kasowany  przy prze³¹czaniu zak³adek (z wyj¹tkiem zak³adek zawieraj¹cych licznik nieprzeczytanych wiadomoœci).
+* Drobne poprawki w funkcji licznika nieprzeczytanych wiadomoœci na pasku tytu³u okna rozmowy.
+* Poprawki w usuwaniu/dodawaniu informacji graficznej na zak³adkach o pisaniu nowej wiadomoœci.
+
 1.1.0.4
 -----
 * Kolejne poprawki w ustawianiu nowej procedury okna rozmowy przy ³adowaniu wtyczki. (#4862)
