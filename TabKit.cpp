@@ -230,6 +230,8 @@ bool SecureMode = false;
 //Ustawienia animacji AlphaControls
 bool ThemeAnimateWindows;
 bool ThemeGlowing;
+//ID wywolania enumeracji listy kontaktow
+DWORD ReplyListID = 0;
 //LOAD/UNLOAD-PLUGIN---------------------------------------------------------
 //Gdy zostalo uruchomione zaladowanie wtyczki
 bool LoadExecuted = false;
@@ -437,8 +439,10 @@ int __stdcall OnPerformCopyData(WPARAM wParam, LPARAM lParam);
 int __stdcall OnPreSendMsg(WPARAM wParam, LPARAM lParam);
 int __stdcall OnPrimaryTab(WPARAM wParam, LPARAM lParam);
 int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam);
+int __stdcall OnReplyList(WPARAM wParam, LPARAM lParam);
 int __stdcall OnRestartingAQQ(WPARAM wParam, LPARAM lParam);
 int __stdcall OnResourceChanged(WPARAM wParam, LPARAM lParam);
+int __stdcall OnSetHTMLStatus(WPARAM wParam, LPARAM lParam);
 int __stdcall OnSetLastState(WPARAM wParam, LPARAM lParam);
 int __stdcall OnStateChange(WPARAM wParam, LPARAM lParam);
 int __stdcall OnSystemPopUp(WPARAM wParam, LPARAM lParam);
@@ -6558,57 +6562,33 @@ int __stdcall OnAddLine(WPARAM wParam, LPARAM lParam)
 		//Link without [CC_LINK_END] tag
 		UnicodeString URL_WithOutTag = URL_WithTag;
 		URL_WithOutTag.Delete(URL_WithOutTag.Pos("[CC_LINK_END]"),URL_WithOutTag.Length());
-		//Prawidlowy adres URL
-		if((!URL_WithOutTag.Pos("@"))&&(URL_WithOutTag.LowerCase().Pos("gg:")!=1)&&(URL_WithOutTag.LowerCase().Pos("tlen:")!=1)&&(URL_WithOutTag.LowerCase().Pos("callto:")!=1))
+		//Wycinanie domeny z adresow URL
+		UnicodeString URL_OnlyDomain = URL_WithOutTag;
+		if(URL_OnlyDomain.LowerCase().Pos("www."))
 		{
-		  //Wycinanie domeny z adresow URL
-		  UnicodeString URL_OnlyDomain = URL_WithOutTag;
-		  if(URL_OnlyDomain.LowerCase().Pos("www."))
-		  {
-			URL_OnlyDomain.Delete(1,URL_OnlyDomain.LowerCase().Pos("www.")+3);
-			if(URL_OnlyDomain.Pos("/"))
-			 URL_OnlyDomain.Delete(URL_OnlyDomain.Pos("/"),URL_OnlyDomain.Length());
-			if(URL_OnlyDomain.Pos("?"))
-			 URL_OnlyDomain.Delete(URL_OnlyDomain.Pos("?"),URL_OnlyDomain.Length());
-		  }
-		  else if(URL_OnlyDomain.LowerCase().Pos("http://www."))
-		  {
-			URL_OnlyDomain.Delete(1,URL_OnlyDomain.LowerCase().Pos("http://www.")+10);
-			if(URL_OnlyDomain.Pos("/"))
-			 URL_OnlyDomain.Delete(URL_OnlyDomain.Pos("/"),URL_OnlyDomain.Length());
-			if(URL_OnlyDomain.Pos("?"))
-			 URL_OnlyDomain.Delete(URL_OnlyDomain.Pos("?"),URL_OnlyDomain.Length());
-		  }
-		  else if(URL_OnlyDomain.LowerCase().Pos("http://"))
-		  {
-			URL_OnlyDomain.Delete(1,URL_OnlyDomain.LowerCase().Pos("http://")+6);
-			if(URL_OnlyDomain.Pos("/"))
-			 URL_OnlyDomain.Delete(URL_OnlyDomain.Pos("/"),URL_OnlyDomain.Length());
-			if(URL_OnlyDomain.Pos("?"))
-			 URL_OnlyDomain.Delete(URL_OnlyDomain.Pos("?"),URL_OnlyDomain.Length());
-		  }
-		  else if(URL_OnlyDomain.LowerCase().Pos("https://www."))
-		  {
-			URL_OnlyDomain.Delete(1,URL_OnlyDomain.LowerCase().Pos("https://www.")+11);
-			if(URL_OnlyDomain.Pos("/"))
-			 URL_OnlyDomain.Delete(URL_OnlyDomain.Pos("/"),URL_OnlyDomain.Length());
-			if(URL_OnlyDomain.Pos("?"))
-			 URL_OnlyDomain.Delete(URL_OnlyDomain.Pos("?"),URL_OnlyDomain.Length());
-		  }
-		  else if(URL_OnlyDomain.LowerCase().Pos("https://"))
-		  {
-			URL_OnlyDomain.Delete(1,URL_OnlyDomain.LowerCase().Pos("https://")+7);
-			if(URL_OnlyDomain.Pos("/"))
-			 URL_OnlyDomain.Delete(URL_OnlyDomain.Pos("/"),URL_OnlyDomain.Length());
-			if(URL_OnlyDomain.Pos("?"))
-			 URL_OnlyDomain.Delete(URL_OnlyDomain.Pos("?"),URL_OnlyDomain.Length());
-		  }
-		  else
-		   URL_OnlyDomain = "link";
+		  URL_OnlyDomain.Delete(1,URL_OnlyDomain.LowerCase().Pos("www.")+3);
+		  if(URL_OnlyDomain.Pos("/"))
+		   URL_OnlyDomain.Delete(URL_OnlyDomain.Pos("/"),URL_OnlyDomain.Length());
 		  //Formatowanie linku
 		  Body = StringReplace(Body, URL_WithOutTag + "\">" + URL_WithTag, URL_WithOutTag + "\" title=\"" + URL_WithOutTag.Trim() + "\">["+ URL_OnlyDomain + "]", TReplaceFlags());
 		}
-		//Adres e-mail, identyfikator JID etc
+		else if(URL_OnlyDomain.LowerCase().Pos("http://"))
+		{
+		  URL_OnlyDomain.Delete(1,URL_OnlyDomain.LowerCase().Pos("http://")+6);
+		  if(URL_OnlyDomain.Pos("/"))
+		   URL_OnlyDomain.Delete(URL_OnlyDomain.Pos("/"),URL_OnlyDomain.Length());
+		  //Formatowanie linku
+		  Body = StringReplace(Body, URL_WithOutTag + "\">" + URL_WithTag, URL_WithOutTag + "\" title=\"" + URL_WithOutTag.Trim() + "\">["+ URL_OnlyDomain + "]", TReplaceFlags());
+		}
+		else if(URL_OnlyDomain.LowerCase().Pos("https://"))
+		{
+		  URL_OnlyDomain.Delete(1,URL_OnlyDomain.LowerCase().Pos("https://")+7);
+		  if(URL_OnlyDomain.Pos("/"))
+		   URL_OnlyDomain.Delete(URL_OnlyDomain.Pos("/"),URL_OnlyDomain.Length());
+		  //Formatowanie linku
+		  Body = StringReplace(Body, URL_WithOutTag + "\">" + URL_WithTag, URL_WithOutTag + "\" title=\"" + URL_WithOutTag.Trim() + "\">["+ URL_OnlyDomain + "]", TReplaceFlags());
+		}
+		//Niestandardowy odnosnik
 		else
 		 Body = StringReplace(Body, "[CC_LINK_END]", "", TReplaceFlags());
 	  }
@@ -7953,6 +7933,65 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 }
 //---------------------------------------------------------------------------
 
+//Hook na enumeracje listy kontatkow
+int __stdcall OnReplyList(WPARAM wParam, LPARAM lParam)
+{
+  //Sprawdzanie ID wywolania enumerqacji
+  if(wParam==ReplyListID)
+  {
+	Contact = (PPluginContact)lParam;
+	if(!Contact->IsChat)
+	{
+	  UnicodeString JID = (wchar_t*)Contact->JID;
+	  //Pobieranie i zapisywanie stanu kontaktu
+	  int State = PluginLink.CallService(AQQ_FUNCTION_GETSTATEPNG_INDEX,0,(LPARAM)(Contact));
+	  if(State!=ContactsStateList->ReadInteger("State",JID,-1))
+	  {
+		ContactsStateList->WriteInteger("State",JID,State);
+		//Ustawianie prawidlowej ikonki w popumenu ostatnio zamknietych zakladek
+		if((ClosedTabsChk)&&(FastAccessClosedTabsChk))
+		{
+		  //Jezeli JID jest w ostatnio zamknietych zakladkach
+		  if(ClosedTabsList->IndexOf(JID)!=-1)
+		  {
+			//Jezeli JID jest elementem popupmenu
+			if(ClosedTabsList->IndexOf(JID)<=ItemCountUnCloseTabVal)
+			{
+			  //Aktualizacja statusu
+			  DestroyFrmClosedTabs();
+			  BuildFrmClosedTabs();
+			}
+		  }
+		}
+		//Ustawianie prawidlowej ikonki w popumenu niewyslanych wiadomosci
+		if((UnsentMsgChk)&&(FastAccessUnsentMsgChk))
+		{
+		  TIniFile *Ini = new TIniFile(SessionFileDir);
+		  TStringList *Messages = new TStringList;
+		  Ini->ReadSection("Messages",Messages);
+		  delete Ini;
+		  int MsgCount = Messages->Count;
+		  //Jezeli sa jakies niewyslane wiadomosci
+		  if(MsgCount>0)
+		  {
+			//Jezeli JID jest w niewyslanych wiadomosciach
+			if(Messages->IndexOf(JID)!=-1)
+			{
+			  //Aktualizacja statusu
+			  DestroyFrmUnsentMsg();
+			  BuildFrmUnsentMsg();
+			}
+		  }
+		  delete Messages;
+		}
+	  }
+	}
+  }
+
+  return 0;
+}
+//---------------------------------------------------------------------------
+
 //Hook na restartowanie AQQ poprzez wtyczke AQQRestarter
 int __stdcall OnRestartingAQQ(WPARAM wParam, LPARAM lParam)
 {
@@ -7975,6 +8014,92 @@ int __stdcall OnResourceChanged(WPARAM wParam, LPARAM lParam)
 	{
 	  if(hFrmMain) SetWindowTextW(hFrmMain,("AQQ [" + ResourceName + "]").w_str());
 	  if(hFrmMainL) SetWindowTextW(hFrmMainL,("AQQ [" + ResourceName + "]").w_str());
+	}
+  }
+  //Ustawienie poprawnej pozycji okna kontaktow
+  if(FrmMainSlideChk)
+  {
+	//Pobranie rozmiaru+pozycji okna kontatkow
+	GetFrmMainRect();
+	//Ustawienie poprawnej pozycji okna kontaktow
+	SetFrmMainPos();
+	//Pobranie rozmiaru+pozycji okna kontatkow
+	GetFrmMainRect();
+  }
+  //Ustawienie poprawnej pozycji okna rozmowy
+  if(FrmSendSlideChk)
+  {
+	//Pobranie rozmiaru+pozycji okna rozmowy
+	GetFrmSendRect();
+	//Ustawienie poprawnej pozycji okna rozmowy
+	SetFrmSendPos();
+	//Pobranie rozmiaru+pozycji okna rozmowy
+	GetFrmSendRect();
+  }
+
+  return 0;
+}
+//---------------------------------------------------------------------------
+
+//Hook na zmiane widocznego opisu kontatku na liscie kontatkow
+int __stdcall OnSetHTMLStatus(WPARAM wParam, LPARAM lParam)
+{
+  //Skracanie wyœwietlania odnoœników w oknie kontatkow do wygodniejszej formy
+  if(ShortenLinksChk)
+  {
+	//Pobieranie sformatowanego opisu
+	UnicodeString Body = (wchar_t*)lParam;
+	//Jezeli opis cos zawiera
+	if(!Body.IsEmpty())
+	{
+	  //Zapisywanie oryginalnego opisu
+	  UnicodeString BodyOrg = Body;
+	  //Dodawanie specjalnego tagu do wszystkich linkow
+	  Body = StringReplace(Body, "</A>", "[CC_LINK_END]</A>", TReplaceFlags() << rfReplaceAll);
+	  while(Body.Pos("[CC_LINK_END]"))
+	  {
+		//Link with [CC_LINK_END] tag
+		UnicodeString URL_WithTag = Body;
+		URL_WithTag.Delete(URL_WithTag.Pos("[CC_LINK_END]")+13,URL_WithTag.Length());
+		while(URL_WithTag.Pos("\">")) URL_WithTag.Delete(1,URL_WithTag.Pos("\">")+1);
+		//Link without [CC_LINK_END] tag
+		UnicodeString URL_WithOutTag = URL_WithTag;
+		URL_WithOutTag.Delete(URL_WithOutTag.Pos("[CC_LINK_END]"),URL_WithOutTag.Length());
+		//Wycinanie domeny z adresow URL
+		UnicodeString URL_OnlyDomain = URL_WithOutTag;
+		if(URL_OnlyDomain.LowerCase().Pos("www."))
+		{
+		  URL_OnlyDomain.Delete(1,URL_OnlyDomain.LowerCase().Pos("www.")+3);
+		  if(URL_OnlyDomain.Pos("/"))
+		   URL_OnlyDomain.Delete(URL_OnlyDomain.Pos("/"),URL_OnlyDomain.Length());
+		  //Formatowanie linku
+		  Body = StringReplace(Body, URL_WithOutTag + "\">" + URL_WithTag, URL_WithOutTag + "\" title=\"" + URL_WithOutTag.Trim() + "\">["+ URL_OnlyDomain + "]", TReplaceFlags());
+		}
+		else if(URL_OnlyDomain.LowerCase().Pos("http://"))
+		{
+		  URL_OnlyDomain.Delete(1,URL_OnlyDomain.LowerCase().Pos("http://")+6);
+		  if(URL_OnlyDomain.Pos("/"))
+		   URL_OnlyDomain.Delete(URL_OnlyDomain.Pos("/"),URL_OnlyDomain.Length());
+		  //Formatowanie linku
+		  Body = StringReplace(Body, URL_WithOutTag + "\">" + URL_WithTag, URL_WithOutTag + "\" title=\"" + URL_WithOutTag.Trim() + "\">["+ URL_OnlyDomain + "]", TReplaceFlags());
+		}
+		else if(URL_OnlyDomain.LowerCase().Pos("https://"))
+		{
+		  URL_OnlyDomain.Delete(1,URL_OnlyDomain.LowerCase().Pos("https://")+7);
+		  if(URL_OnlyDomain.Pos("/"))
+		   URL_OnlyDomain.Delete(URL_OnlyDomain.Pos("/"),URL_OnlyDomain.Length());
+		  //Formatowanie linku
+		  Body = StringReplace(Body, URL_WithOutTag + "\">" + URL_WithTag, URL_WithOutTag + "\" title=\"" + URL_WithOutTag.Trim() + "\">["+ URL_OnlyDomain + "]", TReplaceFlags());
+		}
+		//Niestandardowy odnosnik
+		else
+		 Body = StringReplace(Body, "[CC_LINK_END]", "", TReplaceFlags());
+	  }
+	  //Zmienianie opisu na liscie kontatkow
+	  if(Body!=BodyOrg)
+	   return (LPARAM)Body.w_str();
+	  else
+	   return 0;
 	}
   }
 
@@ -10201,6 +10326,8 @@ extern "C" int __declspec(dllexport) __stdcall Load(PPluginLink Link)
   PluginLink.HookEvent(AQQ_SYSTEM_WINDOWEVENT,OnWindowEvent);
   //Hook na odbieranie nowej wiadomosci
   PluginLink.HookEvent(AQQ_CONTACTS_RECVMSG,OnRecvMsg);
+  //Hook na enumeracje listy kontatkow
+  PluginLink.HookEvent(AQQ_CONTACTS_REPLYLIST,OnReplyList);
   //Hook na wysylanie nowej wiadomosci
   PluginLink.HookEvent(AQQ_CONTACTS_PRESENDMSG,OnPreSendMsg);
   //Hook na pobieranie adresow URL z popupmenu w oknie rozmowy
@@ -10213,6 +10340,8 @@ extern "C" int __declspec(dllexport) __stdcall Load(PPluginLink Link)
   PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_TABIMAGE,OnTabImage);
   //Hook dla zmiany stanu
   PluginLink.HookEvent(AQQ_SYSTEM_STATECHANGE,OnStateChange);
+  //Hook na zmiane widocznego opisu kontatku na liscie kontatkow
+  PluginLink.HookEvent(AQQ_CONTACTS_SETHTMLSTATUS,OnSetHTMLStatus);
   //Hook na polaczenie sieci przy starcie AQQ
   PluginLink.HookEvent(AQQ_SYSTEM_SETLASTSTATE,OnSetLastState);
   //Hook na zmianê stanu kontaktu
@@ -10353,6 +10482,10 @@ extern "C" int __declspec(dllexport) __stdcall Load(PPluginLink Link)
 		}
 	  }
 	}
+	//Pobranie ID dla enumeracji kontaktów
+	ReplyListID = GetTickCount();
+	//Wywolanie enumeracji kontaktow
+	PluginLink.CallService(AQQ_CONTACTS_REQUESTLIST,(WPARAM)ReplyListID,0);
   }
   //Rejestowanie klasy okna timera
   WNDCLASSEX wincl;
@@ -10498,8 +10631,10 @@ extern "C" int __declspec(dllexport) __stdcall Unload()
   PluginLink.UnhookEvent(OnPerformCopyData);
   PluginLink.UnhookEvent(OnPrimaryTab);
   PluginLink.UnhookEvent(OnRecvMsg);
+  PluginLink.UnhookEvent(OnReplyList);
   PluginLink.UnhookEvent(OnRestartingAQQ);
   PluginLink.UnhookEvent(OnResourceChanged);
+  PluginLink.UnhookEvent(OnSetHTMLStatus);
   PluginLink.UnhookEvent(OnSetLastState);
   PluginLink.UnhookEvent(OnStateChange);
   PluginLink.UnhookEvent(OnSystemPopUp);
@@ -10754,7 +10889,7 @@ extern "C" __declspec(dllexport) PPluginInfo __stdcall AQQPluginInfo(DWORD AQQVe
 {
   PluginInfo.cbSize = sizeof(TPluginInfo);
   PluginInfo.ShortName = L"TabKit";
-  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,4,1,0);
+  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,4,2,0);
   PluginInfo.Description = L"Wtyczka oferuje masê funkcjonalnoœci usprawniaj¹cych korzystanie z komunikatora - np. zapamiêtywanie zamkniêtych zak³adek, inteligentne prze³¹czanie, zapamiêtywanie sesji.";
   PluginInfo.Author = L"Krzysztof Grochocki (Beherit)";
   PluginInfo.AuthorMail = L"kontakt@beherit.pl";

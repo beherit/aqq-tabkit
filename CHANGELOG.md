@@ -1,3 +1,10 @@
+1.4.2.0
+-----
+* Skracanie wyœwietlania odnoœników w oknie kontaktów do wygodniejszej formy.
+* Pobieranie stanów wszystkich kontaktów podczas ³adowania wtyczki.
+* Drobne zmiany w algorytmie skracania odnoœników.
+* Ustawianie poprawnej pozycji okna rozmowy oraz okna kontaktów, gdy wtyczka ResourcesChanger wyœle informacjê o zmianie zasobu.
+
 1.4.1.0
 -----
 * Opcja wy³¹czenia przypiêtych zak³adek z prze³¹czania zak³adek za pomoc¹ skrótu klawiaturowego Ctrl+Tab / Ctrl+Shift+Tab.
