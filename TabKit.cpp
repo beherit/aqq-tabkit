@@ -215,6 +215,11 @@ bool CALLBACK FindRichEdit(HWND hWnd, LPARAM lParam)
 	hRichEdit = hWnd;
 	return false;
   }
+  else if((UnicodeString)WClassName=="TsRichEdit")
+  {
+	hRichEdit = hWnd;
+	return false;
+  }
 
   return true;
 }
@@ -5206,12 +5211,12 @@ extern "C" __declspec(dllexport) PPluginInfo __stdcall AQQPluginInfo(DWORD AQQVe
   }
   PluginInfo.cbSize = sizeof(TPluginInfo);
   PluginInfo.ShortName = (wchar_t*)L"TabKit";
-  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,1,0,6);
-  PluginInfo.Description = (wchar_t*)L"Ulepszenie obs³ugi zak³adek";
-  PluginInfo.Author = (wchar_t*)L"Krzysztof Grochocki (Beherit)";
-  PluginInfo.AuthorMail = (wchar_t*)L"kontakt@beherit.pl";
-  PluginInfo.Copyright = (wchar_t*)L"Krzysztof Grochocki (Beherit)";
-  PluginInfo.Homepage = (wchar_t*)L"http://beherit.pl/";
+  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,1,0,8);
+  PluginInfo.Description = L"Ulepszenie obs³ugi zak³adek";
+  PluginInfo.Author = L"Krzysztof Grochocki (Beherit)";
+  PluginInfo.AuthorMail = L"kontakt@beherit.pl";
+  PluginInfo.Copyright = L"Krzysztof Grochocki (Beherit)";
+  PluginInfo.Homepage = L"http://beherit.pl/";
 
   return &PluginInfo;
 }

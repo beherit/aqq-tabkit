@@ -1,3 +1,7 @@
+1.1.0.8
+-----
+* Poprawki w pobieraniu uchwytu zmienionego komponentu pola wiadomoœci.
+
 1.1.0.6
 -----
 * Poprawki w parsowaniu pakietu XML zawieraj¹cego listê czatów.
