@@ -1,3 +1,10 @@
+1.1.0.2
+-----
+* Mo¿liwoœæ wyœwietlania licznika znaków na przypiêtych zak³adkach.
+* Mo¿liwoœæ manualnego ustawienia trybu zwijania przes³anych obrazków do formy za³¹cznika (klucz "CollapseImagesMode" w sekcji "Other" - 1 = domyœlnie, 2 = tylko dla wys³anych obrazków, 3 = tylko dla odebranych obrazków).
+* Poprawki w funkcjach ustawiaj¹cych tekst zak³adkach.
+* Poprawki w ustawianiu nowej procedury okna rozmowy przy ³adowaniu wtyczki.
+
 1.1.0.0
 -----
 * Przypinanie zak³adek.

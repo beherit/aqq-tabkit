@@ -149,6 +149,7 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   //ClipTabs
   OpenClipTabsCheckBox->Checked = Ini->ReadBool("ClipTabs","OpenClipTabs",true);
   InactiveClipTabsCheckBox->Checked = Ini->ReadBool("ClipTabs","InactiveClipTabs",false);
+  CounterClipTabsCheckBox->Checked = Ini->ReadBool("ClipTabs","Counter",false);
   //Other
   StayOnTopCheckBox->Checked = Ini->ReadBool("Other","StayOnTop",false);
   EmuTabsWCheckBox->Checked = Ini->ReadBool("Other","EmuTabsW",false);
@@ -308,6 +309,7 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
   //ClipTabs
   Ini->WriteBool("ClipTabs","OpenClipTabs",OpenClipTabsCheckBox->Checked);
   Ini->WriteBool("ClipTabs","InactiveClipTabs",InactiveClipTabsCheckBox->Checked);
+  Ini->WriteBool("ClipTabs","Counter",CounterClipTabsCheckBox->Checked);
   //Other
   Ini->WriteBool("Other","StayOnTop",StayOnTopCheckBox->Checked);
   Ini->WriteBool("Other","EmuTabsW",EmuTabsWCheckBox->Checked);
