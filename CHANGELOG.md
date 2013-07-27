@@ -1,3 +1,20 @@
+1.4.1.0
+-----
+* Opcja wy³¹czenia przypiêtych zak³adek z prze³¹czania zak³adek za pomoc¹ skrótu klawiaturowego Ctrl+Tab / Ctrl+Shift+Tab.
+* Opcja wy³¹czenia przypisywania skrótów klawiaturowych dla przypiêtych zak³adek.
+* Grafika ikony w zasobniku systemowym dla niewys³anych wiadomoœci mo¿e byæ pobierana z aktywnej kompozycji.
+* Skracanie wyœwietlania odnoœników w oknie rozmowy do wygodniejszej formy.
+* Poprawki w szukaniu uchwytu do paska informacyjnego oraz paska narzêdzi.
+* Poprawki w pobieraniu treœci wpisanego tekstu w polu tekstowym okna rozmowy.
+* Brak b³êdu z widocznym tylko obramowaniem okna kontaktów/rozmowy po w³¹czeniu komunikatora (tylko dla starego systemu skórkowania).
+* Odœwie¿anie okna rozmowy po ukryciu przycisku z list¹ aktywnych zak³adek.
+* Zmiany w funkcji blokowania wysuwania okien przy wciœniêtym klawiszu Ctrl oraz LPM/PPM - wysuwanie nie jest blokowane przy wciœniêciu jednoczeœnie klawisza Ctrl oraz LPM (niezbêdne przy Drag&Drop).
+* Otwarcie zak³adki z niewys³an¹ wiadomoœci¹ ukrywa ikonkê z zasobnika systemowego (o ile nie ma innych niewys³anych wiadomoœci).
+* Aktualizacja komponentów AlphaControls do najnowszej dostêpnej wersji (7.66).
+* Ma³e poprawki kosmetyczne na formie ustawieñ.
+* Zmiany w domyœlnym w³¹czeniu niektórych funkcji.
+* Inne mniej wa¿ne zmiany w kodzie.
+
 1.4.0.0
 -----
 * Integracja funkcjonalnoœci wtyczki SideSlide

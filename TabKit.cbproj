@@ -60,36 +60,40 @@
 			<TASM_Debugging>None</TASM_Debugging>
 		</PropertyGroup>
 		<ItemGroup>
-			<RcItem Include="Data\Pause_Big.ico">
-				<ResourceType>RCData</ResourceType>
-				<ResourceId>PAUSE_BIG</ResourceId>
-			</RcItem>
 			<RcItem Include="Data\Pause.png">
 				<ResourceType>RCData</ResourceType>
 				<ResourceId>PAUSE</ResourceId>
 			</RcItem>
-			<RcItem Include="Data\Composing_Big.ico">
-				<ResourceType>RCData</ResourceType>
-				<ResourceId>COMPOSING_BIG</ResourceId>
-			</RcItem>
+			<CppCompile Include="TabKit.cpp">
+				<BuildOrder>0</BuildOrder>
+			</CppCompile>
 			<RcItem Include="Data\Composing_Small.ico">
 				<ResourceType>RCData</ResourceType>
 				<ResourceId>COMPOSING_SMALL</ResourceId>
 			</RcItem>
-			<RcItem Include="Data\Composing.png">
+			<RcItem Include="Data\Pause_Big.ico">
 				<ResourceType>RCData</ResourceType>
-				<ResourceId>COMPOSING</ResourceId>
+				<ResourceId>PAUSE_BIG</ResourceId>
 			</RcItem>
 			<RcItem Include="Data\TabKit.dll.png">
 				<ResourceType>RCData</ResourceType>
 				<ResourceId>PLUGIN_RES</ResourceId>
 			</RcItem>
-			<CppCompile Include="TabKit.cpp">
-				<BuildOrder>0</BuildOrder>
-			</CppCompile>
+			<RcItem Include="Data\UnsentMsg.ico">
+				<ResourceType>RCData</ResourceType>
+				<ResourceId>UNSENTMSGICO</ResourceId>
+			</RcItem>
 			<RcItem Include="Data\Pause_Small.ico">
 				<ResourceType>RCData</ResourceType>
 				<ResourceId>PAUSE_SMALL</ResourceId>
+			</RcItem>
+			<RcItem Include="Data\Composing.png">
+				<ResourceType>RCData</ResourceType>
+				<ResourceId>COMPOSING</ResourceId>
+			</RcItem>
+			<RcItem Include="Data\Composing_Big.ico">
+				<ResourceType>RCData</ResourceType>
+				<ResourceId>COMPOSING_BIG</ResourceId>
 			</RcItem>
 			<RcItem Include="Data\StayOnTopOff.png">
 				<ResourceType>RCData</ResourceType>
@@ -147,7 +151,7 @@
 						<VersionInfo Name="AutoIncBuild">False</VersionInfo>
 						<VersionInfo Name="MajorVer">1</VersionInfo>
 						<VersionInfo Name="MinorVer">4</VersionInfo>
-						<VersionInfo Name="Release">0</VersionInfo>
+						<VersionInfo Name="Release">1</VersionInfo>
 						<VersionInfo Name="Build">0</VersionInfo>
 						<VersionInfo Name="Debug">False</VersionInfo>
 						<VersionInfo Name="PreRelease">False</VersionInfo>
@@ -160,7 +164,7 @@
 					<VersionInfoKeys>
 						<VersionInfoKeys Name="CompanyName">Krzysztof Grochocki (Beherit)</VersionInfoKeys>
 						<VersionInfoKeys Name="FileDescription"/>
-						<VersionInfoKeys Name="FileVersion">1.4.0.0</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">1.4.1.0</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName">TabKit</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalCopyright">Krzysztof Grochocki (Beherit)</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks">Krzysztof Grochocki (Beherit)</VersionInfoKeys>

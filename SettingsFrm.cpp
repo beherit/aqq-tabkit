@@ -311,6 +311,9 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   OpenClipTabsCheckBox->Checked = Ini->ReadBool("ClipTabs","OpenClipTabs",true);
   InactiveClipTabsCheckBox->Checked = Ini->ReadBool("ClipTabs","InactiveClipTabs",false);
   CounterClipTabsCheckBox->Checked = Ini->ReadBool("ClipTabs","Counter",false);
+  ExcludeClipTabsFromTabSwitchingCheckBox->Checked = Ini->ReadBool("ClipTabs","ExcludeFromTabSwitching",false);
+  ExcludeClipTabsFromSwitchToNewMsgCheckBox->Checked = !Ini->ReadBool("ClipTabs","ExcludeFromSwitchToNewMsg",true);
+  ExcludeClipTabsFromTabsHotKeysCheckBox->Checked = Ini->ReadBool("ClipTabs","ExcludeFromTabsHotKeys",false);
   //SideSlide
   SlideFrmMainCheckBox->Checked = Ini->ReadBool("SideSlide","SlideFrmMain",false);
   switch(Ini->ReadInteger("SideSlide","FrmMainEdge",2))
@@ -380,8 +383,8 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   SideSlideFullScreenModeCheckBox->Checked = Ini->ReadBool("SideSlide","FullScreenMode",true);
   SideSlideCtrlAndMousBlockCheckBox->Checked = Ini->ReadBool("SideSlide","CtrlAndMouseBlock",true);
   //Other
-  QuickQuoteCheckBox->Checked = Ini->ReadBool("Other","QuickQuote",false);
-  CollapseImagesCheckBox->Checked = Ini->ReadBool("Other","CollapseImages",false);
+  QuickQuoteCheckBox->Checked = Ini->ReadBool("Other","QuickQuote",true);
+  CollapseImagesCheckBox->Checked = Ini->ReadBool("Other","CollapseImages",true);
   CollapseImagesModeComboBox->ItemIndex = Ini->ReadInteger("Other","CollapseImagesMode",1)-1;
   AntiSpimCheckBox->Checked = !Ini->ReadBool("Other","AntiSpim",true);
   MinimizeRestoreCheckBox->Checked = Ini->ReadBool("Other","MinimizeRestore",false);
@@ -398,6 +401,7 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   CloudTimeOutSpinEdit->Value = Ini->ReadInteger("Other","CloudTimeOut",6);
   CloudTickModeComboBox->ItemIndex = Ini->ReadBool("Other","CloudTickMode",true);
   SearchOnListCheckBox->Checked = !Ini->ReadBool("Other","SearchOnList",true);
+  ShortenLinksCheckBox->Checked = Ini->ReadBool("Other","ShortenLinks",true);
   //Buttons state
   Ini = new TIniFile(GetPluginUserDir() + "\\\\TabKit\\\\Session.ini");
   UnsentMsgEraseButton->Enabled = Ini->SectionExists("Messages");
@@ -421,9 +425,9 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   aSessionRememberChk->Execute();
   aNewMsgChk->Execute();
   aTitlebarTweakChk->Execute();
-  //aClipTabsChk->Execute();
+  aClipTabsChk->Execute();
   aSideSlideChk->Execute();
-  //aOtherChk->Execute();
+  aOtherChk->Execute();
   SaveButton->Enabled = false;
   CancelButton->SetFocus();
 }
@@ -550,6 +554,9 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
   Ini->WriteBool("ClipTabs","OpenClipTabs",OpenClipTabsCheckBox->Checked);
   Ini->WriteBool("ClipTabs","InactiveClipTabs",InactiveClipTabsCheckBox->Checked);
   Ini->WriteBool("ClipTabs","Counter",CounterClipTabsCheckBox->Checked);
+  Ini->WriteBool("ClipTabs","ExcludeFromTabSwitching",ExcludeClipTabsFromTabSwitchingCheckBox->Checked);
+  Ini->WriteBool("ClipTabs","ExcludeFromSwitchToNewMsg",!ExcludeClipTabsFromSwitchToNewMsgCheckBox->Checked);
+  Ini->WriteBool("ClipTabs","ExcludeFromTabsHotKeys",ExcludeClipTabsFromTabsHotKeysCheckBox->Checked);
   //SideSlide
   Ini->WriteBool("SideSlide","SlideFrmMain",SlideFrmMainCheckBox->Checked);
   if(FrmMainEdgeLeftRadioButton->Checked)
@@ -610,6 +617,7 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
   Ini->WriteInteger("Other","CloudTimeOut",CloudTimeOutSpinEdit->Value);
   Ini->WriteBool("Other","CloudTickMode",CloudTickModeComboBox->ItemIndex);
   Ini->WriteBool("Other","SearchOnList",!SearchOnListCheckBox->Checked);
+  Ini->WriteBool("Other","ShortenLinks",ShortenLinksCheckBox->Checked);
 
   delete Ini;
 }
@@ -770,6 +778,7 @@ void __fastcall TSettingsForm::aTitlebarTweakChkExecute(TObject *Sender)
 
 void __fastcall TSettingsForm::aClipTabsChkExecute(TObject *Sender)
 {
+  ExcludeClipTabsFromSwitchToNewMsgCheckBox->Enabled = ExcludeClipTabsFromTabSwitchingCheckBox->Checked;
   SaveButton->Enabled = true;
 }
 //---------------------------------------------------------------------------
@@ -819,6 +828,7 @@ void __fastcall TSettingsForm::aSideSlideChkExecute(TObject *Sender)
 void __fastcall TSettingsForm::aOtherChkExecute(TObject *Sender)
 {
   CollapseImagesModeComboBox->Enabled = CollapseImagesCheckBox->Checked;
+  MinimizeRestoreHotKey->Enabled = MinimizeRestoreCheckBox->Checked;
   SaveButton->Enabled = true;
 }
 //---------------------------------------------------------------------------
