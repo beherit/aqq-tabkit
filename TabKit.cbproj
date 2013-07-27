@@ -60,6 +60,21 @@
 			<TASM_Debugging>None</TASM_Debugging>
 		</PropertyGroup>
 		<ItemGroup>
+			<ResFiles Include="TabKit.res">
+				<BuildOrder>1</BuildOrder>
+			</ResFiles>
+			<CppCompile Include="SettingsFrm.cpp">
+				<Form>SettingsForm</Form>
+				<DependentOn>SettingsFrm.h</DependentOn>
+				<BuildOrder>2</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="TabKit.cpp">
+				<BuildOrder>0</BuildOrder>
+			</CppCompile>
+			<RcItem Include="Data\UnsentMsg.png">
+				<ResourceType>RCData</ResourceType>
+				<ResourceId>UNSENTMSG</ResourceId>
+			</RcItem>
 			<RcItem Include="Data\ClosedTabsButton.png">
 				<ResourceType>RCData</ResourceType>
 				<ResourceId>CLOSEDTABS</ResourceId>
@@ -72,21 +87,6 @@
 				<ResourceType>RCData</ResourceType>
 				<ResourceId>STAYONTOP_ON</ResourceId>
 			</RcItem>
-			<RcItem Include="Data\UnsentMsg.png">
-				<ResourceType>RCData</ResourceType>
-				<ResourceId>UNSENTMSG</ResourceId>
-			</RcItem>
-			<ResFiles Include="TabKit.res">
-				<BuildOrder>1</BuildOrder>
-			</ResFiles>
-			<CppCompile Include="SettingsFrm.cpp">
-				<Form>SettingsForm</Form>
-				<DependentOn>SettingsFrm.h</DependentOn>
-				<BuildOrder>2</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="TabKit.cpp">
-				<BuildOrder>0</BuildOrder>
-			</CppCompile>
 			<FormResources Include="SettingsFrm.dfm"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
@@ -112,7 +112,7 @@
 						<VersionInfo Name="MajorVer">1</VersionInfo>
 						<VersionInfo Name="MinorVer">0</VersionInfo>
 						<VersionInfo Name="Release">3</VersionInfo>
-						<VersionInfo Name="Build">4</VersionInfo>
+						<VersionInfo Name="Build">6</VersionInfo>
 						<VersionInfo Name="Debug">False</VersionInfo>
 						<VersionInfo Name="PreRelease">False</VersionInfo>
 						<VersionInfo Name="Special">False</VersionInfo>
@@ -124,13 +124,13 @@
 					<VersionInfoKeys>
 						<VersionInfoKeys Name="CompanyName">Krzysztof Grochocki (Beherit)</VersionInfoKeys>
 						<VersionInfoKeys Name="FileDescription"/>
-						<VersionInfoKeys Name="FileVersion">1.0.3.4</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">1.0.3.6</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName">TabKit</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalCopyright">Krzysztof Grochocki (Beherit)</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks">Krzysztof Grochocki (Beherit)</VersionInfoKeys>
 						<VersionInfoKeys Name="OriginalFilename">TabKit.dll</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductName">TabKit</VersionInfoKeys>
-						<VersionInfoKeys Name="ProductVersion">1.0.3.4</VersionInfoKeys>
+						<VersionInfoKeys Name="ProductVersion">1.0.3.6</VersionInfoKeys>
 						<VersionInfoKeys Name="Comments"/>
 					</VersionInfoKeys>
 					<Debugging>
