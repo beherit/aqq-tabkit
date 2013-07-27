@@ -250,9 +250,6 @@ wchar_t hFrmSendTextW[128];
 DWORD ProcessPID;
 //SecureMode
 bool SecureMode = false;
-//Ustawienia animacji AlphaControls
-bool ThemeAnimateWindows;
-bool ThemeGlowing;
 //ID wywolania enumeracji listy kontaktow
 DWORD ReplyListID = 0;
 //Informacja o widocznym oknie zmiany opisu
@@ -302,10 +299,16 @@ HHOOK hThreadKeyboard;
 HHOOK hThreadMouse;
 //Stara procka okna rozmowy
 WNDPROC OldFrmSendProc;
+//Aktualna procka okna rozmowy
+WNDPROC CurrentFrmSendProc;
 //Stara procka okna kontaktow
 WNDPROC OldFrmMainProc;
+//Aktualna procka okna kontaktow
+WNDPROC CurrentFrmMainProc;
 //Stara procka okna wyszukiwarki
 WNDPROC OldFrmSeekOnListProc;
+//Aktualna procka wyszukiwarki
+WNDPROC CurrentFrmSeekOnListProc;
 //IKONY-W-INTERFEJSIE--------------------------------------------------------
 int CLOSEDTABS;
 int UNSENTMSG;
@@ -783,7 +786,7 @@ UnicodeString GetPluginDir()
 }
 //---------------------------------------------------------------------------
 
-//Sprawdzanie czy wlaczona jest obsluga stylow obramowania okien
+//Sprawdzanie czy  wlaczona jest zaawansowana stylizacja okien
 bool ChkSkinEnabled()
 {
   TStrings* IniList = new TStringList();
@@ -797,17 +800,29 @@ bool ChkSkinEnabled()
 }
 //---------------------------------------------------------------------------
 
-//Sprawdzanie czy wlaczony jest natywny styl Windows
-bool ChkNativeEnabled()
+//Sprawdzanie ustawien animacji AlphaControls
+bool ChkThemeAnimateWindows()
 {
   TStrings* IniList = new TStringList();
   IniList->SetText((wchar_t*)PluginLink.CallService(AQQ_FUNCTION_FETCHSETUP,0,0));
   TMemIniFile *Settings = new TMemIniFile(ChangeFileExt(Application->ExeName, ".INI"));
   Settings->SetStrings(IniList);
   delete IniList;
-  UnicodeString NativeEnabled = Settings->ReadString("Settings","Native","0");
+  UnicodeString AnimateWindowsEnabled = Settings->ReadString("Theme","ThemeAnimateWindows","1");
   delete Settings;
-  return StrToBool(NativeEnabled);
+  return StrToBool(AnimateWindowsEnabled);
+}
+//---------------------------------------------------------------------------
+bool ChkThemeGlowing()
+{
+  TStrings* IniList = new TStringList();
+  IniList->SetText((wchar_t*)PluginLink.CallService(AQQ_FUNCTION_FETCHSETUP,0,0));
+  TMemIniFile *Settings = new TMemIniFile(ChangeFileExt(Application->ExeName, ".INI"));
+  Settings->SetStrings(IniList);
+  delete IniList;
+  UnicodeString GlowingEnabled = Settings->ReadString("Theme","ThemeGlowing","1");
+  delete Settings;
+  return StrToBool(GlowingEnabled);
 }
 //---------------------------------------------------------------------------
 
@@ -2622,10 +2637,6 @@ int __stdcall ServiceTabKitFastSettingsItem(WPARAM wParam, LPARAM lParam)
   if(!EmuTabsWSupport) hSettingsForm->EmuTabsWCheckBox->Enabled = false;
   //Wstawienie wersji wtyczki do formy ustawien
   hSettingsForm->VersionLabel->Caption = "TabKit " + GetFileInfo(GetPluginDir().w_str(), L"FileVersion");
-  //Ustawienia animacji AlhaControls
-  if(ThemeAnimateWindows) hSettingsForm->sSkinManager->AnimEffects->FormShow->Time = 200;
-  else hSettingsForm->sSkinManager->AnimEffects->FormShow->Time = 0;
-  hSettingsForm->sSkinManager->Effects->AllowGlowing = ThemeGlowing;
   //Pokaznie okna ustawien
   hSettingsForm->Show();
 
@@ -2723,7 +2734,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
       //Zatrzymanie timera
 	  KillTimer(hTimerFrm,TIMER_TURNOFFMODAL);
 	  //Wylaczenie modalnosci dla okna kontatkow
-	  EnableWindow(hFrmMain,true);
+	  //EnableWindow(hFrmMain,true);
 	  //Wylaczenie modalnosci dla okna rozmowy
 	  EnableWindow(hFrmSend,true);
 	}
@@ -6721,6 +6732,8 @@ int __stdcall OnFetchAllTabs(WPARAM wParam, LPARAM lParam)
 	   EnumChildWindows(hFrmSend,(WNDENUMPROC)FindTabsBar,0);
 	  //Przypisanie nowej procki dla okna rozmowy
 	  OldFrmSendProc = (WNDPROC)SetWindowLongPtrW(hFrmSend, GWLP_WNDPROC,(LONG)FrmSendProc);
+	  //Pobieranie aktualnej procki okna rozmowy
+	  CurrentFrmSendProc = (WNDPROC)GetWindowLongPtr(hFrmSend, GWLP_WNDPROC);
 	  //Pobranie rozmiaru+pozycji okna rozmowy
 	  GetFrmSendRect();
 	  //Ustawienie poprawnej pozycji okna
@@ -7240,25 +7253,39 @@ int __stdcall OnMsgContextPopup(WPARAM wParam, LPARAM lParam)
 }
 //---------------------------------------------------------------------------
 
-//Hook na pobieranie adresow URL z popupmenu w oknie rozmowy
+//Hook na pobieranie otwieranie adresow URL i przekazywanie plikow do aplikacji
 int __stdcall OnPerformCopyData(WPARAM wParam, LPARAM lParam)
 {
-  //Jezeli funkcjonalnosc zawijania przeslanych obrazkow do formy zalacznikow jest aktywna
+  //Wlaczona jest funkcjonalnosc chowania okna kontaktow i okno jest poza krawedzia ekranu
+  if((FrmMainSlideChk)&&(!FrmMainVisible)&&(FrmMainSlideIn))
+  {
+	//Pobieranie adresu URL
+	UnicodeString CopyData = (wchar_t*)lParam;
+	//Jezeli jest to plik lokalny dodatku do AQQ
+	if((FileExists(CopyData))&&(ExtractFileExt(CopyData)==".aqq"))
+	{
+	  //Wylaczenie wczesniej aktywowanego wysuwania okna kontaktow
+	  KillTimer(hTimerFrm,TIMER_FRMMAINSLIDEIN);
+	  //Status FrmMainSlideIn
+	  FrmMainSlideIn = false;
+	}
+  }
+  //Funkcjonalnosc zawijania przeslanych obrazkow do formy zalacznikow jest aktywna
   if((CollapseImagesChk)&&(!ForceUnloadExecuted))
   {
-    //Domylsne usuwanie elementow
+	//Domylsne usuwanie elementow
 	CollapseImagesItem.cbSize = sizeof(TPluginAction);
 	CollapseImagesItem.pszName = L"TabKitCollapseImagesItem";
 	PluginLink.CallService(AQQ_CONTROLS_DESTROYPOPUPMENUITEM ,0,(LPARAM)(&CollapseImagesItem));
 	//Kasowanie zapamietanego wczesniej adresu URL
 	CollapseImagesItemURL = "";
-	//Pobieranie nowego adresu URL
+	//Pobieranie adresu URL
 	UnicodeString CopyData = (wchar_t*)lParam;
 	//Formatowanie adresu URL
 	CopyData = StringReplace(CopyData, "file:///", "", TReplaceFlags() << rfReplaceAll);
 	CopyData = StringReplace(CopyData, "/", "\\", TReplaceFlags() << rfReplaceAll);
 	CopyData = StringReplace(CopyData, "%20", " ", TReplaceFlags() << rfReplaceAll);
-	//Sprawdzanie jest to zawiniety obrazek
+	//Sprawdzanie czy jest to zawiniety obrazek
 	if(CollapseImagesList->IndexOf(CopyData)!=-1)
 	{
       //Zapisywanie adresu URL
@@ -7332,6 +7359,8 @@ int __stdcall OnPrimaryTab(WPARAM wParam, LPARAM lParam)
 		 EnumChildWindows(hFrmSend,(WNDENUMPROC)FindTabsBar,0);
 		//Przypisanie nowej procki dla okna rozmowy
 		OldFrmSendProc = (WNDPROC)SetWindowLongPtrW(hFrmSend, GWLP_WNDPROC,(LONG)FrmSendProc);
+		//Pobieranie aktualnej procki okna rozmowy
+	    CurrentFrmSendProc = (WNDPROC)GetWindowLongPtr(hFrmSend, GWLP_WNDPROC);
 		//Pobranie rozmiaru+pozycji okna rozmowy
 		GetFrmSendRect();
 		//Ustawienie poprawnej pozycji okna
@@ -8696,22 +8725,29 @@ int __stdcall OnThemeChanged(WPARAM wParam, LPARAM lParam)
   ThemeChanging = true;
   //Pobieranie sciezki nowej aktywnej kompozycji
   UnicodeString ThemeDir = StringReplace((wchar_t*)lParam, "\\", "\\\\", TReplaceFlags() << rfReplaceAll);
-  //Zmiana skorki wtyczki
+  //Okno ustawien zostalo juz stworzone
   if(hSettingsForm)
   {
-	//Wlaczenie skorkowania
-	if((FileExists(ThemeDir+"\\\\Skin\\\\Skin.asz"))&&(!ChkNativeEnabled()))
+	//Wlaczona zaawansowana stylizacja okien
+	if(ChkSkinEnabled())
 	{
-	  UnicodeString ThemeSkinDir = ThemeDir+"\\\\Skin";
-	  ThemeSkinDir = StringReplace(ThemeSkinDir, "\\\\", "\\", TReplaceFlags() << rfReplaceAll);
-	  hSettingsForm->sSkinManager->SkinDirectory = ThemeSkinDir;
-	  hSettingsForm->sSkinManager->SkinName = "Skin.asz";
-	  hSettingsForm->sSkinProvider->DrawNonClientArea = ChkSkinEnabled();
-	  hSettingsForm->sSkinManager->Active = true;
+	  UnicodeString ThemeSkinDir = GetThemeSkinDir();
+	  //Plik zaawansowanej stylizacji okien istnieje
+	  if(FileExists(ThemeSkinDir + "\\\\Skin.asz"))
+	  {
+		ThemeSkinDir = StringReplace(ThemeSkinDir, "\\\\", "\\", TReplaceFlags() << rfReplaceAll);
+		hSettingsForm->sSkinManager->SkinDirectory = ThemeSkinDir;
+		hSettingsForm->sSkinManager->SkinName = "Skin.asz";
+		if(ChkThemeAnimateWindows()) hSettingsForm->sSkinManager->AnimEffects->FormShow->Time = 200;
+		else hSettingsForm->sSkinManager->AnimEffects->FormShow->Time = 0;
+		hSettingsForm->sSkinManager->Effects->AllowGlowing = ChkThemeGlowing();
+		hSettingsForm->sSkinManager->Active = true;
+	  }
+	  //Brak pliku zaawansowanej stylizacji okien
+	  else hSettingsForm->sSkinManager->Active = false;
 	}
-	//Wylaczenie skorkowania
-	else
-	 hSettingsForm->sSkinManager->Active = false;
+	//Zaawansowana stylizacja okien wylaczona
+	else hSettingsForm->sSkinManager->Active = false;
 
 	if(hSettingsForm->sSkinManager->Active)
 	{
@@ -9067,6 +9103,8 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  FrmMainBlockSlide = false;
 	  //Przypisanie nowej procki dla okna kontatkow
 	  OldFrmMainProc = (WNDPROC)SetWindowLongPtrW(hFrmMain, GWLP_WNDPROC,(LONG)FrmMainProc);
+	  //Pobieranie aktualnej procki okna kontaktow
+	  CurrentFrmMainProc = (WNDPROC)GetWindowLongPtr(hFrmMain, GWLP_WNDPROC);
 	  //Odczytywanie sesji
 	  if(RestoreTabsSessionChk)
 	  {
@@ -9166,8 +9204,12 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  //Przypisanie starej procki do okna rozmowy
 	  if(OldFrmMainProc)
 	  {
-		SetWindowLongPtrW(hFrmMain, GWLP_WNDPROC,(LONG)OldFrmMainProc);
+		if(CurrentFrmMainProc==(WNDPROC)GetWindowLongPtr(hFrmMain, GWLP_WNDPROC))
+		 SetWindowLongPtrW(hFrmMain, GWLP_WNDPROC,(LONG)OldFrmMainProc);
+		else
+		 SetWindowLongPtrW(hFrmMain, GWLP_WNDPROC,(LONG)(WNDPROC)GetWindowLongPtr(hFrmMain, GWLP_WNDPROC));
 		OldFrmMainProc = NULL;
+		CurrentFrmMainProc = NULL;
 	  }
 	  //Usuniecie uchwytu do okna kontaktow
 	  hFrmMain = NULL;
@@ -9205,6 +9247,8 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 		else FrmSendVisible = true;
 		//Przypisanie nowej procki dla okna rozmowy
 		OldFrmSendProc = (WNDPROC)SetWindowLongPtrW(hFrmSend, GWLP_WNDPROC,(LONG)FrmSendProc);
+		//Pobieranie aktualnej procki okna rozmowy
+	    CurrentFrmSendProc = (WNDPROC)GetWindowLongPtr(hFrmSend, GWLP_WNDPROC);
 		//Tworzenie interfejsu tworzenia okna rozmowy na wierzchu
 		BuildStayOnTop();
 		//Tworzenie elementu przypinania zakladek
@@ -9236,8 +9280,12 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  //Przypisanie starej procki do okna rozmowy
 	  if(OldFrmSendProc)
 	  {
-		SetWindowLongPtrW(hFrmSend, GWLP_WNDPROC,(LONG)OldFrmSendProc);
+		if(CurrentFrmSendProc==(WNDPROC)GetWindowLongPtr(hFrmSend, GWLP_WNDPROC))
+		 SetWindowLongPtrW(hFrmSend, GWLP_WNDPROC,(LONG)OldFrmSendProc);
+		else
+		 SetWindowLongPtrW(hFrmSend, GWLP_WNDPROC,(LONG)(WNDPROC)GetWindowLongPtr(hFrmSend, GWLP_WNDPROC));
 		OldFrmSendProc = NULL;
+		CurrentFrmSendProc = NULL;
 	  }
 	  //Ustawienie statusu okna dla SideSlide
 	  FrmSendSlideIn = false;
@@ -9296,13 +9344,6 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 		L"TabKit - obs³uga zak³adek",
 		MB_OK | MB_ICONINFORMATION);
 	  }
-	  //Sprawdzanie ustawien animacji AlphaControls
-	  IniList->SetText((wchar_t*)PluginLink.CallService(AQQ_FUNCTION_FETCHSETUP,0,0));
-	  Settings->SetStrings(IniList);
-	  delete IniList;
-	  ThemeAnimateWindows = StrToBool(Settings->ReadString("Theme","ThemeAnimateWindows","1"));
-	  ThemeGlowing = StrToBool(Settings->ReadString("Theme","ThemeGlowing","1"));
-	  delete Settings;
 	  //Sprawdzenie czy zostal zmieniony zasob glownego konta Jabber
 	  PluginLink.CallService(AQQ_FUNCTION_GETNETWORKSTATE,(WPARAM)(&PluginStateChange),0);
 	  UnicodeString pResourceName = (wchar_t*)PluginStateChange.Resource;
@@ -9492,22 +9533,22 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  //Ustawienie statusu okna dla SideSlide
 	  FrmMainBlockSlide = true;
 	  FrmMainBlockSlideWndEvent = true;
-    }
-    //Zamkniecie okna zmiany opisu
-    if((EventType=="TfrmSetState")&&(Event==WINDOW_EVENT_CLOSE))
-    {
+	}
+	//Zamkniecie okna zmiany opisu
+	if((EventType=="TfrmSetState")&&(Event==WINDOW_EVENT_CLOSE))
+	{
 	  //Informacja o zamknieciu okna zmiany opisu
 	  FrmSetStateExist = false;
 	  //Ustawienie statusu okna dla SideSlide
 	  SetTimer(hTimerFrm,TIMER_FRMMAINBLOCKSLIDE,1500,(TIMERPROC)TimerFrmProc);
 	  //Wlaczenie timera ustawienia okna na wierzchu
 	  SetTimer(hTimerFrm,TIMER_FRMMAINSETTOPMOST,10,(TIMERPROC)TimerFrmProc);
-    }
+	}
 
-    //Otworzenie okna wyszukiwarki kontaktow
-    if((EventType=="TfrmSeekOnList")&&(Event==WINDOW_EVENT_CREATE))
-    {
-      //Zatrzymanie timera wylaczanie tymczasowej blokady
+	//Otworzenie okna wyszukiwarki kontaktow
+	if((EventType=="TfrmSeekOnList")&&(Event==WINDOW_EVENT_CREATE))
+	{
+	  //Zatrzymanie timera wylaczanie tymczasowej blokady
 	  KillTimer(hTimerFrm,TIMER_FRMMAINBLOCKSLIDE);
 	  //Ustawienie statusu okna dla SideSlide
 	  FrmMainBlockSlide = true;
@@ -9515,8 +9556,8 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  //Zabezpieczenie przed chowaniem okna kontaktow
 	  if(FrmMainSlideChk)
 	  {
-	    //Pobieranie uchwytu do okna wyszukiwarki
-	    hFrmSeekOnList = (HWND)(int)WindowEvent->Handle;
+		//Pobieranie uchwytu do okna wyszukiwarki
+		hFrmSeekOnList = (HWND)(int)WindowEvent->Handle;
 		//Ustawienie okna wyszukiwarki na wierzchu
 		SetWindowPos(hFrmSeekOnList,HWND_TOPMOST,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
 		//Przypisanie nowej procki dla okna
@@ -9542,18 +9583,18 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 		KillTimer(hTimerFrm,TIMER_FRMMAINSETTOPMOSTEX);
 		//Usuniecie uchwytu do okna wyszukiwarki
 		hFrmSeekOnList = NULL;
-	    //Ustawienie okna kontaktow na wierzchu
-	    if(FrmMainSlideHideMode!=2)
-	     SetWindowPos(hFrmMain,HWND_TOPMOST,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
-	    else
-	     SetWindowPos(hFrmMain,HWND_NOTOPMOST,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
+		//Ustawienie okna kontaktow na wierzchu
+		if(FrmMainSlideHideMode!=2)
+		 SetWindowPos(hFrmMain,HWND_TOPMOST,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
+		else
+		 SetWindowPos(hFrmMain,HWND_NOTOPMOST,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
 	  }
 	}
 
 	//Otworzenie okna instalowania dodatku
 	if((EventType=="TfrmInstallAddon")&&(Event==WINDOW_EVENT_CREATE))
 	{
-	  //Informacja o otwarciu okna instalowania dodatku
+	   //Informacja o otwarciu okna instalowania dodatku
 	  FrmInstallAddonExist = true;
 	  //Timer wylaczenia modalnosci okna instalowania dodatkow
 	  SetTimer(hTimerFrm,TIMER_TURNOFFMODAL,500,(TIMERPROC)TimerFrmProc);
@@ -9563,7 +9604,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	{
 	  //Informacja o zamknieciu okna instalowania dodatku
 	  FrmInstallAddonExist = false;
-    }
+	}
   }
 
   return 0;
@@ -10124,13 +10165,6 @@ extern "C" int __declspec(dllexport) __stdcall Load(PPluginLink Link)
 	//Odswiezenie ustawien
 	PluginLink.CallService(AQQ_FUNCTION_REFRESHSETUP,0,0);
   }
-  //Sprawdzanie ustawien animacji AlphaControls
-  IniList->SetText((wchar_t*)PluginLink.CallService(AQQ_FUNCTION_FETCHSETUP,0,0));
-  Settings->SetStrings(IniList);
-  delete IniList;
-  ThemeAnimateWindows = StrToBool(Settings->ReadString("Theme","ThemeAnimateWindows","1"));
-  ThemeGlowing = StrToBool(Settings->ReadString("Theme","ThemeGlowing","1"));
-  delete Settings;
   //Sprawdzanie czy uzywany OS to XP
   EmuTabsWSupport = CheckEmuTabsWSupport();
   //Pobranie PID procesu AQQ
@@ -10368,7 +10402,7 @@ extern "C" int __declspec(dllexport) __stdcall Load(PPluginLink Link)
   PluginLink.HookEvent(AQQ_SYSTEM_MSGCONTEXT_CLOSE,OnMsgContextClose);
   //Hook na otwarcie menu kontekstowego pola wiadomosci
   PluginLink.HookEvent(AQQ_SYSTEM_MSGCONTEXT_POPUP,OnMsgContextPopup);
-  //Hook na pobieranie adresow URL z popupmenu w oknie rozmowy
+  //Hook na pobieranie otwieranie adresow URL i przekazywanie plikow do aplikacji
   PluginLink.HookEvent(AQQ_SYSTEM_PERFORM_COPYDATA,OnPerformCopyData);
   //Hook na wysylanie nowej wiadomosci
   PluginLink.HookEvent(AQQ_CONTACTS_PRESENDMSG,OnPreSendMsg);
@@ -10440,6 +10474,8 @@ extern "C" int __declspec(dllexport) __stdcall Load(PPluginLink Link)
 	FrmMainBlockSlide = false;
 	//Przypisanie nowej procki dla okna kontaktow
 	OldFrmMainProc = (WNDPROC)SetWindowLongPtrW(hFrmMain, GWLP_WNDPROC,(LONG)FrmMainProc);
+	//Pobieranie aktualnej procki okna kontaktow
+	CurrentFrmMainProc = (WNDPROC)GetWindowLongPtr(hFrmMain, GWLP_WNDPROC);
 	//Pobieranie ostatnio zamknietych zakladek
 	GetClosedTabs();
 	//Hook na pobieranie aktywnych zakladek
@@ -10555,14 +10591,22 @@ extern "C" int __declspec(dllexport) __stdcall Unload()
   //Przypisanie starej procki do okna rozmowy
   if(OldFrmSendProc)
   {
-	SetWindowLongPtrW(hFrmSend, GWLP_WNDPROC,(LONG)OldFrmSendProc);
+	if(CurrentFrmSendProc==(WNDPROC)GetWindowLongPtr(hFrmSend, GWLP_WNDPROC))
+	 SetWindowLongPtrW(hFrmSend, GWLP_WNDPROC,(LONG)OldFrmSendProc);
+	else
+	 SetWindowLongPtrW(hFrmSend, GWLP_WNDPROC,(LONG)(WNDPROC)GetWindowLongPtr(hFrmSend, GWLP_WNDPROC));
 	OldFrmSendProc = NULL;
+	CurrentFrmSendProc = NULL;
   }
   //Przypisanie starej procki do okna kontaktow
   if(OldFrmMainProc)
   {
-	SetWindowLongPtrW(hFrmMain, GWLP_WNDPROC,(LONG)OldFrmMainProc);
+	if(CurrentFrmMainProc==(WNDPROC)GetWindowLongPtr(hFrmMain, GWLP_WNDPROC))
+	 SetWindowLongPtrW(hFrmMain, GWLP_WNDPROC,(LONG)OldFrmMainProc);
+	else
+	 SetWindowLongPtrW(hFrmMain, GWLP_WNDPROC,(LONG)(WNDPROC)GetWindowLongPtr(hFrmMain, GWLP_WNDPROC));
 	OldFrmMainProc = NULL;
+	CurrentFrmMainProc = NULL;
   }
   //Wyladowanie timerow
   for(int TimerID=10;TimerID<=360;TimerID=TimerID+10) KillTimer(hTimerFrm,TimerID);
@@ -10846,10 +10890,6 @@ extern "C" int __declspec(dllexport)__stdcall Settings()
   if(!EmuTabsWSupport) hSettingsForm->EmuTabsWCheckBox->Enabled = false;
   //Wstawienie wersji wtyczki do formy ustawien
   hSettingsForm->VersionLabel->Caption = "TabKit " + GetFileInfo(GetPluginDir().w_str(), L"FileVersion");
-  //Ustawienia animacji AlhaControls
-  if(ThemeAnimateWindows) hSettingsForm->sSkinManager->AnimEffects->FormShow->Time = 200;
-  else hSettingsForm->sSkinManager->AnimEffects->FormShow->Time = 0;
-  hSettingsForm->sSkinManager->Effects->AllowGlowing = ThemeGlowing;
   //Pokaznie okna ustawien
   hSettingsForm->Show();
 
@@ -10862,7 +10902,7 @@ extern "C" PPluginInfo __declspec(dllexport) __stdcall AQQPluginInfo(DWORD AQQVe
 {
   PluginInfo.cbSize = sizeof(TPluginInfo);
   PluginInfo.ShortName = L"TabKit";
-  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,7,1,0);
+  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,7,2,0);
   PluginInfo.Description = L"Wtyczka oferuje masê funkcjonalnoœci usprawniaj¹cych korzystanie z komunikatora - np. zapamiêtywanie zamkniêtych zak³adek, inteligentne prze³¹czanie, zapamiêtywanie sesji.";
   PluginInfo.Author = L"Krzysztof Grochocki (Beherit)";
   PluginInfo.AuthorMail = L"kontakt@beherit.pl";
