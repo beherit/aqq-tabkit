@@ -8,6 +8,7 @@
 #include <XMLDoc.hpp>
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
+#pragma link "acPNG"
 #pragma link "sBevel"
 #pragma link "sButton"
 #pragma link "sCheckBox"
@@ -19,9 +20,9 @@
 #pragma link "sRadioButton"
 #pragma link "sSkinManager"
 #pragma link "sSkinProvider"
-#pragma link "sSpinEdit"
-#pragma link "acPNG"
 #pragma link "sSpeedButton"
+#pragma link "sSpinEdit"
+#pragma link "acAlphaImageList"
 #pragma resource "*.dfm"
 TSettingsForm *SettingsForm;
 //---------------------------------------------------------------------------
@@ -56,7 +57,6 @@ __declspec(dllimport)void CheckHideScrollTabButtons();
 //---------------------------------------------------------------------------
 bool pHideTabCloseButtonChk;
 bool pMiniAvatarsClipTabsChk;
-bool pRefreshTabs = false;
 //---------------------------------------------------------------------------
 __fastcall TSettingsForm::TSettingsForm(TComponent* Owner)
 	: TForm(Owner)
@@ -114,31 +114,6 @@ void __fastcall TSettingsForm::FormShow(TObject *Sender)
 {
   if(sSkinManager->Active)
   {
-	//Skorkowanie glownego komponentu
-	CategoryPanelGroup->Color = sSkinManager->GetActiveEditColor();
-	CategoryPanelGroup->GradientBaseColor = sSkinManager->GetHighLightColor(false);
-	CategoryPanelGroup->GradientColor = sSkinManager->GetHighLightColor(true);
-	CategoryPanelGroup->HeaderFont->Color = sSkinManager->GetActiveEditFontColor();
-	CategoryPanelGroup->ChevronColor = CategoryPanelGroup->HeaderFont->Color;
-	CategoryPanelGroup->ChevronHotColor = CategoryPanelGroup->HeaderFont->Color;
-	ClipTabsCategoryPanel->Color = sSkinManager->GetGlobalColor();
-	ClipTabsCategoryPanel->Font->Color = sSkinManager->GetGlobalFontColor();
-	ClosedTabsCategoryPanel->Color = sSkinManager->GetGlobalColor();
-	ClosedTabsCategoryPanel->Font->Color = sSkinManager->GetGlobalFontColor();
-	NewMsgCategoryPanel->Color = sSkinManager->GetGlobalColor();
-	NewMsgCategoryPanel->Font->Color = sSkinManager->GetGlobalFontColor();
-	OtherCategoryPanel->Color = sSkinManager->GetGlobalColor();
-	OtherCategoryPanel->Font->Color = sSkinManager->GetGlobalFontColor();
-	SessionRememberCategoryPanel->Color = sSkinManager->GetGlobalColor();
-	SessionRememberCategoryPanel->Font->Color = sSkinManager->GetGlobalFontColor();
-	SideSlideCategoryPanel->Color = sSkinManager->GetGlobalColor();
-	SideSlideCategoryPanel->Color = sSkinManager->GetGlobalColor();
-	TabsSwitchingCategoryPanel->Color = sSkinManager->GetGlobalColor();
-	TabsSwitchingCategoryPanel->Font->Color = sSkinManager->GetGlobalFontColor();
-	TitlebarCategoryPanel->Color = sSkinManager->GetGlobalColor();
-	TitlebarCategoryPanel->Font->Color = sSkinManager->GetGlobalFontColor();
-	UnsentMsgCategoryPanel->Color = sSkinManager->GetGlobalColor();
-	UnsentMsgCategoryPanel->Font->Color = sSkinManager->GetGlobalFontColor();
 	//Kolor WebLabel'ow
 	EmailWebLabel->Font->Color = sSkinManager->GetGlobalFontColor();
 	EmailWebLabel->HoverFont->Color = sSkinManager->GetGlobalFontColor();
@@ -157,31 +132,6 @@ void __fastcall TSettingsForm::FormShow(TObject *Sender)
   }
   else
   {
-	//Skorkowanie glownego komponentu
-	CategoryPanelGroup->Color = clWindow;
-	CategoryPanelGroup->GradientBaseColor = (TColor)0xF0F0F0;
-	CategoryPanelGroup->GradientColor = clSilver;
-	CategoryPanelGroup->HeaderFont->Color = clWindowText;
-	CategoryPanelGroup->ChevronColor = clBlack;
-	CategoryPanelGroup->ChevronHotColor = clGray;
-	ClipTabsCategoryPanel->Color = clWindow;
-	ClipTabsCategoryPanel->Font->Color = clWindowText;
-	ClosedTabsCategoryPanel->Color = clWindow;
-	ClosedTabsCategoryPanel->Font->Color = clWindowText;
-	NewMsgCategoryPanel->Color = clWindow;
-	NewMsgCategoryPanel->Font->Color = clWindowText;
-	OtherCategoryPanel->Color = clWindow;
-	OtherCategoryPanel->Font->Color = clWindowText;
-	SessionRememberCategoryPanel->Color = clWindow;
-	SessionRememberCategoryPanel->Font->Color = clWindowText;
-	SideSlideCategoryPanel->Color = clWindow;
-	SideSlideCategoryPanel->Color = clWindow;
-	TabsSwitchingCategoryPanel->Color = clWindow;
-	TabsSwitchingCategoryPanel->Font->Color = clWindowText;
-	TitlebarCategoryPanel->Color = clWindow;
-	TitlebarCategoryPanel->Font->Color = clWindowText;
-	UnsentMsgCategoryPanel->Color = clWindow;
-	UnsentMsgCategoryPanel->Font->Color = clWindowText;
 	//Kolor WebLabel'ow
 	EmailWebLabel->Font->Color = clWindowText;
 	EmailWebLabel->HoverFont->Color = clWindowText;
@@ -198,22 +148,8 @@ void __fastcall TSettingsForm::FormShow(TObject *Sender)
 	OtherPaymentsWebLabel->Font->Color = clWindowText;
 	OtherPaymentsWebLabel->HoverFont->Color = clWindowText;
   }
-  //All CategoryPanel
-  ClosedTabsCategoryPanel->TabOrder = 0;
-  UnsentMsgCategoryPanel->TabOrder = 1;
-  TabsSwitchingCategoryPanel->TabOrder = 2;
-  SessionRememberCategoryPanel->TabOrder = 3;
-  NewMsgCategoryPanel->TabOrder = 4;
-  TitlebarCategoryPanel->TabOrder = 5;
-  ClipTabsCategoryPanel->TabOrder = 6;
-  SideSlideCategoryPanel->TabOrder = 7;
-  OtherCategoryPanel->TabOrder = 8;
   //Odczyt ustawien
   aLoadSettings->Execute();
-  //Status odswiezania  
-  pRefreshTabs = true;
-  //Odwiezenie panelu z przyciskami
-  RefreshTimer->Enabled = true;
   //Ustawienie domyslnej zakladki
   sPageControl->ActivePage = DefaultTabSheet;
 }
@@ -966,359 +902,6 @@ void __fastcall TSettingsForm::ConvertImage(UnicodeString Old, UnicodeString New
   Gdiplus::GdiplusShutdown(gdiplusToken);
 }
 //-----------------------------------------------------------------
-
-void __fastcall TSettingsForm::ClipTabsCategoryPanelCollapse(TObject *Sender)
-{
-  if(!pRefreshTabs)
-  {
-	//Status odswiezania
-	pRefreshTabs = true;
-	//Zwiniecie paneli
-	CategoryPanelGroup->ExpandAll();
-	//Rozwiniecie danego panelu
-	ClipTabsCategoryPanel->Collapsed = true;
-	//Zmiana aktywnej zakladki
-	sPageControl->ActivePage = ClipTabsTabSheet;
-	//Ustawienie fokusu na zakladce
-	ClipTabsTabSheet->SetFocus();
-	//Odwiezenie panelu z przyciskami
-	aRefreshPanels->Execute();
-	//Status odswiezania
-	pRefreshTabs = false;
-  }
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::ClipTabsCategoryPanelExpand(TObject *Sender)
-{
-  if(!pRefreshTabs)
-  {
-	//Odwiezenie panelu z przyciskami
-	aRefreshPanels->Execute();
-	//Ustawienie domyslnej zakladki
-	sPageControl->ActivePage = DefaultTabSheet;
-	//Ustawienie fokusu na kontrolce
-	if(SaveButton->Enabled)	SaveButton->SetFocus();
-	else CancelButton->SetFocus();
-  }
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::ClosedTabsCategoryPanelCollapse(TObject *Sender)
-{
-  if(!pRefreshTabs)
-  {
-	//Status odswiezania
-	pRefreshTabs = true;
-	//Zwiniecie paneli
-	CategoryPanelGroup->ExpandAll();
-	//Rozwiniecie danego panelu
-	ClosedTabsCategoryPanel->Collapsed = true;
-	//Zmiana aktywnej zakladki
-	sPageControl->ActivePage = ClosedTabsTabSheet;
-	//Ustawienie fokusu na zakladce
-	ClosedTabsTabSheet->SetFocus();
-	//Odwiezenie panelu z przyciskami
-	aRefreshPanels->Execute();
-	//Status odswiezania
-	pRefreshTabs = false;
-  }
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::ClosedTabsCategoryPanelExpand(TObject *Sender)
-{
-  if(!pRefreshTabs)
-  {
-	//Odwiezenie panelu z przyciskami
-	aRefreshPanels->Execute();
-	//Ustawienie domyslnej zakladki
-	sPageControl->ActivePage = DefaultTabSheet;
-	//Ustawienie fokusu na kontrolce
-	if(SaveButton->Enabled)	SaveButton->SetFocus();
-	else CancelButton->SetFocus();
-  }
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::NewMsgCategoryPanelCollapse(TObject *Sender)
-{
-  if(!pRefreshTabs)
-  {
-	//Status odswiezania
-	pRefreshTabs = true;
-	//Zwiniecie paneli
-	CategoryPanelGroup->ExpandAll();
-	//Rozwiniecie danego panelu
-	NewMsgCategoryPanel->Collapsed = true;
-	//Zmiana aktywnej zakladki
-	sPageControl->ActivePage = NewMsgTabSheet;
-	//Ustawienie fokusu na zakladce
-	NewMsgTabSheet->SetFocus();
-	//Odwiezenie panelu z przyciskami
-	aRefreshPanels->Execute();
-	//Status odswiezania
-	pRefreshTabs = false;
-  }
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::NewMsgCategoryPanelExpand(TObject *Sender)
-{
-  if(!pRefreshTabs)
-  {
-	//Odwiezenie panelu z przyciskami
-	aRefreshPanels->Execute();
-	//Ustawienie domyslnej zakladki
-	sPageControl->ActivePage = DefaultTabSheet;
-	//Ustawienie fokusu na kontrolce
-	if(SaveButton->Enabled)	SaveButton->SetFocus();
-	else CancelButton->SetFocus();
-  }
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::OtherCategoryPanelCollapse(TObject *Sender)
-{
-  if(!pRefreshTabs)
-  {
-	//Status odswiezania
-	pRefreshTabs = true;
-	//Zwiniecie paneli
-	CategoryPanelGroup->ExpandAll();
-	//Rozwiniecie danego panelu
-	OtherCategoryPanel->Collapsed = true;
-	//Zmiana aktywnej zakladki
-	sPageControl->ActivePage = OtherTabSheet;
-	//Ustawienie fokusu na zakladce
-	OtherTabSheet->SetFocus();
-	//Odwiezenie panelu z przyciskami
-	aRefreshPanels->Execute();
-	//Status odswiezania
-	pRefreshTabs = false;
-  }
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::OtherCategoryPanelExpand(TObject *Sender)
-{
-  if(!pRefreshTabs)
-  {
-	//Odwiezenie panelu z przyciskami
-	aRefreshPanels->Execute();
-	//Ustawienie domyslnej zakladki
-	sPageControl->ActivePage = DefaultTabSheet;
-	//Ustawienie fokusu na kontrolce
-	if(SaveButton->Enabled)	SaveButton->SetFocus();
-	else CancelButton->SetFocus();
-  }
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::SessionRememberCategoryPanelCollapse(TObject *Sender)
-{
-  if(!pRefreshTabs)
-  {
-	//Status odswiezania
-	pRefreshTabs = true;
-	//Zwiniecie paneli
-	CategoryPanelGroup->ExpandAll();
-	//Rozwiniecie danego panelu
-	SessionRememberCategoryPanel->Collapsed = true;
-	//Zmiana aktywnej zakladki
-	sPageControl->ActivePage = SessionRememberTabSheet;
-	//Ustawienie fokusu na zakladce
-	SessionRememberTabSheet->SetFocus();
-	//Odwiezenie panelu z przyciskami
-	aRefreshPanels->Execute();
-	//Status odswiezania
-	pRefreshTabs = false;
-  }
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::SessionRememberCategoryPanelExpand(TObject *Sender)
-{
-  if(!pRefreshTabs)
-  {
-	//Odwiezenie panelu z przyciskami
-	aRefreshPanels->Execute();
-	//Ustawienie domyslnej zakladki
-	sPageControl->ActivePage = DefaultTabSheet;
-	//Ustawienie fokusu na kontrolce
-	if(SaveButton->Enabled)	SaveButton->SetFocus();
-	else CancelButton->SetFocus();
-  }
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::SideSlideCategoryPanelCollapse(TObject *Sender)
-{
-  if(!pRefreshTabs)
-  {
-	//Status odswiezania
-	pRefreshTabs = true;
-	//Zwiniecie paneli
-	CategoryPanelGroup->ExpandAll();
-	//Rozwiniecie danego panelu
-	SideSlideCategoryPanel->Collapsed = true;
-	//Zmiana aktywnej zakladki
-	sPageControl->ActivePage = SideSlideTabSheet;
-	//Ustawienie fokusu na zakladce
-	SideSlideTabSheet->SetFocus();
-	//Odwiezenie panelu z przyciskami
-	aRefreshPanels->Execute();
-	//Status odswiezania
-	pRefreshTabs = false;
-  }
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::SideSlideCategoryPanelExpand(TObject *Sender)
-{
-  if(!pRefreshTabs)
-  {
-	//Odwiezenie panelu z przyciskami
-	aRefreshPanels->Execute();
-	//Ustawienie domyslnej zakladki
-	sPageControl->ActivePage = DefaultTabSheet;
-	//Ustawienie fokusu na kontrolce
-	if(SaveButton->Enabled)	SaveButton->SetFocus();
-	else CancelButton->SetFocus();
-  }
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::TabsSwitchingCategoryPanelCollapse(TObject *Sender)
-{
-  if(!pRefreshTabs)
-  {
-	//Status odswiezania
-	pRefreshTabs = true;
-	//Zwiniecie paneli
-	CategoryPanelGroup->ExpandAll();
-	//Rozwiniecie danego panelu
-	TabsSwitchingCategoryPanel->Collapsed = true;
-	//Zmiana aktywnej zakladki
-	sPageControl->ActivePage = TabsSwitchingTabSheet;
-	//Ustawienie fokusu na zakladce
-	TabsSwitchingTabSheet->SetFocus();
-	//Odwiezenie panelu z przyciskami
-	aRefreshPanels->Execute();
-	//Status odswiezania
-	pRefreshTabs = false;
-  }
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::TabsSwitchingCategoryPanelExpand(TObject *Sender)
-{
-  if(!pRefreshTabs)
-  {
-	//Odwiezenie panelu z przyciskami
-	aRefreshPanels->Execute();
-	//Ustawienie domyslnej zakladki
-	sPageControl->ActivePage = DefaultTabSheet;
-	//Ustawienie fokusu na kontrolce
-	if(SaveButton->Enabled)	SaveButton->SetFocus();
-	else CancelButton->SetFocus();
-  }
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::TitlebarCategoryPanelCollapse(TObject *Sender)
-{
-  if(!pRefreshTabs)
-  {
-	//Status odswiezania
-	pRefreshTabs = true;
-	//Zwiniecie paneli
-	CategoryPanelGroup->ExpandAll();
-	//Rozwiniecie danego panelu
-	TitlebarCategoryPanel->Collapsed = true;
-	//Zmiana aktywnej zakladki
-	sPageControl->ActivePage = TitlebarTabSheet;
-	//Ustawienie fokusu na zakladce
-	TitlebarTabSheet->SetFocus();
-	//Odwiezenie panelu z przyciskami
-	aRefreshPanels->Execute();
-	//Status odswiezania
-	pRefreshTabs = false;
-  }
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::TitlebarCategoryPanelExpand(TObject *Sender)
-{
-  if(!pRefreshTabs)
-  {
-	//Odwiezenie panelu z przyciskami
-	aRefreshPanels->Execute();
-	//Ustawienie domyslnej zakladki
-	sPageControl->ActivePage = DefaultTabSheet;
-	//Ustawienie fokusu na kontrolce
-	if(SaveButton->Enabled)	SaveButton->SetFocus();
-	else CancelButton->SetFocus();
-  }
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::UnsentMsgCategoryPanelCollapse(TObject *Sender)
-{
-  if(!pRefreshTabs)
-  {
-	//Status odswiezania
-	pRefreshTabs = true;
-	//Zwiniecie paneli
-	CategoryPanelGroup->ExpandAll();
-	//Rozwiniecie danego panelu
-	UnsentMsgCategoryPanel->Collapsed = true;
-	//Zmiana aktywnej zakladki
-	sPageControl->ActivePage = UnsentMsgTabSheet;
-	//Ustawienie fokusu na zakladce
-	UnsentMsgTabSheet->SetFocus();
-	//Odwiezenie panelu z przyciskami
-	aRefreshPanels->Execute();
-	//Status odswiezania
-	pRefreshTabs = false;
-  }
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::UnsentMsgCategoryPanelExpand(TObject *Sender)
-{
-  if(!pRefreshTabs)
-  {
-	//Odwiezenie panelu z przyciskami
-	aRefreshPanels->Execute();
-	//Ustawienie domyslnej zakladki
-	sPageControl->ActivePage = DefaultTabSheet;
-	//Ustawienie fokusu na kontrolce
-	if(SaveButton->Enabled)	SaveButton->SetFocus();
-	else CancelButton->SetFocus();
-  }
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::RefreshTimerTimer(TObject *Sender)
-{
-  //Wylaczenie timera
-  RefreshTimer->Enabled = false;
-  //Zwiniecie paneli
-  CategoryPanelGroup->ExpandAll();
-  //Odwiezenie panelu z przyciskami
-  aRefreshPanels->Execute();
-  //Status odswiezania
-  pRefreshTabs = false;
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::aRefreshPanelsExecute(TObject *Sender)
-{
-  CategoryPanelGroup->Visible = false;
-  CategoryPanelGroup->Visible = true;
-}
-//---------------------------------------------------------------------------
 
 void __fastcall TSettingsForm::OtherTabSheetShow(TObject *Sender)
 {

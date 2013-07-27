@@ -16,6 +16,7 @@
 #include <Vcl.ActnList.hpp>
 #include <Vcl.ComCtrls.hpp>
 #include <Vcl.ExtCtrls.hpp>
+#include "sSkinProvider.hpp"
 //---------------------------------------------------------------------------
 class TSideSlideExceptionsForm : public TForm
 {

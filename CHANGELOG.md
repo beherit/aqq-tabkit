@@ -1,3 +1,14 @@
+1.7.3.0
+-----
+* Zmiana wygl¹du okna ustawieñ.
+* Kolejne poprawki w przywracaniu prawid³owych procedur okien.
+* Drobne zmiany w usuwaniu graficznej informacji o pisaniu nowej wiadomoœci na pasku tytu³u okna rozmowy.
+* Zmniejszenie rozmiaru wtyczki 32-bitowej poprzez u¿ycie kompresji LZMA.
+* Brak kompresji wtyczki 64-bitowej.
+* Wsparcie dla wtyczki AlphaWindows (ustawianie przeŸroczystoœci obramowania).
+* Nie wysuwanie okna zza krawêdzi ekranu przy aktywnym menu start z aplikacji Stardock Start8.
+* Aktualizacja komponentów AlphaControls do najnowszej dostêpnej wersji (8.20).
+
 1.7.2.0
 -----
 * Poprawki w przywracaniu prawid³owych procedur okien.
