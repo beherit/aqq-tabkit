@@ -1099,19 +1099,31 @@ object SettingsForm: TSettingsForm
       end
       object TaskbarPenCheckBox: TsCheckBox
         Left = 12
-        Top = 182
+        Top = 208
         Width = 253
         Height = 28
         Caption = 
           'Wy'#322#261'cz wbudowan'#261' w komunikator funkcj'#281' pisaka na pasku tytu'#322'u ok' +
           'na rozmowy'
         AutoSize = False
-        TabOrder = 5
+        TabOrder = 6
         OnClick = aNewMsgChkExecute
         SkinData.SkinSection = 'CHECKBOX'
         ImgChecked = 0
         ImgUnchecked = 0
         WordWrap = True
+      end
+      object ChatGoneNotiferNewMsgCheckBox: TsCheckBox
+        Left = 28
+        Top = 182
+        Width = 316
+        Height = 20
+        Caption = 'Informuj graficznie na zak'#322'adkach o zamkni'#281'ciu okna rozmowy'
+        TabOrder = 5
+        OnClick = aNewMsgChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
       end
     end
     object TitlebarTabSheet: TsTabSheet
@@ -1394,6 +1406,61 @@ object SettingsForm: TSettingsForm
       SkinData.CustomColor = False
       SkinData.CustomFont = False
       SkinData.SkinSection = 'CHECKBOX'
+      object SideSlideFullScreenModeExceptionsButton: TsSpeedButton
+        Left = 263
+        Top = 314
+        Width = 23
+        Height = 22
+        Hint = 'Wyj'#261'tki...'
+        Flat = True
+        Glyph.Data = {
+          36050000424D3605000000000000360400002800000010000000100000000100
+          0800000000000001000000000000000000000001000000000000000000000101
+          0100020202000303030004040400050505000606060007070700080808000909
+          09000A0A0A000B0B0B000C0C0C000D0D0D000E0E0E000F0F0F00101010001111
+          1100121212001313130013131300141414001515150016161600171717001818
+          1800191919001A1A1A001B1B1B001C1C1C001D1D1D001E1E1E001F1F1F002020
+          2000212121002222220023232300242424002525250026262600272727002828
+          2800292929002A2A2A002B2B2B002C2C2C002D2D2D002E2E2E002F2F2F003030
+          3000313131003232320033333300343434003535350036363600373737003838
+          3800393939003A3A3A003B3B3B003C3C3C003D3D3D003E3E3E003F3F3F004040
+          4000414141004242420043434300444444004545450046464600474747004848
+          4800494949004A4A4A004B4B4B004C4C4C004D4D4D004E4E4E004F4F4F005050
+          5000515151005252520053535300545454005555550056565600575757005858
+          5800595959005A5A5A005B5B5B005C5C5C005D5D5D005E5E5E005F5F5F006060
+          6000616161006262620063636300646464006565650066666600676767006868
+          6800696969006A6A6A006B6B6B006C6C6C006D6D6D006E6E6E006F6F6F007070
+          7000717171007272720073737300747474007575750076767600777777007878
+          7800797979007A7A7A007B7B7B007C7C7C007D7D7D007E7E7E007F7F7F008080
+          8000818181008282820083838300848484008585850086868600878787008888
+          8800898989008A8A8A008B8B8B008C8C8C008D8D8D008E8E8E008F8F8F009090
+          9000919191009292920093939300949494009595950096969600979797009898
+          9800999999009A9A9A009B9B9B009C9C9C009D9D9D009E9E9E009F9F9F00A0A0
+          A000A1A1A100A2A2A200A3A3A300A4A4A400A5A5A500A6A6A600A7A7A700A8A8
+          A800A9A9A900AAAAAA00ABABAB00ACACAC00ADADAD00AEAEAE00AFAFAF00B0B0
+          B000B1B1B100B2B2B200B3B3B300B4B4B400B5B5B500B6B6B600B7B7B700B8B8
+          B800B9B9B900BABABA00BBBBBB00BCBCBC00BDBDBD00BEBEBE00BFBFBF00C0C0
+          C000C1C1C100C2C2C200C3C3C300C4C4C400C5C5C500C7C7C700C8C8C800C9C9
+          C900CACACA00CBCBCB00CCCCCC00CDCDCD00CECECE00CFCFCF00D0D0D000D1D1
+          D100D2D2D200D3D3D300D4D4D400D5D5D500D6D6D600D7D7D700D8D8D800D9D9
+          D900DADADA00DBDBDB00DCDCDC00DDDDDD00DEDEDE00DFDFDF00E0E0E000E1E1
+          E100E2E2E200E3E3E300E4E4E400E5E5E500E6E6E600E7E7E700E8E8E800E9E9
+          E900EAEAEA00EBEBEB00ECECEC00EDEDED00EEEEEE00EFEFEF00F0F0F000F1F1
+          F100F2F2F200F3F3F300F4F4F400F5F5F500F6F6F600F7F7F700F8F8F800F9F9
+          F900FAFAFA00FBFBFB00FCFCFC00FDFDFD00FEFEFE00FFFFFF00FFFFFFFFFFFF
+          6D585152FFFFFFFFFFFFFFFFFF6F6A7A81BDB25B5A5C4EFFFFFFFFFF816F6476
+          83CBC7625A584E49FFFFFFA4BCDEA68385C4C26D6EA6D28052FFFFABA6D5C5CB
+          D1C9C7CCC5BDCB6E67FFFFFFACC5C1C5C7AAA7C1BEB5AA69FFFFA38FA0CFC6CC
+          9E99948FC1BCB9645853BFE2D2C6CDB193FFFF95A8C2B7C0D261C4E9D6C9CEA5
+          84FFFF9AACC4BAC6DD6BC8C4C0D8CDBC82777E8FC3C2CD8C8783FFFFC5D4CCC9
+          BA9CA1C2C6C1B789FFFFFFCAC4DCD4D9DBD6D4D9D2CBC87971FFFFD0DCEDDBC2
+          BED6D4B0ACCBE7B78BFFFFFFD1CECAC6C2DEDDB2B1ACA7A3FFFFFFFFFFD1CECB
+          C7E5E4ACB6B2ADFFFFFFFFFFFFFFFFFFCBC7C4BFFFFFFFFFFFFF}
+        ParentShowHint = False
+        ShowHint = True
+        OnClick = SideSlideFullScreenModeExceptionsButtonClick
+        SkinData.SkinSection = 'SPEEDBUTTON'
+      end
       object SlideFrmMainGroupBox: TsGroupBox
         Left = 19
         Top = 21
@@ -1620,9 +1687,7 @@ object SettingsForm: TSettingsForm
           Top = 245
           Width = 232
           Height = 30
-          Caption = 
-            'Zawsze pokazuj zak'#322'adk'#281' z list'#261' kontakt'#243'w po wysuni'#281'ciu okna kon' +
-            'takt'#243'w'
+          Caption = 'Zawsze pokazuj zak'#322'adk'#281' z list'#261' kontakt'#243'w po wysuni'#281'ciu okna'
           AutoSize = False
           Checked = True
           State = cbChecked
@@ -1861,8 +1926,8 @@ object SettingsForm: TSettingsForm
           Width = 255
           Height = 30
           Caption = 
-            'Wysuwaj okno rozmowy po przyj'#347'ciu nowej wiadomo'#347'ci (tylko dla ot' +
-            'wartych zak'#322'adek)'
+            'Wysuwaj okno po przyj'#347'ciu nowej wiadomo'#347'ci (tylko dla otwartych ' +
+            'zak'#322'adek)'
           AutoSize = False
           Enabled = False
           TabOrder = 3
@@ -1900,9 +1965,9 @@ object SettingsForm: TSettingsForm
       object SideSlideFullScreenModeCheckBox: TsCheckBox
         Left = 20
         Top = 315
-        Width = 281
+        Width = 234
         Height = 20
-        Caption = 'Wysuwaj okna przy aktywnej aplikacji pe'#322'noekranowej'
+        Caption = 'Wysuwaj okna przy aplikacji pe'#322'noekranowej'
         Checked = True
         State = cbChecked
         TabOrder = 4
@@ -2262,6 +2327,24 @@ object SettingsForm: TSettingsForm
         State = cbChecked
         TabOrder = 13
         OnClick = aOtherChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object TurnOffModalCheckBox: TsCheckBox
+        Left = 372
+        Top = 255
+        Width = 196
+        Height = 28
+        Caption = 
+          'Wy'#322#261'cz modalno'#347#263' okna wysy'#322'ania wycinka oraz instalowania dodatk' +
+          #243'w'
+        AutoSize = False
+        Checked = True
+        Enabled = False
+        State = cbChecked
+        TabOrder = 16
         SkinData.SkinSection = 'CHECKBOX'
         ImgChecked = 0
         ImgUnchecked = 0

@@ -2,6 +2,7 @@
 #include <vcl.h>
 #pragma hdrstop
 #include "SettingsFrm.h"
+#include "SideSlideExceptionsFrm.h"
 #include <gdiplus.h>
 #include <inifiles.hpp>
 #include <XMLDoc.hpp>
@@ -20,6 +21,7 @@
 #pragma link "sSkinProvider"
 #pragma link "sSpinEdit"
 #pragma link "acPNG"
+#pragma link "sSpeedButton"
 #pragma resource "*.dfm"
 TSettingsForm *SettingsForm;
 //---------------------------------------------------------------------------
@@ -280,6 +282,7 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   InactiveTabsNewMsgCheckBox->Checked = Ini->ReadBool("NewMsg","InactiveTabs",false);
   InactiveNotiferNewMsgCheckBox->Checked = Ini->ReadBool("NewMsg","InactiveNotifer",false);
   ChatStateNotiferNewMsgCheckBox->Checked = Ini->ReadBool("NewMsg","ChatStateNotifer",true);
+  ChatGoneNotiferNewMsgCheckBox->Checked = Ini->ReadBool("NewMsg","ChatGoneNotifer",false);
   TaskbarPenCheckBox->Checked = !Ini->ReadBool("NewMsg","TaskbarPen",true);
   //Titlebar
   TweakFrmSendTitlebarCheckBox->Checked = Ini->ReadBool("Titlebar","TweakSend",false);
@@ -529,6 +532,7 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
   Ini->WriteBool("NewMsg","InactiveTabs",InactiveTabsNewMsgCheckBox->Checked);
   Ini->WriteBool("NewMsg","InactiveNotifer",InactiveNotiferNewMsgCheckBox->Checked);
   Ini->WriteBool("NewMsg","ChatStateNotifer",ChatStateNotiferNewMsgCheckBox->Checked);
+  Ini->WriteBool("NewMsg","ChatGoneNotifer",ChatGoneNotiferNewMsgCheckBox->Checked);
   Ini->WriteBool("NewMsg","TaskbarPen",!TaskbarPenCheckBox->Checked);
   //Titlebar
   Ini->WriteBool("Titlebar","TweakSend",TweakFrmSendTitlebarCheckBox->Checked);
@@ -748,6 +752,8 @@ void __fastcall TSettingsForm::aNewMsgChkExecute(TObject *Sender)
   else
    TaskbarPenCheckBox->Enabled = true;
 
+  ChatGoneNotiferNewMsgCheckBox->Enabled = ChatStateNotiferNewMsgCheckBox->Checked;
+
   SaveButton->Enabled = true;
 }
 //---------------------------------------------------------------------------
@@ -825,6 +831,7 @@ void __fastcall TSettingsForm::aSideSlideChkExecute(TObject *Sender)
   FrmMainSlideInTimeSpinEdit->Enabled = SlideFrmMainCheckBox->Checked;
   FrmMainSlideOutTimeSpinEdit->Enabled = SlideFrmMainCheckBox->Checked;
   ChangeTabAfterSlideInCheckBox->Enabled = SlideFrmMainCheckBox->Checked;
+  SideSlideFullScreenModeExceptionsButton->Enabled = SideSlideFullScreenModeCheckBox->Checked;
 
   SaveButton->Enabled = true;
 }
@@ -1387,5 +1394,13 @@ void __fastcall TSettingsForm::IdThreadComponentRun(TIdThreadComponent *Sender)
   delete Ini;
   //Wylaczenie watku
   IdThreadComponent->Stop();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TSettingsForm::SideSlideFullScreenModeExceptionsButtonClick(TObject *Sender)
+{
+  SideSlideExceptionsForm = new TSideSlideExceptionsForm(Application);
+  SideSlideExceptionsForm->ShowModal();
+  delete SideSlideExceptionsForm;
 }
 //---------------------------------------------------------------------------

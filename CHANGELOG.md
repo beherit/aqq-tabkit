@@ -1,3 +1,18 @@
+1.7.1.0
+-----
+* Opcja informowania graficznie na zak³adkach o zamkniêciu okna rozmowy.
+* Mo¿liwoœæ zablokowania wysuwania okien przy danej aplikacji pe³noekranowej (nale¿y podaæ nazwê pliku EXE).
+* Wy³¹czenie modalnoœci okna instalowania dodatków.
+* Usuniêto b³¹d ze znikaj¹cym na drugi plan okna emotek, centrum akcji oraz formy dorêczenia.
+* Poprawne tymczasowe blokowanie chowania okna rozmowy przy aktywnym oknie szybkiego wstawania emotek.
+* Poprawki w blokadzie znikania popup menu w oknie kontaktów, gdy ktoœ do nas pisze.
+* Drobne zmiany w informowaniu graficznie na zak³adkach o pisaniu nowej wiadomoœci.
+* Wspó³praca ze wszystkimi wtyczkami restartuj¹cymi komunikator.
+* Brak ikonki ducha po w³¹czeniu komunikatora przy posiadaniu niewys³anych wiadomoœci.
+* Poprawne ustawianie licznika nieprzeczytanych wiadomoœci na belce okna rozmowy przy aktywnej zmianie tekstu belki.
+* Poprawki w obs³udze niektórych notyfikacji.
+* Aktualizacja komponentów AlphaControls do najnowszej dostêpnej wersji (8.18).
+
 1.7.0.0
 -----
 * Dodanie 64-bitowej wersji wtyczki.

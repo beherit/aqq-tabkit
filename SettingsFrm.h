@@ -29,6 +29,8 @@
 #include <Vcl.StdCtrls.hpp>
 #include "acPNG.hpp"
 #include <IdThreadComponent.hpp>
+#include "sSpeedButton.hpp"
+#include <Vcl.Buttons.hpp>
 //---------------------------------------------------------------------------
 class TSettingsForm : public TForm
 {
@@ -234,6 +236,9 @@ __published:	// IDE-managed Components
 	TsWebLabel *StarWebLabel;
 	TsCheckBox *NoMiniAvatarsClipTabsCheckBox;
 	TIdThreadComponent *IdThreadComponent;
+	TsCheckBox *ChatGoneNotiferNewMsgCheckBox;
+	TsCheckBox *TurnOffModalCheckBox;
+	TsSpeedButton *SideSlideFullScreenModeExceptionsButton;
 	void __fastcall UnsentMsgTrayIconClick(TObject *Sender);
 	void __fastcall aExitExecute(TObject *Sender);
 	void __fastcall CancelButtonClick(TObject *Sender);
@@ -283,6 +288,7 @@ __published:	// IDE-managed Components
 	void __fastcall NewMsgTabSheetShow(TObject *Sender);
 	void __fastcall aRefreshPanelsExecute(TObject *Sender);
 	void __fastcall IdThreadComponentRun(TIdThreadComponent *Sender);
+	void __fastcall SideSlideFullScreenModeExceptionsButtonClick(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	UnicodeString XML;
