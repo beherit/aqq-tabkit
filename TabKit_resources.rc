@@ -1,2 +1,4 @@
 UNSENTMSG RCData "Data\\UnsentMsg.png"
 CLOSEDTABS RCData "Data\\ClosedTabsButton.png"
+STAYONTOP_OFF RCData "Data\\StayOnTopOff.png"
+STAYONTOP_ON RCData "Data\\StayOnTopOn.png"

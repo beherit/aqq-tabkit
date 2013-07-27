@@ -14,12 +14,9 @@
 class TSettingsForm : public TForm
 {
 __published:	// IDE-managed Components
-	TPageControl *PageControl;
 	TBevel *Bevel;
 	TButton *SaveButton;
 	TButton *CancelButton;
-	TTabSheet *UnsentMsgTabSheet;
-	TTabSheet *TabsSwitchingTabSheet;
 	TCheckBox *RememberUnsentMsgCheckBox;
 	TCheckBox *InfoUnsentMsgCheckBox;
 	TCheckBox *FastAccessUnsentMsgCheckBox;
@@ -30,7 +27,6 @@ __published:	// IDE-managed Components
 	TCheckBox *SwitchToNewMsgCheckBox;
 	TRadioButton *SwitchToNewMsgMode1RadioButton;
 	TRadioButton *SwitchToNewMsgMode2RadioButton;
-	TTabSheet *ClosedTabsSheet;
 	TTrayIcon *UnsentMsgTrayIcon;
 	TCheckBox *DetailedCloudUnsentMsgCheckBox;
 	TActionList *ActionList;
@@ -57,12 +53,10 @@ __published:	// IDE-managed Components
 	TAction *aClosedTabsChk;
 	TLabel *CountClosedTabsLabel;
 	TCSpinEdit *CountClosedTabsCSpinEdit;
-	TTabSheet *SessionRememberTabSheet;
 	TCheckBox *RestoreTabsSessionCheckBox;
 	TAction *aSessionRememberChk;
 	TCheckBox *RestoreMsgSessionCheckBox;
 	TLabel *RestoreSessionLabel;
-	TTabSheet *TitlebarTabSheet;
 	TCheckBox *TweakFrmSendTitlebarCheckBox;
 	TRadioButton *TweakFrmSendTitlebarMode1RadioButton;
 	TRadioButton *TweakFrmSendTitlebarMode2RadioButton;
@@ -71,22 +65,45 @@ __published:	// IDE-managed Components
 	TRadioButton *TweakFrmMainTitlebarMode1RadioButton;
 	TRadioButton *TweakFrmMainTitlebarMode2RadioButton;
 	TEdit *TweakFrmMainTitlebarMode2Edit;
-	TLabel *TitlebarTweakLabel;
 	TPanel *TweakFrmSendTitlebarPanel;
 	TPanel *TweakFrmMainTitlebarPanel;
 	TLabel *ItemsCountClosedTabsLabel;
 	TCSpinEdit *ItemsCountClosedTabsCSpinEdit;
 	TAction *aTitlebarTweakChk;
-	TTabSheet *NewMsgTabSheet;
-	TTabSheet *OtherTabSheet;
 	TCheckBox *InactiveFrmNewMsgCheckBox;
 	TButton *UnsentMsgEraseButton;
-	TLabel *Label1;
 	TButton *ClosedTabsEraseButton;
 	TButton *SessionRememberEraseButton;
 	TAction *aNewMsgChk;
 	TCheckBox *InactiveTabsNewMsgCheckBox;
 	TCheckBox *ManualRestoreTabsSessionCheckBox;
+	TCheckBox *StayOnTopCheckBox;
+	TGroupBox *ClearCacheGroupBox;
+	TAction *aClosedTabs;
+	TAction *aOtherChk;
+	TCheckBox *InactiveNotiferNewMsgCheckBox;
+	TCheckBox *RestoreLastMsgClosedTabsCheckBox;
+	TLabel *TabsSwitchingLabel;
+	TCategoryPanelGroup *CategoryPanelGroup;
+	TCategoryPanel *ClosedCategoryPanel;
+	TCategoryPanel *UnsentMsgCategoryPanel;
+	TCategoryPanel *TabsSwitchingCategoryPanel;
+	TCategoryPanel *SessionRememberCategoryPanel;
+	TCategoryPanel *TitlebarCategoryPanel;
+	TCategoryPanel *NewMsgCategoryPanel;
+	TCategoryPanel *OtherCategoryPanel;
+	TPanel *ClosedPanel;
+	TPanel *UnsentMsgPanel;
+	TPanel *TabsSwitchingPanel;
+	TPanel *SessionRememberPanel;
+	TPanel *TitlebarPanel;
+	TPanel *NewMsgPanel;
+	TPanel *OtherPanel;
+	TCheckBox *EmuTabsWCheckBox;
+	TCheckBox *ShowTimeClosedTabsCheckBox;
+	TCheckBox *FastClearClosedTabsCheckBox;
+	TCheckBox *FastClearUnsentMsgCheckBox;
+	TCheckBox *QuickQuoteCheckBox;
 	void __fastcall UnsentMsgTrayIconClick(TObject *Sender);
 	void __fastcall aExitExecute(TObject *Sender);
 	void __fastcall CancelButtonClick(TObject *Sender);
@@ -100,11 +117,16 @@ __published:	// IDE-managed Components
 	void __fastcall aClosedTabsChkExecute(TObject *Sender);
 	void __fastcall aSessionRememberChkExecute(TObject *Sender);
 	void __fastcall aTitlebarTweakChkExecute(TObject *Sender);
-	void __fastcall OtherTabSheetShow(TObject *Sender);
 	void __fastcall UnsentMsgEraseButtonClick(TObject *Sender);
 	void __fastcall ClosedTabsEraseButtonClick(TObject *Sender);
 	void __fastcall SessionRememberEraseButtonClick(TObject *Sender);
 	void __fastcall aNewMsgChkExecute(TObject *Sender);
+	void __fastcall aOtherChkExecute(TObject *Sender);
+	void __fastcall OtherCategoryPanelExpand(TObject *Sender);
+	void __fastcall FormMouseWheelDown(TObject *Sender, TShiftState Shift, TPoint &MousePos,
+          bool &Handled);
+	void __fastcall FormMouseWheelUp(TObject *Sender, TShiftState Shift, TPoint &MousePos,
+          bool &Handled);
 private:	// User declarations
 public:		// User declarations
 	__fastcall TSettingsForm(TComponent* Owner);

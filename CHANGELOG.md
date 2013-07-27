@@ -1,3 +1,22 @@
+1.0.3.0
+-----
+* Przebudowa wizualna okna ustawieñ.
+* Licznik nieprzeczytanych wiadomoœci na zak³adkach.
+* Rzeczywisty stan kontaktów w elementach menu szybkiego dostêp do ostatnio zamkniêtych zak³adek i niewys³anych wiadomoœci.
+* Mo¿liwoœæ w³¹czenia pokazywania daty zamkniêcia zak³adki.
+* Elementy szybkiego czyszczenia listy ostatnio zamkniêtych zak³adek i niewys³anych wiadomoœci.
+* Integracja funkcjonalnoœci wtyczki StayOnTop.
+* Integracja funkcjonalnoœci wtyczki MsgNotifer.
+* Integracja funkcjonalnoœci wtyczki EmuTabsW.
+* Integracja funkcjonalnoœci wtyczki QuickQuote.
+* Dostêpnoœæ niektórych opcji jest zale¿ne od u¿ywanej wersji komunikatora.
+* Wymuszanie w³¹czonej obs³ugi zak³adek w oknie rozmowy.
+* Wczytywanie ostatnio przyprowadzonej rozmowy przy przywracaniu zak³adki jako opcja.
+* Licznik nowych wiadomoœci na pasku tytu³u dzia³a równie¿ dla czatów/konferencji.
+* Poprawki w zapisywaniu sesji wpisanego tekstu w oknie rozmowy oraz zapamiêtywaniu niewys³anych wiadomoœci.
+* Drobne poprawki w tworzeniu elementów w menu niewys³anych wiadomoœci.
+* Optymalizacja kodu.
+
 1.0.2.0
 -----
 * Zapamiêtywanie sesji otwartych zak³adek - ochrona przed niepo¿¹danymi zamkniêciami AQQ np. crash.
