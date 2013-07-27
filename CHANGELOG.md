@@ -1,3 +1,9 @@
+1.4.3.0
+-----
+* Odœwie¿anie listy kontaktów po zmianie opcji skracania odnoœników.
+* Optymalizacja algorytmu skracania odnoœników.
+* Inne mniej wa¿ne poprawki w kodzie.
+
 1.4.2.0
 -----
 * Skracanie wyœwietlania odnoœników w oknie kontaktów do wygodniejszej formy.
