@@ -3164,8 +3164,8 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		  //Gdy okno rozmowy jest widoczne, aktualnie nie jest chowane/wysuwane i nie jest aktywna blokada
 		  if((FrmSendVisible)&&(!PreFrmSendSlideOut)&&(!FrmSendSlideOut)&&(!FrmSendSlideIn)&&(!FrmSendBlockSlide))
 		  {
-			//Gdy kursor znajduje sie poza oknem rozmowy
-			if((Mouse->CursorPos.y<FrmSendRect.Top+FrmSendRealTopPos-FrmSend_Shell_TrayWndTop)||(FrmSendRect.Bottom+FrmSendRealBottomPos+FrmSend_Shell_TrayWndBottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmSendRect.Left+FrmSendRealLeftPos-FrmSend_Shell_TrayWndLeft)||(FrmSendRect.Right+FrmSendRealRightPos+FrmSend_Shell_TrayWndRight<Mouse->CursorPos.x))
+			//Gdy kursor znajduje sie poza oknem rozmowy i LPM nie jest wcisniety
+			if(((Mouse->CursorPos.y<FrmSendRect.Top+FrmSendRealTopPos-FrmSend_Shell_TrayWndTop)||(FrmSendRect.Bottom+FrmSendRealBottomPos+FrmSend_Shell_TrayWndBottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmSendRect.Left+FrmSendRealLeftPos-FrmSend_Shell_TrayWndLeft)||(FrmSendRect.Right+FrmSendRealRightPos+FrmSend_Shell_TrayWndRight<Mouse->CursorPos.x))&&(GetKeyState(VK_LBUTTON)>=0))
 			{
 			  //Sprawdzenia okna w ktorym znajduje sie kursor
 			  HWND hCurActiveFrm = WindowFromPoint(Mouse->CursorPos);
