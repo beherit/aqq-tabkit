@@ -3164,39 +3164,53 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		  //Gdy okno rozmowy jest widoczne, aktualnie nie jest chowane/wysuwane i nie jest aktywna blokada
 		  if((FrmSendVisible)&&(!PreFrmSendSlideOut)&&(!FrmSendSlideOut)&&(!FrmSendSlideIn)&&(!FrmSendBlockSlide))
 		  {
-			//Gdy kursor znajduje sie poza oknem rozmowy i LPM nie jest wcisniety
-			if(((Mouse->CursorPos.y<FrmSendRect.Top+FrmSendRealTopPos-FrmSend_Shell_TrayWndTop)||(FrmSendRect.Bottom+FrmSendRealBottomPos+FrmSend_Shell_TrayWndBottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmSendRect.Left+FrmSendRealLeftPos-FrmSend_Shell_TrayWndLeft)||(FrmSendRect.Right+FrmSendRealRightPos+FrmSend_Shell_TrayWndRight<Mouse->CursorPos.x))&&(GetKeyState(VK_LBUTTON)>=0))
+			//Gdy kursor znajduje sie poza oknem rozmowy
+			if((Mouse->CursorPos.y<FrmSendRect.Top+FrmSendRealTopPos-FrmSend_Shell_TrayWndTop)||(FrmSendRect.Bottom+FrmSendRealBottomPos+FrmSend_Shell_TrayWndBottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmSendRect.Left+FrmSendRealLeftPos-FrmSend_Shell_TrayWndLeft)||(FrmSendRect.Right+FrmSendRealRightPos+FrmSend_Shell_TrayWndRight<Mouse->CursorPos.x))
 			{
-			  //Sprawdzenia okna w ktorym znajduje sie kursor
-			  HWND hCurActiveFrm = WindowFromPoint(Mouse->CursorPos);
-			  wchar_t WClassName[128];
-			  GetClassNameW(hCurActiveFrm, WClassName, sizeof(WClassName));
-			  DWORD PID;
-			  GetWindowThreadProcessId(hCurActiveFrm, &PID);
-			  //Gdy kursor nie znajduje sie w obrebie menu z okna
-			  if(!(((UnicodeString)WClassName=="#32768")&&(PID==ProcessPID)))
+			  //LPM nie jest wcisniety
+			  if(GetKeyState(VK_LBUTTON)>=0)
 			  {
-				//Tymczasowa blokada FrmSendSlideOut
-				if(PopupMenuBlockSlide)
+				//Sprawdzenia okna w ktorym znajduje sie kursor
+				HWND hCurActiveFrm = WindowFromPoint(Mouse->CursorPos);
+				wchar_t WClassName[128];
+				GetClassNameW(hCurActiveFrm, WClassName, sizeof(WClassName));
+				DWORD PID;
+				GetWindowThreadProcessId(hCurActiveFrm, &PID);
+				//Gdy kursor nie znajduje sie w obrebie menu z okna
+				if(!(((UnicodeString)WClassName=="#32768")&&(PID==ProcessPID)))
 				{
-				  PopupMenuBlockSlide = false;
-				  FrmSendBlockSlide = true;
-				  //Wlaczenie timera wylaczanie tymczasowej blokady
-				  SetTimer(hTimerFrm,TIMER_FRMSENDBLOCKSLIDE,2000,(TIMERPROC)TimerFrmProc);
+				  //Tymczasowa blokada FrmSendSlideOut
+				  if(PopupMenuBlockSlide)
+				  {
+					//Zmiene blokady
+					PopupMenuBlockSlide = false;
+					FrmSendBlockSlide = true;
+					//Wlaczenie timera wylaczanie tymczasowej blokady
+					SetTimer(hTimerFrm,TIMER_FRMSENDBLOCKSLIDE,2000,(TIMERPROC)TimerFrmProc);
+				  }
+				  //FrmSendSlideOut
+				  else
+				  {
+					//Status FrmSendSlideOut
+					FrmSendSlideOut = true;
+					PreFrmSendSlideOut = true;
+					//Wlaczenie FrmSendSlideOut (part I)
+					SetTimer(hTimerFrm,TIMER_PREFRMSENDSLIDEOUT,FrmSendSlideOutDelay,(TIMERPROC)TimerFrmProc);
+				  }
 				}
-				//FrmSendSlideOut
-				else
-				{
-				  //Status FrmSendSlideOut
-				  FrmSendSlideOut = true;
-				  PreFrmSendSlideOut = true;
-				  //Wlaczenie FrmSendSlideOut (part I)
-				  SetTimer(hTimerFrm,TIMER_PREFRMSENDSLIDEOUT,FrmSendSlideOutDelay,(TIMERPROC)TimerFrmProc);
-				}
+				//Gdy kursor znajduje sie w obrebie menu z okna
+				else if(((UnicodeString)WClassName=="#32768")&&(PID==ProcessPID)&&(FrmSendSlideHideMode==3))
+				 PopupMenuBlockSlide = true;
 			  }
-			  //Gdy kursor znajduje sie w obrebie menu z okna
-			  else if(((UnicodeString)WClassName=="#32768")&&(PID==ProcessPID)&&(FrmSendSlideHideMode==3))
-			   PopupMenuBlockSlide = true;
+			  //Tymczasowa blokada FrmSendSlideOut
+			  else
+			  {
+				//Zmiene blokady
+				PopupMenuBlockSlide = false;
+				FrmSendBlockSlide = true;
+				//Wlaczenie timera wylaczanie tymczasowej blokady
+				SetTimer(hTimerFrm,TIMER_FRMSENDBLOCKSLIDE,2000,(TIMERPROC)TimerFrmProc);
+			  }
 			}
 			else
 			 PopupMenuBlockSlide = false;
@@ -3294,37 +3308,48 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		  //Gdy okno kontatkow jest widoczne, aktualnie nie jest chowane/wysuwane i nie jest aktywna blokada
 		  if((FrmMainVisible)&&(!CurPreFrmMainSlideOut)&&(!FrmMainSlideOut)&&(!FrmMainSlideIn)&&(!FrmMainBlockSlide))
 		  {
-		    //Gdy kursor znajduje sie poza oknem kontaktow i LPM nie jest wcisniety
-			if(((Mouse->CursorPos.y<FrmMainRect.Top+FrmMainRealTopPos-FrmMain_Shell_TrayWndTop)||(FrmMainRect.Bottom+FrmMainRealBottomPos+FrmMain_Shell_TrayWndBottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmMainRect.Left+FrmMainRealLeftPos-FrmMain_Shell_TrayWndLeft)||(FrmMainRect.Right+FrmMainRealRightPos+FrmMain_Shell_TrayWndRight<Mouse->CursorPos.x))&&(GetKeyState(VK_LBUTTON)>=0))
+			//Gdy kursor znajduje sie poza oknem kontaktow
+			if((Mouse->CursorPos.y<FrmMainRect.Top+FrmMainRealTopPos-FrmMain_Shell_TrayWndTop)||(FrmMainRect.Bottom+FrmMainRealBottomPos+FrmMain_Shell_TrayWndBottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmMainRect.Left+FrmMainRealLeftPos-FrmMain_Shell_TrayWndLeft)||(FrmMainRect.Right+FrmMainRealRightPos+FrmMain_Shell_TrayWndRight<Mouse->CursorPos.x))
 			{
-			  //Sprawdzenia okna w ktorym znajduje sie kursor
-			  HWND hCurActiveFrm = WindowFromPoint(Mouse->CursorPos);
-			  wchar_t WClassName[128];
-			  GetClassNameW(hCurActiveFrm, WClassName, sizeof(WClassName));
-			  DWORD PID;
-			  GetWindowThreadProcessId(hCurActiveFrm, &PID);
-			  //Gdy kursor nie znajduje sie w obrebie menu z okna
-			  if(!(((UnicodeString)WClassName=="#32768")&&(PID==ProcessPID)))
+			  //LPM nie jest wcisniety
+			  if(GetKeyState(VK_LBUTTON)>=0)
 			  {
-				//Tymczasowa blokada FrmMainSlideOut
-				if(PopupMenuBlockSlide)
+				//Sprawdzenia okna w ktorym znajduje sie kursor
+				HWND hCurActiveFrm = WindowFromPoint(Mouse->CursorPos);
+				wchar_t WClassName[128];
+				GetClassNameW(hCurActiveFrm, WClassName, sizeof(WClassName));
+				DWORD PID;
+				GetWindowThreadProcessId(hCurActiveFrm, &PID);
+				//Gdy kursor nie znajduje sie w obrebie menu z okna
+				if(!(((UnicodeString)WClassName=="#32768")&&(PID==ProcessPID)))
 				{
-				  PopupMenuBlockSlide = false;
-				  FrmMainBlockSlide = true;
-				  SetTimer(hTimerFrm,TIMER_FRMMAINBLOCKSLIDE,1500,(TIMERPROC)TimerFrmProc);
+				  //Tymczasowa blokada FrmMainSlideOut
+				  if(PopupMenuBlockSlide)
+				  {
+					PopupMenuBlockSlide = false;
+					FrmMainBlockSlide = true;
+					SetTimer(hTimerFrm,TIMER_FRMMAINBLOCKSLIDE,1500,(TIMERPROC)TimerFrmProc);
+				  }
+				  //FrmMainSlideOut
+				  else
+				  {
+					//Status FrmMainSlideOut
+					CurPreFrmMainSlideOut = true;
+					//Wlaczenie FrmMainSlideOut (part I)
+					SetTimer(hTimerFrm,TIMER_PREFRMMAINDSLIDEOUT,FrmMainSlideOutDelay,(TIMERPROC)TimerFrmProc);
+				  }
 				}
-				//FrmMainSlideOut
-				else
-				{
-				  //Status FrmMainSlideOut
-				  CurPreFrmMainSlideOut = true;
-				  //Wlaczenie FrmMainSlideOut (part I)
-				  SetTimer(hTimerFrm,TIMER_PREFRMMAINDSLIDEOUT,FrmMainSlideOutDelay,(TIMERPROC)TimerFrmProc);
-				}
+				//Gdy kursor znajduje sie w obrebie menu z okna
+				else if(((UnicodeString)WClassName=="#32768")&&(PID==ProcessPID)&&(FrmMainSlideHideMode==3))
+				 PopupMenuBlockSlide = true;
 			  }
-			  //Gdy kursor znajduje sie w obrebie menu z okna
-			  else if(((UnicodeString)WClassName=="#32768")&&(PID==ProcessPID)&&(FrmMainSlideHideMode==3))
-			   PopupMenuBlockSlide = true;
+              //Tymczasowa blokada FrmMainSlideOut
+			  else
+			  {
+				PopupMenuBlockSlide = false;
+				FrmMainBlockSlide = true;
+				SetTimer(hTimerFrm,TIMER_FRMMAINBLOCKSLIDE,1500,(TIMERPROC)TimerFrmProc);
+			  }
 			}
 			else
 			 PopupMenuBlockSlide = false;
