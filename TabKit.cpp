@@ -3878,25 +3878,8 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		KillTimer(hTimerFrm,TIMER_FRMSENDSETTOPMOST);
 		//Pobranie uchwytu
 		LastActiveWindow_PreFrmSendSlideIn = GetForegroundWindow();
-		//Aktywacja okna
-		SetForegroundWindow(hFrmSend);
-		//Aktywacja pola wpisywania tekstu
-		if((!DragDetect(hFrmSend,Mouse->CursorPos))&&(hRichEdit))
-		{
-		  //Blokada lokalnego hooka na myszke
-		  FrmSendActivate = true;
-		  //Emulacja klikniecia myszka w pole tekstowe
-		  TRect RichEditRect;
-		  GetWindowRect(hRichEdit,&RichEditRect);
-		  POINT pCur;
-		  GetCursorPos(&pCur);
-		  SetCursorPos(RichEditRect.Left+1,RichEditRect.Top+1);
-		  mouse_event(MOUSEEVENTF_LEFTDOWN,RichEditRect.Left+1,RichEditRect.Top+1,0,0);
-		  mouse_event(MOUSEEVENTF_LEFTUP,RichEditRect.Left+1,RichEditRect.Top+1,0,0);
-		  SetCursorPos(pCur.x,pCur.y);
-		  //Wlaczenie timera wylaczania blokady lokalnego hooka na myszke
-		  SetTimer(hTimerFrm,TIMER_FRMSENDUNBLOCKMOUSE,100,(TIMERPROC)TimerFrmProc);
-		}
+		//Ustawienie okna rozmowy na wierzchu
+		SetWindowPos(hFrmSend,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 	  }
 	}
 	//SideSlide - pobranie nowego uchwytu i schowanie okna rozmowy
