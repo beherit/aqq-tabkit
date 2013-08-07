@@ -490,7 +490,7 @@ int __stdcall OnThemeChanged(WPARAM wParam, LPARAM lParam);
 int __stdcall OnTrayClick(WPARAM wParam, LPARAM lParam);
 int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam);
 int __stdcall OnXMLIDDebug(WPARAM wParam, LPARAM lParam);
-/*int __stdcall ServiceClosedTabsItem0(WPARAM wParam, LPARAM lParam);
+int __stdcall ServiceClosedTabsItem0(WPARAM wParam, LPARAM lParam);
 int __stdcall ServiceClosedTabsItem1(WPARAM wParam, LPARAM lParam);
 int __stdcall ServiceClosedTabsItem2(WPARAM wParam, LPARAM lParam);
 int __stdcall ServiceClosedTabsItem3(WPARAM wParam, LPARAM lParam);
@@ -512,7 +512,7 @@ int __stdcall ServiceClipTabItem(WPARAM wParam, LPARAM lParam);
 int __stdcall ServiceQuickQuoteItem(WPARAM wParam, LPARAM lParam);
 int __stdcall ServiceCollapseImagesItem(WPARAM wParam, LPARAM lParam);
 int __stdcall ServiceStayOnTopItem(WPARAM wParam, LPARAM lParam);
-int __stdcall ServiceTabKitFastSettingsItem(WPARAM wParam, LPARAM lParam);*/
+int __stdcall ServiceTabKitFastSettingsItem(WPARAM wParam, LPARAM lParam);
 //FORWARD-TIMER--------------------------------------------------------------
 LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 //FORWARD-WINDOW-PROC--------------------------------------------------------
@@ -8602,42 +8602,6 @@ int __stdcall OnReplyList(WPARAM wParam, LPARAM lParam)
 		ContactsIndexList->WriteInteger("Index",JID,ReplyListContact->UserIdx);
 		//Pobieranie i zapisywanie nicku kontatku
 		ContactsNickList->WriteString("Nick",JID,(wchar_t*)ReplyListContact->Nick);
-		//Ustawianie prawidlowej ikonki w popumenu ostatnio zamknietych zakladek
-		if((ClosedTabsChk)&&(FastAccessClosedTabsChk))
-		{
-		  //Jezeli JID jest w ostatnio zamknietych zakladkach
-		  if(ClosedTabsList->IndexOf(JID)!=-1)
-		  {
-			//Jezeli JID jest elementem popupmenu
-			if(ClosedTabsList->IndexOf(JID)<=ItemCountUnCloseTabVal)
-			{
-			  //Aktualizacja statusu
-			  DestroyFrmClosedTabs();
-			  BuildFrmClosedTabs();
-			}
-		  }
-		}
-		//Ustawianie prawidlowej ikonki w popumenu niewyslanych wiadomosci
-		if((UnsentMsgChk)&&(FastAccessUnsentMsgChk))
-		{
-		  TIniFile *Ini = new TIniFile(SessionFileDir);
-		  TStringList *Messages = new TStringList;
-		  Ini->ReadSection("Messages",Messages);
-		  delete Ini;
-		  int MsgCount = Messages->Count;
-		  //Jezeli sa jakies niewyslane wiadomosci
-		  if(MsgCount>0)
-		  {
-			//Jezeli JID jest w niewyslanych wiadomosciach
-			if(Messages->IndexOf(JID)!=-1)
-			{
-			  //Aktualizacja statusu
-			  DestroyFrmUnsentMsg();
-			  BuildFrmUnsentMsg();
-			}
-		  }
-		  delete Messages;
-		}
 	  }
 	}
   }
@@ -10887,7 +10851,11 @@ extern "C" int __declspec(dllexport) __stdcall Load(PPluginLink Link)
   //Wszystkie moduly zostaly zaladowane
   if(PluginLink.CallService(AQQ_SYSTEM_MODULESLOADED,0,0))
   {
-    //Szukanie uchwytu do okna kontaktowa
+    //Pobranie ID dla enumeracji kontaktów
+	ReplyListID = GetTickCount();
+	//Wywolanie enumeracji kontaktow
+	PluginLink.CallService(AQQ_CONTACTS_REQUESTLIST,(WPARAM)ReplyListID,0);
+	//Szukanie uchwytu do okna kontaktowa
 	EnumWindows((WNDENUMPROC)FindFrmMain,0);
 	//Szukanie uchwytu do kontrolki IE w oknie kontatkow
 	EnumChildWindows(hFrmMain,(WNDENUMPROC)FindFrmMainFocus,0);
@@ -10930,10 +10898,6 @@ extern "C" int __declspec(dllexport) __stdcall Load(PPluginLink Link)
 	BuildFrmUnsentMsg();
 	//Element przypinania zakladek
 	BuildClipTab();
-	//Pobranie ID dla enumeracji kontaktów
-	ReplyListID = GetTickCount();
-	//Wywolanie enumeracji kontaktow
-	PluginLink.CallService(AQQ_CONTACTS_REQUESTLIST,(WPARAM)ReplyListID,0);
 	//Brak przycisku zamkniecia i odawiezenie wszystkich zakladek
 	if(HideTabCloseButtonChk) RefreshTabs();
 	//Pobieranie nazwy komputera
