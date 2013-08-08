@@ -429,7 +429,6 @@ int FrmMainSlideInTime;
 int FrmMainSlideOutTime;
 int FrmMainStepInterval;
 bool ChangeTabAfterSlideIn;
-bool FrmMainHotKeysShow;
 bool FrmSendSlideChk = false;
 int FrmSendSlideEdge = 1;
 int FrmSendSlideHideMode;
@@ -5832,69 +5831,35 @@ void HookGlobalKeyboard()
 	//Zaladowanie hooka
 	RegisterHotKey(hSettingsForm->Handle, 0x0100, Mod, Key);
   }
-  //SideSlide dla FrmMain
+  //SideSlide dla okna kontaktow
   //Wyladowanie hooka
   UnregisterHotKey(hSettingsForm->Handle, 0x0200);
   if(FrmMainSlideChk)
   {
-	TIniFile *Ini = new TIniFile(SettingsFileDir);
-	//Jesli uzytkownik wlaczyl skrot w AQQ
-	if(Ini->ValueExists("SideSlide","HotKeysShow"))
-	{
-      //Zaladowanie hooka
-	  RegisterHotKey(hSettingsForm->Handle, 0x0200, MOD_SHIFT | MOD_CONTROL, 112);
-	}
-	else
-	{
-	  //Sprawdzanie czy skrot jest aktywny w AQQ
-	  TStrings* IniList = new TStringList();
-	  IniList->SetText((wchar_t*)PluginLink.CallService(AQQ_FUNCTION_FETCHSETUP,0,0));
-	  TMemIniFile *Settings = new TMemIniFile(ChangeFileExt(Application->ExeName, ".INI"));
-	  Settings->SetStrings(IniList);
-	  delete IniList;
-	  bool HotKeysShow = StrToBool(Settings->ReadString("Settings","HotKeysShow","1"));
-	  delete Settings;
-	  if(HotKeysShow)
-	  {
-		//Nowe ustawienia
-		TSaveSetup SaveSetup;
-		SaveSetup.Section = L"Settings";
-		SaveSetup.Ident = L"HotKeysShow";
-		SaveSetup.Value = L"0";
-		//Zapis ustawien
-		PluginLink.CallService(AQQ_FUNCTION_SAVESETUP,1,(LPARAM)(&SaveSetup));
-		//Odswiezenie ustawien
-		PluginLink.CallService(AQQ_FUNCTION_REFRESHSETUP,0,0);
-		//Zapisanie informacji o opcji AQQ do ustawien wtyczki
-		Ini->WriteBool("SideSlide","HotKeysShow",true);
-		//Wyladowanie hooka w AQQ
-		UnregisterHotKey(hFrmMain, 1);
-		//Zaladowanie hooka
-	    RegisterHotKey(hSettingsForm->Handle, 0x0200, MOD_SHIFT | MOD_CONTROL, 112);
-	  }
-	}
-	delete Ini;
-  }
-  else
-  {
-	TIniFile *Ini = new TIniFile(SettingsFileDir);
-	if(Ini->ValueExists("SideSlide","HotKeysShow"))
+	//Sprawdzanie czy skrot jest aktywny w AQQ
+	TStrings* IniList = new TStringList();
+	IniList->SetText((wchar_t*)PluginLink.CallService(AQQ_FUNCTION_FETCHSETUP,0,0));
+	TMemIniFile *Settings = new TMemIniFile(ChangeFileExt(Application->ExeName, ".INI"));
+	Settings->SetStrings(IniList);
+	delete IniList;
+	bool HotKeysShow = StrToBool(Settings->ReadString("Settings","HotKeysShow","1"));
+	delete Settings;
+	if(HotKeysShow)
 	{
 	  //Nowe ustawienia
 	  TSaveSetup SaveSetup;
 	  SaveSetup.Section = L"Settings";
 	  SaveSetup.Ident = L"HotKeysShow";
-	  SaveSetup.Value = L"1";
+	  SaveSetup.Value = L"0";
 	  //Zapis ustawien
 	  PluginLink.CallService(AQQ_FUNCTION_SAVESETUP,1,(LPARAM)(&SaveSetup));
 	  //Odswiezenie ustawien
 	  PluginLink.CallService(AQQ_FUNCTION_REFRESHSETUP,0,0);
-	  //Usuniecie informacji o opcji AQQ z ustawien wtyczki
-	  Ini->DeleteKey("SideSlide","HotKeysShow");
-	  //Zaladowanie hooka w AQQ
-	  RegisterHotKey(hFrmMain, 1, MOD_SHIFT | MOD_CONTROL, 112);
+	  //Wyladowanie hooka w AQQ
+	  UnregisterHotKey(hFrmMain, 1);
 	}
-	delete Ini;
+	//Zaladowanie hooka
+	RegisterHotKey(hSettingsForm->Handle, 0x0200, MOD_SHIFT | MOD_CONTROL, 112);
   }
 }
 //---------------------------------------------------------------------------
@@ -10496,7 +10461,6 @@ void LoadSettings()
 	  PluginLink.CallService(AQQ_FUNCTION_REFRESHSETUP,0,0);
 	}
   }
-  FrmMainHotKeysShow = Ini->ReadBool("SideSlide","HotKeysShow",false);
   SideSlideFullScreenModeChk = Ini->ReadBool("SideSlide","FullScreenMode",true);
   RefreshSideSlideExceptions();
   SideSlideCtrlAndMouseBlockChk = Ini->ReadBool("SideSlide","CtrlAndMouseBlock",true);
