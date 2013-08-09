@@ -235,6 +235,8 @@ TCustomIniFile* ContactsStateList = new TMemIniFile(ChangeFileExt(Application->E
 TCustomIniFile* ContactsIndexList = new TMemIniFile(ChangeFileExt(Application->ExeName, ".INI"));
 //Lista JID wraz z nickami
 TCustomIniFile* ContactsNickList = new TMemIniFile(ChangeFileExt(Application->ExeName, ".INI"));
+//Lista ID filmow YouTube do przetworzenia
+TStringList *GetYouTubeTitleList = new TStringList;
 //Sciezka do pliku sesji
 UnicodeString SessionFileDir;
 //Sciezka do pliku ustawien
@@ -944,6 +946,34 @@ int GetContactState(UnicodeString JID)
   }
   //Zwrocenie ikonki stanu kontatku
   return State;
+}
+//---------------------------------------------------------------------------
+
+//Sprawdzanie listy ID filmikow YouTube do przetworzenia
+bool ChkAvatarsListItem()
+{
+  if(GetYouTubeTitleList->Count) return true;
+  else return false;
+}
+//---------------------------------------------------------------------------
+
+//Pobieranie ID filmiku YouTube do przetworzenia
+UnicodeString GetYouTubeTitleListItem()
+{
+  if(GetYouTubeTitleList->Count)
+  {
+	UnicodeString Item = GetYouTubeTitleList->Strings[0];
+	GetYouTubeTitleList->Delete(0);
+	return Item;
+  }
+  else return "";
+}
+//---------------------------------------------------------------------------
+
+//Odswiezanie listy kontaktow
+void RefreshList()
+{
+  PluginLink.CallService(AQQ_SYSTEM_RUNACTION,0,(LPARAM)L"aRefresh");
 }
 //---------------------------------------------------------------------------
 
@@ -2639,6 +2669,111 @@ UnicodeString TrimBodyLinks(UnicodeString Body)
 	//Niestandardowy odnosnik
 	else
 	 Body = StringReplace(Body, "[CC_LINK_END]", "", TReplaceFlags());
+  }
+  return Body;
+}
+//---------------------------------------------------------------------------
+UnicodeString TrimStatusLinks(UnicodeString Body)
+{
+  //Dodawanie specjalnego tagu do wszystkich linkow
+  Body = StringReplace(Body, "</A>", "[CC_LINK_END]</A>", TReplaceFlags() << rfReplaceAll);
+  //Formatowanie tresci wiadomosci
+  while(Body.Pos("[CC_LINK_END]"))
+  {
+	//Link with [CC_LINK_END] tag
+	UnicodeString URL_WithTag = Body;
+	URL_WithTag.Delete(URL_WithTag.Pos("[CC_LINK_END]")+13,URL_WithTag.Length());
+	while(URL_WithTag.Pos("\">")) URL_WithTag.Delete(1,URL_WithTag.Pos("\">")+1);
+	//Link without [CC_LINK_END] tag
+	UnicodeString URL_WithOutTag = URL_WithTag;
+	URL_WithOutTag.Delete(URL_WithOutTag.Pos("[CC_LINK_END]"),URL_WithOutTag.Length());
+	//Link do YouTube
+	if(((URL_WithOutTag.Pos("youtube.com"))&&(((URL_WithOutTag.Pos("watch?"))&&(URL_WithOutTag.Pos("v=")))||(URL_WithOutTag.Pos("/v/"))))||(URL_WithOutTag.Pos("youtu.be")))
+	{
+	  //Zmienna ID
+	  UnicodeString ID;
+	  //Wyciaganie ID - fullscreenowy
+	  if(URL_WithOutTag.Pos("/v/"))
+	  {
+		//Parsowanie ID
+		ID = URL_WithOutTag;
+		ID.Delete(1,ID.Pos("/v/")+2);		
+	  }
+	  //Wyciaganie ID - zwykly & mobilny
+	  else if(URL_WithOutTag.Pos("youtube.com"))
+	  {
+		//Parsowanie ID
+		ID = URL_WithOutTag;
+		ID.Delete(1,ID.Pos("v=")+1);
+		if(ID.Pos("&"))	ID.Delete(ID.Pos("&"),ID.Length());
+	  }	  
+	  //Wyciaganie ID - skrocony
+	  else if(URL_WithOutTag.Pos("youtu.be"))
+	  {
+		//Parsowanie ID
+		ID = URL_WithOutTag;
+		ID.Delete(1,ID.Pos(".be/")+3);
+	  }
+	  //Szukanie ID w cache
+	  TIniFile *Ini = new TIniFile(SessionFileDir);
+	  UnicodeString TitleFromCache = IniStrToStr(Ini->ReadString("YouTube",ID,""));
+	  delete Ini;
+	  //Tytul z cache
+	  if(!TitleFromCache.IsEmpty())
+	  {
+		//Formatowanie linku
+		Body = StringReplace(Body, URL_WithOutTag + "\">" + URL_WithTag, URL_WithOutTag + "\" title=\"" + URL_WithOutTag.Trim() + "\">"+ TitleFromCache, TReplaceFlags());
+	  }
+	  //Brak tytulu w cache
+	  else
+	  {
+		//Przypisanie uchwytu do formy ustawien
+		if(!hSettingsForm)
+		{
+		  Application->Handle = (HWND)SettingsForm;
+		  hSettingsForm = new TSettingsForm(Application);
+		}
+		//Dodanie ID do przetworzenia
+		GetYouTubeTitleList->Add(ID);
+		//Wlaczenie watku
+		if(!hSettingsForm->GetYouTubeTitleThread->Active) hSettingsForm->GetYouTubeTitleThread->Start();
+		//Formatowanie linku
+		Body = StringReplace(Body, URL_WithOutTag + "\">" + URL_WithTag, URL_WithOutTag + "\" title=\"" + URL_WithOutTag.Trim() + "\">[Pobieranie tytu³u...]", TReplaceFlags());
+	  }
+	}
+	//Inne linki
+	else
+	{
+	  //Wycinanie domeny z adresow URL
+	  UnicodeString URL_OnlyDomain = URL_WithOutTag;
+	  if(URL_OnlyDomain.LowerCase().Pos("www."))
+	  {
+		URL_OnlyDomain.Delete(1,URL_OnlyDomain.LowerCase().Pos("www.")+3);
+		if(URL_OnlyDomain.Pos("/"))
+		 URL_OnlyDomain.Delete(URL_OnlyDomain.Pos("/"),URL_OnlyDomain.Length());
+		//Formatowanie linku
+		Body = StringReplace(Body, URL_WithOutTag + "\">" + URL_WithTag, URL_WithOutTag + "\" title=\"" + URL_WithOutTag.Trim() + "\">["+ URL_OnlyDomain + "]", TReplaceFlags());
+	  }
+	  else if(URL_OnlyDomain.LowerCase().Pos("http://"))
+	  {
+		URL_OnlyDomain.Delete(1,URL_OnlyDomain.LowerCase().Pos("http://")+6);
+		if(URL_OnlyDomain.Pos("/"))
+		 URL_OnlyDomain.Delete(URL_OnlyDomain.Pos("/"),URL_OnlyDomain.Length());
+		//Formatowanie linku
+		Body = StringReplace(Body, URL_WithOutTag + "\">" + URL_WithTag, URL_WithOutTag + "\" title=\"" + URL_WithOutTag.Trim() + "\">["+ URL_OnlyDomain + "]", TReplaceFlags());
+	  }
+	  else if(URL_OnlyDomain.LowerCase().Pos("https://"))
+	  {
+		URL_OnlyDomain.Delete(1,URL_OnlyDomain.LowerCase().Pos("https://")+7);
+		if(URL_OnlyDomain.Pos("/"))
+		 URL_OnlyDomain.Delete(URL_OnlyDomain.Pos("/"),URL_OnlyDomain.Length());
+		//Formatowanie linku
+		Body = StringReplace(Body, URL_WithOutTag + "\">" + URL_WithTag, URL_WithOutTag + "\" title=\"" + URL_WithOutTag.Trim() + "\">["+ URL_OnlyDomain + "]", TReplaceFlags());
+	  }
+	  //Niestandardowy odnosnik
+	  else
+	   Body = StringReplace(Body, "[CC_LINK_END]", "", TReplaceFlags());
+	}
   }
   return Body;
 }
@@ -8331,8 +8466,8 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 			//Zapamietywanie aktualnego stanu ikonek
 			LastChatState = ChatState;
 			//Pobranie aktualnych ikonek
-			if(!hIconSmall) hIconSmall = (HICON)SendMessage(hFrmSend, WM_GETICON, ICON_SMALL, 0);
-			if(!hIconBig) hIconBig = (HICON)SendMessage(hFrmSend, WM_GETICON, ICON_BIG, 0);
+			/*if*/while(!hIconSmall) hIconSmall = (HICON)SendMessage(hFrmSend, WM_GETICON, ICON_SMALL, 0);
+			/*if*/while(!hIconBig) hIconBig = (HICON)SendMessage(hFrmSend, WM_GETICON, ICON_BIG, 0);
 			//Ustawienie nowej malej ikonki
 			SendMessage(hFrmSend, WM_SETICON, ICON_SMALL, (LPARAM)LoadImage(0, ComposingIconSmall.w_str(), IMAGE_ICON, 16, 16, LR_LOADFROMFILE));
 			//Ustawienie nowej duzej ikonki
@@ -8344,8 +8479,8 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 			//Zapamietywanie aktualnego stanu ikonek
 			LastChatState = ChatState;
 			//Pobranie aktualnych ikonek
-			if(!hIconSmall) hIconSmall = (HICON)SendMessage(hFrmSend, WM_GETICON, ICON_SMALL, 0);
-			if(!hIconBig) hIconBig = (HICON)SendMessage(hFrmSend, WM_GETICON, ICON_BIG, 0);
+			/*if*/while(!hIconSmall) hIconSmall = (HICON)SendMessage(hFrmSend, WM_GETICON, ICON_SMALL, 0);
+			/*if*/while(!hIconBig) hIconBig = (HICON)SendMessage(hFrmSend, WM_GETICON, ICON_BIG, 0);
 			//Ustawienie nowej malej ikonki
 			SendMessage(hFrmSend, WM_SETICON, ICON_SMALL, (LPARAM)LoadImage(0, PauseIconSmall.w_str(), IMAGE_ICON, 16, 16, LR_LOADFROMFILE));
 			//Ustawienie nowej duzej ikonki
@@ -8719,7 +8854,7 @@ int __stdcall OnSetHTMLStatus(WPARAM wParam, LPARAM lParam)
 	  //Zapisywanie oryginalnego opisu
 	  UnicodeString BodyOrg = Body;
 	  //Skracanie wyswietlania odnosnikow
-	  Body = TrimBodyLinks(Body);
+	  Body = TrimStatusLinks(Body);
 	  //Zmienianie opisu na liscie kontatkow
 	  if(Body!=BodyOrg)
 	   return (LPARAM)Body.w_str();
@@ -9990,7 +10125,7 @@ int __stdcall OnXMLIDDebug(WPARAM wParam, LPARAM lParam)
 	  //Przekazanie XMLa na forme
 	  hSettingsForm->XML = XML;
 	  //Uruchomienie watku
-	  hSettingsForm->IdThreadComponent->Start();
+	  hSettingsForm->PrepareXMLThread->Start();
 	}
   }
 

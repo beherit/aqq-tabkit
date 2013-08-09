@@ -33,6 +33,12 @@
 #include <Vcl.StdCtrls.hpp>
 #include "acAlphaImageList.hpp"
 #include <Vcl.ImgList.hpp>
+#include <IdComponent.hpp>
+#include <IdHTTP.hpp>
+#include <IdTCPClient.hpp>
+#include <IdTCPConnection.hpp>
+#include <IdAntiFreezeBase.hpp>
+#include <Vcl.IdAntiFreeze.hpp>
 //---------------------------------------------------------------------------
 class TSettingsForm : public TForm
 {
@@ -224,12 +230,15 @@ __published:	// IDE-managed Components
 	TImage *StarImage;
 	TsWebLabel *StarWebLabel;
 	TsCheckBox *NoMiniAvatarsClipTabsCheckBox;
-	TIdThreadComponent *IdThreadComponent;
+	TIdThreadComponent *PrepareXMLThread;
 	TsCheckBox *ChatGoneNotiferNewMsgCheckBox;
 	TsCheckBox *TurnOffModalCheckBox;
 	TsSpeedButton *SideSlideFullScreenModeExceptionsButton;
 	TsSkinProvider *sSkinProvider;
 	TsAlphaImageList *sAlphaImageList;
+	TIdHTTP *IdHTTP;
+	TIdThreadComponent *GetYouTubeTitleThread;
+	TTimer *RefreshTimer;
 	void __fastcall UnsentMsgTrayIconClick(TObject *Sender);
 	void __fastcall aExitExecute(TObject *Sender);
 	void __fastcall CancelButtonClick(TObject *Sender);
@@ -258,14 +267,17 @@ __published:	// IDE-managed Components
 	void __fastcall OtherTabSheetShow(TObject *Sender);
 	void __fastcall PayPalImageClick(TObject *Sender);
 	void __fastcall NewMsgTabSheetShow(TObject *Sender);
-	void __fastcall IdThreadComponentRun(TIdThreadComponent *Sender);
+	void __fastcall PrepareXMLThreadRun(TIdThreadComponent *Sender);
 	void __fastcall SideSlideFullScreenModeExceptionsButtonClick(TObject *Sender);
+	void __fastcall GetYouTubeTitleThreadRun(TIdThreadComponent *Sender);
+	void __fastcall RefreshTimerTimer(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	UnicodeString XML;
 	__fastcall TSettingsForm(TComponent* Owner);
 	void __fastcall WMTransparency(TMessage &Message);
 	void __fastcall WMHotKey(TMessage &Message);
+	UnicodeString __fastcall IdHTTPGet(UnicodeString URL);
 	BEGIN_MESSAGE_MAP
 	MESSAGE_HANDLER(WM_ALPHAWINDOWS,TMessage,WMTransparency);
 	MESSAGE_HANDLER(WM_HOTKEY,TMessage,WMHotKey);
