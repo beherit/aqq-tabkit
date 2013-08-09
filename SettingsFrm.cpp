@@ -35,7 +35,12 @@ __declspec(dllimport)bool ChkThemeAnimateWindows();
 __declspec(dllimport)bool ChkThemeGlowing();
 __declspec(dllimport)int GetHUE();
 __declspec(dllimport)int GetSaturation();
+__declspec(dllimport)bool ChkAvatarsListItem();
+__declspec(dllimport)void RefreshList();
+__declspec(dllimport)UnicodeString GetYouTubeTitleListItem();
 __declspec(dllimport)void LoadSettings();
+__declspec(dllimport)UnicodeString StrToIniStr(UnicodeString Str);
+__declspec(dllimport)UnicodeString IniStrToStr(UnicodeString Str);
 __declspec(dllimport)void RefreshTabs();
 __declspec(dllimport)void DestroyFrmClosedTabs();
 __declspec(dllimport)void BuildFrmClosedTabs();
@@ -91,6 +96,46 @@ void __fastcall TSettingsForm::WMHotKey(TMessage &Message)
 	else
 	 MinimizeRestoreHotKey->HotKey = GetMinimizeRestoreFrmSendKey();
   }
+}
+//---------------------------------------------------------------------------
+
+//Pobieranie danych z danego URL
+UnicodeString __fastcall TSettingsForm::IdHTTPGet(UnicodeString URL)
+{
+  //Zmienna z danymi
+  UnicodeString ResponseText;
+  //Proba pobrania danych
+  try
+  {
+	//Wywolanie polaczenia
+	ResponseText = IdHTTP->Get(URL);
+  }
+  //Blad
+  catch(const Exception& e)
+  {
+	//Hack na wywalanie sie IdHTTP
+	if(e.Message=="Connection Closed Gracefully.")
+	{
+	  //Hack
+	  IdHTTP->CheckForGracefulDisconnect(false);
+	  //Rozlaczenie polaczenia
+	  IdHTTP->Disconnect();
+	}
+	//Inne bledy
+	else
+	 //Rozlaczenie polaczenia
+	 IdHTTP->Disconnect();
+	//Zwrot pustych danych
+	return "";
+  }
+  //Pobranie kodu odpowiedzi
+  int Response = IdHTTP->ResponseCode;
+  //Wszystko ok
+  if(Response==200)
+   return ResponseText;
+  //Inne bledy
+  else
+   return "";
 }
 //---------------------------------------------------------------------------
 
@@ -950,7 +995,7 @@ void __fastcall TSettingsForm::NewMsgTabSheetShow(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TSettingsForm::IdThreadComponentRun(TIdThreadComponent *Sender)
+void __fastcall TSettingsForm::PrepareXMLThreadRun(TIdThreadComponent *Sender)
 {
   //Odczyt pakietu XML
   XML = UTF8ToUnicodeString(XML.w_str());
@@ -980,7 +1025,7 @@ void __fastcall TSettingsForm::IdThreadComponentRun(TIdThreadComponent *Sender)
   }
   delete Ini;
   //Wylaczenie watku
-  IdThreadComponent->Stop();
+  PrepareXMLThread->Stop();
 }
 //---------------------------------------------------------------------------
 
@@ -990,5 +1035,44 @@ void __fastcall TSettingsForm::SideSlideFullScreenModeExceptionsButtonClick(TObj
   SideSlideExceptionsForm->SkinManagerEnabled = sSkinManager->Active;
   SideSlideExceptionsForm->ShowModal();
   delete SideSlideExceptionsForm;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TSettingsForm::GetYouTubeTitleThreadRun(TIdThreadComponent *Sender)
+{
+  //Pobranie itemu z listy ID do przetworzenia
+  UnicodeString ID = GetYouTubeTitleListItem();
+  //Jest jakis ID do przetworzenia
+  if(!ID.IsEmpty())
+  {
+	//Pobieranie tytulu
+	UnicodeString XML = IdHTTPGet("http://gdata.youtube.com/feeds/api/videos/"+ID+"?fields=title");//(wchar_t*)PluginLink.CallService(AQQ_FUNCTION_URLGET,(WPARAM)("http://gdata.youtube.com/feeds/api/videos/"+ID+"?fields=title").w_str(),0);
+	//Parsowanie pliku XML
+	_di_IXMLDocument XMLDoc = LoadXMLData(XML);
+	_di_IXMLNode MainNode = XMLDoc->DocumentElement;
+	_di_IXMLNode ChildNode = MainNode->ChildNodes->GetNode(0);
+	UnicodeString Title = ChildNode->GetText();
+	//Zapisywanie tytulu do cache
+	TIniFile *Ini = new TIniFile(GetPluginUserDir() + "\\\\TabKit\\\\Session.ini");
+	Ini->WriteString("YouTube",ID,StrToIniStr(Title));
+	delete Ini;
+  }
+  //Brak itemow do przetworzenia
+  if(!ChkAvatarsListItem())
+  {
+	//Zatrzymanie watku
+	GetYouTubeTitleThread->Stop();
+	//Wlaczenie timera
+	RefreshTimer->Enabled = true;
+  }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TSettingsForm::RefreshTimerTimer(TObject *Sender)
+{
+  //Wylaczenie timera
+  RefreshTimer->Enabled = false;
+  //Odswiezenie listy kontaktow
+  RefreshList();
 }
 //---------------------------------------------------------------------------

@@ -3254,10 +3254,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 2
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object RememberUnsentMsgGroupBox: TsGroupBox
         Left = 18
         Top = 22
@@ -3414,10 +3410,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 3
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object TabsHotKeysGroupBox: TsGroupBox
         Left = 18
         Top = 116
@@ -3532,10 +3524,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 4
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object RestoreTabsSessionGroupBox: TsGroupBox
         Left = 18
         Top = 22
@@ -3608,10 +3596,6 @@ object SettingsForm: TSettingsForm
       OnShow = NewMsgTabSheetShow
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object ChatStateNotiferNewMsgCheckBox: TsCheckBox
         Left = 12
         Top = 148
@@ -3891,10 +3875,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 7
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object OpenClipTabsCheckBox: TsCheckBox
         Left = 12
         Top = 12
@@ -4007,10 +3987,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 8
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object SideSlideFullScreenModeExceptionsButton: TsSpeedButton
         Left = 263
         Top = 314
@@ -5064,12 +5040,12 @@ object SettingsForm: TSettingsForm
     Left = 96
     Top = 368
   end
-  object IdThreadComponent: TIdThreadComponent
+  object PrepareXMLThread: TIdThreadComponent
     Active = False
     Loop = False
     Priority = tpNormal
     StopMode = smTerminate
-    OnRun = IdThreadComponentRun
+    OnRun = PrepareXMLThreadRun
     Left = 160
     Top = 368
   end
@@ -5445,5 +5421,40 @@ object SettingsForm: TSettingsForm
     Left = 192
     Top = 368
     Bitmap = {}
+  end
+  object IdHTTP: TIdHTTP
+    AllowCookies = False
+    HandleRedirects = True
+    ProxyParams.BasicAuthentication = False
+    ProxyParams.ProxyPort = 0
+    Request.ContentLength = -1
+    Request.ContentRangeEnd = -1
+    Request.ContentRangeStart = -1
+    Request.ContentRangeInstanceLength = -1
+    Request.Pragma = 'no-cache'
+    Request.Accept = 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    Request.BasicAuthentication = False
+    Request.UserAgent = 'AQQ IM Plugin: TabKit (+http://beherit.pl)'
+    Request.Ranges.Units = 'bytes'
+    Request.Ranges = <>
+    HTTPOptions = [hoForceEncodeParams]
+    Left = 256
+    Top = 368
+  end
+  object GetYouTubeTitleThread: TIdThreadComponent
+    Active = False
+    Loop = True
+    Priority = tpNormal
+    StopMode = smTerminate
+    OnRun = GetYouTubeTitleThreadRun
+    Left = 224
+    Top = 368
+  end
+  object RefreshTimer: TTimer
+    Enabled = False
+    Interval = 100
+    OnTimer = RefreshTimerTimer
+    Left = 288
+    Top = 368
   end
 end
