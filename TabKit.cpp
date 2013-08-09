@@ -2232,6 +2232,10 @@ void ChkFullScreenMode()
 		if(SideSlideExceptions->IndexOf(ExtractFileName(Process).LowerCase())!=-1)
 		 FullScreenModeExeptions = true;
 	  }
+	  //Wyjatek dla aplikacji Metro UI
+	  if(AnsiPos("Windows.UI.Core.CoreWindow",(UnicodeString)WClassName))
+	   FullScreenModeExeptions = true;
+
 	  FullScreenMode = true;
 	}
 	else FullScreenMode = false;
@@ -6392,7 +6396,7 @@ int __stdcall OnAddLine(WPARAM wParam, LPARAM lParam)
 	//Jezeli okno archiwum jest nieaktywne
 	if(GetActiveWindow()!=hFrmArch)
 	{
-	  //Tranfer plikow - pseudo nowa wiadomosc
+	  //Transfer plikow - pseudo nowa wiadomosc
 	  if((SwitchToNewMsgChk)||(InactiveFrmNewMsgChk)||(InactiveTabsNewMsgChk)||(ClosedTabsChk)||((FrmSendSlideChk)&&(SlideInAtNewMsgChk)&&(!FrmSendVisible)&&(!FrmSendBlockSlide)))
 	  {
 		//Pobieranie danych wiadomosci
