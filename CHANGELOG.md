@@ -1,3 +1,17 @@
+1.7.5.0
+-----
+* Przypiêta zak³adka dla bota tweet.IM posiada ikonkê Twittera.
+* Obs³uga kolorystyki stylizacji okien (barwa i nasycenie).
+* Blokada chowania okna rozmowy i okna kontaktów przy wciœniêtym LPM.
+* Funkcja skracania odnoœników pobiera tytu³y filmików z YouTube dla opisów kontaktów.
+* Drobna poprawka w obs³udze nadawania przeŸroczystoœci obramowañ przez wtyczkê AlphaWindows.
+* Pole wiadomoœci okna rozmowy nie dostaje fokusa przy zmianie aktywnego okna.
+* Drobne zmiany przy enumeracji listy kontaktów.
+* Skrót klawiaturowy Ctrl+Shift+F1 jest zawsze aktywny przy w³¹czonej funkcjonalnoœci chowania okna kontaktów.
+* Brak wysuwania okna rozmowy i okna kontaktów na pulpicie przy aktywnej aplikacji Metro UI.
+* Drobna zmiana w pobieraniu aktualnej ikony belki okna rozmowy (funkcjonalnoœæ notyfikacji pisania wiadomoœci).
+* Aktualizacja komponentów AlphaControls do nowszej wersji (8.44).
+
 1.7.4.0
 -----
 * Zmiana w obs³udze nadawania przeŸroczystoœci obramowañ przez wtyczkê AlphaWindows.
