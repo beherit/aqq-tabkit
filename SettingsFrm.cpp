@@ -109,7 +109,7 @@ void __fastcall TSettingsForm::WMHotKey(TMessage &Message)
 	else
 	 MinimizeRestoreHotKey->HotKey = GetMinimizeRestoreFrmSendKey();
   }
-  //SideSlide dla FrmMain + otwieranie nowych wiadomosci
+  //FrmMainSideSlide + otwieranie nowych wiadomosci
   if(Message.WParam==0x0200)
   {
 	if(!MinimizeRestoreHotKey->Focused())
@@ -169,12 +169,18 @@ void __fastcall TSettingsForm::FormCreate(TObject *Sender)
 	//Plik zaawansowanej stylizacji okien istnieje
 	if(FileExists(ThemeSkinDir + "\\\\Skin.asz"))
 	{
+	  //Dane pliku zaawansowanej stylizacji okien
 	  ThemeSkinDir = StringReplace(ThemeSkinDir, "\\\\", "\\", TReplaceFlags() << rfReplaceAll);
 	  sSkinManager->SkinDirectory = ThemeSkinDir;
 	  sSkinManager->SkinName = "Skin.asz";
+	  //Ustawianie animacji AlphaControls
 	  if(ChkThemeAnimateWindows()) sSkinManager->AnimEffects->FormShow->Time = 200;
 	  else sSkinManager->AnimEffects->FormShow->Time = 0;
 	  sSkinManager->Effects->AllowGlowing = ChkThemeGlowing();
+	  //Zmiana kolorystyki AlphaControls
+	  sSkinManager->HueOffset = GetHUE();
+	  sSkinManager->Saturation = GetSaturation();
+      //Aktywacja skorkowania AlphaControls
 	  sSkinManager->Active = true;
 	}
 	//Brak pliku zaawansowanej stylizacji okien
@@ -187,6 +193,7 @@ void __fastcall TSettingsForm::FormCreate(TObject *Sender)
 
 void __fastcall TSettingsForm::FormShow(TObject *Sender)
 {
+  //Aktywne skorkowanie AlphaControls
   if(sSkinManager->Active)
   {
 	//Kolor WebLabel'ow
@@ -204,10 +211,8 @@ void __fastcall TSettingsForm::FormShow(TObject *Sender)
 	StarWebLabel->HoverFont->Color = sSkinManager->GetGlobalFontColor();
 	OtherPaymentsWebLabel->Font->Color = sSkinManager->GetGlobalFontColor();
 	OtherPaymentsWebLabel->HoverFont->Color = sSkinManager->GetGlobalFontColor();
-	//Zmiana kolorystyki AlphaControls
-	sSkinManager->HueOffset = GetHUE();
-	sSkinManager->Saturation = GetSaturation();
   }
+  //Nieaktywne skorkowanie AlphaControls
   else
   {
 	//Kolor WebLabel'ow
@@ -410,6 +415,7 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   CloudTickModeComboBox->ItemIndex = Ini->ReadBool("Other","CloudTickMode",true);
   SearchOnListCheckBox->Checked = !Ini->ReadBool("Other","SearchOnList",true);
   ShortenLinksCheckBox->Checked = Ini->ReadBool("Other","ShortenLinks",true);
+  ShortenLinksModeComboBox->ItemIndex = Ini->ReadInteger("Other","ShortenLinksMode",1)-1;
   //Buttons state
   Ini = new TIniFile(GetPluginUserDir() + "\\\\TabKit\\\\Session.ini");
   UnsentMsgEraseButton->Enabled = Ini->SectionExists("Messages");
@@ -629,6 +635,7 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
   Ini->WriteBool("Other","CloudTickMode",CloudTickModeComboBox->ItemIndex);
   Ini->WriteBool("Other","SearchOnList",!SearchOnListCheckBox->Checked);
   Ini->WriteBool("Other","ShortenLinks",ShortenLinksCheckBox->Checked);
+  Ini->WriteInteger("Other","ShortenLinksMode",ShortenLinksModeComboBox->ItemIndex+1);
 
   delete Ini;
 }
@@ -847,6 +854,8 @@ void __fastcall TSettingsForm::aOtherChkExecute(TObject *Sender)
 {
   CollapseImagesModeComboBox->Enabled = CollapseImagesCheckBox->Checked;
   MinimizeRestoreHotKey->Enabled = MinimizeRestoreCheckBox->Checked;
+  ShortenLinksModeComboBox->Enabled = ShortenLinksCheckBox->Checked;
+
   SaveButton->Enabled = true;
 }
 //---------------------------------------------------------------------------
@@ -1067,7 +1076,7 @@ void __fastcall TSettingsForm::GetYouTubeTitleThreadRun(TIdThreadComponent *Send
   if(!ID.IsEmpty())
   {
 	//Pobieranie tytulu
-	UnicodeString XML = IdHTTPGet("http://gdata.youtube.com/feeds/api/videos/"+ID+"?fields=title");//(wchar_t*)PluginLink.CallService(AQQ_FUNCTION_URLGET,(WPARAM)("http://gdata.youtube.com/feeds/api/videos/"+ID+"?fields=title").w_str(),0);
+	UnicodeString XML = IdHTTPGet("http://gdata.youtube.com/feeds/api/videos/"+ID+"?fields=title");
 	//Parsowanie pliku XML
 	_di_IXMLDocument XMLDoc = LoadXMLData(XML);
 	_di_IXMLNode MainNode = XMLDoc->DocumentElement;

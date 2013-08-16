@@ -1,3 +1,11 @@
+1.7.6.0
+-----
+* Personalizacja funkcji skracania odnoœników.
+* Spore zmiany optymalizacyjne w kodzie.
+* Poprawne odœwie¿anie zak³adek podczas rêcznego wy³¹czenia wtyczki.
+* Ma³e zmiany w procesie przypinania/odpinania zak³adek.
+* Hint dla przycisku trzymania okna rozmowy na wierzchu ju¿ nie znika.
+
 1.7.5.0
 -----
 * Przypiêta zak³adka dla bota tweet.IM posiada ikonkê Twittera.

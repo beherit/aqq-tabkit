@@ -260,6 +260,7 @@ __published:	// IDE-managed Components
 	TIdHTTP *IdHTTP;
 	TIdThreadComponent *GetYouTubeTitleThread;
 	TTimer *RefreshTimer;
+	TsComboBox *ShortenLinksModeComboBox;
 	void __fastcall UnsentMsgTrayIconClick(TObject *Sender);
 	void __fastcall aExitExecute(TObject *Sender);
 	void __fastcall CancelButtonClick(TObject *Sender);
