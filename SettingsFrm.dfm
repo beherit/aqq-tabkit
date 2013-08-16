@@ -4598,7 +4598,7 @@ object SettingsForm: TSettingsForm
         BiDiMode = bdLeftToRight
         Caption = 'Wyczy'#347#263' plik cache z informacji na temat'
         ParentBiDiMode = False
-        TabOrder = 14
+        TabOrder = 15
         CaptionLayout = clTopCenter
         SkinData.SkinSection = 'GROUPBOX'
         object SessionRememberEraseButton: TsButton
@@ -4736,7 +4736,7 @@ object SettingsForm: TSettingsForm
       end
       object MinimizeRestoreHotKey: THotKey
         Left = 224
-        Top = 98
+        Top = 99
         Width = 103
         Height = 19
         HotKey = 24689
@@ -4780,7 +4780,7 @@ object SettingsForm: TSettingsForm
       end
       object CollapseImagesModeComboBox: TsComboBox
         Left = 251
-        Top = 42
+        Top = 41
         Width = 76
         Height = 21
         Alignment = taLeftJustify
@@ -4810,7 +4810,7 @@ object SettingsForm: TSettingsForm
         Width = 214
         Height = 78
         Caption = 'Ustawienia chmurek informacyjnych'
-        TabOrder = 15
+        TabOrder = 16
         CaptionLayout = clTopCenter
         SkinData.SkinSection = 'GROUPBOX'
         object CloudTimeOutSpinEdit: TsSpinEdit
@@ -4916,11 +4916,37 @@ object SettingsForm: TSettingsForm
         Checked = True
         Enabled = False
         State = cbChecked
-        TabOrder = 16
+        TabOrder = 17
         SkinData.SkinSection = 'CHECKBOX'
         ImgChecked = 0
         ImgUnchecked = 0
         WordWrap = True
+      end
+      object ShortenLinksModeComboBox: TsComboBox
+        Left = 313
+        Top = 317
+        Width = 108
+        Height = 21
+        Alignment = taLeftJustify
+        BoundLabel.Indent = 0
+        BoundLabel.Font.Charset = DEFAULT_CHARSET
+        BoundLabel.Font.Color = clWindowText
+        BoundLabel.Font.Height = -11
+        BoundLabel.Font.Name = 'Tahoma'
+        BoundLabel.Font.Style = []
+        BoundLabel.Layout = sclLeft
+        BoundLabel.MaxWidth = 0
+        BoundLabel.UseSkinColor = True
+        SkinData.SkinSection = 'COMBOBOX'
+        Style = csDropDownList
+        ItemIndex = 0
+        TabOrder = 14
+        Text = 'Wsz'#281'dzie'
+        OnChange = aOtherChkExecute
+        Items.Strings = (
+          'Wsz'#281'dzie'
+          'W wiadomo'#347'ciach'
+          'W opisach')
       end
     end
   end

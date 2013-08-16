@@ -47,82 +47,60 @@ TSettingsForm *hSettingsForm;
 //Struktury-glowne-----------------------------------------------------------
 TPluginLink PluginLink;
 TPluginInfo PluginInfo;
-PPluginContact ActiveTabContact;
-PPluginContact AddLineContact;
-PPluginContact CloseTabContact;
-PPluginContact CloseTabMessageContact;
-PPluginContact ContactsUpdateContact;
-PPluginContact FetchAllTabsContact;
-PPluginContact MsgComposingContact;
-PPluginContact PreSendMsgContact;
-PPluginContact PrimaryTabContact;
-PPluginContact RecvMsgContact;
-PPluginContact ReplyListContact;
-PPluginContact SystemPopUContact;
-PPluginContact TabCaptionContact;
-PPluginContact TabImageContact;
-PPluginMessage AddLineMessage;
-PPluginMessage RecvMsgMessage;
-PPluginWindowEvent WindowEvent;
-PPluginChatState ChatState;
-PPluginPopUp PopUp;
-//Szybki-dostep-do-ustawien-wtyczki------------------------------------------
-TPluginAction BuildTabKitFastSettingsItem;
 //ClosedTabs-----------------------------------------------------------------
-TPluginChatPrep PluginChatPrep;
-TPluginAction ClosedTabsPopUp;
-TPluginAction FrmMainClosedTabsButton, FrmSendClosedTabsButton;
-TPluginAction BuildClosedTabsItem[12];
-TPluginAction DestroyClosedTabsItem;
+//JID aktualnie przywracanej zakladki
 UnicodeString JustUnClosedJID;
+//Zakladka przywrocona ze skrotu klawiaturowego
 bool UnCloseTabFromHotKey = false;
+//Zmienne nt. kontatku przywracanego przez skrot klawiaturowy
 UnicodeString UnCloseTabFromHotKeyJID;
 int UnCloseTabFromHotKeyUserIdx;
+//Przywracanie zakladki za pomoca myszki
+bool TabWasChanged = false;
 //Lista JID zamknietych zakladek + data zamkniecia + akceptowalne kontakty
 TStringList *ClosedTabsList = new TStringList;
 TStringList *ClosedTabsTimeList = new TStringList;
 TStringList *AcceptClosedTabsList = new TStringList;
-//Przywracanie zakladki za pomoca myszki
-bool TabClosing = false;
-//UnsentMsg------------------------------------------------------------------
-TPluginAction UnsentMsgPopUp;
-TPluginAction FrmMainUnsentMsgButton, FrmSendUnsentMsgButton;
-TPluginAction BuildUnsentMsgItem[7];
-TPluginAction DestroyUnsentMsgItem;
 //TabsSwitching--------------------------------------------------------------
 //Lista JID z nowymi wiadomosciami
 TStringList *MsgList = new TStringList;
 //Blokowanie otwierania paru zakladek jednoczesnie
 bool NewMgsHoyKeyExecute = false;
 //SessionRemember------------------------------------------------------------
+//Status przywracania sesji
 bool RestoringSession = false;
-bool SetLastStateRestore = false;
+//Odznaczenie uruchomienia przywracania sesji z czatami
+bool RestoringChatSession = false;
 //Lista JID czatowych do przywrocenia
 TStringList *ChatSessionList = new TStringList;
 //NewMsg---------------------------------------------------------------------
+//Licznik nowych wiadomosci na belce okna rozmowy
 int InactiveFrmNewMsgCount = 0;
+//Licznik nowych wiadomosci na zakladkach w oknie rozmowy
 TCustomIniFile* InactiveTabsNewMsgCount = new TMemIniFile(ChangeFileExt(Application->ExeName, ".INI"));
-bool ClosingTab = false;
-//InactiveNotifer
-TPluginStateChange PluginStateChange;
-PPluginStateChange StateChange;
+//Blokada zmiany tekstu na zakladce
+bool TabWasClosed = false;
+//Blokowanie notyfikatora nowych wiadomosci
 bool BlockInactiveNotiferNewMsg = false;
+//Stan polaczenia sieci
 bool NetworkConnecting = false;
-//ChatState
+//Sciezki do ikon notyfikacji pisania wiadomosci
 UnicodeString ComposingIconSmall;
 UnicodeString ComposingIconBig;
 UnicodeString PauseIconSmall;
 UnicodeString PauseIconBig;
-int LastChatState = 0;
+//Oryginalne ikony okna rozmowy
 HICON hIconSmall = NULL;
 HICON hIconBig = NULL;
+//Poprzedni stan pisania wiadomosci
+int LastChatState = 0;
 //Titlebar-------------------------------------------------------------------
 //Domyslny tekst okna kontaktow
-wchar_t OryginalTitlebar[128];
+wchar_t* FrmMainTitlebar = new wchar_t[16];
 //Lista zmienionych tekstow belek okna rozmowy
 TCustomIniFile* ChangedTitlebarList = new TMemIniFile(ChangeFileExt(Application->ExeName, ".INI"));
-//Tekst danego okna
-UnicodeString TempTitlebar;
+//Tekst belki okna rozmowy
+UnicodeString FrmSendTitlebar;
 //Nazwa aktywnego profilu
 UnicodeString ProfileName;
 //Nazwa komputera
@@ -130,16 +108,13 @@ UnicodeString ComputerName;
 //Zasob glownego konta Jabber
 UnicodeString ResourceName;
 //ClipTabs-------------------------------------------------------------------
-TPluginAction ClipTabItem;
-UnicodeString JustClipTabJID;
-UnicodeString JustUnClipTabJID;
 //JID kontaktu z menu popTab
 UnicodeString ClipTabPopup;
 //Lista JID przypietych zakladek
 TStringList *ClipTabsList = new TStringList;
 TCustomIniFile* ClipTabsIconList = new TMemIniFile(ChangeFileExt(Application->ExeName, ".INI"));
 //Ostatnio aktywna zakladka przed otwieraniem przypietych czatow
-UnicodeString ActiveTabBeforeOpenCliptabs;
+UnicodeString ActiveTabBeforeOpenClipTabs;
 //JID ostatniej otwartej przypietej zakladki czatowej
 UnicodeString LastOpenedChatClipTab;
 //SideSlide-----------------------------------------------------------------
@@ -221,18 +196,11 @@ TStringList *UnOpenMsgList = new TStringList;
 //Lista procesow wykluczonych z aplikacji pelnoekranowych
 TStringList *SideSlideExceptions = new TStringList;
 //Other----------------------------------------------------------------------
-//QuickQuote
-TPluginAction QuickQuoteItem;
-PPluginTriple PluginTriple;
-TPluginItemDescriber PluginItemDescriber;
-PPluginAction Action;
 //CollapseImages
-TPluginAction CollapseImagesItem;
 UnicodeString CollapseImagesItemURL;
 TStringList *CollapseImagesList = new TStringList;
 //StayOnTop
-TPluginAction StayOnTopItem;
-bool SetStayOnTop;
+bool StayOnTopStatus;
 //Pokazywanie paska narzedzi
 bool ToolBarShowing = false;
 //Zamykanie zakladki poprzez 2xLPM
@@ -243,6 +211,7 @@ bool EmuTabsWSupport;
 //Aktywna otwarta zakladka
 UnicodeString ActiveTabJID;
 UnicodeString ActiveTabJIDRes;
+//Ostatnio aktywna otwarta zakladka
 UnicodeString LastActiveTabJID;
 //Lista JID z notyfikacjami wiadomosci
 TStringList *PreMsgList = new TStringList;
@@ -268,8 +237,6 @@ UnicodeString PluginUserDir;
 bool FrmSendMaximized = false;
 //Okno rozmowy zostalo otwarte
 bool FrmSendOpening = false;
-//Tekst okna rozmowy
-wchar_t hFrmSendTextW[128];
 //PID procesu
 DWORD ProcessPID;
 //SecureMode
@@ -478,6 +445,7 @@ bool EmuTabsWChk;
 int CloudTimeOut;
 bool CloudTickModeChk;
 bool ShortenLinksChk = true;
+int ShortenLinksMode;
 //FORWARD-AQQ-HOOKS----------------------------------------------------------
 int __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam);
 int __stdcall OnAddLine(WPARAM wParam, LPARAM lParam);
@@ -564,7 +532,7 @@ bool CALLBACK FindFrmMain(HWND hWnd, LPARAM)
 	  //Przypisanie uchwytu
 	  hFrmMain = hWnd;
 	  //Pobieranie oryginalnego titlebar okna
-	  GetWindowTextW(hFrmMain,OryginalTitlebar,sizeof(OryginalTitlebar));
+	  GetWindowTextW(hFrmMain,FrmMainTitlebar,16);
 	  return false;
 	}
   }
@@ -961,6 +929,7 @@ int GetContactState(UnicodeString JID)
   {
 	//Pobranie domyslnej ikonki dla kontatku
 	TPluginContact PluginContact;
+	ZeroMemory(&PluginContact, sizeof(TPluginContact));
 	PluginContact.cbSize = sizeof(TPluginContact);
 	PluginContact.JID = JID.w_str();
 	State = PluginLink.CallService(AQQ_FUNCTION_GETSTATEPNG_INDEX,0,(LPARAM)(&PluginContact));
@@ -1040,32 +1009,38 @@ void DestroyFrmClosedTabs()
   //Jezeli sa jakies ostatnio zamkniete zakladki
   if(TabsCount>0)
   {
-	UnicodeString ItemName;
 	//Usuwanie elementow popupmenu
 	for(int Count=0;Count<TabsCount;Count++)
 	{
+	  TPluginAction DestroyClosedTabsItem;
+	  ZeroMemory(&DestroyClosedTabsItem,sizeof(TPluginAction));
 	  DestroyClosedTabsItem.cbSize = sizeof(TPluginAction);
-	  ItemName = "TabKitClosedTabsItem"+IntToStr(Count);
-	  DestroyClosedTabsItem.pszName = ItemName.w_str();
+	  DestroyClosedTabsItem.pszName = ("TabKitClosedTabsItem"+IntToStr(Count)).w_str();
 	  PluginLink.CallService(AQQ_CONTROLS_DESTROYPOPUPMENUITEM ,0,(LPARAM)(&DestroyClosedTabsItem));
 	}
 	//Usuwanie elementow do usuwania ostatnio zamknietych zakladek
 	if(FastClearClosedTabsChk)
 	{
-	  ItemName = "TabKitClosedTabsItem"+IntToStr(TabsCount+1);
-	  DestroyClosedTabsItem.pszName = ItemName.w_str();
+	  TPluginAction DestroyClosedTabsItem;
+	  ZeroMemory(&DestroyClosedTabsItem,sizeof(TPluginAction));
+	  DestroyClosedTabsItem.pszName = ("TabKitClosedTabsItem"+IntToStr(TabsCount+1)).w_str();
 	  PluginLink.CallService(AQQ_CONTROLS_DESTROYPOPUPMENUITEM ,0,(LPARAM)(&DestroyClosedTabsItem));
-	  ItemName = "TabKitClosedTabsItem"+IntToStr(TabsCount+2);
-	  DestroyClosedTabsItem.pszName = ItemName.w_str();
+	  ZeroMemory(&DestroyClosedTabsItem,sizeof(TPluginAction));
+	  DestroyClosedTabsItem.pszName = ("TabKitClosedTabsItem"+IntToStr(TabsCount+2)).w_str();
 	  PluginLink.CallService(AQQ_CONTROLS_DESTROYPOPUPMENUITEM ,0,(LPARAM)(&DestroyClosedTabsItem));
 	}
 	//Usuwanie buttona w oknie kontaktow
+	TPluginAction FrmMainClosedTabsButton;
+	ZeroMemory(&FrmMainClosedTabsButton,sizeof(TPluginAction));
 	FrmMainClosedTabsButton.cbSize = sizeof(TPluginAction);
 	FrmMainClosedTabsButton.pszName = L"TabKitFrmMainClosedTabsButton";
 	PluginLink.CallService(AQQ_CONTROLS_TOOLBAR "ToolDown" AQQ_CONTROLS_DESTROYBUTTON ,0,(LPARAM)(&FrmMainClosedTabsButton));
 	//Usuwanie buttona w oknie rozmowy
+	TPluginAction FrmSendClosedTabsButton;
+	ZeroMemory(&FrmSendClosedTabsButton,sizeof(TPluginAction));
 	FrmSendClosedTabsButton.cbSize = sizeof(TPluginAction);
 	FrmSendClosedTabsButton.pszName = L"TabKitFrmSendClosedTabsButton";
+	FrmSendClosedTabsButton.Handle = (int)hFrmSend;
 	PluginLink.CallService(AQQ_CONTROLS_TOOLBAR "tbMain" AQQ_CONTROLS_DESTROYBUTTON ,0,(LPARAM)(&FrmSendClosedTabsButton));
   }
 }
@@ -1087,6 +1062,8 @@ void BuildFrmClosedTabs()
 	  //Tworzenie buttona w oknie kontaktow
 	  if(FrmMainClosedTabsChk)
 	  {
+		TPluginAction FrmMainClosedTabsButton;
+		ZeroMemory(&FrmMainClosedTabsButton,sizeof(TPluginAction));
 		FrmMainClosedTabsButton.cbSize = sizeof(TPluginAction);
 		FrmMainClosedTabsButton.pszName = L"TabKitFrmMainClosedTabsButton";
 		FrmMainClosedTabsButton.Position = 999;
@@ -1097,18 +1074,17 @@ void BuildFrmClosedTabs()
 	  //Tworzenie buttona w oknie rozmowy
 	  if((hFrmSend)&&(FrmSendClosedTabsChk))
 	  {
+		TPluginAction FrmSendClosedTabsButton;
+		ZeroMemory(&FrmSendClosedTabsButton,sizeof(TPluginAction));
 		FrmSendClosedTabsButton.cbSize = sizeof(TPluginAction);
 		FrmSendClosedTabsButton.pszName = L"TabKitFrmSendClosedTabsButton";
 		FrmSendClosedTabsButton.Hint = L"Ostatnio zamkniête zak³adki";
-		FrmSendClosedTabsButton.Position = 0;
 		FrmSendClosedTabsButton.IconIndex = CLOSEDTABS;
 		FrmSendClosedTabsButton.pszPopupName = L"TabKitClosedTabsPopUp";
 		FrmSendClosedTabsButton.Handle = (int)hFrmSend;
 		PluginLink.CallService(AQQ_CONTROLS_TOOLBAR "tbMain" AQQ_CONTROLS_CREATEBUTTON,0,(LPARAM)(&FrmSendClosedTabsButton));
 	  }
 	  //Tworzenie PopUpMenuItems
-	  UnicodeString ItemName;
-	  UnicodeString ItemService;
 	  for(int Count=0;Count<TabsCount;Count++)
 	  {
 		UnicodeString ItemJID = ClosedTabsList->Strings[Count];
@@ -1116,19 +1092,21 @@ void BuildFrmClosedTabs()
 		{
 		  if(!ItemJID.Pos("ischat_"))
 		  {
-			BuildClosedTabsItem[Count].cbSize = sizeof(TPluginAction);
-			BuildClosedTabsItem[Count].IconIndex = GetContactState(ItemJID);
-			ItemName = "TabKitClosedTabsItem"+IntToStr(Count);
-			BuildClosedTabsItem[Count].pszName = ItemName.w_str();
-			ItemService = "sTabKitClosedTabsItem"+IntToStr(Count);
-			BuildClosedTabsItem[Count].pszService = ItemService.w_str();
+			TPluginAction BuildClosedTabsItem;
+			ZeroMemory(&BuildClosedTabsItem,sizeof(TPluginAction));
+			BuildClosedTabsItem.cbSize = sizeof(TPluginAction);
+			BuildClosedTabsItem.IconIndex = GetContactState(ItemJID);
+			UnicodeString pszName = "TabKitClosedTabsItem"+IntToStr(Count);
+			BuildClosedTabsItem.pszName = pszName.w_str();
+			UnicodeString pszService = "sTabKitClosedTabsItem"+IntToStr(Count);
+			BuildClosedTabsItem.pszService = pszService.w_str();
 			if(ShowTimeClosedTabsChk)
-			 BuildClosedTabsItem[Count].pszCaption = (GetContactNick(ItemJID)+" ("+ClosedTabsTimeList->Strings[Count]+")").w_str();
+			 BuildClosedTabsItem.pszCaption = (GetContactNick(ItemJID)+" ("+ClosedTabsTimeList->Strings[Count]+")").w_str();
 			else
-			 BuildClosedTabsItem[Count].pszCaption = GetContactNick(ItemJID).w_str();
-			BuildClosedTabsItem[Count].Position = Count;
-			BuildClosedTabsItem[Count].pszPopupName = L"TabKitClosedTabsPopUp";
-			PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildClosedTabsItem[Count]));
+			 BuildClosedTabsItem.pszCaption = GetContactNick(ItemJID).w_str();
+			BuildClosedTabsItem.Position = Count;
+			BuildClosedTabsItem.pszPopupName = L"TabKitClosedTabsPopUp";
+			PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildClosedTabsItem));
 		  }
 		  else
 		  {
@@ -1141,19 +1119,21 @@ void BuildFrmClosedTabs()
 			  Channel = ItemJID;
 			  Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
 			}
-			BuildClosedTabsItem[Count].cbSize = sizeof(TPluginAction);
-			BuildClosedTabsItem[Count].IconIndex = 79;
-			ItemName = "TabKitClosedTabsItem"+IntToStr(Count);
-			BuildClosedTabsItem[Count].pszName = ItemName.w_str();
-			ItemService = "sTabKitClosedTabsItem"+IntToStr(Count);
-			BuildClosedTabsItem[Count].pszService = ItemService.w_str();
+			TPluginAction BuildClosedTabsItem;
+			ZeroMemory(&BuildClosedTabsItem,sizeof(TPluginAction));
+			BuildClosedTabsItem.cbSize = sizeof(TPluginAction);
+			BuildClosedTabsItem.IconIndex = 79;
+			UnicodeString pszName = "TabKitClosedTabsItem"+IntToStr(Count);
+			BuildClosedTabsItem.pszName = pszName.w_str();
+			UnicodeString pszService = "sTabKitClosedTabsItem"+IntToStr(Count);
+			BuildClosedTabsItem.pszService = pszService.w_str();
 			if(ShowTimeClosedTabsChk)
-			 BuildClosedTabsItem[Count].pszCaption = (Channel+" ("+ClosedTabsTimeList->Strings[Count]+")").w_str();
+			 BuildClosedTabsItem.pszCaption = (Channel+" ("+ClosedTabsTimeList->Strings[Count]+")").w_str();
 			else
-			 BuildClosedTabsItem[Count].pszCaption = Channel.w_str();
-			BuildClosedTabsItem[Count].Position = Count;
-			BuildClosedTabsItem[Count].pszPopupName = L"TabKitClosedTabsPopUp";
-			PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildClosedTabsItem[Count]));
+			 BuildClosedTabsItem.pszCaption = Channel.w_str();
+			BuildClosedTabsItem.Position = Count;
+			BuildClosedTabsItem.pszPopupName = L"TabKitClosedTabsPopUp";
+			PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildClosedTabsItem));
           }
 		}
 	  }
@@ -1161,25 +1141,26 @@ void BuildFrmClosedTabs()
 	  if(FastClearClosedTabsChk)
 	  {
 		//Tworzenie separatora
-		BuildClosedTabsItem[TabsCount+1].cbSize = sizeof(TPluginAction);
-		BuildClosedTabsItem[TabsCount+1].IconIndex = -1;
-		ItemName = "TabKitClosedTabsItem"+IntToStr(TabsCount+1);
-		BuildClosedTabsItem[TabsCount+1].pszName = ItemName.w_str();
-		BuildClosedTabsItem[TabsCount+1].pszService = L"";
-		BuildClosedTabsItem[TabsCount+1].pszCaption = L"-";
-		BuildClosedTabsItem[TabsCount+1].Position = TabsCount+1;
-		BuildClosedTabsItem[TabsCount+1].pszPopupName = L"TabKitClosedTabsPopUp";
-		PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildClosedTabsItem[TabsCount+1]));
+		TPluginAction BuildClosedTabsItem;
+		ZeroMemory(&BuildClosedTabsItem,sizeof(TPluginAction));
+		BuildClosedTabsItem.cbSize = sizeof(TPluginAction);
+		BuildClosedTabsItem.IconIndex = -1;
+		BuildClosedTabsItem.pszName = ("TabKitClosedTabsItem"+IntToStr(TabsCount+1)).w_str();
+		BuildClosedTabsItem.pszService = L"";
+		BuildClosedTabsItem.pszCaption = L"-";
+		BuildClosedTabsItem.Position = TabsCount+1;
+		BuildClosedTabsItem.pszPopupName = L"TabKitClosedTabsPopUp";
+		PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildClosedTabsItem));
 		//Tworzenie elementu czyszczenia
-		BuildClosedTabsItem[TabsCount+2].cbSize = sizeof(TPluginAction);
-		BuildClosedTabsItem[TabsCount+2].IconIndex = -1;
-		ItemName = "TabKitClosedTabsItem"+IntToStr(TabsCount+2);
-		BuildClosedTabsItem[TabsCount+2].pszName = ItemName.w_str();
-		BuildClosedTabsItem[TabsCount+2].pszService = L"sTabKitClosedTabsItemClear";
-		BuildClosedTabsItem[TabsCount+2].pszCaption = L"Wyczyœæ";
-		BuildClosedTabsItem[TabsCount+2].Position = TabsCount+1;
-		BuildClosedTabsItem[TabsCount+2].pszPopupName = L"TabKitClosedTabsPopUp";
-		PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildClosedTabsItem[TabsCount+2]));
+		ZeroMemory(&BuildClosedTabsItem,sizeof(TPluginAction));
+		BuildClosedTabsItem.cbSize = sizeof(TPluginAction);
+		BuildClosedTabsItem.IconIndex = -1;
+		BuildClosedTabsItem.pszName = ("TabKitClosedTabsItem"+IntToStr(TabsCount+2)).w_str();
+		BuildClosedTabsItem.pszService = L"sTabKitClosedTabsItemClear";
+		BuildClosedTabsItem.pszCaption = L"Wyczyœæ";
+		BuildClosedTabsItem.Position = TabsCount+1;
+		BuildClosedTabsItem.pszPopupName = L"TabKitClosedTabsPopUp";
+		PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildClosedTabsItem));
 	  }
 	}
   }
@@ -1338,7 +1319,9 @@ void GetClosedTabsItem(int Item)
   //Otwieranie zakladki z czatem
   else
   {
+	//Ustawianie prawidlowego identyfikatora
 	JID = JID.Delete(1,7);
+	//Pobieranie nazwy kanalu
 	TIniFile *Ini = new TIniFile(SessionFileDir);
 	UnicodeString Channel = Ini->ReadString("Channels",JID,"");
 	delete Ini;
@@ -1347,12 +1330,15 @@ void GetClosedTabsItem(int Item)
 	  Channel = JID;
 	  Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
 	}
+	//Wypenianie struktury nt. czatu
+	TPluginChatPrep PluginChatPrep;
 	PluginChatPrep.cbSize = sizeof(TPluginChatPrep);
 	PluginChatPrep.UserIdx = GetContactIndexW(JID);
 	PluginChatPrep.JID = JID.w_str();
 	PluginChatPrep.Channel = Channel.w_str();
 	PluginChatPrep.CreateNew = false;
 	PluginChatPrep.Fast = true;
+	//Przywracanie zakladki czatowej
 	PluginLink.CallService(AQQ_SYSTEM_CHAT,0,(LPARAM)&PluginChatPrep);
   }
 }
@@ -1376,7 +1362,9 @@ void UnCloseTabHotKeyExecute()
   //Przelaczanie na ostatnio zamknieta zakladke z czatem
   else
   {
+	//Ustawianie prawidlowego identyfikatora
 	JID = JID.Delete(1,7);
+	//Pobieranie nazwy kanalu
 	TIniFile *Ini = new TIniFile(SessionFileDir);
 	UnicodeString Channel = Ini->ReadString("Channels",JID,"");
 	delete Ini;
@@ -1385,12 +1373,15 @@ void UnCloseTabHotKeyExecute()
 	  Channel = JID;
 	  Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
 	}
+	//Wypenianie struktury nt. czatu
+	TPluginChatPrep PluginChatPrep;
 	PluginChatPrep.cbSize = sizeof(TPluginChatPrep);
 	PluginChatPrep.UserIdx = GetContactIndexW(JID);
 	PluginChatPrep.JID = JID.w_str();
 	PluginChatPrep.Channel = Channel.w_str();
 	PluginChatPrep.CreateNew = false;
 	PluginChatPrep.Fast = true;
+	//Przywracanie zakladki czatowej
 	PluginLink.CallService(AQQ_SYSTEM_CHAT,0,(LPARAM)&PluginChatPrep);
   }
 }
@@ -1471,30 +1462,39 @@ void DestroyFrmUnsentMsg()
   if(MsgCount>0)
   {
 	//Usuwanie elementow popupmenu
-	UnicodeString ItemName;
 	for(int Count=0;Count<MsgCount;Count++)
 	{
+	  TPluginAction DestroyUnsentMsgItem;
+	  ZeroMemory(&DestroyUnsentMsgItem,sizeof(TPluginAction));
 	  DestroyUnsentMsgItem.cbSize = sizeof(TPluginAction);
-	  ItemName = "TabKitUnsentMsgItem"+IntToStr(Count);
-	  DestroyUnsentMsgItem.pszName = ItemName.w_str();
+	  DestroyUnsentMsgItem.pszName = ("TabKitUnsentMsgItem"+IntToStr(Count)).w_str();
 	  PluginLink.CallService(AQQ_CONTROLS_DESTROYPOPUPMENUITEM ,0,(LPARAM)(&DestroyUnsentMsgItem));
 	}
 	//Usuwanie elementow do usuwania niewyslanych wiadomosci
 	if(FastClearUnsentMsgChk)
 	{
+	  TPluginAction DestroyUnsentMsgItem;
+	  ZeroMemory(&DestroyUnsentMsgItem,sizeof(TPluginAction));
 	  DestroyUnsentMsgItem.cbSize = sizeof(TPluginAction);
-	  ItemName = "TabKitUnsentMsgItem"+IntToStr(MsgCount+1);
-	  DestroyUnsentMsgItem.pszName = ItemName.w_str();
+	  DestroyUnsentMsgItem.pszName = ("TabKitUnsentMsgItem"+IntToStr(MsgCount+1)).w_str();
 	  PluginLink.CallService(AQQ_CONTROLS_DESTROYPOPUPMENUITEM ,0,(LPARAM)(&DestroyUnsentMsgItem));
-
+	  ZeroMemory(&DestroyUnsentMsgItem,sizeof(TPluginAction));
 	  DestroyUnsentMsgItem.cbSize = sizeof(TPluginAction);
-	  ItemName = "TabKitUnsentMsgItem"+IntToStr(MsgCount+2);
-	  DestroyUnsentMsgItem.pszName = ItemName.w_str();
+	  DestroyUnsentMsgItem.pszName = ("TabKitUnsentMsgItem"+IntToStr(MsgCount+2)).w_str();
 	  PluginLink.CallService(AQQ_CONTROLS_DESTROYPOPUPMENUITEM ,0,(LPARAM)(&DestroyUnsentMsgItem));
 	}
 	//Usuwanie buttona w oknie kontatkow
+	TPluginAction FrmMainUnsentMsgButton;
+	ZeroMemory(&FrmMainUnsentMsgButton,sizeof(TPluginAction));
+	FrmMainUnsentMsgButton.cbSize = sizeof(TPluginAction);
+	FrmMainUnsentMsgButton.pszName = L"TabKitFrmMainUnsentMsgButton";
 	PluginLink.CallService(AQQ_CONTROLS_TOOLBAR "ToolDown" AQQ_CONTROLS_DESTROYBUTTON ,0,(LPARAM)(&FrmMainUnsentMsgButton));
 	//Usuwanie buttona w oknie rozmowy
+	TPluginAction FrmSendUnsentMsgButton;
+	ZeroMemory(&FrmSendUnsentMsgButton,sizeof(TPluginAction));
+	FrmSendUnsentMsgButton.cbSize = sizeof(TPluginAction);
+	FrmSendUnsentMsgButton.pszName = L"TabKitFrmSendUnsentMsgButton";
+	FrmSendUnsentMsgButton.Handle = (int)hFrmSend;
 	PluginLink.CallService(AQQ_CONTROLS_TOOLBAR "tbMain" AQQ_CONTROLS_DESTROYBUTTON ,0,(LPARAM)(&FrmSendUnsentMsgButton));
   }
 }
@@ -1521,6 +1521,8 @@ void BuildFrmUnsentMsg()
 	  //Tworzenie buttona w oknie kontatkow
 	  if(FrmMainUnsentMsgChk)
 	  {
+		TPluginAction FrmMainUnsentMsgButton;
+		ZeroMemory(&FrmMainUnsentMsgButton,sizeof(TPluginAction));
 		FrmMainUnsentMsgButton.cbSize = sizeof(TPluginAction);
 		FrmMainUnsentMsgButton.pszName = L"TabKitFrmMainUnsentMsgButton";
 		FrmMainUnsentMsgButton.Position = 999;
@@ -1531,18 +1533,17 @@ void BuildFrmUnsentMsg()
 	  //Tworzenie buttona w oknie rozmowy
 	  if((hFrmSend)&&(FrmSendUnsentMsgChk))
 	  {
+		TPluginAction FrmSendUnsentMsgButton;
+		ZeroMemory(&FrmSendUnsentMsgButton,sizeof(TPluginAction));
 		FrmSendUnsentMsgButton.cbSize = sizeof(TPluginAction);
 		FrmSendUnsentMsgButton.pszName = L"TabKitFrmSendUnsentMsgButton";
 		FrmSendUnsentMsgButton.Hint = L"Niewys³ane wiadomoœci";
-		FrmSendUnsentMsgButton.Position = 0;
 		FrmSendUnsentMsgButton.IconIndex = UNSENTMSG;
 		FrmSendUnsentMsgButton.pszPopupName = L"TabKitUnsentMsgPopUp";
 		FrmSendUnsentMsgButton.Handle = (int)hFrmSend;
 		PluginLink.CallService(AQQ_CONTROLS_TOOLBAR "tbMain" AQQ_CONTROLS_CREATEBUTTON,0,(LPARAM)(&FrmSendUnsentMsgButton));
 	  }
 	  //Tworzenie PopUpMenuItems
-	  UnicodeString ItemName;
-	  UnicodeString ItemService;
 	  for(int Count=0;Count<MsgCount;Count++)
 	  {
 		UnicodeString ItemJID = Messages->Strings[Count];
@@ -1550,16 +1551,18 @@ void BuildFrmUnsentMsg()
 		{
 		  if(!ItemJID.Pos("ischat_"))
 		  {
-			BuildUnsentMsgItem[Count].cbSize = sizeof(TPluginAction);
-			BuildUnsentMsgItem[Count].IconIndex = GetContactState(ItemJID);
-			ItemName = "TabKitUnsentMsgItem"+IntToStr(Count);
-			BuildUnsentMsgItem[Count].pszName = ItemName.w_str();
-			ItemService = "sTabKitUnsentMsgItem"+IntToStr(Count);
-			BuildUnsentMsgItem[Count].pszService = ItemService.w_str();
-			BuildUnsentMsgItem[Count].pszCaption = GetContactNick(ItemJID).w_str();
-			BuildUnsentMsgItem[Count].Position = Count;
-			BuildUnsentMsgItem[Count].pszPopupName = L"TabKitUnsentMsgPopUp";
-			PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildUnsentMsgItem[Count]));
+			TPluginAction BuildUnsentMsgItem;
+			ZeroMemory(&BuildUnsentMsgItem,sizeof(TPluginAction));
+			BuildUnsentMsgItem.cbSize = sizeof(TPluginAction);
+			BuildUnsentMsgItem.IconIndex = GetContactState(ItemJID);
+			UnicodeString ItemName = "TabKitUnsentMsgItem"+IntToStr(Count);
+			BuildUnsentMsgItem.pszName = ItemName.w_str();
+			UnicodeString ItemService = "sTabKitUnsentMsgItem"+IntToStr(Count);
+			BuildUnsentMsgItem.pszService = ItemService.w_str();
+			BuildUnsentMsgItem.pszCaption = GetContactNick(ItemJID).w_str();
+			BuildUnsentMsgItem.Position = Count;
+			BuildUnsentMsgItem.pszPopupName = L"TabKitUnsentMsgPopUp";
+			PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildUnsentMsgItem));
 		  }
 		  else
 		  {
@@ -1572,16 +1575,18 @@ void BuildFrmUnsentMsg()
 			  Channel = ItemJID;
 			  Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
 			}
-			BuildUnsentMsgItem[Count].cbSize = sizeof(TPluginAction);
-			BuildUnsentMsgItem[Count].IconIndex = 79;
-			ItemName = "TabKitUnsentMsgItem"+IntToStr(Count);
-			BuildUnsentMsgItem[Count].pszName = ItemName.w_str();
-			ItemService = "sTabKitUnsentMsgItem"+IntToStr(Count);
-			BuildUnsentMsgItem[Count].pszService = ItemService.w_str();
-			BuildUnsentMsgItem[Count].pszCaption = Channel.w_str();
-			BuildUnsentMsgItem[Count].Position = Count;
-			BuildUnsentMsgItem[Count].pszPopupName = L"TabKitUnsentMsgPopUp";
-			PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildUnsentMsgItem[Count]));
+			TPluginAction BuildUnsentMsgItem;
+			ZeroMemory(&BuildUnsentMsgItem,sizeof(TPluginAction));
+			BuildUnsentMsgItem.cbSize = sizeof(TPluginAction);
+			BuildUnsentMsgItem.IconIndex = 79;
+			UnicodeString ItemName = "TabKitUnsentMsgItem"+IntToStr(Count);
+			BuildUnsentMsgItem.pszName = ItemName.w_str();
+			UnicodeString ItemService = "sTabKitUnsentMsgItem"+IntToStr(Count);
+			BuildUnsentMsgItem.pszService = ItemService.w_str();
+			BuildUnsentMsgItem.pszCaption = Channel.w_str();
+			BuildUnsentMsgItem.Position = Count;
+			BuildUnsentMsgItem.pszPopupName = L"TabKitUnsentMsgPopUp";
+			PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildUnsentMsgItem));
 		  }
 		}
 	  }
@@ -1589,25 +1594,26 @@ void BuildFrmUnsentMsg()
 	  if(FastClearUnsentMsgChk)
 	  {
 		//Tworzenie separatora
-		BuildUnsentMsgItem[MsgCount+1].cbSize = sizeof(TPluginAction);
-		BuildUnsentMsgItem[MsgCount+1].IconIndex = -1;
-		ItemName = "TabKitUnsentMsgItem"+IntToStr(MsgCount+1);
-		BuildUnsentMsgItem[MsgCount+1].pszName = ItemName.w_str();
-		BuildUnsentMsgItem[MsgCount+1].pszService = L"";
-		BuildUnsentMsgItem[MsgCount+1].pszCaption = L"-";
-		BuildUnsentMsgItem[MsgCount+1].Position = MsgCount+1;
-		BuildUnsentMsgItem[MsgCount+1].pszPopupName = L"TabKitUnsentMsgPopUp";
-		PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildUnsentMsgItem[MsgCount+1]));
+		TPluginAction BuildUnsentMsgItem;
+		ZeroMemory(&BuildUnsentMsgItem,sizeof(TPluginAction));
+		BuildUnsentMsgItem.cbSize = sizeof(TPluginAction);
+		BuildUnsentMsgItem.IconIndex = -1;
+		BuildUnsentMsgItem.pszName = ("TabKitUnsentMsgItem"+IntToStr(MsgCount+1)).w_str();
+		BuildUnsentMsgItem.pszService = L"";
+		BuildUnsentMsgItem.pszCaption = L"-";
+		BuildUnsentMsgItem.Position = MsgCount+1;
+		BuildUnsentMsgItem.pszPopupName = L"TabKitUnsentMsgPopUp";
+		PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildUnsentMsgItem));
 		//Tworzenie elementu czyszczenia
-		BuildUnsentMsgItem[MsgCount+2].cbSize = sizeof(TPluginAction);
-		BuildUnsentMsgItem[MsgCount+2].IconIndex = -1;
-		ItemName = "TabKitUnsentMsgItem"+IntToStr(MsgCount+2);
-		BuildUnsentMsgItem[MsgCount+2].pszName = ItemName.w_str();
-		BuildUnsentMsgItem[MsgCount+2].pszService = L"sTabKitUnsentMsgItemClear";
-		BuildUnsentMsgItem[MsgCount+2].pszCaption = L"Wyczyœæ";
-		BuildUnsentMsgItem[MsgCount+2].Position = MsgCount+1;
-		BuildUnsentMsgItem[MsgCount+2].pszPopupName = L"TabKitUnsentMsgPopUp";
-		PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildUnsentMsgItem[MsgCount+2]));
+		ZeroMemory(&BuildUnsentMsgItem,sizeof(TPluginAction));
+		BuildUnsentMsgItem.cbSize = sizeof(TPluginAction);
+		BuildUnsentMsgItem.IconIndex = -1;
+		BuildUnsentMsgItem.pszName = ("TabKitUnsentMsgItem"+IntToStr(MsgCount+2)).w_str();
+		BuildUnsentMsgItem.pszService = L"sTabKitUnsentMsgItemClear";
+		BuildUnsentMsgItem.pszCaption = L"Wyczyœæ";
+		BuildUnsentMsgItem.Position = MsgCount+1;
+		BuildUnsentMsgItem.pszPopupName = L"TabKitUnsentMsgPopUp";
+		PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildUnsentMsgItem));
 	  }
 	}
 	delete Messages;
@@ -1649,7 +1655,9 @@ void GetUnsentMsgItem(int Item)
   //Otwieranie zakladki z czatem
   else
   {
+	//Ustawianie prawidlowego identyfikatora
 	JID = JID.Delete(1,7);
+	//Pobieranie nazwy kanalu
 	TIniFile *Ini = new TIniFile(SessionFileDir);
 	UnicodeString Channel = Ini->ReadString("Channels",JID,"");
 	delete Ini;
@@ -1658,12 +1666,15 @@ void GetUnsentMsgItem(int Item)
 	  Channel = JID;
 	  Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
 	}
+	//Wypenianie struktury nt. czatu
+	TPluginChatPrep PluginChatPrep;
 	PluginChatPrep.cbSize = sizeof(TPluginChatPrep);
 	PluginChatPrep.UserIdx = GetContactIndexW(JID);
 	PluginChatPrep.JID = JID.w_str();
 	PluginChatPrep.Channel = Channel.w_str();
 	PluginChatPrep.CreateNew = false;
 	PluginChatPrep.Fast = true;
+	//Przywracanie zakladki czatowej
 	PluginLink.CallService(AQQ_SYSTEM_CHAT,0,(LPARAM)&PluginChatPrep);
   }
 }
@@ -1826,7 +1837,9 @@ bool ShowUnsentMsg()
 		//Otwieranie zakladki z czatem
 		else
 		{
+		  //Ustawianie prawidlowego identyfikatora
 		  JID = JID.Delete(1,7);
+		  //Pobieranie nazwy kanalu
 		  TIniFile *Ini = new TIniFile(SessionFileDir);
 		  UnicodeString Channel = Ini->ReadString("Channels",JID,"");
 		  delete Ini;
@@ -1835,12 +1848,15 @@ bool ShowUnsentMsg()
 			Channel = JID;
 			Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
 		  }
+		  //Wypenianie struktury nt. czatu
+		  TPluginChatPrep PluginChatPrep;
 		  PluginChatPrep.cbSize = sizeof(TPluginChatPrep);
 		  PluginChatPrep.UserIdx = GetContactIndexW(JID);
 		  PluginChatPrep.JID = JID.w_str();
 		  PluginChatPrep.Channel = Channel.w_str();
 		  PluginChatPrep.CreateNew = false;
 		  PluginChatPrep.Fast = true;
+		  //Przywracanie zakladki czatowej
 		  PluginLink.CallService(AQQ_SYSTEM_CHAT,0,(LPARAM)&PluginChatPrep);
 		}
 	  }
@@ -1925,15 +1941,18 @@ void ChangeFrmMainTitlebar()
   }
   //Funkcjonalnosc wylaczona - przywracanie oryginalnego tekstu na pasku okna kontaktow
   else
-   SetWindowTextW(hFrmMain,OryginalTitlebar);
+   SetWindowTextW(hFrmMain,FrmMainTitlebar);
 }
 //---------------------------------------------------------------------------
 
 //Usuwanie elementu do przypinania/odpiniania zakladek
 void DestroyClipTab()
 {
+  TPluginAction ClipTabItem;
+  ZeroMemory(&ClipTabItem,sizeof(TPluginAction));
   ClipTabItem.cbSize = sizeof(TPluginAction);
   ClipTabItem.pszName = L"TabKitClipTabItem";
+  ClipTabItem.Handle = (int)hFrmSend;
   PluginLink.CallService(AQQ_CONTROLS_DESTROYPOPUPMENUITEM ,0,(LPARAM)(&ClipTabItem));
 }
 //---------------------------------------------------------------------------
@@ -1943,6 +1962,8 @@ void BuildClipTab()
 {
   if(hFrmSend)
   {
+	TPluginAction ClipTabItem;
+	ZeroMemory(&ClipTabItem,sizeof(TPluginAction));
 	ClipTabItem.cbSize = sizeof(TPluginAction);
 	ClipTabItem.pszName = L"TabKitClipTabItem";
 	ClipTabItem.pszCaption = L"Przypnij/odepnij zak³adkê";;
@@ -1964,8 +1985,6 @@ int __stdcall ServiceClipTabItem(WPARAM wParam, LPARAM lParam)
   //Jezeli zakladka nie jest przypieta
   if(ClipTabsList->IndexOf(ClipTab)==-1)
   {
-	//Zapamietanie ostatnio przypietej zakladki
-	JustClipTabJID = ClipTab;
 	//Dodanie nowej zakladki do listy przypietych zakladek
 	ClipTabsList->Add(ClipTab);
 	//Zapisanie przypietej zakladki w pliku sesji
@@ -2011,8 +2030,6 @@ int __stdcall ServiceClipTabItem(WPARAM wParam, LPARAM lParam)
   //Jezeli zakladka jest juz przypieta
   else
   {
-	//Zapamietanie ostatnio odpietej zakladki
-	JustUnClipTabJID = ClipTab;
 	//Usuniecie zakladki z listy przypietych zakladek
 	ClipTabsList->Delete(ClipTabsList->IndexOf(ClipTab));
 	//Zapisanie ponownie listy przypietych zakladek w pliku sesji
@@ -2343,8 +2360,11 @@ int __stdcall ServiceCollapseImagesItem(WPARAM wParam, LPARAM lParam)
   //Otwarcie obrazka w programie graficznym
   ShellExecute(NULL, L"open", ("\""+CollapseImagesItemURL+"\"").w_str(), NULL, NULL, SW_SHOWNORMAL);
   //Usuwanie elementu
+  TPluginAction CollapseImagesItem;
+  ZeroMemory(&CollapseImagesItem,sizeof(TPluginAction));
   CollapseImagesItem.cbSize = sizeof(TPluginAction);
   CollapseImagesItem.pszName = L"TabKitCollapseImagesItem";
+  CollapseImagesItem.Handle = (int)hFrmSend;
   PluginLink.CallService(AQQ_CONTROLS_DESTROYPOPUPMENUITEM ,0,(LPARAM)(&CollapseImagesItem));
   //Kasowanie URL
   CollapseImagesItemURL = "";
@@ -2356,8 +2376,11 @@ int __stdcall ServiceCollapseImagesItem(WPARAM wParam, LPARAM lParam)
 //Usuwanie elementu trzymania okna rozmowy na wierzchu
 void DestroyStayOnTop()
 {
+  TPluginAction StayOnTopItem;
+  ZeroMemory(&StayOnTopItem,sizeof(TPluginAction));
   StayOnTopItem.cbSize = sizeof(TPluginAction);
   StayOnTopItem.pszName = L"TabKitStayOnTopItem";
+  StayOnTopItem.Handle = (int)hFrmSend;
   PluginLink.CallService(AQQ_CONTROLS_TOOLBAR "tbMain" AQQ_CONTROLS_DESTROYBUTTON ,0,(LPARAM)(&StayOnTopItem));
 }
 //---------------------------------------------------------------------------
@@ -2368,11 +2391,13 @@ void BuildStayOnTop()
   //Jezeli funkcjonalnosc jest wlaczona i dozwolona
   if((hFrmSend)&&(StayOnTopChk))
   {
+    TPluginAction StayOnTopItem;
+	ZeroMemory(&StayOnTopItem,sizeof(TPluginAction));
 	StayOnTopItem.cbSize = sizeof(TPluginAction);
 	StayOnTopItem.pszName = L"TabKitStayOnTopItem";
 	StayOnTopItem.pszCaption = L"Trzymaj okno na wierzchu";
 	StayOnTopItem.Hint = L"Trzymaj okno na wierzchu";
-	if(SetStayOnTop)
+	if(StayOnTopStatus)
 	{
 	  StayOnTopItem.IconIndex = STAYONTOP_ON;
 	  //Funkcjonalnosc SideSlide dla okna rozmowy jest wylaczona
@@ -2384,7 +2409,6 @@ void BuildStayOnTop()
 	{
 	  StayOnTopItem.IconIndex = STAYONTOP_OFF;
 	}
-	StayOnTopItem.Position = 0;
 	StayOnTopItem.pszService = L"sTabKitStayOnTopItem";
 	StayOnTopItem.Handle = (int)hFrmSend;
 	PluginLink.CallService(AQQ_CONTROLS_TOOLBAR "tbMain" AQQ_CONTROLS_CREATEBUTTON,0,(LPARAM)(&StayOnTopItem));
@@ -2399,47 +2423,62 @@ int __stdcall ServiceStayOnTopItem(WPARAM wParam, LPARAM lParam)
   if(!FrmSendSlideChk)
   {
 	//Set TOPMOST
-	if(!SetStayOnTop)
+	if(!StayOnTopStatus)
 	{
 	  //Aktualizacja przycisku
+	  TPluginAction StayOnTopItem;
+	  ZeroMemory(&StayOnTopItem,sizeof(TPluginAction));
 	  StayOnTopItem.cbSize = sizeof(TPluginAction);
 	  StayOnTopItem.pszName = L"TabKitStayOnTopItem";
+	  StayOnTopItem.pszCaption = L"Trzymaj okno na wierzchu";
+	  StayOnTopItem.Hint = L"Trzymaj okno na wierzchu";
 	  StayOnTopItem.IconIndex = STAYONTOP_ON;
+	  StayOnTopItem.Handle = (int)hFrmSend;
 	  PluginLink.CallService(AQQ_CONTROLS_TOOLBAR "tbMain" AQQ_CONTROLS_UPDATEBUTTON,0,(LPARAM)(&StayOnTopItem));
 	  //Okno rozmowy na wierzchu
 	  SetWindowPos(hFrmSend,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
-	  //Stan SetStayOnTop
-	  SetStayOnTop = true;
+	  //Stan StayOnTop
+	  StayOnTopStatus = true;
 	}
 	//Set NOTOPMOST
 	else
 	{
 	  //Aktualizacja przycisku
+	  TPluginAction StayOnTopItem;
+	  ZeroMemory(&StayOnTopItem,sizeof(TPluginAction));
 	  StayOnTopItem.cbSize = sizeof(TPluginAction);
 	  StayOnTopItem.pszName = L"TabKitStayOnTopItem";
+	  StayOnTopItem.pszCaption = L"Trzymaj okno na wierzchu";
+	  StayOnTopItem.Hint = L"Trzymaj okno na wierzchu";
 	  StayOnTopItem.IconIndex = STAYONTOP_OFF;
+	  StayOnTopItem.Handle = (int)hFrmSend;
 	  PluginLink.CallService(AQQ_CONTROLS_TOOLBAR "tbMain" AQQ_CONTROLS_UPDATEBUTTON,0,(LPARAM)(&StayOnTopItem));
 	  //Przywrocenie "normalnosci" okna
 	  SetWindowPos(hFrmSend,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
-	  //Stan SetStayOnTop
-	  SetStayOnTop = false;
+	  //Stan StayOnTop
+	  StayOnTopStatus = false;
 	}
   }
   //Funkcjonalnosc SideSlide dla okna rozmowy jest wlaczona
   else
   {
 	//Blokada SideSlide dla okna rozmowy
-	if(!SetStayOnTop)
+	if(!StayOnTopStatus)
 	{
 	  //Aktualizacja przycisku
+	  TPluginAction StayOnTopItem;
+	  ZeroMemory(&StayOnTopItem,sizeof(TPluginAction));
 	  StayOnTopItem.cbSize = sizeof(TPluginAction);
 	  StayOnTopItem.pszName = L"TabKitStayOnTopItem";
+	  StayOnTopItem.pszCaption = L"Trzymaj okno na wierzchu";
+	  StayOnTopItem.Hint = L"Trzymaj okno na wierzchu";
 	  StayOnTopItem.IconIndex = STAYONTOP_ON;
+	  StayOnTopItem.Handle = (int)hFrmSend;
 	  PluginLink.CallService(AQQ_CONTROLS_TOOLBAR "tbMain" AQQ_CONTROLS_UPDATEBUTTON,0,(LPARAM)(&StayOnTopItem));
 	  //Okno rozmowy na wierzchu
 	  if(FrmSendSlideHideMode==2) SetWindowPos(hFrmSend,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
-	  //Stan SetStayOnTop
-	  SetStayOnTop = true;
+	  //Stan StayOnTop
+	  StayOnTopStatus = true;
 	  //Stan blokady
 	  FrmSendBlockSlide = true;
 	}
@@ -2447,15 +2486,19 @@ int __stdcall ServiceStayOnTopItem(WPARAM wParam, LPARAM lParam)
 	else
 	{
 	  //Aktualizacja przycisku
+	  TPluginAction StayOnTopItem;
+	  ZeroMemory(&StayOnTopItem,sizeof(TPluginAction));
 	  StayOnTopItem.cbSize = sizeof(TPluginAction);
 	  StayOnTopItem.pszName = L"TabKitStayOnTopItem";
+	  StayOnTopItem.pszCaption = L"Trzymaj okno na wierzchu";
+	  StayOnTopItem.Hint = L"Trzymaj okno na wierzchu";
 	  StayOnTopItem.IconIndex = STAYONTOP_OFF;
+	  StayOnTopItem.Handle = (int)hFrmSend;
 	  PluginLink.CallService(AQQ_CONTROLS_TOOLBAR "tbMain" AQQ_CONTROLS_UPDATEBUTTON,0,(LPARAM)(&StayOnTopItem));
 	  //Okno rozmowy na wierzchu
-	  if(FrmSendSlideHideMode==2) SetWindowPos(hFrmSend,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);//SetWindowPos(hFrmSend,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
-	  //else SetWindowPos(hFrmSend,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
-	  //Stan SetStayOnTop
-	  SetStayOnTop = false;
+	  if(FrmSendSlideHideMode==2) SetWindowPos(hFrmSend,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
+	  //Stan StayOnTop
+	  StayOnTopStatus = false;
 	  //Stan blokady
 	  FrmSendBlockSlide = false;
 	}
@@ -2496,7 +2539,7 @@ void MinimizeRestoreFrmSendExecute()
           //Wylaczenie tymczasowej blokady
 		  if((FrmSendSlideHideMode==3)&&(!FrmSendBlockSlideWndEvent))
 		  {
-			if(StayOnTopChk) FrmSendBlockSlide = SetStayOnTop;
+			if(StayOnTopChk) FrmSendBlockSlide = StayOnTopStatus;
 			else FrmSendBlockSlide = false;
 		  }
 		  if((!FrmSendBlockSlide)&&(!FrmSendSlideOut)&&(!FrmSendSlideIn))
@@ -2575,7 +2618,9 @@ void MinimizeRestoreFrmMainExecute()
 	  //Otwieranie zakladki z czatem
 	  else
 	  {
+		//Ustawianie prawidlowego identyfikatora
 		JID = JID.Delete(1,7);
+		//Pobieranie nazwy kanalu
 		TIniFile *Ini = new TIniFile(SessionFileDir);
 		UnicodeString Channel = Ini->ReadString("Channels",JID,"");
 		delete Ini;
@@ -2584,12 +2629,15 @@ void MinimizeRestoreFrmMainExecute()
 		  Channel = JID;
 		  Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
 		}
+		//Wypenianie struktury nt. czatu
+		TPluginChatPrep PluginChatPrep;
 		PluginChatPrep.cbSize = sizeof(TPluginChatPrep);
 		PluginChatPrep.UserIdx = GetContactIndexW(JID);
 		PluginChatPrep.JID = JID.w_str();
 		PluginChatPrep.Channel = Channel.w_str();
 		PluginChatPrep.CreateNew = false;
 		PluginChatPrep.Fast = true;
+		//Przywracanie zakladki czatowej
 		PluginLink.CallService(AQQ_SYSTEM_CHAT,0,(LPARAM)&PluginChatPrep);
 	  }
     }
@@ -2809,7 +2857,7 @@ int __stdcall ServiceTabKitFastSettingsItem(WPARAM wParam, LPARAM lParam)
 	Application->Handle = (HWND)SettingsForm;
 	hSettingsForm = new TSettingsForm(Application);
   }
-  //Uzupelnienie kontrolni niezbednej do funkcji zmiany tekstu na pasku okna kontatkow
+  //Uzupelnienie danych w komponencie niezbednym do funkcji zmiany tekstu na belce okna kontatkow
   hSettingsForm->TweakFrmMainTitlebarModeExComboBox->Items->Clear();
   hSettingsForm->TweakFrmMainTitlebarModeExComboBox->Items->Add(ProfileName);
   hSettingsForm->TweakFrmMainTitlebarModeExComboBox->Items->Add(ComputerName);
@@ -2828,6 +2876,8 @@ int __stdcall ServiceTabKitFastSettingsItem(WPARAM wParam, LPARAM lParam)
 //Usuwanie elementu szybkiego dostepu do ustawien wtyczki
 void DestroyTabKitFastSettings()
 {
+  TPluginAction BuildTabKitFastSettingsItem;
+  ZeroMemory(&BuildTabKitFastSettingsItem,sizeof(TPluginAction));
   BuildTabKitFastSettingsItem.cbSize = sizeof(TPluginAction);
   BuildTabKitFastSettingsItem.pszName = L"TabKitFastSettingsItemButton";
   PluginLink.CallService(AQQ_CONTROLS_DESTROYPOPUPMENUITEM,0,(LPARAM)(&BuildTabKitFastSettingsItem));
@@ -2837,14 +2887,14 @@ void DestroyTabKitFastSettings()
 //Tworzenie elementu szybkiego dostepu do ustawien wtyczki
 void BuildTabKitFastSettings()
 {
+  TPluginAction BuildTabKitFastSettingsItem;
+  ZeroMemory(&BuildTabKitFastSettingsItem,sizeof(TPluginAction));
   BuildTabKitFastSettingsItem.cbSize = sizeof(TPluginAction);
   BuildTabKitFastSettingsItem.pszName = L"TabKitFastSettingsItemButton";
   BuildTabKitFastSettingsItem.pszCaption = L"TabKit";
-  BuildTabKitFastSettingsItem.Position = 0;
   BuildTabKitFastSettingsItem.IconIndex = FASTACCESS;
   BuildTabKitFastSettingsItem.pszService = L"sTabKitFastSettingsItem";
   BuildTabKitFastSettingsItem.pszPopupName = L"popPlugins";
-  BuildTabKitFastSettingsItem.PopupPosition = 0;
   PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildTabKitFastSettingsItem));
 }
 //---------------------------------------------------------------------------
@@ -2959,6 +3009,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	  //Zatrzymanie timera
 	  KillTimer(hTimerFrm,TIMER_RESTORESESSION);
 	  //Sprawdzenie stanu glownego konta
+	  TPluginStateChange PluginStateChange;
 	  PluginLink.CallService(AQQ_FUNCTION_GETNETWORKSTATE,(WPARAM)(&PluginStateChange),0);
 	  if(PluginStateChange.NewState!=0)
 	  {
@@ -2982,6 +3033,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			  Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
 			}
 			//Wypenianie struktury nt. czatu
+			TPluginChatPrep PluginChatPrep;
 			PluginChatPrep.cbSize = sizeof(TPluginChatPrep);
 			PluginChatPrep.UserIdx = GetContactIndexW(JID);
 			PluginChatPrep.JID = JID.w_str();
@@ -3050,19 +3102,19 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			//Usuniecie JID ostatniej otwartej przypietej zakladki czatowej
 			LastOpenedChatClipTab = "";
 			//Zmiana aktywnej zakladki
-			if(!ActiveTabBeforeOpenCliptabs.Pos("ischat_"))
+			if(!ActiveTabBeforeOpenClipTabs.Pos("ischat_"))
 			{
-			  if(!ActiveTabBeforeOpenCliptabs.Pos("/")) PluginLink.CallService(AQQ_FUNCTION_EXECUTEMSG,0,(LPARAM)ActiveTabBeforeOpenCliptabs.w_str());
-			  else PluginLink.CallService(AQQ_FUNCTION_EXECUTEMSG,(WPARAM)GetContactIndex(ActiveTabBeforeOpenCliptabs),(LPARAM)ActiveTabBeforeOpenCliptabs.w_str());
+			  if(!ActiveTabBeforeOpenClipTabs.Pos("/")) PluginLink.CallService(AQQ_FUNCTION_EXECUTEMSG,0,(LPARAM)ActiveTabBeforeOpenClipTabs.w_str());
+			  else PluginLink.CallService(AQQ_FUNCTION_EXECUTEMSG,(WPARAM)GetContactIndex(ActiveTabBeforeOpenClipTabs),(LPARAM)ActiveTabBeforeOpenClipTabs.w_str());
 			}
 			else
 			{
-			  UnicodeString ActiveTabW = ActiveTabBeforeOpenCliptabs;
+			  UnicodeString ActiveTabW = ActiveTabBeforeOpenClipTabs;
 			  ActiveTabW = ActiveTabW.Delete(1,7);
 			  PluginLink.CallService(AQQ_FUNCTION_EXECUTEMSG,(WPARAM)GetContactIndex(ActiveTabW),(LPARAM)ActiveTabW.w_str());
 			}
 			//Usuniecie JID ostatnio aktywnej zakladki przed otwieraniem przypietych czatow
-			ActiveTabBeforeOpenCliptabs = "";
+			ActiveTabBeforeOpenClipTabs = "";
 		  }
 		}
 	  }
@@ -3095,11 +3147,12 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			else if(!JID.Pos("@plugin"))
 			{
 			  //Zapisywanie JID ostatnio aktywnej zakladki przed otwieraniem przypietych czatow
-			  ActiveTabBeforeOpenCliptabs = ActiveTab;
+			  ActiveTabBeforeOpenClipTabs = ActiveTab;
 			  //Zapisywanie JID ostatniej otwartej przypietej zakladki czatowej
 			  LastOpenedChatClipTab = JID;
-			  //Otwieranie zakladki cztowej
+			  //Ustawianie prawidlowego identyfikatora
 			  JID = JID.Delete(1,7);
+			  //Pobieranie nazwy kanalu
 			  TIniFile *Ini = new TIniFile(SessionFileDir);
 			  UnicodeString Channel = Ini->ReadString("Channels",JID,"");
 			  delete Ini;
@@ -3108,12 +3161,15 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				Channel = JID;
 				Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
 			  }
+			  //Wypenianie struktury nt. czatu
+			  TPluginChatPrep PluginChatPrep;
 			  PluginChatPrep.cbSize = sizeof(TPluginChatPrep);
 			  PluginChatPrep.UserIdx = GetContactIndexW(JID);
 			  PluginChatPrep.JID = JID.w_str();
 			  PluginChatPrep.Channel = Channel.w_str();
 			  PluginChatPrep.CreateNew = false;
 			  PluginChatPrep.Fast = true;
+			  //Przywracanie zakladki czatowej
 			  PluginLink.CallService(AQQ_SYSTEM_CHAT,0,(LPARAM)&PluginChatPrep);
 			}
 		  }
@@ -3200,6 +3256,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		MB_OK | MB_ICONINFORMATION);
 	  }
 	  //Sprawdzenie czy zostal zmieniony zasob glownego konta Jabber
+	  TPluginStateChange PluginStateChange;
 	  PluginLink.CallService(AQQ_FUNCTION_GETNETWORKSTATE,(WPARAM)(&PluginStateChange),0);
 	  UnicodeString pResourceName = (wchar_t*)PluginStateChange.Resource;
 	  if(pResourceName!=ResourceName)
@@ -3949,7 +4006,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	  //Zatrzymanie timera
 	  KillTimer(hTimerFrm,TIMER_FRMSENDBLOCKSLIDE);
 	  //Usuniecie blokady
-	  if(StayOnTopChk) FrmSendBlockSlide = SetStayOnTop;
+	  if(StayOnTopChk) FrmSendBlockSlide = StayOnTopStatus;
 	  else FrmSendBlockSlide = false;
 	  FrmSendBlockSlideWndEvent = false;
 	  FrmSendBlockSlideOnMsgComposing = false;
@@ -4729,14 +4786,14 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	  {
 		//Jezeli okno rozmowy jest nie aktywne
 		if(GetActiveWindow()!=hFrmSend)
-		 SetWindowTextW(hFrmSend,("["+IntToStr(InactiveFrmNewMsgCount)+"] "+TempTitlebar).w_str());
+		 SetWindowTextW(hFrmSend,("["+IntToStr(InactiveFrmNewMsgCount)+"] "+FrmSendTitlebar).w_str());
 	  }
 	  //Wlaczona jest opcja zmiany caption okna rozmowy
 	  if(TweakFrmSendTitlebarChk)
 	  {
 		//Pobranie aktualnego tekstu belki okna
-		wchar_t TitlebarW[128];
-		GetWindowTextW(hFrmSend,TitlebarW,sizeof(TitlebarW));
+		wchar_t* TitlebarW = new wchar_t[512];
+		GetWindowTextW(hFrmSend,TitlebarW,512);
 		UnicodeString Titlebar = (wchar_t*)TitlebarW;
 		//Sprawdzanie czy belka zostal juz zmieniona ostatnio
 		ShortString TitlebarShort = UTF8EncodeToShortString(Titlebar);
@@ -4753,8 +4810,8 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	  if((TweakFrmSendTitlebarChk)&&(GetActiveWindow()==hFrmSend))
 	  {
 		//Pobranie aktualnego tekstu belki okna
-		wchar_t TitlebarW[128];
-		GetWindowTextW(hFrmSend,TitlebarW,sizeof(TitlebarW));
+		wchar_t* TitlebarW = new wchar_t[512];
+		GetWindowTextW(hFrmSend,TitlebarW,512);
 		UnicodeString Titlebar = (wchar_t*)TitlebarW;
 		//Sprawdzanie czy belka zostal juz zmieniona ostatnio
 		ShortString TitlebarShort = UTF8EncodeToShortString(Titlebar);
@@ -4773,10 +4830,10 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		if((wParam==WA_ACTIVE)||(wParam==WA_CLICKACTIVE))
 		{
 		  //Przywracanie poprzedniego stanu titlebara
-		  if(!TempTitlebar.IsEmpty())
+		  if(!FrmSendTitlebar.IsEmpty())
 		  {
-			SetWindowTextW(hFrmSend,TempTitlebar.w_str());
-			TempTitlebar = "";
+			SetWindowTextW(hFrmSend,FrmSendTitlebar.w_str());
+			FrmSendTitlebar = "";
 		  }
 		  //Kasowanie licznika nowych wiadomosci
 		  InactiveFrmNewMsgCount = 0;
@@ -4788,7 +4845,7 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		//Okno aktywne
 		if((wParam==WA_ACTIVE)||(wParam==WA_CLICKACTIVE))
 		{
-		  //Resetowanie poprzedniego stanu ikonek
+		  //Resetowanie poprzedniego stanu pisania wiadomosci
 		  LastChatState = 0;
 		  //Ustawienie oryginalnej malej ikonki
 		  if(hIconSmall)
@@ -4824,7 +4881,7 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		  //Wylaczenie tymczasowej blokady
 		  if((FrmSendVisible)&&(FrmSendSlideHideMode==3)&&(!FrmSendBlockSlideWndEvent))
 		  {
-			if(StayOnTopChk) FrmSendBlockSlide = SetStayOnTop;
+			if(StayOnTopChk) FrmSendBlockSlide = StayOnTopStatus;
 			else FrmSendBlockSlide = false;
 		  }
 		  //Wlaczenie FrmSendSlideOut
@@ -5000,13 +5057,20 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		if(FrmSendVisible)
 		{
 		  //Odznaczenie StayOnTop jako wylaczone
-		  if((StayOnTopChk)&&(SetStayOnTop))
+		  if((StayOnTopChk)&&(StayOnTopStatus))
 		  {
 			//Aktualizacja przycisku
+			TPluginAction StayOnTopItem;
+			ZeroMemory(&StayOnTopItem,sizeof(TPluginAction));
+			StayOnTopItem.cbSize = sizeof(TPluginAction);
+			StayOnTopItem.pszName = L"TabKitStayOnTopItem";
+			StayOnTopItem.pszCaption = L"Trzymaj okno na wierzchu";
+			StayOnTopItem.Hint = L"Trzymaj okno na wierzchu";
 			StayOnTopItem.IconIndex = STAYONTOP_OFF;
+			StayOnTopItem.Handle = (int)hFrmSend;
 			PluginLink.CallService(AQQ_CONTROLS_TOOLBAR "tbMain" AQQ_CONTROLS_UPDATEBUTTON,0,(LPARAM)(&StayOnTopItem));
-			//Stan SetStayOnTop
-			SetStayOnTop = false;
+			//Stan StayOnTop
+			StayOnTopStatus = false;
 		  }
 		  //Status SideSlide
 		  FrmSendBlockSlide = true;
@@ -5427,7 +5491,9 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 					//Otwieranie zakladki z czatem
 					else
 					{
+					  //Ustawianie prawidlowego identyfikatora
 					  JID = JID.Delete(1,7);
+					  //Pobieranie nazwy kanalu
 					  TIniFile *Ini = new TIniFile(SessionFileDir);
 					  UnicodeString Channel = Ini->ReadString("Channels",JID,"");
 					  delete Ini;
@@ -5436,12 +5502,15 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 						Channel = JID;
 						Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
 					  }
+					  //Wypenianie struktury nt. czatu
+					  TPluginChatPrep PluginChatPrep;
 					  PluginChatPrep.cbSize = sizeof(TPluginChatPrep);
 					  PluginChatPrep.UserIdx = GetContactIndexW(JID);
 					  PluginChatPrep.JID = JID.w_str();
 					  PluginChatPrep.Channel = Channel.w_str();
 					  PluginChatPrep.CreateNew = false;
 					  PluginChatPrep.Fast = true;
+					  //Przywracanie zakladki czatowej
 					  PluginLink.CallService(AQQ_SYSTEM_CHAT,0,(LPARAM)&PluginChatPrep);
 					}
 					return -1;
@@ -5506,7 +5575,9 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 					//Otwieranie zakladki z czatem
 					else
 					{
+					  //Ustawianie prawidlowego identyfikatora
 					  JID = JID.Delete(1,7);
+					  //Pobieranie nazwy kanalu
 					  TIniFile *Ini = new TIniFile(SessionFileDir);
 					  UnicodeString Channel = Ini->ReadString("Channels",JID,"");
 					  delete Ini;
@@ -5515,12 +5586,15 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 						Channel = JID;
 						Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
 					  }
+					  //Wypenianie struktury nt. czatu
+					  TPluginChatPrep PluginChatPrep;
 					  PluginChatPrep.cbSize = sizeof(TPluginChatPrep);
 					  PluginChatPrep.UserIdx = GetContactIndexW(JID);
 					  PluginChatPrep.JID = JID.w_str();
 					  PluginChatPrep.Channel = Channel.w_str();
 					  PluginChatPrep.CreateNew = false;
 					  PluginChatPrep.Fast = true;
+					  //Przywracanie zakladki czatowej
 					  PluginLink.CallService(AQQ_SYSTEM_CHAT,0,(LPARAM)&PluginChatPrep);
 					}
 					return -1;
@@ -5601,7 +5675,9 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 				  //Otwieranie zakladki z czatem
 				  else
 				  {
+					//Ustawianie prawidlowego identyfikatora
 					JID = JID.Delete(1,7);
+					//Pobieranie nazwy kanalu
 					TIniFile *Ini = new TIniFile(SessionFileDir);
 					UnicodeString Channel = Ini->ReadString("Channels",JID,"");
 					delete Ini;
@@ -5610,12 +5686,15 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 					  Channel = JID;
 					  Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
 					}
+					//Wypenianie struktury nt. czatu
+					TPluginChatPrep PluginChatPrep;
 					PluginChatPrep.cbSize = sizeof(TPluginChatPrep);
 					PluginChatPrep.UserIdx = GetContactIndexW(JID);
 					PluginChatPrep.JID = JID.w_str();
 					PluginChatPrep.Channel = Channel.w_str();
 					PluginChatPrep.CreateNew = false;
 					PluginChatPrep.Fast = true;
+					//Przywracanie zakladki czatowej
 					PluginLink.CallService(AQQ_SYSTEM_CHAT,0,(LPARAM)&PluginChatPrep);
 				  }
 				  return -1;
@@ -5680,7 +5759,9 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 				  //Otwieranie zakladki z czatem
 				  else
 				  {
+					//Ustawianie prawidlowego identyfikatora
 					JID = JID.Delete(1,7);
+					//Pobieranie nazwy kanalu
 					TIniFile *Ini = new TIniFile(SessionFileDir);
 					UnicodeString Channel = Ini->ReadString("Channels",JID,"");
 					delete Ini;
@@ -5689,12 +5770,15 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 					  Channel = JID;
 					  Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
 					}
+					//Wypenianie struktury nt. czatu
+					TPluginChatPrep PluginChatPrep;
 					PluginChatPrep.cbSize = sizeof(TPluginChatPrep);
 					PluginChatPrep.UserIdx = GetContactIndexW(JID);
 					PluginChatPrep.JID = JID.w_str();
 					PluginChatPrep.Channel = Channel.w_str();
 					PluginChatPrep.CreateNew = false;
 					PluginChatPrep.Fast = true;
+					//Przywracanie zakladki czatowej
 					PluginLink.CallService(AQQ_SYSTEM_CHAT,0,(LPARAM)&PluginChatPrep);
 				  }
 				  return -1;
@@ -5918,12 +6002,12 @@ LRESULT CALLBACK ThreadMouseProc(int nCode, WPARAM wParam, LPARAM lParam)
 			if(wParam==WM_MBUTTONDOWN)
 			{
 			  if(WindowFromPoint(Mouse->CursorPos)==hTabsBar)
-			   TabClosing = false;
+			   TabWasChanged = false;
 			}
 			else if(wParam==WM_MBUTTONUP)
 			{
 			  if(WindowFromPoint(Mouse->CursorPos)==hTabsBar)
-			   if(!TabClosing) UnCloseTabHotKeyExecute();
+			   if(!TabWasChanged) UnCloseTabHotKeyExecute();
 			}
 		  }
 		  //Wcisniecie Ctrl+LPM
@@ -5932,12 +6016,12 @@ LRESULT CALLBACK ThreadMouseProc(int nCode, WPARAM wParam, LPARAM lParam)
 			if((wParam==WM_LBUTTONDOWN)&&((GetKeyState(VK_LCONTROL)<0)||(GetKeyState(VK_RCONTROL)<0)))
 			{
 			  if(WindowFromPoint(Mouse->CursorPos)==hTabsBar)
-			   TabClosing = false;
+			   TabWasChanged = false;
 			}
 			if((wParam==WM_LBUTTONUP)&&((GetKeyState(VK_LCONTROL)<0)||(GetKeyState(VK_RCONTROL)<0)))
 			{
 			  if(WindowFromPoint(Mouse->CursorPos)==hTabsBar)
-			   if(!TabClosing) UnCloseTabHotKeyExecute();
+			   if(!TabWasChanged) UnCloseTabHotKeyExecute();
 			}
 		  }
 		}
@@ -6030,27 +6114,27 @@ int __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
   if(!ForceUnloadExecuted)
   {
     //Przywracanie zakladki za pomoca myszki
-    TabClosing = true;
-    //Blok zmiany tekstu na zakladce
-    ClosingTab = false;
-	//Blokowanie otwierania paru zakladek jednoczesnie
+	TabWasChanged = true;
+	//Wylaczenie blokady otwierania paru zakladek jednoczesnie
 	NewMgsHoyKeyExecute = false;
+	//Blokada zmiany tekstu na zakladce
+	TabWasClosed = false;
 	//Pobieranie danych
-	ActiveTabContact = (PPluginContact)lParam;
-	UnicodeString JID = (wchar_t*)ActiveTabContact->JID;
-	UnicodeString Res = (wchar_t*)ActiveTabContact->Resource;
-	if(!Res.IsEmpty()) Res = "/" + Res;
-	if(ActiveTabContact->IsChat)
+	TPluginContact ActiveTabContact = *(PPluginContact)lParam;
+	UnicodeString JID = (wchar_t*)ActiveTabContact.JID;
+	UnicodeString Resource = (wchar_t*)ActiveTabContact.Resource;
+	if(!Resource.IsEmpty()) Resource = "/" + Resource;
+	if(ActiveTabContact.IsChat)
 	{
 	  JID = "ischat_" + JID;
-	  Res = "";
+	  Resource = "";
 	}
 	//Jezeli zakladka zostala zmieniona
-	if((JID+Res)!=ActiveTabJIDRes)
+	if((JID+Resource)!=ActiveTabJIDRes)
 	{
 	  //Aktywna zakladka
 	  ActiveTabJID = JID;
-	  ActiveTabJIDRes = JID+Res;
+	  ActiveTabJIDRes = JID+Resource;
 	  //SideSlide - wysuniecie okna zza krawedzi ekranu
 	  if((FrmSendSlideChk)&&(!FrmSendVisible)&&(!FrmSendBlockSlide))
 	  {
@@ -6091,34 +6175,34 @@ int __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 	  //Usuwanie JID z kolejki pokazywania wiadomosci przy skrocie Ctrl+Shift+F1 lub nieprzypisanym skrotem do zakladki
 	  if((FrmMainSlideChk)||(NewMgsHoyKeyChk))
 	  {
-		if(UnOpenMsgList->IndexOf(JID+Res)!=-1)
-		 UnOpenMsgList->Delete(UnOpenMsgList->IndexOf(JID+Res));
+		if(UnOpenMsgList->IndexOf(JID+Resource)!=-1)
+		 UnOpenMsgList->Delete(UnOpenMsgList->IndexOf(JID+Resource));
 		if(UnOpenMsgList->IndexOf(JID)!=-1)
 		 UnOpenMsgList->Delete(UnOpenMsgList->IndexOf(JID));
 	  }
 	  //Usuwanie JID z kolejki przelaczania sie na nowe wiadomosci
 	  if(SwitchToNewMsgChk)
 	  {
-		if(MsgList->IndexOf(JID+Res)!=-1)
-		 MsgList->Delete(MsgList->IndexOf(JID+Res));
+		if(MsgList->IndexOf(JID+Resource)!=-1)
+		 MsgList->Delete(MsgList->IndexOf(JID+Resource));
 		if(MsgList->IndexOf(JID)!=-1)
 		 MsgList->Delete(MsgList->IndexOf(JID));
 	  }
 	  //Jezeli zakladka z kontaktem nie jest otwarta
-	  if((ResTabsList->IndexOf(JID+Res)==-1))
+	  if((ResTabsList->IndexOf(JID+Resource)==-1))
 	  {
 		//Dodawanie JID do tablicy zakladek
 		if(TabsList->IndexOf(JID)==-1) TabsList->Add(JID);
-		ResTabsList->Add(JID+Res);
+		ResTabsList->Add(JID+Resource);
 		//Pobieranie stanu kontaktu
-		if(!ActiveTabContact->IsChat)
+		if(!ActiveTabContact.IsChat)
 		{
-		  int State = PluginLink.CallService(AQQ_FUNCTION_GETSTATEPNG_INDEX,0,(LPARAM)(ActiveTabContact));
+		  int State = PluginLink.CallService(AQQ_FUNCTION_GETSTATEPNG_INDEX,0,(LPARAM)&ActiveTabContact);
 		  ContactsStateList->WriteInteger("State",JID,State);
 		}
 		//Pobieranie i zapisywanie indeksu kontatku
-		if(!ActiveTabContact->IsChat)
-		 ContactsIndexList->WriteInteger("Index",JID,ActiveTabContact->UserIdx);
+		if(!ActiveTabContact.IsChat)
+		 ContactsIndexList->WriteInteger("Index",JID,ActiveTabContact.UserIdx);
 		//Zapisywanie sesji
 		if(RestoreTabsSessionChk)
 		{
@@ -6133,8 +6217,8 @@ int __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 			 Ini->WriteString("Session","Tab"+IntToStr(Count+1),TabsList->Strings[Count]);
 		  }
 		  //Wczytywanie ostatnio przeprowadzonej rozmowy
-		  if((RestoringSession)&&(!ActiveTabContact->IsChat))
-		   PluginLink.CallService(AQQ_FUNCTION_LOADLASTCONV,(WPARAM)JID.w_str(),(LPARAM)ActiveTabContact->UserIdx);
+		  if((RestoringSession)&&(!ActiveTabContact.IsChat))
+		   PluginLink.CallService(AQQ_FUNCTION_LOADLASTCONV,(WPARAM)JID.w_str(),(LPARAM)ActiveTabContact.UserIdx);
 		  //Odczytywanie sesji wiadomosci
 		  if((RestoreMsgSessionChk)&&(RestoringSession))
 		  {
@@ -6157,7 +6241,7 @@ int __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 		if(ClipTabsList->IndexOf(JID)!=-1)
 		{
 		  //Wlaczanie timera do zmiany miejsca zakladki
-		  if(!ActiveTabContact->IsChat) SetTimer(hTimerFrm,TIMER_MOVECLIPTAB,500,(TIMERPROC)TimerFrmProc);
+		  if(!ActiveTabContact.IsChat) SetTimer(hTimerFrm,TIMER_MOVECLIPTAB,500,(TIMERPROC)TimerFrmProc);
 		  else SetTimer(hTimerFrm,TIMER_MOVECLIPTAB,3000,(TIMERPROC)TimerFrmProc);
 		}
 		//Niewyslane wiadomosci
@@ -6170,7 +6254,7 @@ int __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 		  if(!Body.IsEmpty())
 		  {
 			//Pobieranie ostatniej wiadomoœci
-			if(!ActiveTabContact->IsChat) PluginLink.CallService(AQQ_FUNCTION_LOADLASTCONV,(WPARAM)JID.w_str(),(LPARAM)ActiveTabContact->UserIdx);
+			if(!ActiveTabContact.IsChat) PluginLink.CallService(AQQ_FUNCTION_LOADLASTCONV,(WPARAM)JID.w_str(),(LPARAM)ActiveTabContact.UserIdx);
 			//Ustawianie tekstu
 			SetWindowTextW(hRichEdit, Body.w_str());
 			//Ustawianie pozycji kursora
@@ -6212,18 +6296,18 @@ int __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 			if((RestoreLastMsgChk)&&(JustUnClosedJID==JID))
 			{
 			  //Pobieranie ostatniej wiadomoœci
-			  if(!ActiveTabContact->IsChat)
+			  if(!ActiveTabContact.IsChat)
 			  {
 				//Natychmiastowe wczytanie
-				if(!UnCloseTabFromHotKey) PluginLink.CallService(AQQ_FUNCTION_LOADLASTCONV,(WPARAM)JID.w_str(),(LPARAM)ActiveTabContact->UserIdx);
+				if(!UnCloseTabFromHotKey) PluginLink.CallService(AQQ_FUNCTION_LOADLASTCONV,(WPARAM)JID.w_str(),(LPARAM)ActiveTabContact.UserIdx);
 				//Wczytanie w timerze
 				else
 				{
 				  //Status sposobu przywracania zakladki
 				  UnCloseTabFromHotKey = false;
-				  //Przekazanie zmiennych
+				  //Przekazanie zmiennych nt. kontaktu
 				  UnCloseTabFromHotKeyJID = JID;
-				  UnCloseTabFromHotKeyUserIdx = ActiveTabContact->UserIdx;
+				  UnCloseTabFromHotKeyUserIdx = ActiveTabContact.UserIdx;
 				  //Wlaczenie timera
 				  SetTimer(hTimerFrm,TIMER_LOADLASTCONV,500,(TIMERPROC)TimerFrmProc);
 				}
@@ -6253,33 +6337,23 @@ int __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 	  }
 	  else
 	  {
-        //Ustawianie pustego tekstu na przypietej zakladce
-		if((ClipTabsList->IndexOf(JID)!=-1))
-		{
-		  //Wyladowanie hooka na zmiane tekstu na zakladce
-		  PluginLink.UnhookEvent(OnTabCaption);
-		  //Ustawienie tekstu na zakladce
-		  PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)L"",(LPARAM)ActiveTabContact);
-		  //Hook na zmiane tekstu na zakladce
-		  PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_TABCAPTION,OnTabCaption);
-		}
 		//Usuwanie licznik nowych wiadomosci na zakladkach
 		if(InactiveTabsNewMsgChk)
 		{
-		  int Count = InactiveTabsNewMsgCount->ReadInteger("TabsMsg",JID+Res,0);
+		  int Count = InactiveTabsNewMsgCount->ReadInteger("TabsMsg",JID+Resource,0);
 		  //Tylko dla zakladki z licznikiem nieprzeczytanych wiadomosci
 		  if((Count)&&(ClipTabsList->IndexOf(JID)==-1))
 		  {
 			//Wyladowanie hooka na zmiane tekstu na zakladce
 			PluginLink.UnhookEvent(OnTabCaption);
 			//Zakladka zwykla
-			if(!ActiveTabContact->IsChat)
-			 PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)ActiveTabContact->Nick,(LPARAM)ActiveTabContact);
+			if(!ActiveTabContact.IsChat)
+			 PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)ActiveTabContact.Nick,(LPARAM)&ActiveTabContact);
 			//Zakladka z czatem
 			else
 			{
 			  //Czat nie ze wtyczki
-			  if(!ActiveTabContact->FromPlugin)
+			  if(!ActiveTabContact.FromPlugin)
 			  {
 				UnicodeString tmpJID = JID;
 				tmpJID = tmpJID.Delete(1,7);
@@ -6291,7 +6365,7 @@ int __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 				  Channel = tmpJID;
 				  Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
 				}
-				PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)Channel.w_str(),(LPARAM)ActiveTabContact);
+				PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)Channel.w_str(),(LPARAM)&ActiveTabContact);
 			  }
 			  //Czat z wtyczki
 			  else
@@ -6326,14 +6400,14 @@ int __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 				Number = result2.c_str();
 				Caption = Caption + " [nr" + Number + "]";
 				//Ustawianie sformatowanego tekstu
-				PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)Caption.w_str(),(LPARAM)ActiveTabContact);
+				PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)Caption.w_str(),(LPARAM)&ActiveTabContact);
 			  }
 			}
 			//Hook na zmiane tekstu na zakladce
 			PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_TABCAPTION,OnTabCaption);
 		  }
 		  //Resetowanie stanu nowych wiadomosci
-		  InactiveTabsNewMsgCount->DeleteKey("TabsMsg",JID+Res);
+		  InactiveTabsNewMsgCount->DeleteKey("TabsMsg",JID+Resource);
 		}
 		//Licznik nowych wiadomosci na oknie rozmowy
 		if(InactiveFrmNewMsgChk)
@@ -6344,7 +6418,7 @@ int __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 			//Kasowanie licznika nowych wiadomosci
 			InactiveFrmNewMsgCount = 0;
 			//Wyczyszczenie tymczasowego tytulu okna
-			TempTitlebar = "";
+			FrmSendTitlebar = "";
 		  }
 		}
 		//Zapisywanie sesji
@@ -6361,8 +6435,8 @@ int __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 			 Ini->WriteString("Session","Tab"+IntToStr(Count+1),TabsList->Strings[Count]);
 		  }
 		  //Wczytywanie ostatnio przeprowadzonej rozmowy
-		  if((RestoringSession)&&(!ActiveTabContact->IsChat))
-		   PluginLink.CallService(AQQ_FUNCTION_LOADLASTCONV,(WPARAM)JID.w_str(),(LPARAM)ActiveTabContact->UserIdx);
+		  if((RestoringSession)&&(!ActiveTabContact.IsChat))
+		   PluginLink.CallService(AQQ_FUNCTION_LOADLASTCONV,(WPARAM)JID.w_str(),(LPARAM)ActiveTabContact.UserIdx);
 		  //Odczytywanie sesji wiadomosci
 		  if((RestoreMsgSessionChk)&&(RestoringSession))
 		  {
@@ -6385,21 +6459,21 @@ int __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 	  //Zmiana caption okna rozmowy
 	  if(TweakFrmSendTitlebarChk)
 	  {
-		if(!ActiveTabContact->IsChat)
+		if(!ActiveTabContact.IsChat)
 		{
 		  //Pobranie aktualnego tekstu belki okna
-		  wchar_t TitlebarW[128];
-		  GetWindowTextW(hFrmSend,TitlebarW,sizeof(TitlebarW));
+		  wchar_t* TitlebarW = new wchar_t[512];
+		  GetWindowTextW(hFrmSend,TitlebarW,512);
 		  UnicodeString Titlebar = (wchar_t*)TitlebarW;
 		  //Zmienna zmienionego tekstu na belce
 		  UnicodeString ChangedTitlebar;
 		  //Pobranie pseudonimu kontaktu
-		  UnicodeString Nick = (wchar_t*)ActiveTabContact->Nick;
+		  UnicodeString Nick = (wchar_t*)ActiveTabContact.Nick;
 		  //Pseudonim i opis kontatku
 		  if(TweakFrmSendTitlebarMode==1)
 		  {
 			//Pobranie opisu kontatku
-			UnicodeString Status = (wchar_t*)ActiveTabContact->Status;
+			UnicodeString Status = (wchar_t*)ActiveTabContact.Status;
 			Status = StringReplace(Status, "\n", " ", TReplaceFlags() << rfReplaceAll);
 			Status = StringReplace(Status, "\r", "", TReplaceFlags() << rfReplaceAll);
 			//Jezeli opis nie jest pusty
@@ -6416,35 +6490,33 @@ int __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 		  {
 			//Przyjazniejszy wyglad identyfikatora
 			UnicodeString FiendlyJID = JID;
-			if(ActiveTabContact->FromPlugin)
+			if(ActiveTabContact.FromPlugin)
 			{
 			  if(FiendlyJID.Pos("@")) FiendlyJID.Delete(FiendlyJID.Pos("@"),FiendlyJID.Length());
 			}
 			ChangedTitlebar = Nick + " - " + FiendlyJID;
 		  }
 		  //Pseudonim i identyfikator kontaktu wraz z zasobem oraz opisem
-		  else if((TweakFrmSendTitlebarMode==4)&&(!ActiveTabContact->FromPlugin))
+		  else if((TweakFrmSendTitlebarMode==4)&&(!ActiveTabContact.FromPlugin))
 		  {
-			//Pobranie zasobu kontatku
-			UnicodeString Resource = (wchar_t*)ActiveTabContact->Resource;
 			//Jezeli zasob nie jest pusty
 			if(!Resource.IsEmpty())
 			{
 			  //Pobranie opisu kontatku
-			  UnicodeString Status = (wchar_t*)ActiveTabContact->Status;
+			  UnicodeString Status = (wchar_t*)ActiveTabContact.Status;
 			  Status = StringReplace(Status, "\n", " ", TReplaceFlags() << rfReplaceAll);
 			  Status = StringReplace(Status, "\r", "", TReplaceFlags() << rfReplaceAll);
 			  //Przyjazniejszy wyglad identyfikatora
 			  UnicodeString FiendlyJID = JID;
-			  if(ActiveTabContact->FromPlugin)
+			  if(ActiveTabContact.FromPlugin)
 			  {
 				if(FiendlyJID.Pos("@")) FiendlyJID.Delete(FiendlyJID.Pos("@"),FiendlyJID.Length());
 			  }
 			  //Jezeli opis nie jest pusty
 			  if(!Status.IsEmpty())
-			   ChangedTitlebar = Nick + " - " + FiendlyJID + "/" + Resource + " - " + Status;
+			   ChangedTitlebar = Nick + " - " + FiendlyJID + Resource + " - " + Status;
 			  else
-			   ChangedTitlebar = Nick + " - " + FiendlyJID + "/" + Resource;
+			   ChangedTitlebar = Nick + " - " + FiendlyJID + Resource;
 			}
 		  }
 		  //Nowy tekst na belce okna nie jest pusty
@@ -6459,84 +6531,6 @@ int __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 		  }
 		}
 	  }
-	}
-	//Ustawianie pustego tekstu na nowo przypietej zakladce
-	if(JID==JustClipTabJID)
-	{
-	  //Kasowanie zapamietanej ostatnio przypietej zakladki
-	  JustClipTabJID = "";
-	  //Wyladowanie hooka na zmiane tekstu na zakladce
-	  PluginLink.UnhookEvent(OnTabCaption);
-	  //Ustawienie tekstu na zakladce
-	  PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)L"",(LPARAM)ActiveTabContact);
-	  //Hook na zmiane tekstu na zakladce
-	  PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_TABCAPTION,OnTabCaption);
-	}
-	//Ustawianie domyslnego tekstu na dopiero co odpietej zakladce
-	if(JID==JustUnClipTabJID)
-	{
-	  JustUnClipTabJID = "";
-	  //Wyladowanie hooka na zmiane tekstu na zakladce
-	  PluginLink.UnhookEvent(OnTabCaption);
-	  //Zakladka zwykla
-	  if(!ActiveTabContact->IsChat)
-	   PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)ActiveTabContact->Nick,(LPARAM)ActiveTabContact);
-	  //Zakladka z czatem
-	  else
-	  {
-		//Czat nie ze wtyczki
-		if(!ActiveTabContact->FromPlugin)
-		{
-		  UnicodeString tmpJID = JID;
-		  tmpJID = tmpJID.Delete(1,7);
-		  TIniFile *Ini = new TIniFile(SessionFileDir);
-		  UnicodeString Channel = Ini->ReadString("Channels",tmpJID,"");
-		  delete Ini;
-		  if(Channel.IsEmpty())
-		  {
-			Channel = tmpJID;
-			Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
-		  }
-		  PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)Channel.w_str(),(LPARAM)ActiveTabContact);
-		}
-		//Czat z wtyczki
-		else
-		{
-		  UnicodeString Caption = JID;
-		  Caption = Caption.Delete(1,7);
-		  Caption = Caption.Delete(Caption.Pos("@"),Caption.Length());
-		  //Usuwanie licznika
-		  wstring input = Caption.w_str();
-		  wregex expr(L"[^A-Za-z]");
-		  wstring replace = L"";
-		  wstring result = regex_replace( input, expr, replace, match_default | format_sed);
-		  Caption = result.c_str();
-		  //Pierwsza duza litera
-		  UnicodeString FirstUpper = Caption;
-		  Caption = Caption.Delete(1,1);
-		  FirstUpper = FirstUpper.Delete(2,FirstUpper.Length());
-		  Caption = FirstUpper.UpperCase() + Caption;
-		  //Rodzaj
-		  UnicodeString Type = JID;
-		  Type.Delete(1,Type.Pos("@plugin.")+7);
-		  Type.Delete(Type.Pos("."),Type.Length());
-		  Caption = Caption + " " + Type.UpperCase();
-		  //Numer
-		  UnicodeString Number = JID;
-		  Number = Number.Delete(1,7);
-		  Number = Number.Delete(Number.Pos("@"),Number.Length());
-		  wstring input2 = Number.c_str();
-		  wregex expr2(L"[^1-9]");
-		  wstring replace2 = L"";
-		  wstring result2 = regex_replace( input2, expr2, replace2, match_default | format_sed);
-		  Number = result2.c_str();
-		  Caption = Caption + " [nr" + Number + "]";
-		  //Ustawianie sformatowanego tekstu
-		  PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)Caption.w_str(),(LPARAM)ActiveTabContact);
-		}
-	  }
-	  //Hook na zmiane tekstu na zakladce
-	  PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_TABCAPTION,OnTabCaption);
 	}
   }
 
@@ -6556,9 +6550,9 @@ int __stdcall OnAddLine(WPARAM wParam, LPARAM lParam)
 	  if((SwitchToNewMsgChk)||(InactiveFrmNewMsgChk)||(InactiveTabsNewMsgChk)||(ClosedTabsChk)||((FrmSendSlideChk)&&(SlideInAtNewMsgChk)&&(!FrmSendVisible)&&(!FrmSendBlockSlide)))
 	  {
 		//Pobieranie danych wiadomosci
-		AddLineMessage = (PPluginMessage)lParam;
+		TPluginMessage AddLineMessage = *(PPluginMessage)lParam;
 		//Pobieranie sformatowanej tresci wiadomosci
-		UnicodeString Body = (wchar_t*)AddLineMessage->Body;
+		UnicodeString Body = (wchar_t*)AddLineMessage.Body;
 		//Wyswietlona wiadomosc jest plikiem
 		if(FileExists(Body))
 		{
@@ -6566,11 +6560,11 @@ int __stdcall OnAddLine(WPARAM wParam, LPARAM lParam)
 		  if(SwitchToNewMsgChk)
 		  {
 			//Pobieranie danych kontatku
-			AddLineContact = (PPluginContact)wParam;
-			UnicodeString JID = (wchar_t*)AddLineContact->JID;
-			UnicodeString Res = (wchar_t*)AddLineContact->Resource;
+			TPluginContact AddLineContact = *(PPluginContact)wParam;
+			UnicodeString JID = (wchar_t*)AddLineContact.JID;
+			UnicodeString Res = (wchar_t*)AddLineContact.Resource;
 			if(!Res.IsEmpty()) Res = "/" + Res;
-			if(AddLineContact->IsChat)
+			if(AddLineContact.IsChat)
 			{
 			  JID = "ischat_" + JID;
 			  Res = "";
@@ -6587,11 +6581,11 @@ int __stdcall OnAddLine(WPARAM wParam, LPARAM lParam)
 		  if(InactiveFrmNewMsgChk)
 		  {
 			//Pobieranie danych kontatku
-			AddLineContact = (PPluginContact)wParam;
-			UnicodeString JID = (wchar_t*)AddLineContact->JID;
-			UnicodeString Res = (wchar_t*)AddLineContact->Resource;
+			TPluginContact AddLineContact = *(PPluginContact)wParam;
+			UnicodeString JID = (wchar_t*)AddLineContact.JID;
+			UnicodeString Res = (wchar_t*)AddLineContact.Resource;
 			if(!Res.IsEmpty()) Res = "/" + Res;
-			if(AddLineContact->IsChat)
+			if(AddLineContact.IsChat)
 			{
 			  JID = "ischat_" + JID;
 			  Res = "";
@@ -6603,26 +6597,26 @@ int __stdcall OnAddLine(WPARAM wParam, LPARAM lParam)
 			  if(hFrmSend!=GetActiveWindow())
 			  {
 				//Pobranie oryginalnego tekstu paska tytulu okna rozmowy
-				if((TempTitlebar.IsEmpty())&&(!InactiveFrmNewMsgCount))
+				if((FrmSendTitlebar.IsEmpty())&&(!InactiveFrmNewMsgCount))
 				{
-				  wchar_t TempTitlebarW[128];
-				  GetWindowTextW(hFrmSend,TempTitlebarW,sizeof(TempTitlebarW));
-				  TempTitlebar = (wchar_t*)TempTitlebarW;
+				  wchar_t* TempTitlebarW = new wchar_t[512];
+				  GetWindowTextW(hFrmSend,TempTitlebarW,512);
+				  FrmSendTitlebar = (wchar_t*)TempTitlebarW;
 				}
 				//Dodanie 1 do licznika nieprzeczytachy wiadomosci
 				InactiveFrmNewMsgCount++;
 				//Ustawianie nowego tekstu paska tytulu okna rozmowy
-				SetWindowTextW(hFrmSend,("[" + IntToStr(InactiveFrmNewMsgCount)+ "] " + TempTitlebar).w_str());
+				SetWindowTextW(hFrmSend,("[" + IntToStr(InactiveFrmNewMsgCount)+ "] " + FrmSendTitlebar).w_str());
 			  }
 			  else
 			  {
 				//Kasowanie licznika nowych wiadomosci
 				InactiveFrmNewMsgCount = 0;
 				//Przywracanie oryginalnego tekstu paska tytulu okna rozmowy
-				if(!TempTitlebar.IsEmpty())
+				if(!FrmSendTitlebar.IsEmpty())
 				{
-				  SetWindowTextW(hFrmSend,TempTitlebar.w_str());
-				  TempTitlebar = "";
+				  SetWindowTextW(hFrmSend,FrmSendTitlebar.w_str());
+				  FrmSendTitlebar = "";
 				}
 			  }
 			}
@@ -6630,11 +6624,11 @@ int __stdcall OnAddLine(WPARAM wParam, LPARAM lParam)
 		  //Licznik nieprzeczytanych wiadomosci na zakladkach
 		  if(InactiveTabsNewMsgChk)
 		  {
-			AddLineContact = (PPluginContact)wParam;
-			UnicodeString JID = (wchar_t*)AddLineContact->JID;
-			UnicodeString Res = (wchar_t*)AddLineContact->Resource;
+			TPluginContact AddLineContact = *(PPluginContact)wParam;
+			UnicodeString JID = (wchar_t*)AddLineContact.JID;
+			UnicodeString Res = (wchar_t*)AddLineContact.Resource;
 			if(!Res.IsEmpty()) Res = "/" + Res;
-			if(AddLineContact->IsChat)
+			if(AddLineContact.IsChat)
 			{
 			  JID = "ischat_" + JID;
 			  Res = "";
@@ -6659,12 +6653,12 @@ int __stdcall OnAddLine(WPARAM wParam, LPARAM lParam)
 			  else
 			  {
 				//Zakladka ze zwyklyum
-				if(!AddLineContact->IsChat) TabCaption = (wchar_t*)AddLineContact->Nick;
+				if(!AddLineContact.IsChat) TabCaption = (wchar_t*)AddLineContact.Nick;
 				//Zakladka z czatem
 				else
 				{
 				  //Czat nie ze wtyczki
-				  if(!AddLineContact->FromPlugin)
+				  if(!AddLineContact.FromPlugin)
 				  {
 					UnicodeString tmpJID = JID;
 					tmpJID = tmpJID.Delete(1,7);
@@ -6716,7 +6710,7 @@ int __stdcall OnAddLine(WPARAM wParam, LPARAM lParam)
 			  TabCaption = "[" + IntToStr(InactiveTabsCount) + "] " + TabCaption;
 			  //Ustawianie nowego tekstu zakladki
 			  PluginLink.UnhookEvent(OnTabCaption);
-			  PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)TabCaption.w_str(),(LPARAM)RecvMsgContact);
+			  PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)TabCaption.w_str(),(LPARAM)&AddLineContact);
 			  PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_TABCAPTION,OnTabCaption);
 			}
 			SkipInactiveTabsNewMsgChk: { /* Skip */ }
@@ -6724,9 +6718,9 @@ int __stdcall OnAddLine(WPARAM wParam, LPARAM lParam)
 		  //Dodawanie JID do listy kontaktow z ktorymy przeprowadzono rozmowe
 		  if(ClosedTabsChk)
 		  {
-			AddLineContact = (PPluginContact)wParam;
-			UnicodeString JID = (wchar_t*)AddLineContact->JID;
-			if(AddLineContact->IsChat) JID = "ischat_" + JID;
+			TPluginContact AddLineContact = *(PPluginContact)wParam;
+			UnicodeString JID = (wchar_t*)AddLineContact.JID;
+			if(AddLineContact.IsChat) JID = "ischat_" + JID;
 			if(AcceptClosedTabsList->IndexOf(JID)==-1)
 			{
 			  AcceptClosedTabsList->Add(JID);
@@ -6735,11 +6729,11 @@ int __stdcall OnAddLine(WPARAM wParam, LPARAM lParam)
 		  //SideSlide - wysuwanie okna rozmowy zza krawedzi ekranu
 		  if((FrmSendSlideChk)&&(SlideInAtNewMsgChk)&&(!FrmSendVisible)&&(!FrmSendBlockSlide))
 		  {
-			AddLineContact = (PPluginContact)wParam;
-			UnicodeString JID = (wchar_t*)AddLineContact->JID;
-			UnicodeString Res = (wchar_t*)AddLineContact->Resource;
+			TPluginContact AddLineContact = *(PPluginContact)wParam;
+			UnicodeString JID = (wchar_t*)AddLineContact.JID;
+			UnicodeString Res = (wchar_t*)AddLineContact.Resource;
 			if(!Res.IsEmpty()) Res = "/" + Res;
-			if(AddLineContact->IsChat) Res = "";
+			if(AddLineContact.IsChat) Res = "";
 			//Jezeli zakladka jest otwarta
 			if(ResTabsList->IndexOf(JID+Res)!=-1)
 			{
@@ -6785,26 +6779,26 @@ int __stdcall OnAddLine(WPARAM wParam, LPARAM lParam)
 	//Zawijanie przeslanych obrazkow do formy zalacznikow
 	if(CollapseImagesChk)
 	{
-	  AddLineMessage = (PPluginMessage)lParam;
-	  UnicodeString Body = (wchar_t*)AddLineMessage->Body;
+	  TPluginMessage AddLineMessage = *(PPluginMessage)lParam;
+	  UnicodeString Body = (wchar_t*)AddLineMessage.Body;
 	  if(Body.Pos("<IMG CLASS=\"aqqcacheitem\""))
 	  {
 		//Zwijanie tylko dla wyslanych obrazkow
 		if(CollapseImagesMode==2)
 		{
-		  UnicodeString MessageJID = (wchar_t*)AddLineMessage->JID;
+		  UnicodeString MessageJID = (wchar_t*)AddLineMessage.JID;
 		  if(MessageJID.Pos("/")>0) MessageJID.Delete(MessageJID.Pos("/"),MessageJID.Length());
-		  AddLineContact = (PPluginContact)wParam;
-		  UnicodeString ContactJID = (wchar_t*)AddLineContact->JID;
+		  TPluginContact AddLineContact = *(PPluginContact)wParam;
+		  UnicodeString ContactJID = (wchar_t*)AddLineContact.JID;
 		  if(MessageJID==ContactJID) return 0;
 		}
 		//Zwijanie tylko dla odebranych obrazkow
 		else if(CollapseImagesMode==3)
 		{
-		  UnicodeString MessageJID = (wchar_t*)AddLineMessage->JID;
+		  UnicodeString MessageJID = (wchar_t*)AddLineMessage.JID;
 		  if(MessageJID.Pos("/")>0) MessageJID.Delete(MessageJID.Pos("/"),MessageJID.Length());
-		  AddLineContact = (PPluginContact)wParam;
-		  UnicodeString ContactJID = (wchar_t*)AddLineContact->JID;
+		  TPluginContact AddLineContact = *(PPluginContact)wParam;
+		  UnicodeString ContactJID = (wchar_t*)AddLineContact.JID;
 		  if(MessageJID!=ContactJID) return 0;
 		}
 		//Zmienna z zawinietymi obrazkami do formy zalacznika
@@ -6853,25 +6847,25 @@ int __stdcall OnAddLine(WPARAM wParam, LPARAM lParam)
 		for(int Count=0;Count<ItemsCount+1;Count++)
 		 Body = StringReplace(Body, "[AQQCACHEITEM"+IntToStr(Count)+"]", NewBody[Count], TReplaceFlags());
 		//Zmienianie tresci wiadomosci w notyfikacji
-		AddLineMessage->Body = Body.w_str();
-		lParam = (LPARAM)AddLineMessage;
+		AddLineMessage.Body = Body.w_str();
+		memcpy((PPluginMessage)lParam,&AddLineMessage, sizeof(TPluginMessage));
 		return 2;
 	  }
 	}
 	//Skracanie wyœwietlania odnoœników w oknie rozmowy do wygodniejszej formy
-	if(ShortenLinksChk)
+	if((ShortenLinksChk)&&((ShortenLinksMode==1)||(ShortenLinksMode==2)))
 	{
 	  //Pobieranie danych kontatku
-	  AddLineContact = (PPluginContact)wParam;
+	  TPluginContact AddLineContact = *(PPluginContact)wParam;
 	  //Pobieranie identyfikatora kontatku
-	  UnicodeString ContactJID = (wchar_t*)AddLineContact->JID;
+	  UnicodeString ContactJID = (wchar_t*)AddLineContact.JID;
 	  //Kontakt nie jest botem Blip
 	  if((ContactJID!="blip@blip.pl")&&(ContactJID.Pos("202@plugin.gg")!=1))
 	  {
 		//Pobieranie danych wiadomosci
-		AddLineMessage = (PPluginMessage)lParam;
+		TPluginMessage AddLineMessage = *(PPluginMessage)lParam;
 		//Pobieranie sformatowanej tresci wiadomosci
-		UnicodeString Body = (wchar_t*)AddLineMessage->Body;
+		UnicodeString Body = (wchar_t*)AddLineMessage.Body;
 		//Zapisywanie oryginalnej tresci wiadomosci
 		UnicodeString BodyOrg = Body;
 		//Skracanie wyswietlania odnosnikow
@@ -6879,8 +6873,8 @@ int __stdcall OnAddLine(WPARAM wParam, LPARAM lParam)
 		//Zmienianie tresci wiadomosci
 		if(Body!=BodyOrg)
 		{
-		  AddLineMessage->Body = Body.w_str();
-		  lParam = (LPARAM)AddLineMessage;
+		  AddLineMessage.Body = Body.w_str();
+		  memcpy((PPluginMessage)lParam,&AddLineMessage, sizeof(TPluginMessage));
 		  return 2;
 		}
 	  }
@@ -6936,23 +6930,23 @@ int __stdcall OnCloseTab(WPARAM wParam, LPARAM lParam)
 	  LBUTTONDBLCLK = false;
 	}
 	//Przywracanie zakladki za pomoca myszki
-	TabClosing = true;
-	//Blok zmiany tekstu na zakladce
-	ClosingTab = true;
+	TabWasChanged = true;
+	//Blokada zmiany tekstu na zakladce
+	TabWasClosed = true;
 	//Pobieranie danych dt. kontaktu
-	CloseTabContact = (PPluginContact)lParam;
-	UnicodeString JID = (wchar_t*)CloseTabContact->JID;
-	UnicodeString Res = (wchar_t*)CloseTabContact->Resource;
+	TPluginContact CloseTabContact = *(PPluginContact)lParam;
+	UnicodeString JID = (wchar_t*)CloseTabContact.JID;
+	UnicodeString Res = (wchar_t*)CloseTabContact.Resource;
 	if(!Res.IsEmpty()) Res = "/" + Res;
-	if(CloseTabContact->IsChat)
+	if(CloseTabContact.IsChat)
 	{
 	  JID = "ischat_" + JID;
 	  Res = "";
 	}
 	//Zapisywanie stanu kontaktu
-	if(!CloseTabContact->IsChat)
+	if(!CloseTabContact.IsChat)
 	{
-	  int State = PluginLink.CallService(AQQ_FUNCTION_GETSTATEPNG_INDEX,0,(LPARAM)(CloseTabContact));
+	  int State = PluginLink.CallService(AQQ_FUNCTION_GETSTATEPNG_INDEX,0,(LPARAM)&CloseTabContact);
 	  ContactsStateList->WriteInteger("State",JID,State);
 	}
 	//Usuwanie JID z listy aktywnych zakladek/okien
@@ -7000,7 +6994,7 @@ int __stdcall OnCloseTab(WPARAM wParam, LPARAM lParam)
 		 goto SkipClosedTabsChk;
 	  }
 	  //Sprawdzanie czy kontakt jest czatem z wtyczki lub botem aqq.eu
-	  if(((CloseTabContact->IsChat)&&(CloseTabContact->FromPlugin))||(JID=="aqq.eu"))
+	  if(((CloseTabContact.IsChat)&&(CloseTabContact.FromPlugin))||(JID=="aqq.eu"))
 	   goto SkipClosedTabsChk;
 	  //Jezeli kontakt nie znajduje sie na liscie ostatnio zamknietych zakladek
 	  if(ClosedTabsList->IndexOf(JID)==-1)
@@ -7041,9 +7035,9 @@ int __stdcall OnCloseTabMessage(WPARAM wParam, LPARAM lParam)
 {
   if(UnsentMsgChk)
   {
-	CloseTabMessageContact = (PPluginContact)lParam;
-	UnicodeString JID = (wchar_t*)CloseTabMessageContact->JID;
-	if(CloseTabMessageContact->IsChat) JID = "ischat_" + JID;
+	TPluginContact CloseTabMessageContact = *(PPluginContact)lParam;
+	UnicodeString JID = (wchar_t*)CloseTabMessageContact.JID;
+	if(CloseTabMessageContact.IsChat) JID = "ischat_" + JID;
 	UnicodeString Body = (wchar_t*)wParam;
 	Body = Body.Trim();
 	//Gdy wiadomosc jest pusta i nie tyczy sie bota aqq.eu
@@ -7088,23 +7082,23 @@ int __stdcall OnContactsUpdate(WPARAM wParam, LPARAM lParam)
 {
   if(!ForceUnloadExecuted)
   {
-	ContactsUpdateContact = (PPluginContact)wParam;
-	if(!ContactsUpdateContact->IsChat)
+	TPluginContact ContactsUpdateContact = *(PPluginContact)wParam;
+	if(!ContactsUpdateContact.IsChat)
 	{
 	  //Pobieranie danych
-	  UnicodeString JID = (wchar_t*)ContactsUpdateContact->JID;
-	  UnicodeString Res = (wchar_t*)ContactsUpdateContact->Resource;
+	  UnicodeString JID = (wchar_t*)ContactsUpdateContact.JID;
+	  UnicodeString Res = (wchar_t*)ContactsUpdateContact.Resource;
 	  if(!Res.IsEmpty()) Res = "/" + Res;
 	  //Pobieranie i zapisywanie stanu kontaktu
-	  int State = PluginLink.CallService(AQQ_FUNCTION_GETSTATEPNG_INDEX,0,(LPARAM)(ContactsUpdateContact));
+	  int State = PluginLink.CallService(AQQ_FUNCTION_GETSTATEPNG_INDEX,0,(LPARAM)&ContactsUpdateContact);
 	  if(State!=ContactsStateList->ReadInteger("State",JID,-1))
 	  {
 		//Pobieranie i zapisywanie stanu kontatku
 		ContactsStateList->WriteInteger("State",JID,State);
 		//Pobieranie i zapisywanie indeksu kontatku
-		ContactsIndexList->WriteInteger("Index",JID,ContactsUpdateContact->UserIdx);
+		ContactsIndexList->WriteInteger("Index",JID,ContactsUpdateContact.UserIdx);
 		//Pobieranie i zapisywanie nicku kontatku
-		ContactsNickList->WriteString("Nick",JID,(wchar_t*)ContactsUpdateContact->Nick);
+		ContactsNickList->WriteString("Nick",JID,(wchar_t*)ContactsUpdateContact.Nick);
 		//Ustawianie prawidlowej ikonki w popumenu ostatnio zamknietych zakladek
 		if((ClosedTabsChk)&&(FastAccessClosedTabsChk))
 		{
@@ -7146,13 +7140,13 @@ int __stdcall OnContactsUpdate(WPARAM wParam, LPARAM lParam)
 	  if((TweakFrmSendTitlebarChk)&&(JID+Res==ActiveTabJIDRes))
 	  {
 		//Pobranie pseudonimu kontaktu
-		UnicodeString Nick = (wchar_t*)ContactsUpdateContact->Nick;
+		UnicodeString Nick = (wchar_t*)ContactsUpdateContact.Nick;
 		//Pobranie opisu kontatku
-		UnicodeString Status = (wchar_t*)ContactsUpdateContact->Status;
+		UnicodeString Status = (wchar_t*)ContactsUpdateContact.Status;
 		Status = StringReplace(Status, "\n", " ", TReplaceFlags() << rfReplaceAll);
 		//Przyjazniejszy wyglad identyfikatora
 		UnicodeString FiendlyJID = JID;
-		if(ContactsUpdateContact->FromPlugin)
+		if(ContactsUpdateContact.FromPlugin)
 		{
 		  if(FiendlyJID.Pos("@")) FiendlyJID.Delete(FiendlyJID.Pos("@"),FiendlyJID.Length());
 		}
@@ -7180,10 +7174,10 @@ int __stdcall OnContactsUpdate(WPARAM wParam, LPARAM lParam)
 		else if(TweakFrmSendTitlebarMode==3)
 		 ChangedTitlebar = Nick + " - " + FiendlyJID;
 		//Pseudonim i identyfikator kontaktu wraz z zasobem oraz opisem
-		else if((TweakFrmSendTitlebarMode==4)&&(!ContactsUpdateContact->FromPlugin))
+		else if((TweakFrmSendTitlebarMode==4)&&(!ContactsUpdateContact.FromPlugin))
 		{
 		  //Pobranie zasobu kontatku
-		  UnicodeString Resource = (wchar_t*)ContactsUpdateContact->Resource;
+		  UnicodeString Resource = (wchar_t*)ContactsUpdateContact.Resource;
 		  //Jezeli zasob nie jest pusty
 		  if(!Resource.IsEmpty())
 		  {
@@ -7203,7 +7197,7 @@ int __stdcall OnContactsUpdate(WPARAM wParam, LPARAM lParam)
 			//Jezeli okno rozmowy jest nie aktywne
 			if(hFrmSend!=GetActiveWindow())
 			 //Ustawienie tymczasowego tytulu okna
-			 TempTitlebar = ChangedTitlebar;
+			 FrmSendTitlebar = ChangedTitlebar;
 		  }
 		  //Zmiana tekstu na belce
 		  SetWindowTextW(hFrmSend,ChangedTitlebar.w_str());
@@ -7314,11 +7308,11 @@ int __stdcall OnFetchAllTabs(WPARAM wParam, LPARAM lParam)
 	  }
 	}
 	//Pobieranie danych
-	FetchAllTabsContact = (PPluginContact)lParam;
-	UnicodeString JID = (wchar_t*)FetchAllTabsContact->JID;
-	UnicodeString Res = (wchar_t*)FetchAllTabsContact->Resource;
+	TPluginContact FetchAllTabsContact = *(PPluginContact)lParam;
+	UnicodeString JID = (wchar_t*)FetchAllTabsContact.JID;
+	UnicodeString Res = (wchar_t*)FetchAllTabsContact.Resource;
 	if(!Res.IsEmpty()) Res = "/" + Res;
-	if(FetchAllTabsContact->IsChat)
+	if(FetchAllTabsContact.IsChat)
 	{
 	  JID = "ischat_" + JID;
 	  Res = "";
@@ -7330,9 +7324,9 @@ int __stdcall OnFetchAllTabs(WPARAM wParam, LPARAM lParam)
 	  ResTabsList->Add(JID+Res);
 	}
 	//Pobieranie stanu kontaktu
-	if(!FetchAllTabsContact->IsChat)
+	if(!FetchAllTabsContact.IsChat)
 	{
-	  int State = PluginLink.CallService(AQQ_FUNCTION_GETSTATEPNG_INDEX,0,(LPARAM)(FetchAllTabsContact));
+	  int State = PluginLink.CallService(AQQ_FUNCTION_GETSTATEPNG_INDEX,0,(LPARAM)&FetchAllTabsContact);
 	  ContactsStateList->WriteInteger("State",JID,State);
 	}
 	//Usuwanie JID z listy ostatnio zamknietych zakladek
@@ -7370,8 +7364,8 @@ int __stdcall OnFetchAllTabs(WPARAM wParam, LPARAM lParam)
 		 Ini->WriteString("Session","Tab"+IntToStr(Count+1),TabsList->Strings[Count]);
 	  }
 	  //Wczytywanie ostatnio przeprowadzonej rozmowy
-	  if((RestoringSession)&&(!FetchAllTabsContact->IsChat))
-	   PluginLink.CallService(AQQ_FUNCTION_LOADLASTCONV,(WPARAM)JID.w_str(),(LPARAM)FetchAllTabsContact->UserIdx);
+	  if((RestoringSession)&&(!FetchAllTabsContact.IsChat))
+	   PluginLink.CallService(AQQ_FUNCTION_LOADLASTCONV,(WPARAM)JID.w_str(),(LPARAM)FetchAllTabsContact.UserIdx);
 	  //Odczytywanie sesji wiadomosci
 	  if((RestoreMsgSessionChk)&&(RestoringSession))
 	  {
@@ -7395,19 +7389,19 @@ int __stdcall OnFetchAllTabs(WPARAM wParam, LPARAM lParam)
 	{
 	  //"Ustawianie" pustego tekstu na przypietej zakladce
 	  PluginLink.UnhookEvent(OnTabCaption);
-	  PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)L"",(LPARAM)FetchAllTabsContact);
+	  PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)L"",(LPARAM)&FetchAllTabsContact);
 	  PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_TABCAPTION,OnTabCaption);
 	  //Zakladka z botem Blip
 	  if((JID=="blip@blip.pl")||(JID.Pos("202@plugin.gg")==1))
 	  {
 		//Zmiana ikonki na zakladce
-		PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)132,(LPARAM)FetchAllTabsContact);
+		PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)132,(LPARAM)&FetchAllTabsContact);
 	  }
 	  //Zakladka z botem tweet.IM
 	  else if(JID.Pos("@twitter.tweet.im"))
 	  {
 		//Zmiana ikonki na zakladce
-		PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)131,(LPARAM)FetchAllTabsContact);
+		PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)131,(LPARAM)&FetchAllTabsContact);
 	  }
 	  //Zakladka ze zwyklym kontaktem
 	  else if((!JID.Pos("ischat_"))&&(MiniAvatarsClipTabsChk))
@@ -7418,7 +7412,7 @@ int __stdcall OnFetchAllTabs(WPARAM wParam, LPARAM lParam)
 		if(Icon)
 		{
 		  //Zmiana ikonki na zakladce
-		  PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)Icon,(LPARAM)FetchAllTabsContact);
+		  PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)Icon,(LPARAM)&FetchAllTabsContact);
 		}
 		//Ikona jeszcze niezaladowana do interfejsu AQQ
 		else
@@ -7431,7 +7425,7 @@ int __stdcall OnFetchAllTabs(WPARAM wParam, LPARAM lParam)
 			//Zapisanie indeksu ikonki do pamieci
 			ClipTabsIconList->WriteInteger("ClipTabsIcon",JID,Icon);
 			//Zmiana ikonki na zakladce
-			PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)Icon,(LPARAM)FetchAllTabsContact);
+			PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)Icon,(LPARAM)&FetchAllTabsContact);
 		  }
 		  //Generowanie pliku PNG 16x16 z awataru kontaktu
 		  else
@@ -7464,7 +7458,7 @@ int __stdcall OnFetchAllTabs(WPARAM wParam, LPARAM lParam)
 				//Zapisanie indeksu ikonki do pamieci
 				ClipTabsIconList->WriteInteger("ClipTabsIcon",JID,Icon);
 				//Zmiana ikonki na zakladce
-				PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)Icon,(LPARAM)FetchAllTabsContact);
+				PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)Icon,(LPARAM)&FetchAllTabsContact);
 			  }
 			}
 		  }
@@ -7481,32 +7475,32 @@ int __stdcall OnFetchAllTabsW(WPARAM wParam, LPARAM lParam)
   if((wParam)&&(lParam)&&(!ForceUnloadExecuted))
   {
 	//Pobieranie danych
-	FetchAllTabsContact = (PPluginContact)lParam;
-	UnicodeString JID = (wchar_t*)FetchAllTabsContact->JID;
-	if(FetchAllTabsContact->IsChat) JID = "ischat_" + JID;
+	TPluginContact FetchAllTabsContact = *(PPluginContact)lParam;
+	UnicodeString JID = (wchar_t*)FetchAllTabsContact.JID;
+	if(FetchAllTabsContact.IsChat) JID = "ischat_" + JID;
 	//Jezeli zakladka jest przypieta
-	if(ClipTabsList->IndexOf(JID)!=-1)
+	if((ClipTabsList->IndexOf(JID)!=-1)&&(!UnloadExecuted))
 	{
 	  //Wyladowanie hooka na zmiane tekstu na zakladce
 	  PluginLink.UnhookEvent(OnTabCaption);
 	  //Ustawienie tekstu na zakladce
-	  PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)L"",(LPARAM)FetchAllTabsContact);
+	  PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)L"",(LPARAM)&FetchAllTabsContact);
 	  //Hook na zmiane tekstu na zakladce
 	  PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_TABCAPTION,OnTabCaption);
 	  //Zakladka z botem Blip
 	  if((JID=="blip@blip.pl")||(JID.Pos("202@plugin.gg")==1))
 	  {
 		//Zmiana ikonki na zakladce
-		PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)132,(LPARAM)FetchAllTabsContact);
+		PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)132,(LPARAM)&FetchAllTabsContact);
 	  }
 	  //Zakladka z botem tweet.IM
 	  else if(JID.Pos("@twitter.tweet.im"))
 	  {
 		//Zmiana ikonki na zakladce
-		PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)131,(LPARAM)FetchAllTabsContact);
+		PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)131,(LPARAM)&FetchAllTabsContact);
 	  }
 	  //Zakladka ze zwyklym kontaktem
-	  else if((!FetchAllTabsContact->IsChat)&&(MiniAvatarsClipTabsChk))
+	  else if((!FetchAllTabsContact.IsChat)&&(MiniAvatarsClipTabsChk))
 	  {
 		//Pobieranie indeksu ikonki z pamieci
 		int Icon = ClipTabsIconList->ReadInteger("ClipTabsIcon",JID,0);
@@ -7514,7 +7508,7 @@ int __stdcall OnFetchAllTabsW(WPARAM wParam, LPARAM lParam)
 		if(Icon)
 		{
 		  //Zmiana ikonki na zakladce
-		  PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)Icon,(LPARAM)FetchAllTabsContact);
+		  PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)Icon,(LPARAM)&FetchAllTabsContact);
 		}
 		//Ikona jeszcze niezaladowana do interfejsu AQQ
 		else
@@ -7527,7 +7521,7 @@ int __stdcall OnFetchAllTabsW(WPARAM wParam, LPARAM lParam)
 			//Zapisanie indeksu ikonki do pamieci
 			ClipTabsIconList->WriteInteger("ClipTabsIcon",JID,Icon);
 			//Zmiana ikonki na zakladce
-			PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)Icon,(LPARAM)FetchAllTabsContact);
+			PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)Icon,(LPARAM)&FetchAllTabsContact);
 		  }
 		  //Generowanie pliku PNG 16x16 z awataru kontaktu
 		  else
@@ -7560,32 +7554,32 @@ int __stdcall OnFetchAllTabsW(WPARAM wParam, LPARAM lParam)
 				//Zapisanie indeksu ikonki do pamieci
 				ClipTabsIconList->WriteInteger("ClipTabsIcon",JID,Icon);
 				//Zmiana ikonki na zakladce
-				PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)Icon,(LPARAM)FetchAllTabsContact);
+				PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)Icon,(LPARAM)&FetchAllTabsContact);
 			  }
 			}
 		  }
 		}
 	  }
 	  //Ustawienie domyslnej ikonki kontatku
-	  else if((!FetchAllTabsContact->IsChat)&&(!MiniAvatarsClipTabsChk))
-	   PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)GetContactState(JID),(LPARAM)FetchAllTabsContact);
+	  else if((!FetchAllTabsContact.IsChat)&&(!MiniAvatarsClipTabsChk))
+	   PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)GetContactState(JID),(LPARAM)&FetchAllTabsContact);
 	}
 	//Zakladka nie jest przypieta
 	else
 	{
 	  //Ustawienie domyslnej ikonki kontatku
-	  if(!FetchAllTabsContact->IsChat) PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)GetContactState(JID),(LPARAM)FetchAllTabsContact);
+	  if(!FetchAllTabsContact.IsChat) PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)GetContactState(JID),(LPARAM)&FetchAllTabsContact);
 	  //Ustawianie domyslnego tekstu na zakladce
 	  //Wyladowanie hooka na zmiane tekstu na zakladce
 	  PluginLink.UnhookEvent(OnTabCaption);
 	  //Zakladka zwykla
-	  if(!FetchAllTabsContact->IsChat)
-	   PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)FetchAllTabsContact->Nick,(LPARAM)FetchAllTabsContact);
+	  if(!FetchAllTabsContact.IsChat)
+	   PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)FetchAllTabsContact.Nick,(LPARAM)&FetchAllTabsContact);
 	  //Zakladka z czatem
 	  else
 	  {
 		//Czat nie ze wtyczki
-		if(!FetchAllTabsContact->FromPlugin)
+		if(!FetchAllTabsContact.FromPlugin)
 		{
 		  UnicodeString tmpJID = JID;
 		  tmpJID = tmpJID.Delete(1,7);
@@ -7597,7 +7591,7 @@ int __stdcall OnFetchAllTabsW(WPARAM wParam, LPARAM lParam)
 			Channel = tmpJID;
 			Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
 		  }
-		  PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)Channel.w_str(),(LPARAM)FetchAllTabsContact);
+		  PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)Channel.w_str(),(LPARAM)&FetchAllTabsContact);
 		}
 		//Czat z wtyczki
 		else
@@ -7632,7 +7626,7 @@ int __stdcall OnFetchAllTabsW(WPARAM wParam, LPARAM lParam)
 		  Number = result2.c_str();
 		  Caption = Caption + " [nr" + Number + "]";
 		  //Ustawianie sformatowanego tekstu
-		  PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)Caption.w_str(),(LPARAM)FetchAllTabsContact);
+		  PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)Caption.w_str(),(LPARAM)&FetchAllTabsContact);
 		}
 	  }
 	  //Hook na zmiane tekstu na zakladce
@@ -7663,11 +7657,11 @@ int __stdcall OnMsgComposing(WPARAM wParam, LPARAM lParam)
 	//Zapamietywanie sesji wpisywanego tekstu
 	if((RestoreTabsSessionChk)&&(RestoreMsgSessionChk))
 	{
-	  MsgComposingContact = (PPluginContact)wParam;
-	  ChatState = (PPluginChatState)lParam;
-	  UnicodeString JID = (wchar_t*)MsgComposingContact->JID;
-	  if(MsgComposingContact->IsChat) JID = "ischat_" + JID;
-	  UnicodeString Body = (wchar_t*)ChatState->Text;
+	  TPluginContact MsgComposingContact = *(PPluginContact)wParam;
+	  TPluginChatState ChatState = *(PPluginChatState)lParam;
+	  UnicodeString JID = (wchar_t*)MsgComposingContact.JID;
+	  if(MsgComposingContact.IsChat) JID = "ischat_" + JID;
+	  UnicodeString Body = (wchar_t*)ChatState.Text;
 	  Body = Body.Trim();
 	  //Jezeli tekst nie jest pusty i nie tyczy sie bota aqq.eu
 	  if((!Body.IsEmpty())&&(JID!="aqq.eu"))
@@ -7734,6 +7728,9 @@ int __stdcall OnMsgContextClose(WPARAM wParam, LPARAM lParam)
   //Usuniecie elemetntu do szybkiego cytowania
   if((QuickQuoteChk)&&(!ForceUnloadExecuted))
   {
+	TPluginAction QuickQuoteItem;
+	ZeroMemory(&QuickQuoteItem,sizeof(TPluginAction));
+	QuickQuoteItem.cbSize = sizeof(TPluginAction);
 	QuickQuoteItem.pszName = L"TabKitQuickQuoteItem";
 	PluginLink.CallService(AQQ_CONTROLS_DESTROYPOPUPMENUITEM,0,(LPARAM)(&QuickQuoteItem));
   }
@@ -7758,22 +7755,25 @@ int __stdcall OnMsgContextPopup(WPARAM wParam, LPARAM lParam)
 	  CloseClipboard();
 	  if(!ClipboardText.IsEmpty())
 	  {
-		PluginTriple = (PPluginTriple)lParam;
+		TPluginTriple Triple = *(PPluginTriple)lParam;
 		//Ustalanie pozycji dla elemenu
+		TPluginItemDescriber PluginItemDescriber;
 		PluginItemDescriber.cbSize = sizeof(TPluginItemDescriber);
-		PluginItemDescriber.FormHandle = PluginTriple->Handle1;
+		PluginItemDescriber.FormHandle = Triple.Handle1;
 		PluginItemDescriber.ParentName = L"popRich";
 		PluginItemDescriber.Name = L"Wklej1";
-		Action = (PPluginAction)(PluginLink.CallService(AQQ_CONTROLS_GETPOPUPMENUITEM,0,(LPARAM)(&PluginItemDescriber)));
+		TPluginAction Action = *(PPluginAction)(PluginLink.CallService(AQQ_CONTROLS_GETPOPUPMENUITEM,0,(LPARAM)(&PluginItemDescriber)));
 		//Tworzenie elemtu
+		TPluginAction QuickQuoteItem;
+		ZeroMemory(&QuickQuoteItem,sizeof(TPluginAction));
 		QuickQuoteItem.cbSize = sizeof(TPluginAction);
 		QuickQuoteItem.pszName = L"TabKitQuickQuoteItem";
 		QuickQuoteItem.pszCaption = L"Wklej jako cytat";
 		QuickQuoteItem.IconIndex = -1;
 		QuickQuoteItem.pszService = L"sTabKitQuickQuoteItem";
 		QuickQuoteItem.pszPopupName = L"popRich";
-		QuickQuoteItem.Position = Action->Position + 1;
-		QuickQuoteItem.Handle = PluginTriple->Handle1;
+		QuickQuoteItem.Position = Action.Position + 1;
+		QuickQuoteItem.Handle = Triple.Handle1;
 		PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&QuickQuoteItem));
 	  }
 	}
@@ -7788,9 +7788,12 @@ int __stdcall OnPerformCopyData(WPARAM wParam, LPARAM lParam)
 {
   if(!ForceUnloadExecuted)
   {
-	//Domylsne usuwanie elementow
+	//Domyslne usuwanie elementow
+	TPluginAction CollapseImagesItem;
+	ZeroMemory(&CollapseImagesItem,sizeof(TPluginAction));
 	CollapseImagesItem.cbSize = sizeof(TPluginAction);
 	CollapseImagesItem.pszName = L"TabKitCollapseImagesItem";
+	CollapseImagesItem.Handle = (int)hFrmSend;
 	PluginLink.CallService(AQQ_CONTROLS_DESTROYPOPUPMENUITEM ,0,(LPARAM)(&CollapseImagesItem));
 	//Kasowanie zapamietanego wczesniej adresu URL
 	CollapseImagesItemURL = "";
@@ -7821,6 +7824,7 @@ int __stdcall OnPerformCopyData(WPARAM wParam, LPARAM lParam)
 		//Zapisywanie adresu URL
 		CollapseImagesItemURL = CopyData;
 		//Tworzenie elementu w menu
+		ZeroMemory(&CollapseImagesItem,sizeof(TPluginAction));
 		CollapseImagesItem.cbSize = sizeof(TPluginAction);
 		CollapseImagesItem.pszName = L"TabKitCollapseImagesItem";
 		CollapseImagesItem.pszCaption = L"Otwórz";
@@ -7844,9 +7848,9 @@ int __stdcall OnPreSendMsg(WPARAM wParam, LPARAM lParam)
   //Dodawanie JID do listy kontaktow z ktorymy przeprowadzono rozmowe
   if((ClosedTabsChk)&&(!ForceUnloadExecuted))
   {
-	PreSendMsgContact = (PPluginContact)wParam;
-	UnicodeString JID = (wchar_t*)PreSendMsgContact->JID;
-	if(PreSendMsgContact->IsChat) JID = "ischat_" + JID;
+	TPluginContact PreSendMsgContact = *(PPluginContact)wParam;
+	UnicodeString JID = (wchar_t*)PreSendMsgContact.JID;
+	if(PreSendMsgContact.IsChat) JID = "ischat_" + JID;
 	if(AcceptClosedTabsList->IndexOf(JID)==-1)
 	{
 	  AcceptClosedTabsList->Add(JID);
@@ -7954,11 +7958,11 @@ int __stdcall OnPrimaryTab(WPARAM wParam, LPARAM lParam)
 		}
 	  }
 	  //Pobieranie danych
-	  PrimaryTabContact = (PPluginContact)lParam;
-	  UnicodeString JID = (wchar_t*)PrimaryTabContact->JID;
-	  UnicodeString Res = (wchar_t*)PrimaryTabContact->Resource;
+	  TPluginContact PrimaryTabContact = *(PPluginContact)lParam;
+	  UnicodeString JID = (wchar_t*)PrimaryTabContact.JID;
+	  UnicodeString Res = (wchar_t*)PrimaryTabContact.Resource;
 	  if(!Res.IsEmpty()) Res = "/" + Res;
-	  if(PrimaryTabContact->IsChat)
+	  if(PrimaryTabContact.IsChat)
 	  {
 		JID = "ischat_" + JID;
 		Res = "";
@@ -7967,13 +7971,13 @@ int __stdcall OnPrimaryTab(WPARAM wParam, LPARAM lParam)
 	  ActiveTabJID = JID;
 	  ActiveTabJIDRes = JID + Res;
 	  //Zmiana tekstu paska tytulu okna rozmowy
-	  if(!PrimaryTabContact->IsChat)
+	  if(!PrimaryTabContact.IsChat)
 	  {
 		//Pobieranie danych konatku
-		UnicodeString Nick = (wchar_t*)PrimaryTabContact->Nick;
-		UnicodeString Status = (wchar_t*)PrimaryTabContact->Status;
+		UnicodeString Nick = (wchar_t*)PrimaryTabContact.Nick;
+		UnicodeString Status = (wchar_t*)PrimaryTabContact.Status;
 		UnicodeString FiendlyJID = JID;
-		if(PrimaryTabContact->FromPlugin)
+		if(PrimaryTabContact.FromPlugin)
 		{
 		  if(FiendlyJID.Pos("@")) FiendlyJID.Delete(FiendlyJID.Pos("@"),FiendlyJID.Length());
 		}
@@ -7981,8 +7985,8 @@ int __stdcall OnPrimaryTab(WPARAM wParam, LPARAM lParam)
 		if(TweakFrmSendTitlebarChk)
 		{
 		  //Pobranie aktualnego tekstu belki okna
-		  wchar_t TitlebarW[128];
-		  GetWindowTextW(hFrmSend,TitlebarW,sizeof(TitlebarW));
+		  wchar_t* TitlebarW = new wchar_t[512];
+		  GetWindowTextW(hFrmSend,TitlebarW,512);
 		  UnicodeString Titlebar = (wchar_t*)TitlebarW;
 		  //Zmienna zmienionego tekstu na belce
 		  UnicodeString ChangedTitlebar;
@@ -8002,10 +8006,10 @@ int __stdcall OnPrimaryTab(WPARAM wParam, LPARAM lParam)
 		  else if(TweakFrmSendTitlebarMode==3)
 		   ChangedTitlebar = Nick + " - " + FiendlyJID;
 		  //Pseudonim i identyfikator kontaktu wraz z zasobem oraz opisem
-		  else if((TweakFrmSendTitlebarMode==4)&&(!PrimaryTabContact->FromPlugin))
+		  else if((TweakFrmSendTitlebarMode==4)&&(!PrimaryTabContact.FromPlugin))
 		  {
 			//Pobranie zasobu kontaktu
-			UnicodeString Resource = (wchar_t*)PrimaryTabContact->Resource;
+			UnicodeString Resource = (wchar_t*)PrimaryTabContact.Resource;
 			//Jezeli zasob nie jest pusty
 			if(!Resource.IsEmpty())
 			{
@@ -8049,18 +8053,18 @@ int __stdcall OnPrimaryTab(WPARAM wParam, LPARAM lParam)
 	//Zmiana tekstu paska tytulu okna rozmowy przy wyladowaniu wtyczki
 	else if(TweakFrmSendTitlebarChk)
 	{
-	  PrimaryTabContact = (PPluginContact)lParam;
+	  TPluginContact PrimaryTabContact = *(PPluginContact)lParam;
 	  //Jezeli kontakt nie jest czatem
-	  if(!PrimaryTabContact->IsChat)
+	  if(!PrimaryTabContact.IsChat)
 	  {
 	    //Pobieranie danych konatku
-		UnicodeString JID = (wchar_t*)PrimaryTabContact->JID;
-		if(PrimaryTabContact->FromPlugin)
+		UnicodeString JID = (wchar_t*)PrimaryTabContact.JID;
+		if(PrimaryTabContact.FromPlugin)
 		{
 		  if(JID.Pos("@")) JID.Delete(JID.Pos("@"),JID.Length());
 		}
-		UnicodeString Nick = (wchar_t*)PrimaryTabContact->Nick;
-		UnicodeString Status = (wchar_t*)PrimaryTabContact->Status;
+		UnicodeString Nick = (wchar_t*)PrimaryTabContact.Nick;
+		UnicodeString Status = (wchar_t*)PrimaryTabContact.Status;
 		//Jezeli opis nie jest pusty
 		if(!Status.IsEmpty())
 		{
@@ -8090,11 +8094,11 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 	//Przelaczanie na zakladke z nowa wiadomoscia
 	if(SwitchToNewMsgChk)
 	{
-	  RecvMsgContact = (PPluginContact)wParam;
-	  UnicodeString JID = (wchar_t*)RecvMsgContact->JID;
-	  UnicodeString Res = (wchar_t*)RecvMsgContact->Resource;
+	  TPluginContact RecvMsgContact = *(PPluginContact)wParam;
+	  UnicodeString JID = (wchar_t*)RecvMsgContact.JID;
+	  UnicodeString Res = (wchar_t*)RecvMsgContact.Resource;
 	  if(!Res.IsEmpty()) Res = "/" + Res;
-	  if(RecvMsgContact->IsChat)
+	  if(RecvMsgContact.IsChat)
 	  {
 		JID = "ischat_" + JID;
 		Res = "";
@@ -8102,12 +8106,12 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 	  //Jezeli JID jest rozny od JID z aktywnej zakladki i zakladka jest otwarta
 	  if((JID!=ActiveTabJID)&&(ResTabsList->IndexOf(JID+Res)!=-1))
 	  {
-		RecvMsgMessage = (PPluginMessage)lParam;
+		TPluginMessage RecvMsgMessage = *(PPluginMessage)lParam;
 		//Rodzaj wiadomosci
-		if(RecvMsgMessage->Kind!=MSGKIND_RTT)
+		if(RecvMsgMessage.Kind!=MSGKIND_RTT)
 		{
 		  //Jezeli wiadomosc nie jest pusta
-		  if(!((UnicodeString)((wchar_t*)RecvMsgMessage->Body)).IsEmpty())
+		  if(!((UnicodeString)((wchar_t*)RecvMsgMessage.Body)).IsEmpty())
 		  {
 			//Dodawanie JID do kolejki nowych wiadomosci
 			if(MsgList->IndexOf(JID+Res)==-1)
@@ -8119,11 +8123,11 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 	//Licznik nieprzeczytanych wiadomosci na pasku tytulu okna rozmowy
 	if(InactiveFrmNewMsgChk)
 	{
-	  RecvMsgContact = (PPluginContact)wParam;
-	  UnicodeString JID = (wchar_t*)RecvMsgContact->JID;
-	  UnicodeString Res = (wchar_t*)RecvMsgContact->Resource;
+	  TPluginContact RecvMsgContact = *(PPluginContact)wParam;
+	  UnicodeString JID = (wchar_t*)RecvMsgContact.JID;
+	  UnicodeString Res = (wchar_t*)RecvMsgContact.Resource;
 	  if(!Res.IsEmpty()) Res = "/" + Res;
-	  if(RecvMsgContact->IsChat)
+	  if(RecvMsgContact.IsChat)
 	  {
 		JID = "ischat_" + JID;
 		Res = "";
@@ -8134,24 +8138,24 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 		//Jezeli okno rozmowy jest nieaktywne
 		if(hFrmSend!=GetActiveWindow())
 		{
-		  RecvMsgMessage = (PPluginMessage)lParam;
+		  TPluginMessage RecvMsgMessage = *(PPluginMessage)lParam;
 		  //Rodzaj wiadomosci
-		  if(RecvMsgMessage->Kind!=MSGKIND_RTT)
+		  if(RecvMsgMessage.Kind!=MSGKIND_RTT)
 		  {
 			//Jezeli wiadomosc nie jest pusta
-			if(!((UnicodeString)((wchar_t*)RecvMsgMessage->Body)).IsEmpty())
+			if(!((UnicodeString)((wchar_t*)RecvMsgMessage.Body)).IsEmpty())
 			{
 			  //Pobranie oryginalnego tekstu paska tytulu okna rozmowy
-			  if((TempTitlebar.IsEmpty())&&(!InactiveFrmNewMsgCount))
+			  if((FrmSendTitlebar.IsEmpty())&&(!InactiveFrmNewMsgCount))
 			  {
-				wchar_t TempTitlebarW[128];
-				GetWindowTextW(hFrmSend,TempTitlebarW,sizeof(TempTitlebarW));
-				TempTitlebar = (wchar_t*)TempTitlebarW;
+				wchar_t* TempTitlebarW = new wchar_t[512];
+				GetWindowTextW(hFrmSend,TempTitlebarW,512);
+				FrmSendTitlebar = (wchar_t*)TempTitlebarW;
 			  }
 			  //Dodanie 1 do licznika nieprzeczytachy wiadomosci
 			  InactiveFrmNewMsgCount++;
 			  //Ustawianie nowego tekstu paska tytulu okna rozmowy
-			  SetWindowTextW(hFrmSend,("[" + IntToStr(InactiveFrmNewMsgCount)+ "] " + TempTitlebar).w_str());
+			  SetWindowTextW(hFrmSend,("[" + IntToStr(InactiveFrmNewMsgCount)+ "] " + FrmSendTitlebar).w_str());
 			}
 		  }
 		}
@@ -8160,10 +8164,10 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 		  //Kasowanie licznika nowych wiadomosci
 		  InactiveFrmNewMsgCount = 0;
 		  //Przywracanie oryginalnego tekstu paska tytulu okna rozmowy
-		  if(!TempTitlebar.IsEmpty())
+		  if(!FrmSendTitlebar.IsEmpty())
 		  {
-			SetWindowTextW(hFrmSend,TempTitlebar.w_str());
-			TempTitlebar = "";
+			SetWindowTextW(hFrmSend,FrmSendTitlebar.w_str());
+			FrmSendTitlebar = "";
 		  }
 		}
 	  }
@@ -8171,11 +8175,11 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 	//Licznik nieprzeczytanych wiadomosci na zakladkach
 	if(InactiveTabsNewMsgChk)
 	{
-	  RecvMsgContact = (PPluginContact)wParam;
-	  UnicodeString JID = (wchar_t*)RecvMsgContact->JID;
-	  UnicodeString Res = (wchar_t*)RecvMsgContact->Resource;
+	  TPluginContact RecvMsgContact = *(PPluginContact)wParam;
+	  UnicodeString JID = (wchar_t*)RecvMsgContact.JID;
+	  UnicodeString Res = (wchar_t*)RecvMsgContact.Resource;
 	  if(!Res.IsEmpty()) Res = "/" + Res;
-	  if(RecvMsgContact->IsChat)
+	  if(RecvMsgContact.IsChat)
 	  {
 		JID = "ischat_" + JID;
 		Res = "";
@@ -8186,12 +8190,12 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 	  //Jezeli JID jest rozny od JID z aktywnej zakladki i zakladka jest otwarta
 	  if((JID+Res!=ActiveTabJIDRes)&&(ResTabsList->IndexOf(JID+Res)!=-1))
 	  {
-		RecvMsgMessage = (PPluginMessage)lParam;
+		TPluginMessage RecvMsgMessage = *(PPluginMessage)lParam;
 		//Rodzaj wiadomosci
-		if(RecvMsgMessage->Kind!=MSGKIND_RTT)
+		if(RecvMsgMessage.Kind!=MSGKIND_RTT)
 		{
 		  //Jezeli wiadomosc nie jest pusta
-		  if(!((UnicodeString)((wchar_t*)RecvMsgMessage->Body)).IsEmpty())
+		  if(!((UnicodeString)((wchar_t*)RecvMsgMessage.Body)).IsEmpty())
 		  {
 			//Pobieranie stanu nowych wiadomosci
 			int InactiveTabsCount = InactiveTabsNewMsgCount->ReadInteger("TabsMsg",JID+Res,0);
@@ -8207,12 +8211,12 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 			else
 			{
 			  //Zakladka ze zwyklyum
-			  if(!RecvMsgContact->IsChat) TabCaption = (wchar_t*)RecvMsgContact->Nick;
+			  if(!RecvMsgContact.IsChat) TabCaption = (wchar_t*)RecvMsgContact.Nick;
 			  //Zakladka z czatem
 			  else
 			  {
 				//Czat nie ze wtyczki
-				if(!RecvMsgContact->FromPlugin)
+				if(!RecvMsgContact.FromPlugin)
 				{
 				  UnicodeString tmpJID = JID;
 				  tmpJID = tmpJID.Delete(1,7);
@@ -8264,7 +8268,7 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 			TabCaption = "[" + IntToStr(InactiveTabsCount) + "] " + TabCaption;
 			//Ustawianie nowego tekstu zakladki
 			PluginLink.UnhookEvent(OnTabCaption);
-			PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)TabCaption.w_str(),(LPARAM)RecvMsgContact);
+			PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)TabCaption.w_str(),(LPARAM)&RecvMsgContact);
 			PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_TABCAPTION,OnTabCaption);
 		  }
 		}
@@ -8274,11 +8278,11 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 	//Notyfikacja nowej wiadomosci w chmurce
 	if((InactiveNotiferNewMsgChk)&&(!BlockInactiveNotiferNewMsg)&&(!SecureMode))
 	{
-	  RecvMsgContact = (PPluginContact)wParam;
-	  UnicodeString JID = (wchar_t*)RecvMsgContact->JID;
-	  UnicodeString Res = (wchar_t*)RecvMsgContact->Resource;
+	  TPluginContact RecvMsgContact = *(PPluginContact)wParam;
+	  UnicodeString JID = (wchar_t*)RecvMsgContact.JID;
+	  UnicodeString Res = (wchar_t*)RecvMsgContact.Resource;
 	  if(!Res.IsEmpty()) Res = "/" + Res;
-	  if(RecvMsgContact->IsChat)
+	  if(RecvMsgContact.IsChat)
 	  {
 		JID = "ischat_" + JID;
 		Res = "";
@@ -8289,17 +8293,17 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 		//Jezeli JID wiadomosci jest inny niz JID aktwnej zakladki
 		if(JID!=ActiveTabJID)
 		{
-		  RecvMsgMessage = (PPluginMessage)lParam;
+		  TPluginMessage RecvMsgMessage = *(PPluginMessage)lParam;
 		  //Rodzaj wiadomosci
-		  if((!RecvMsgMessage->ShowAsOutgoing)&&((RecvMsgMessage->Kind==MSGKIND_CHAT)||(RecvMsgMessage->Kind==MSGKIND_GROUPCHAT)))
+		  if((!RecvMsgMessage.ShowAsOutgoing)&&((RecvMsgMessage.Kind==MSGKIND_CHAT)||(RecvMsgMessage.Kind==MSGKIND_GROUPCHAT)))
 		  {
-			UnicodeString Body = (wchar_t*)RecvMsgMessage->Body;
+			UnicodeString Body = (wchar_t*)RecvMsgMessage.Body;
 			//Jezeli wiadomosc nie jest pusta
 			if(!Body.IsEmpty())
 			{
 			  //Pobieranie danych kontaktu
-			  UnicodeString Nick = (wchar_t*)RecvMsgContact->Nick;
-			  int UserIdx = RecvMsgContact->UserIdx;
+			  UnicodeString Nick = (wchar_t*)RecvMsgContact.Nick;
+			  int UserIdx = RecvMsgContact.UserIdx;
 			  //Jezeli w wiadomosci znajduje sie obrazek
 			  if(Body.Pos("<AQQ_CACHE_ITEM")>0)
 			  {
@@ -8378,17 +8382,17 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 		//Jezeli okno rozmowy nie jest aktywne
 		else if(hFrmSend!=GetActiveWindow())
 		{
-		  RecvMsgMessage = (PPluginMessage)lParam;
+		  TPluginMessage RecvMsgMessage = *(PPluginMessage)lParam;
 		  //Rodzaj wiadomosci
-		  if((!RecvMsgMessage->ShowAsOutgoing)&&((RecvMsgMessage->Kind==MSGKIND_CHAT)||(RecvMsgMessage->Kind==MSGKIND_GROUPCHAT)))
+		  if((!RecvMsgMessage.ShowAsOutgoing)&&((RecvMsgMessage.Kind==MSGKIND_CHAT)||(RecvMsgMessage.Kind==MSGKIND_GROUPCHAT)))
 		  {
-			UnicodeString Body = (wchar_t*)RecvMsgMessage->Body;
+			UnicodeString Body = (wchar_t*)RecvMsgMessage.Body;
 			//Jezeli wiadomosc nie jest pusta
 			if(!Body.IsEmpty())
 			{
 			  //Pobieranie danych kontaktu
-			  UnicodeString Nick = (wchar_t*)RecvMsgContact->Nick;
-			  int UserIdx = RecvMsgContact->UserIdx;
+			  UnicodeString Nick = (wchar_t*)RecvMsgContact.Nick;
+			  int UserIdx = RecvMsgContact.UserIdx;
 			  //Jezeli w wiadomosci znajduje sie obrazek
 			  if(Body.Pos("<AQQ_CACHE_ITEM")>0)
 			  {
@@ -8453,7 +8457,7 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 			  //Body
 			  PluginShowInfo.cbSize = sizeof(TPluginShowInfo);
 			  if(CloudTickModeChk) PluginShowInfo.Event = tmeMsgCap;
-			  else PluginShowInfo.Event = tmePseudoMsgCap;//tmeInfo;
+			  else PluginShowInfo.Event = tmePseudoMsgCap;
 			  PluginShowInfo.Text = Body.w_str();
 			  PluginShowInfo.ImagePath = L"";
 			  PluginShowInfo.TimeOut = 1000 * CloudTimeOut;
@@ -8469,26 +8473,26 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 	//Notyfikcja pisania wiadomosci
 	if(ChatStateNotiferNewMsgChk)
 	{
-	  RecvMsgContact = (PPluginContact)wParam;
-	  UnicodeString JID = (wchar_t*)RecvMsgContact->JID;
-	  UnicodeString Res = (wchar_t*)RecvMsgContact->Resource;
+	  TPluginContact RecvMsgContact = *(PPluginContact)wParam;
+	  UnicodeString JID = (wchar_t*)RecvMsgContact.JID;
+	  UnicodeString Res = (wchar_t*)RecvMsgContact.Resource;
 	  if(!Res.IsEmpty()) Res = "/" + Res;
 	  //Jezeli zakladka jest otwarta & kontakt nie jest czatem
-	  if((ResTabsList->IndexOf(JID+Res)!=-1)&&(!RecvMsgContact->IsChat))
+	  if((ResTabsList->IndexOf(JID+Res)!=-1)&&(!RecvMsgContact.IsChat))
 	  {
-		RecvMsgMessage = (PPluginMessage)lParam;
-		int ChatState = RecvMsgMessage->ChatState;
+		TPluginMessage RecvMsgMessage = *(PPluginMessage)lParam;
+		int ChatState = RecvMsgMessage.ChatState;
 		//Jezeli okno rozmowy jest nieaktywne
 		if(hFrmSend!=GetActiveWindow())
 		{
 		  //Pisanie wiadomosci
 		  if((ChatState==CHAT_COMPOSING)&&(LastChatState!=ChatState))
 		  {
-			//Zapamietywanie aktualnego stanu ikonek
+			//Zapamietywanie aktualnego stanu pisania wiadomosci
 			LastChatState = ChatState;
 			//Pobranie aktualnych ikonek
-			/*if*/while(!hIconSmall) hIconSmall = (HICON)SendMessage(hFrmSend, WM_GETICON, ICON_SMALL, 0);
-			/*if*/while(!hIconBig) hIconBig = (HICON)SendMessage(hFrmSend, WM_GETICON, ICON_BIG, 0);
+			while(!hIconSmall) hIconSmall = (HICON)SendMessage(hFrmSend, WM_GETICON, ICON_SMALL, 0);
+			while(!hIconBig) hIconBig = (HICON)SendMessage(hFrmSend, WM_GETICON, ICON_BIG, 0);
 			//Ustawienie nowej malej ikonki
 			SendMessage(hFrmSend, WM_SETICON, ICON_SMALL, (LPARAM)LoadImage(0, ComposingIconSmall.w_str(), IMAGE_ICON, 16, 16, LR_LOADFROMFILE));
 			//Ustawienie nowej duzej ikonki
@@ -8497,11 +8501,11 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 		  //Spauzowanie
 		  else if((ChatState==CHAT_PAUSED)&&(LastChatState!=ChatState))
 		  {
-			//Zapamietywanie aktualnego stanu ikonek
+			//Zapamietywanie aktualnego stanu pisania wiadomosci
 			LastChatState = ChatState;
 			//Pobranie aktualnych ikonek
-			/*if*/while(!hIconSmall) hIconSmall = (HICON)SendMessage(hFrmSend, WM_GETICON, ICON_SMALL, 0);
-			/*if*/while(!hIconBig) hIconBig = (HICON)SendMessage(hFrmSend, WM_GETICON, ICON_BIG, 0);
+			while(!hIconSmall) hIconSmall = (HICON)SendMessage(hFrmSend, WM_GETICON, ICON_SMALL, 0);
+			while(!hIconBig) hIconBig = (HICON)SendMessage(hFrmSend, WM_GETICON, ICON_BIG, 0);
 			//Ustawienie nowej malej ikonki
 			SendMessage(hFrmSend, WM_SETICON, ICON_SMALL, (LPARAM)LoadImage(0, PauseIconSmall.w_str(), IMAGE_ICON, 16, 16, LR_LOADFROMFILE));
 			//Ustawienie nowej duzej ikonki
@@ -8510,9 +8514,8 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 		  //Inny stan
 		  else if(LastChatState!=ChatState)
 		  {
-			//Zapamietywanie aktualnego stanu ikonek
+			//Zapamietywanie aktualnego stanu pisania wiadomosci
 			LastChatState = ChatState;
-
 			//Ustawienie oryginalnej malej ikonki
 			if(hIconSmall)
 			{
@@ -8540,7 +8543,7 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 		   PreMsgList->Add(JID+Res);
 		  PreMsgStateList->WriteInteger("PreMsgState",JID+Res,CHAT_COMPOSING);
 		  //Zmiana ikonki na zakladce
-		  PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)COMPOSING,(LPARAM)RecvMsgContact);
+		  PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)COMPOSING,(LPARAM)&RecvMsgContact);
 		}
 		//Spauzowanie
 		else if((ChatState==CHAT_PAUSED)&&(ChatState!=PreMsgStateList->ReadInteger("PreMsgState",JID+Res,0)))
@@ -8550,7 +8553,7 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 		   PreMsgList->Add(JID+Res);
 		  PreMsgStateList->WriteInteger("PreMsgState",JID+Res,CHAT_PAUSED);
 		  //Zmiana ikonki na zakladce
-		  PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)PAUSE,(LPARAM)RecvMsgContact);
+		  PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)PAUSE,(LPARAM)&RecvMsgContact);
 		}
 		//Zamkniecie okna rozmowy
 		else if((ChatState==CHAT_GONE)&&(ChatState!=PreMsgStateList->ReadInteger("PreMsgState",JID+Res,0))&&(ChatGoneNotiferNewMsgChk))
@@ -8560,7 +8563,7 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 		   PreMsgList->Add(JID+Res);
 		  PreMsgStateList->WriteInteger("PreMsgState",JID+Res,CHAT_GONE);
 		  //Zmiana ikonki na zakladce
-		  PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)GONE,(LPARAM)RecvMsgContact);
+		  PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)GONE,(LPARAM)&RecvMsgContact);
 		}
 		//Inny stan
 		else if(ChatState!=PreMsgStateList->ReadInteger("PreMsgState",JID+Res,0))
@@ -8570,17 +8573,17 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 		   PreMsgList->Delete(PreMsgList->IndexOf(JID+Res));
 		  PreMsgStateList->WriteInteger("PreMsgState",JID+Res,0);
 		  //Zmiana ikonki na zakladce
-		  ChatState = PluginLink.CallService(AQQ_FUNCTION_GETSTATEPNG_INDEX,0,(LPARAM)RecvMsgContact);
-		  PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)ChatState,(LPARAM)RecvMsgContact);
+		  ChatState = PluginLink.CallService(AQQ_FUNCTION_GETSTATEPNG_INDEX,0,(LPARAM)&RecvMsgContact);
+		  PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)ChatState,(LPARAM)&RecvMsgContact);
 		}
 	  }
 	}
 	//Dodawanie JID do listy kontaktow z ktorymy przeprowadzono rozmowe
 	if(ClosedTabsChk)
 	{
-	  RecvMsgContact = (PPluginContact)wParam;
-	  UnicodeString JID = (wchar_t*)RecvMsgContact->JID;
-	  if(RecvMsgContact->IsChat) JID = "ischat_" + JID;
+	  TPluginContact RecvMsgContact = *(PPluginContact)wParam;
+	  UnicodeString JID = (wchar_t*)RecvMsgContact.JID;
+	  if(RecvMsgContact.IsChat) JID = "ischat_" + JID;
 	  if(AcceptClosedTabsList->IndexOf(JID)==-1)
 	  {
 		AcceptClosedTabsList->Add(JID);
@@ -8589,20 +8592,20 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 	//SideSlide - wysuwanie okna rozmowy zza krawedzi ekranu
 	if((FrmSendSlideChk)&&(SlideInAtNewMsgChk)&&(!FrmSendVisible)&&(!FrmSendBlockSlide))
 	{
-	  RecvMsgContact = (PPluginContact)wParam;
-	  UnicodeString JID = (wchar_t*)RecvMsgContact->JID;
-	  UnicodeString Res = (wchar_t*)RecvMsgContact->Resource;
+	  TPluginContact RecvMsgContact = *(PPluginContact)wParam;
+	  UnicodeString JID = (wchar_t*)RecvMsgContact.JID;
+	  UnicodeString Res = (wchar_t*)RecvMsgContact.Resource;
 	  if(!Res.IsEmpty()) Res = "/" + Res;
-	  if(RecvMsgContact->IsChat) Res = "";
+	  if(RecvMsgContact.IsChat) Res = "";
 	  //Jezeli zakladka jest otwarta
 	  if(ResTabsList->IndexOf(JID+Res)!=-1)
 	  {
-		RecvMsgMessage = (PPluginMessage)lParam;
+		TPluginMessage RecvMsgMessage = *(PPluginMessage)lParam;
 		//Rodzaj wiadomosci
-		if((!RecvMsgMessage->ShowAsOutgoing)&&((RecvMsgMessage->Kind==MSGKIND_CHAT)||(RecvMsgMessage->Kind==MSGKIND_GROUPCHAT)))
+		if((!RecvMsgMessage.ShowAsOutgoing)&&((RecvMsgMessage.Kind==MSGKIND_CHAT)||(RecvMsgMessage.Kind==MSGKIND_GROUPCHAT)))
 		{
 		  //Jezeli wiadomosc nie jest pusta
-		  if(!((UnicodeString)((wchar_t*)RecvMsgMessage->Body)).IsEmpty())
+		  if(!((UnicodeString)((wchar_t*)RecvMsgMessage.Body)).IsEmpty())
 		  {
 			//Sprawdzanie czy aktywna jest aplikacja pelno ekranowa
 			if(((FullScreenMode)&&(!SideSlideFullScreenModeChk))||((FullScreenModeExeptions)&&(SideSlideFullScreenModeChk)))
@@ -8644,11 +8647,11 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 	//Dodawanie JID do kolejki pokazywania wiadomosci przy skrocie Ctrl+Shift+F1 lub nieprzypisanym skrotem do zakladki
 	if((FrmMainSlideChk)||(NewMgsHoyKeyChk))
 	{
-	  RecvMsgContact = (PPluginContact)wParam;
-	  UnicodeString JID = (wchar_t*)RecvMsgContact->JID;
-	  UnicodeString Res = (wchar_t*)RecvMsgContact->Resource;
+	  TPluginContact RecvMsgContact = *(PPluginContact)wParam;
+	  UnicodeString JID = (wchar_t*)RecvMsgContact.JID;
+	  UnicodeString Res = (wchar_t*)RecvMsgContact.Resource;
 	  if(!Res.IsEmpty()) Res = "/" + Res;
-	  if(RecvMsgContact->IsChat)
+	  if(RecvMsgContact.IsChat)
 	  {
 		JID = "ischat_" + JID;
 		Res = "";
@@ -8656,19 +8659,19 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 	  //Jezeli zakladka nie jest otwarta
 	  if(ResTabsList->IndexOf(JID+Res)==-1)
 	  {
-		RecvMsgMessage = (PPluginMessage)lParam;
+		TPluginMessage RecvMsgMessage = *(PPluginMessage)lParam;
 		//Rodzaj wiadomosci
-		if(RecvMsgMessage->Kind!=MSGKIND_RTT)
+		if(RecvMsgMessage.Kind!=MSGKIND_RTT)
 		{
 		  //Jezeli wiadomosc nie jest pusta
-		  if(!((UnicodeString)((wchar_t*)RecvMsgMessage->Body)).IsEmpty())
+		  if(!((UnicodeString)((wchar_t*)RecvMsgMessage.Body)).IsEmpty())
 		  {
 			//Dodawanie JID do kolejki nowych wiadomosci
 			if(UnOpenMsgList->IndexOf(JID+Res)==-1)
 			 UnOpenMsgList->Add(JID+Res);
 			//Pobieranie i zapisywanie indeksu kontatku
-			if(!RecvMsgContact->IsChat)
-			 ContactsIndexList->WriteInteger("Index",JID,RecvMsgContact->UserIdx);
+			if(!RecvMsgContact.IsChat)
+			 ContactsIndexList->WriteInteger("Index",JID,RecvMsgContact.UserIdx);
 		  }
 		}
 	  }
@@ -8713,20 +8716,20 @@ int __stdcall OnReplyList(WPARAM wParam, LPARAM lParam)
   //Sprawdzanie ID wywolania enumeracji
   if((wParam==ReplyListID)&&(!ForceUnloadExecuted))
   {
-	ReplyListContact = (PPluginContact)lParam;
-	if(!ReplyListContact->IsChat)
+	TPluginContact ReplyListContact = *(PPluginContact)lParam;
+	if(!ReplyListContact.IsChat)
 	{
-	  UnicodeString JID = (wchar_t*)ReplyListContact->JID;
+	  UnicodeString JID = (wchar_t*)ReplyListContact.JID;
 	  //Pobieranie i zapisywanie stanu kontaktu
-	  int State = PluginLink.CallService(AQQ_FUNCTION_GETSTATEPNG_INDEX,0,(LPARAM)(ReplyListContact));
+	  int State = PluginLink.CallService(AQQ_FUNCTION_GETSTATEPNG_INDEX,0,(LPARAM)&ReplyListContact);
 	  if(State!=ContactsStateList->ReadInteger("State",JID,-1))
 	  {
 		//Pobieranie i zapisywanie stanu kontatku
 		ContactsStateList->WriteInteger("State",JID,State);
 		//Pobieranie i zapisywanie indeksu kontatku
-		ContactsIndexList->WriteInteger("Index",JID,ReplyListContact->UserIdx);
+		ContactsIndexList->WriteInteger("Index",JID,ReplyListContact.UserIdx);
 		//Pobieranie i zapisywanie nicku kontatku
-		ContactsNickList->WriteString("Nick",JID,(wchar_t*)ReplyListContact->Nick);
+		ContactsNickList->WriteString("Nick",JID,(wchar_t*)ReplyListContact.Nick);
 	  }
 	}
   }
@@ -8865,7 +8868,7 @@ int __stdcall OnResourceChanged(WPARAM wParam, LPARAM lParam)
 int __stdcall OnSetHTMLStatus(WPARAM wParam, LPARAM lParam)
 {
   //Skracanie wyœwietlania odnoœników w oknie kontatkow do wygodniejszej formy
-  if((ShortenLinksChk)&&(!ForceUnloadExecuted))
+  if((ShortenLinksChk)&&((ShortenLinksMode==1)||(ShortenLinksMode==3))&&(!ForceUnloadExecuted))
   {
 	//Pobieranie sformatowanego opisu
     UnicodeString Body = (wchar_t*)lParam;
@@ -8915,7 +8918,7 @@ int __stdcall OnSetLastState(WPARAM wParam, LPARAM lParam)
 		if(RestoreTabsSessionChk)
 		{
 		  //Odznaczenie uruchomienia przywracania sesji z czatami
-		  SetLastStateRestore = true;
+		  RestoringChatSession = true;
 		  //Tworzenie timera przywracania sesji z czatami
 		  SetTimer(hTimerFrm,TIMER_RESTORESESSION,10000,(TIMERPROC)TimerFrmProc);
 		}
@@ -8934,12 +8937,12 @@ int __stdcall OnStateChange(WPARAM wParam, LPARAM lParam)
 {
   if(!ForceUnloadExecuted)
   {
-	if((InactiveNotiferNewMsgChk)||((RestoreTabsSessionChk)||(!SetLastStateRestore)))
+	if((InactiveNotiferNewMsgChk)||((RestoreTabsSessionChk)||(!RestoringChatSession)))
 	{
 	  //Definicja niezbednych zmiennych
-	  StateChange = (PPluginStateChange)lParam;
-	  int NewState = StateChange->NewState;
-	  bool Authorized = StateChange->Authorized;
+	  TPluginStateChange StateChange = *(PPluginStateChange)lParam;
+	  int NewState = StateChange.NewState;
+	  bool Authorized = StateChange.Authorized;
 	  //Connecting
 	  if((!Authorized)&&(NewState))
 	   //Ustawianie stanu polaczenia sieci
@@ -8957,10 +8960,10 @@ int __stdcall OnStateChange(WPARAM wParam, LPARAM lParam)
 		  SetTimer(hTimerFrm,TIMER_INACTIVENOTIFER,20000,(TIMERPROC)TimerFrmProc);
 		}
 		//Przywracanie sesji z czatami
-		if((RestoreTabsSessionChk)||(!SetLastStateRestore))
+		if((RestoreTabsSessionChk)||(!RestoringChatSession))
 		{
 		  //Niby blokada, lol :D
-		  SetLastStateRestore = true;
+		  RestoringChatSession = true;
 		  //Tworzenie timera
 		  SetTimer(hTimerFrm,TIMER_RESTORESESSION,10000,(TIMERPROC)TimerFrmProc);
 		}
@@ -8983,16 +8986,16 @@ int __stdcall OnSystemPopUp(WPARAM wParam, LPARAM lParam)
 {
   if(!ForceUnloadExecuted)
   {
-	PopUp = (PPluginPopUp)lParam;
+	TPluginPopUp PopUp = *(PPluginPopUp)lParam;
 	//Pobieranie nazwy popupmenu
-	UnicodeString PopUpName = (wchar_t*)PopUp->Name;
+	UnicodeString PopUpName = (wchar_t*)PopUp.Name;
 	//Popupmenu dostepne spod PPM na zakladce w oknie rozmowy
 	if(PopUpName=="popTab")
 	{
-	  SystemPopUContact = (PPluginContact)wParam;
+	  TPluginContact SystemPopUContact = *(PPluginContact)wParam;
 	  //Pobieranie JID kontaktu z zakladki
-	  UnicodeString JID = (wchar_t*)SystemPopUContact->JID;
-	  if(SystemPopUContact->IsChat) JID = "ischat_" + JID;
+	  UnicodeString JID = (wchar_t*)SystemPopUContact.JID;
+	  if(SystemPopUContact.IsChat) JID = "ischat_" + JID;
 	  //Zapisanie JID do zmiennej globalnej
 	  ClipTabPopup = JID;
 	  //Jezeli zakladka nie jest przypieta
@@ -9034,11 +9037,11 @@ int __stdcall OnTabCaption(WPARAM wParam, LPARAM lParam)
   if(!ForceUnloadExecuted)
   {
 	//Pobieranie danych
-	TabCaptionContact = (PPluginContact)lParam;
-	UnicodeString JID = (wchar_t*)TabCaptionContact->JID;
-	UnicodeString Res = (wchar_t*)TabCaptionContact->Resource;
+	TPluginContact TabCaptionContact = *(PPluginContact)lParam;
+	UnicodeString JID = (wchar_t*)TabCaptionContact.JID;
+	UnicodeString Res = (wchar_t*)TabCaptionContact.Resource;
 	if(!Res.IsEmpty()) Res = "/" + Res;
-	if(TabCaptionContact->IsChat)
+	if(TabCaptionContact.IsChat)
 	{
 	  JID = "ischat_" + JID;
 	  Res = "";
@@ -9046,18 +9049,18 @@ int __stdcall OnTabCaption(WPARAM wParam, LPARAM lParam)
 	//Zmienna z tekstem zakladki
 	UnicodeString TabCaption = (wchar_t*)wParam;
 	//Przypiete zakladki bez licznika znakow
-	if((ClipTabsList->IndexOf(JID)!=-1)&&((!CounterClipTabsChk)||(TabCaptionContact->IsChat)))
+	if((ClipTabsList->IndexOf(JID)!=-1)&&((!CounterClipTabsChk)||(TabCaptionContact.IsChat)))
 	 TabCaption = "";
 	//Przypiete zakladki z licznikiem znakow
-	else if((ClipTabsList->IndexOf(JID)!=-1)&&(CounterClipTabsChk)&&(!TabCaptionContact->IsChat))
+	else if((ClipTabsList->IndexOf(JID)!=-1)&&(CounterClipTabsChk)&&(!TabCaptionContact.IsChat))
 	{
-	  UnicodeString Nick = (wchar_t*)TabCaptionContact->Nick;
+	  UnicodeString Nick = (wchar_t*)TabCaptionContact.Nick;
 	  TabCaption = StringReplace(TabCaption, Nick + " ", "", TReplaceFlags());
 	  TabCaption = StringReplace(TabCaption, Nick, "", TReplaceFlags());
 	  TabCaption = TabCaption.Trim();
 	}
 	//Licznik nieprzeczytanych wiadomosci
-	if((InactiveTabsNewMsgChk)&&(!ClosingTab))
+	if((InactiveTabsNewMsgChk)&&(!TabWasClosed))
 	{
 	  int Count = InactiveTabsNewMsgCount->ReadInteger("TabsMsg",JID+Res,0);
 	  if(Count)
@@ -9077,7 +9080,7 @@ int __stdcall OnTabCaption(WPARAM wParam, LPARAM lParam)
 	  }
 	}
 	//Nieprzypieta zakladka czatowa i normalizacja nazw
-	if((ClipTabsList->IndexOf(JID)==-1)&&(TabCaptionContact->IsChat)&&(!TabCaptionContact->FromPlugin))
+	if((ClipTabsList->IndexOf(JID)==-1)&&(TabCaptionContact.IsChat)&&(!TabCaptionContact.FromPlugin))
 	{
 	  int Count = InactiveTabsNewMsgCount->ReadInteger("TabsMsg",JID+Res,0);
 	  if(!Count)
@@ -9110,12 +9113,12 @@ int __stdcall OnTabImage(WPARAM wParam, LPARAM lParam)
 	//Notyfikcja pisania wiadomosci
 	if(PreMsgList->Count>0)
 	{
-	  TabImageContact = (PPluginContact)lParam;
+	  TPluginContact TabImageContact = *(PPluginContact)lParam;
 	  //Nie jest to zakladka czatowa
-	  if(!TabImageContact->IsChat)
+	  if(!TabImageContact.IsChat)
 	  {
-		UnicodeString JID = (wchar_t*)TabImageContact->JID;
-		UnicodeString Res = (wchar_t*)TabImageContact->Resource;
+		UnicodeString JID = (wchar_t*)TabImageContact.JID;
+		UnicodeString Res = (wchar_t*)TabImageContact.Resource;
 		if(!Res.IsEmpty()) Res = "/" + Res;
 		//Jezeli zakladka dotyczy notyfikacji pisania wiadomosci
 		if(PreMsgList->IndexOf(JID+Res)!=-1)
@@ -9144,11 +9147,11 @@ int __stdcall OnTabImage(WPARAM wParam, LPARAM lParam)
 	//Przypiete zakladki
 	if(ClipTabsList->Count>0)
 	{
-	  TabImageContact = (PPluginContact)lParam;
+	  TPluginContact TabImageContact = *(PPluginContact)lParam;
 	  //Nie jest to zakladka czatowa
-	  if(!TabImageContact->IsChat)
+	  if(!TabImageContact.IsChat)
 	  {
-		UnicodeString JID = (wchar_t*)TabImageContact->JID;
+		UnicodeString JID = (wchar_t*)TabImageContact.JID;
 		//Jezeli zakladka jest przypieta
 		if(ClipTabsList->IndexOf(JID)!=-1)
 		{
@@ -9245,17 +9248,22 @@ int __stdcall OnThemeChanged(WPARAM wParam, LPARAM lParam)
 	//Wlaczona zaawansowana stylizacja okien
 	if(ChkSkinEnabled())
 	{
-	  //Pobieranie sciezki nowej aktywnej kompozycji
 	  UnicodeString ThemeSkinDir = ThemeDir + "\\\\Skin";
 	  //Plik zaawansowanej stylizacji okien istnieje
 	  if(FileExists(ThemeSkinDir + "\\\\Skin.asz"))
 	  {
+		//Dane pliku zaawansowanej stylizacji okien
 		ThemeSkinDir = StringReplace(ThemeSkinDir, "\\\\", "\\", TReplaceFlags() << rfReplaceAll);
 		hSettingsForm->sSkinManager->SkinDirectory = ThemeSkinDir;
 		hSettingsForm->sSkinManager->SkinName = "Skin.asz";
+		//Ustawianie animacji AlphaControls
 		if(ChkThemeAnimateWindows()) hSettingsForm->sSkinManager->AnimEffects->FormShow->Time = 200;
 		else hSettingsForm->sSkinManager->AnimEffects->FormShow->Time = 0;
 		hSettingsForm->sSkinManager->Effects->AllowGlowing = ChkThemeGlowing();
+		//Zmiana kolorystyki AlphaControls
+        hSettingsForm->sSkinManager->HueOffset = GetHUE();
+	    hSettingsForm->sSkinManager->Saturation = GetSaturation();
+		//Aktywacja skorkowania AlphaControls
 		hSettingsForm->sSkinManager->Active = true;
 	  }
 	  //Brak pliku zaawansowanej stylizacji okien
@@ -9263,7 +9271,7 @@ int __stdcall OnThemeChanged(WPARAM wParam, LPARAM lParam)
 	}
 	//Zaawansowana stylizacja okien wylaczona
 	else hSettingsForm->sSkinManager->Active = false;
-
+	//Aktywne skorkowanie AlphaControls
 	if(hSettingsForm->sSkinManager->Active)
 	{
 	  //Kolor WebLabel'ow
@@ -9282,6 +9290,7 @@ int __stdcall OnThemeChanged(WPARAM wParam, LPARAM lParam)
 	  hSettingsForm->OtherPaymentsWebLabel->Font->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
 	  hSettingsForm->OtherPaymentsWebLabel->HoverFont->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
 	}
+	//Nieaktywne skorkowanie AlphaControls
 	else
 	{
 	  //Kolor WebLabel'ow
@@ -9521,17 +9530,17 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
   if(!ForceUnloadExecuted)
   {
 	//Pobranie informacji o oknie i eventcie
-	WindowEvent = (PPluginWindowEvent)lParam;
-	int Event = WindowEvent->WindowEvent;
-	UnicodeString ClassName = (wchar_t*)WindowEvent->ClassName;
+	TPluginWindowEvent WindowEvent = *(PPluginWindowEvent)lParam;
+	int Event = WindowEvent.WindowEvent;
+	UnicodeString ClassName = (wchar_t*)WindowEvent.ClassName;
 
 	//Otwarcie okna kontaktow = zaladowanie w pelni listy kontatkow
 	if((ClassName=="TfrmMain")&&(Event==WINDOW_EVENT_CREATE))
 	{
 	  //Przypisanie uchwytu do okna glownego
-	  hFrmMain = (HWND)(int)WindowEvent->Handle;
+	  hFrmMain = (HWND)(int)WindowEvent.Handle;
 	  //Pobieranie oryginalnego titlebar glownego okna
-	  GetWindowTextW(hFrmMain,OryginalTitlebar,sizeof(OryginalTitlebar));
+	  GetWindowTextW(hFrmMain,FrmMainTitlebar,16);
 	  //Szukanie uchwytu do kontrolki IE w oknie kontatkow
 	  EnumChildWindows(hFrmMain,(WNDENUMPROC)FindFrmMainFocus,0);
 	  //Pobranie rozmiaru+pozycji okna kontatkow
@@ -9700,7 +9709,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 		//Ustawianie stanu okna
 		FrmSendOpening = true;
 		//Przypisanie uchwytu do okna rozmowy
-		hFrmSend = (HWND)WindowEvent->Handle;
+		hFrmSend = (HWND)WindowEvent.Handle;
 		//Szukanie pola wiadomosci
 		if(!hRichEdit) EnumChildWindows(hFrmSend,(WNDENUMPROC)FindRichEdit,0);
 		//Szukanie paska informacyjnego
@@ -9739,7 +9748,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 		  DestroyFrmClosedTabs();
 		  BuildFrmClosedTabs();
 		}
-		//Resetowanie poprzedniego stanu ikonek
+		//Resetowanie poprzedniego stanu pisania wiadomosci
 		LastChatState = 0;
 		//Usuniêcie uchwytow do ikonek okna rozmowy
 		hIconSmall = NULL;
@@ -9784,8 +9793,6 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  //Resetowanie zmiennej aktwnie otwartej zakladki
 	  ActiveTabJID = "";
 	  ActiveTabJIDRes = "";
-	  //Usuniecie uchwytu do okna rozmowy
-	  hFrmSend = NULL;
 	  //Szybki dostep niewyslanych wiadomosci
 	  DestroyFrmUnsentMsg();
 	  BuildFrmUnsentMsg();
@@ -9796,6 +9803,8 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  DestroyStayOnTop();
 	  //Usuwanie elementu przypinania zakladek
 	  DestroyClipTab();
+	  //Usuniecie uchwytu do okna rozmowy
+	  hFrmSend = NULL;
 	}
 
 	//Otwarcie okna ustawien
@@ -9834,6 +9843,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 		MB_OK | MB_ICONINFORMATION);
 	  }
 	  //Sprawdzenie czy zostal zmieniony zasob glownego konta Jabber
+	  TPluginStateChange PluginStateChange;
 	  PluginLink.CallService(AQQ_FUNCTION_GETNETWORKSTATE,(WPARAM)(&PluginStateChange),0);
 	  UnicodeString pResourceName = (wchar_t*)PluginStateChange.Resource;
 	  if(pResourceName!=ResourceName)
@@ -9862,22 +9872,22 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  FrmSendBlockSlideWndEvent = true;
 	  FrmMainBlockSlideWndEvent = true;
 	  //Trzymanie okna na wierzchu
-	  if(((StayOnTopChk)&&(SetStayOnTop))||(FrmSendSlideChk))
+	  if(((StayOnTopChk)&&(StayOnTopStatus))||(FrmSendSlideChk))
 	  {
 		SetWindowPos(hFrmSend,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
-		SetWindowPos((HWND)(int)WindowEvent->Handle,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
+		SetWindowPos((HWND)(int)WindowEvent.Handle,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 	  }
 	}
 	//Zamkniecie okna emotek
 	if((ClassName=="TfrmGraphic")&&(Event==WINDOW_EVENT_CLOSE))
 	{
 	  //Ustawienie statusu okna dla SideSlide
-	  if((FrmSendSlideChk)&&(!SetStayOnTop)) FrmSendBlockSlide = false;
+	  if((FrmSendSlideChk)&&(!StayOnTopStatus)) FrmSendBlockSlide = false;
 	  FrmMainBlockSlide = false;
 	  FrmSendBlockSlideWndEvent = false;
 	  FrmMainBlockSlideWndEvent = false;
 	  //Trzymanie okna na wierzchu
-	  if(((StayOnTopChk)&&(SetStayOnTop))||((FrmSendSlideChk)&&(FrmSendSlideHideMode!=2)))
+	  if(((StayOnTopChk)&&(StayOnTopStatus))||((FrmSendSlideChk)&&(FrmSendSlideHideMode!=2)))
 	   SetWindowPos(hFrmSend,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 	  //Tworzenie timera emulacji klikniecia myszka w pole tekstowe
 	  if((!FrmSetStateExist)&&(hRichEdit))
@@ -9894,14 +9904,14 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  FrmSendBlockSlideWndEvent = true;
 	  FrmSendBlockSlideOnMsgComposing = true;
 	  //Trzymanie okna na wierzchu
-	  if(((StayOnTopChk)&&(SetStayOnTop))||(FrmSendSlideChk))
+	  if(((StayOnTopChk)&&(StayOnTopStatus))||(FrmSendSlideChk))
 	   SetWindowPos(hFrmSend,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 	}
 	//Zamkniecie okna szybkich emotek
 	if((ClassName=="TfrmCompletion")&&(Event==WINDOW_EVENT_CLOSE))
 	{
 	  //Trzymanie okna na wierzchu
-	  if(((StayOnTopChk)&&(SetStayOnTop))||((FrmSendSlideChk)&&(FrmSendSlideHideMode!=2)))
+	  if(((StayOnTopChk)&&(StayOnTopStatus))||((FrmSendSlideChk)&&(FrmSendSlideHideMode!=2)))
 	   SetWindowPos(hFrmSend,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 	  //Gdy kursor znajduje sie poza oknem rozmowy
 	  if((Mouse->CursorPos.y<FrmSendRect.Top)||(FrmSendRect.Bottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmSendRect.Left)||(FrmSendRect.Right<Mouse->CursorPos.x))
@@ -9928,10 +9938,10 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  //Informacja o otwarciu okna tworzenia wycinka
 	  FrmPosExist = true;
 	  //Trzymanie okna na wierzchu
-	  if(((StayOnTopChk)&&(SetStayOnTop))||(FrmSendSlideChk)||(FrmMainSlideChk))
+	  if(((StayOnTopChk)&&(StayOnTopStatus))||(FrmSendSlideChk)||(FrmMainSlideChk))
 	  {
 		//Normalizacja okna rozmowy/kontaktow
-		if(((StayOnTopChk)&&(SetStayOnTop))||(FrmSendSlideChk)) SetWindowPos(hFrmSend,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
+		if(((StayOnTopChk)&&(StayOnTopStatus))||(FrmSendSlideChk)) SetWindowPos(hFrmSend,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 		if((FrmMainSlideChk)&&(FrmMainVisible)) SetWindowPos(hFrmMain,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 	  }
 	  //Timer wylaczenia modalnosci okna wycinka
@@ -9943,10 +9953,10 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  //Informacja o zamknieciu okna tworzenia wycinka
 	  FrmPosExist = false;
 	  //Trzymanie okna na wierzchu
-	  if(((StayOnTopChk)&&(SetStayOnTop))||(FrmSendSlideChk)||(FrmMainSlideChk))
+	  if(((StayOnTopChk)&&(StayOnTopStatus))||(FrmSendSlideChk)||(FrmMainSlideChk))
 	  {
 		//Ustawienie okna rozmowy/kontaktow na wierzchu
-		if(((StayOnTopChk)&&(SetStayOnTop))||((FrmSendSlideChk)&&(FrmSendSlideHideMode!=2))) SetWindowPos(hFrmSend,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
+		if(((StayOnTopChk)&&(StayOnTopStatus))||((FrmSendSlideChk)&&(FrmSendSlideHideMode!=2))) SetWindowPos(hFrmSend,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 		if((FrmMainSlideChk)&&(FrmMainVisible)&&(FrmMainSlideHideMode!=2)) SetWindowPos(hFrmMain,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 	  }
 	  //Tymczasowa blokada FrmSendSlideOut
@@ -9959,7 +9969,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  //Ustawienie statusu okna dla SideSlide
 	  else
 	  {
-		if((FrmSendSlideChk)&&(!SetStayOnTop)) FrmSendBlockSlide = false;
+		if((FrmSendSlideChk)&&(!StayOnTopStatus)) FrmSendBlockSlide = false;
 		FrmSendBlockSlideWndEvent = false;
 	  }
 	}
@@ -9973,20 +9983,20 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  FrmSendBlockSlide = true;
 	  FrmSendBlockSlideWndEvent = true;
 	  //Trzymanie okna na wierzchu
-	  if(((StayOnTopChk)&&(SetStayOnTop))||(FrmSendSlideChk))
+	  if(((StayOnTopChk)&&(StayOnTopStatus))||(FrmSendSlideChk))
 	  {
 		SetWindowPos(hFrmSend,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
-		SetWindowPos((HWND)(int)WindowEvent->Handle,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
+		SetWindowPos((HWND)(int)WindowEvent.Handle,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 	  }
 	}
 	//Zamkniecie okna Centrum Akcji
 	if((ClassName=="TfrmFindAction")&&(Event==WINDOW_EVENT_CLOSE))
 	{
 	  //Ustawienie statusu okna dla SideSlide
-	  if((FrmSendSlideChk)&&(!SetStayOnTop)) FrmSendBlockSlide = false;
+	  if((FrmSendSlideChk)&&(!StayOnTopStatus)) FrmSendBlockSlide = false;
 	  FrmSendBlockSlideWndEvent = false;
 	  //Trzymanie okna na wierzchu
-	  if(((StayOnTopChk)&&(SetStayOnTop))||((FrmSendSlideChk)&&(FrmSendSlideHideMode!=2)))
+	  if(((StayOnTopChk)&&(StayOnTopStatus))||((FrmSendSlideChk)&&(FrmSendSlideHideMode!=2)))
 	   SetWindowPos(hFrmSend,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 	}
 
@@ -9999,17 +10009,17 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  FrmSendBlockSlide = true;
 	  FrmSendBlockSlideWndEvent = true;
 	  //Trzymanie okna na wierzchu
-	  if(((StayOnTopChk)&&(SetStayOnTop))||(FrmSendSlideChk))
+	  if(((StayOnTopChk)&&(StayOnTopStatus))||(FrmSendSlideChk))
 	   SetWindowPos(hFrmSend,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 	}
 	//Zamkniecie okna wysy³ania obrazka metod¹ Drag&Drop
 	if((ClassName=="TfrmDeliveryType")&&(Event==WINDOW_EVENT_CLOSE))
 	{
 	  //Ustawienie statusu okna dla SideSlide
-	  if((FrmSendSlideChk)&&(!SetStayOnTop)) FrmSendBlockSlide = false;
+	  if((FrmSendSlideChk)&&(!StayOnTopStatus)) FrmSendBlockSlide = false;
 	  FrmSendBlockSlideWndEvent = false;
 	  //Trzymanie okna na wierzchu
-	  if(((StayOnTopChk)&&(SetStayOnTop))||((FrmSendSlideChk)&&(FrmSendSlideHideMode!=2)))
+	  if(((StayOnTopChk)&&(StayOnTopStatus))||((FrmSendSlideChk)&&(FrmSendSlideHideMode!=2)))
 	   SetWindowPos(hFrmSend,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 	}
 
@@ -10047,7 +10057,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  if(FrmMainSlideChk)
 	  {
 		//Pobieranie uchwytu do okna wyszukiwarki
-		hFrmSeekOnList = (HWND)(int)WindowEvent->Handle;
+		hFrmSeekOnList = (HWND)(int)WindowEvent.Handle;
 		//Ustawienie okna wyszukiwarki na wierzchu
 		SetWindowPos(hFrmSeekOnList,HWND_TOPMOST,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
 		//Przypisanie nowej procki dla okna wyszukiwarki
@@ -10114,7 +10124,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	if((ClassName=="TfrmArch")&&(Event==WINDOW_EVENT_CREATE))
 	{
 	  //Przypisanie uchwytu do okna archiwum
-	  hFrmArch = (HWND)WindowEvent->Handle;
+	  hFrmArch = (HWND)WindowEvent.Handle;
 	}
 	//Zamkniecie okna archiwum
 	if((ClassName=="TfrmArch")&&(Event==WINDOW_EVENT_CLOSE))
@@ -10644,8 +10654,10 @@ void LoadSettings()
   PluginLink.CallService(AQQ_SYSTEM_FUNCTION_SETENABLED,SYS_FUNCTION_SEARCHONLIST,Ini->ReadBool("Other","SearchOnList",true));
   bool pShortenLinksChk = ShortenLinksChk;
   ShortenLinksChk = Ini->ReadBool("Other","ShortenLinks",true);
+  bool pShortenLinksMode = ShortenLinksMode;
+  ShortenLinksMode = Ini->ReadInteger("Other","ShortenLinksMode",1);
   //Odswiezenie listy kontaktow
-  if((ShortenLinksChk!=pShortenLinksChk)&&(!LoadExecuted)) PluginLink.CallService(AQQ_SYSTEM_RUNACTION,0,(LPARAM)L"aRefresh");
+  if(((ShortenLinksChk!=pShortenLinksChk)||(ShortenLinksMode!=pShortenLinksMode))&&((ShortenLinksMode==1)||(ShortenLinksMode==3))&&(!LoadExecuted)) PluginLink.CallService(AQQ_SYSTEM_RUNACTION,0,(LPARAM)L"aRefresh");
   //Wylaczanie funkcji pisaka na pasku tytu³u okna rozmowy
   if((InactiveFrmNewMsgChk)||(TweakFrmSendTitlebarChk)||(!TaskbarPenChk))
    PluginLink.CallService(AQQ_SYSTEM_FUNCTION_SETENABLED,SYS_FUNCTION_TASKBARPEN,0);
@@ -10852,14 +10864,19 @@ extern "C" int __declspec(dllexport) __stdcall Load(PPluginLink Link)
    while(ProfileName.Pos("\\")>0)
 	ProfileName.Delete(1,ProfileName.Pos("\\"));
   //Pobieranie zasobu glownego konta Jabber
+  TPluginStateChange PluginStateChange;
   PluginLink.CallService(AQQ_FUNCTION_GETNETWORKSTATE,(WPARAM)(&PluginStateChange),0);
   ResourceName = (wchar_t*)PluginStateChange.Resource;
   //Tworzenie PopUpMenu
   //Szybki dostep ostatnio zamknietych zakladek
+  TPluginAction ClosedTabsPopUp;
+  ZeroMemory(&ClosedTabsPopUp,sizeof(TPluginAction));
   ClosedTabsPopUp.cbSize = sizeof(TPluginAction);
   ClosedTabsPopUp.pszName = L"TabKitClosedTabsPopUp";
   PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENU,0,(LPARAM)(&ClosedTabsPopUp));
   //Szybki dostep niewyslanych wiadomosci
+  TPluginAction UnsentMsgPopUp;
+  ZeroMemory(&UnsentMsgPopUp,sizeof(TPluginAction));
   UnsentMsgPopUp.cbSize = sizeof(TPluginAction);
   UnsentMsgPopUp.pszName = L"TabKitUnsentMsgPopUp";
   PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENU,0,(LPARAM)(&UnsentMsgPopUp));
@@ -11064,7 +11081,7 @@ extern "C" int __declspec(dllexport) __stdcall Load(PPluginLink Link)
 	  }
 	}
 	//Odswiezenie listy kontaktow - skracanie wyœwietlania odnoœników na liscie kontaktow do wygodniejszej formy
-	if(ShortenLinksChk) PluginLink.CallService(AQQ_SYSTEM_RUNACTION,0,(LPARAM)L"aRefresh");
+	if((ShortenLinksChk)&&((ShortenLinksMode==1)||(ShortenLinksMode==3))) PluginLink.CallService(AQQ_SYSTEM_RUNACTION,0,(LPARAM)L"aRefresh");
   }
   //Rejestowanie klasy okna timera
   WNDCLASSEX wincl;
@@ -11177,6 +11194,8 @@ extern "C" int __declspec(dllexport) __stdcall Unload()
 	PluginLink.DestroyServiceFunction(ServiceClosedTabsItem9);
 	PluginLink.DestroyServiceFunction(ServiceClosedTabsItemClear);
 	//Usuwanie PopUpMenu
+	TPluginAction ClosedTabsPopUp;
+	ZeroMemory(&ClosedTabsPopUp,sizeof(TPluginAction));
 	ClosedTabsPopUp.cbSize = sizeof(TPluginAction);
 	ClosedTabsPopUp.pszName = L"TabKitClosedTabsPopUp";
 	PluginLink.CallService(AQQ_CONTROLS_DESTROYPOPUPMENU,0,(LPARAM)(&ClosedTabsPopUp));
@@ -11192,6 +11211,8 @@ extern "C" int __declspec(dllexport) __stdcall Unload()
 	PluginLink.DestroyServiceFunction(ServiceUnsentMsgItemClear);
 	PluginLink.DestroyServiceFunction(ServiceUnsentMsgShowAllItem);
 	//Usuwanie PopUpMenu
+	TPluginAction UnsentMsgPopUp;
+	ZeroMemory(&UnsentMsgPopUp,sizeof(TPluginAction));
 	UnsentMsgPopUp.cbSize = sizeof(TPluginAction);
 	UnsentMsgPopUp.pszName = L"TabKitUnsentMsgPopUp";
 	PluginLink.CallService(AQQ_CONTROLS_DESTROYPOPUPMENU ,0,(LPARAM)(&UnsentMsgPopUp));
@@ -11349,7 +11370,7 @@ extern "C" int __declspec(dllexport) __stdcall Unload()
   }
   //Przywracanie oryginalnego tekstu na pasku okna kontaktow
   if((TweakFrmMainTitlebarChk)&&(!ForceUnloadExecuted)&&(!FrmInstallAddonExist))
-   SetWindowTextW(hFrmMain,OryginalTitlebar);
+   SetWindowTextW(hFrmMain,FrmMainTitlebar);
   //Przywracanie oryginalnego tekstu na pasku okna rozmowy
   if((TweakFrmSendTitlebarChk)&&(!ForceUnloadExecuted)&&(!FrmInstallAddonExist))
   {
@@ -11410,7 +11431,7 @@ extern "C" int __declspec(dllexport) __stdcall Unload()
 	SetFrmMainPos();
   }
   //Odswiezenie listy kontaktow - przywrocenie nie skroconych odnosnikow na liscie kontaktow
-  if((ShortenLinksChk)&&(!ForceUnloadExecuted)&&(!FrmInstallAddonExist))
+  if((ShortenLinksChk)&&((ShortenLinksMode==1)||(ShortenLinksMode==3))&&(!ForceUnloadExecuted)&&(!FrmInstallAddonExist))
    PluginLink.CallService(AQQ_SYSTEM_RUNACTION,0,(LPARAM)L"aRefresh");
   //Info o zakonczeniu procedury wyladowania
   UnloadExecuted = false;
@@ -11427,7 +11448,7 @@ extern "C" int __declspec(dllexport)__stdcall Settings()
 	Application->Handle = (HWND)SettingsForm;
 	hSettingsForm = new TSettingsForm(Application);
   }
-  //Uzupelnienie kontrolni niezbednej do funkcji zmiany tekstu na pasku okna kontatkow
+  //Uzupelnienie danych w komponencie niezbednym do funkcji zmiany tekstu na belce okna kontatkow
   hSettingsForm->TweakFrmMainTitlebarModeExComboBox->Items->Clear();
   hSettingsForm->TweakFrmMainTitlebarModeExComboBox->Items->Add(ProfileName);
   hSettingsForm->TweakFrmMainTitlebarModeExComboBox->Items->Add(ComputerName);
@@ -11448,12 +11469,14 @@ extern "C" PPluginInfo __declspec(dllexport) __stdcall AQQPluginInfo(DWORD AQQVe
 {
   PluginInfo.cbSize = sizeof(TPluginInfo);
   PluginInfo.ShortName = L"TabKit";
-  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,7,5,0);
+  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,7,6,0);
   PluginInfo.Description = L"Wtyczka oferuje masê funkcjonalnoœci usprawniaj¹cych korzystanie z komunikatora np. zapamiêtywanie zamkniêtych zak³adek, inteligentne prze³¹czanie, zapamiêtywanie sesji.";
   PluginInfo.Author = L"Krzysztof Grochocki (Beherit)";
   PluginInfo.AuthorMail = L"kontakt@beherit.pl";
   PluginInfo.Copyright = L"Krzysztof Grochocki (Beherit)";
   PluginInfo.Homepage = L"http://beherit.pl";
+  PluginInfo.Flag = 0;
+  PluginInfo.ReplaceDefaultModule = 0;
 
   return &PluginInfo;
 }
