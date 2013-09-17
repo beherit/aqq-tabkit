@@ -77,7 +77,7 @@ TStringList *ChatSessionList = new TStringList;
 //Licznik nowych wiadomosci na belce okna rozmowy
 int InactiveFrmNewMsgCount = 0;
 //Licznik nowych wiadomosci na zakladkach w oknie rozmowy
-TCustomIniFile* InactiveTabsNewMsgCount = new TMemIniFile(ChangeFileExt(Application->ExeName, ".INI"));
+TMemIniFile* InactiveTabsNewMsgCount = new TMemIniFile(ChangeFileExt(Application->ExeName, ".INI"));
 //Blokada zmiany tekstu na zakladce
 bool TabWasClosed = false;
 //Blokowanie notyfikatora nowych wiadomosci
@@ -96,9 +96,9 @@ HICON hIconBig = NULL;
 int LastChatState = 0;
 //Titlebar-------------------------------------------------------------------
 //Domyslny tekst okna kontaktow
-wchar_t* FrmMainTitlebar = new wchar_t[16];
+wchar_t FrmMainTitlebar[16];
 //Lista zmienionych tekstow belek okna rozmowy
-TCustomIniFile* ChangedTitlebarList = new TMemIniFile(ChangeFileExt(Application->ExeName, ".INI"));
+TMemIniFile* ChangedTitlebarList = new TMemIniFile(ChangeFileExt(Application->ExeName, ".INI"));
 //Tekst belki okna rozmowy
 UnicodeString FrmSendTitlebar;
 //Nazwa aktywnego profilu
@@ -112,7 +112,7 @@ UnicodeString ResourceName;
 UnicodeString ClipTabPopup;
 //Lista JID przypietych zakladek
 TStringList *ClipTabsList = new TStringList;
-TCustomIniFile* ClipTabsIconList = new TMemIniFile(ChangeFileExt(Application->ExeName, ".INI"));
+TMemIniFile* ClipTabsIconList = new TMemIniFile(ChangeFileExt(Application->ExeName, ".INI"));
 //Ostatnio aktywna zakladka przed otwieraniem przypietych czatow
 UnicodeString ActiveTabBeforeOpenClipTabs;
 //JID ostatniej otwartej przypietej zakladki czatowej
@@ -139,7 +139,6 @@ bool FrmMainSlideIn = false;
 bool PreFrmMainSlideOut = false;
 bool CurPreFrmMainSlideOut = false;
 bool FrmMainSlideOut = false;
-bool FrmMainSlideOutWndActiv = false;
 bool FrmMainSlideOutActivFrmSend = false;
 bool FrmCreateChatExists = false;
 //Dane paska menu start dla okna rozmowy
@@ -171,7 +170,6 @@ bool PseudoFrmMainSlideIn = false;
 bool PreFrmSendSlideOut = false;
 bool FrmSendSlideOut = false;
 bool FrmSendRestoreRect = false;
-bool FrmSendActivate = false;
 //Dane paska menu start dla okna rozmowy
 int FrmSend_Shell_TrayWndLeft;
 int FrmSend_Shell_TrayWndRight;
@@ -215,16 +213,16 @@ UnicodeString ActiveTabJIDRes;
 UnicodeString LastActiveTabJID;
 //Lista JID z notyfikacjami wiadomosci
 TStringList *PreMsgList = new TStringList;
-TCustomIniFile* PreMsgStateList = new TMemIniFile(ChangeFileExt(Application->ExeName, ".INI"));
+TMemIniFile* PreMsgStateList = new TMemIniFile(ChangeFileExt(Application->ExeName, ".INI"));
 //Lista JID otwartych zakladek
 TStringList *TabsList = new TStringList;
 TStringList *ResTabsList = new TStringList;
 //Lista JID wraz ze stanami
-TCustomIniFile* ContactsStateList = new TMemIniFile(ChangeFileExt(Application->ExeName, ".INI"));
+TMemIniFile* ContactsStateList = new TMemIniFile(ChangeFileExt(Application->ExeName, ".INI"));
 //Lista JID wraz z indeksami konta
-TCustomIniFile* ContactsIndexList = new TMemIniFile(ChangeFileExt(Application->ExeName, ".INI"));
+TMemIniFile* ContactsIndexList = new TMemIniFile(ChangeFileExt(Application->ExeName, ".INI"));
 //Lista JID wraz z nickami
-TCustomIniFile* ContactsNickList = new TMemIniFile(ChangeFileExt(Application->ExeName, ".INI"));
+TMemIniFile* ContactsNickList = new TMemIniFile(ChangeFileExt(Application->ExeName, ".INI"));
 //Lista ID filmow YouTube do przetworzenia
 TStringList *GetYouTubeTitleList = new TStringList;
 //Sciezka do pliku sesji
@@ -341,15 +339,14 @@ int FASTACCESS;
 #define TIMER_FRMSENDCHANGEPOS 250
 #define TIMER_FRMSENDSETTOPMOST 260
 #define TIMER_FRMSENDSETTOPMOSTANDSLIDE 270
-#define TIMER_FRMSENDUNBLOCKMOUSE 280
-#define TIMER_PREFRMMAINDSLIDEOUT 290
-#define TIMER_FRMMAINSLIDEOUT 300
-#define TIMER_PREFRMMAINSLIDEIN 310
-#define TIMER_FRMMAINSLIDEIN 320
-#define TIMER_FRMMAINBLOCKSLIDE 330
-#define TIMER_FRMMAINSETTOPMOST 340
-#define TIMER_FRMMAINSETTOPMOSTEX 350
-#define TIMER_FRMMAINSETTOPMOSTANDSLIDE 360
+#define TIMER_PREFRMMAINDSLIDEOUT 280
+#define TIMER_FRMMAINSLIDEOUT 290
+#define TIMER_PREFRMMAINSLIDEIN 300
+#define TIMER_FRMMAINSLIDEIN 310
+#define TIMER_FRMMAINBLOCKSLIDE 320
+#define TIMER_FRMMAINSETTOPMOST 330
+#define TIMER_FRMMAINSETTOPMOSTEX 340
+#define TIMER_FRMMAINSETTOPMOSTANDSLIDE 350
 //SETTINGS-------------------------------------------------------------------
 //ClosedTabs
 bool ClosedTabsChk;
@@ -518,10 +515,11 @@ void LoadSettings();
 bool CALLBACK FindFrmMain(HWND hWnd, LPARAM)
 {
   //Pobranie klasy okna
-  wchar_t WClassName[128];
-  GetClassNameW(hWnd, WClassName, sizeof(WClassName));
+  wchar_t WindowClassNameW[128];
+  GetClassNameW(hWnd, WindowClassNameW, sizeof(WindowClassNameW));
+  UnicodeString WindowClassName = WindowClassNameW;
   //Sprawdenie klasy okna
-  if((UnicodeString)WClassName=="TfrmMain")
+  if(WindowClassName=="TfrmMain")
   {
 	//Pobranie PID okna
 	DWORD PID;
@@ -532,7 +530,7 @@ bool CALLBACK FindFrmMain(HWND hWnd, LPARAM)
 	  //Przypisanie uchwytu
 	  hFrmMain = hWnd;
 	  //Pobieranie oryginalnego titlebar okna
-	  GetWindowTextW(hFrmMain,FrmMainTitlebar,16);
+	  GetWindowTextW(hFrmMain,FrmMainTitlebar,sizeof(FrmMainTitlebar));
 	  return false;
 	}
   }
@@ -544,14 +542,30 @@ bool CALLBACK FindFrmMain(HWND hWnd, LPARAM)
 bool CALLBACK FindFrmMainFocus(HWND hWnd, LPARAM)
 {
   //Pobranie klasy okna
-  wchar_t WClassName[128];
-  GetClassNameW(hWnd, WClassName, sizeof(WClassName));
+  wchar_t WindowClassNameW[128];
+  GetClassNameW(hWnd, WindowClassNameW, sizeof(WindowClassNameW));
+  UnicodeString WindowClassName = WindowClassNameW;
   //Sprawdzenie klasy okna
-  if((UnicodeString)WClassName=="Internet Explorer_Server")
+  if(WindowClassName=="Internet Explorer_Server")
   {
-	//Przypisanie uchwytu
-	hFrmMainFocus = hWnd;
-	return false;
+	//Pobieranie uchwytu do okna rodzica
+	HWND hWndEx = FindWindowEx(NULL,hWnd,L"Shell DocObject View",NULL);
+	if(!hWndEx)
+	{
+	  //Pobieranie uchwytu do okna rodzica
+	  hWndEx = FindWindowEx(NULL,hWndEx,L"Shell Embedding",NULL);
+	  if(!hWndEx)
+	  {
+		//Pobieranie uchwytu do okna rodzica
+		hWndEx = FindWindowEx(NULL,hWndEx,L"TsPanel",L"ListaPanel");
+		if(!hWndEx)
+		{
+		  //Przypisanie uchwytu
+		  hFrmMainFocus = hWnd;
+		  return false;
+		}
+	  }
+	}
   }
   return true;
 }
@@ -561,10 +575,11 @@ bool CALLBACK FindFrmMainFocus(HWND hWnd, LPARAM)
 bool CALLBACK FindRichEdit(HWND hWnd, LPARAM)
 {
   //Pobranie klasy okna
-  wchar_t WClassName[128];
-  GetClassNameW(hWnd, WClassName, sizeof(WClassName));
+  wchar_t WindowClassNameW[128];
+  GetClassNameW(hWnd, WindowClassNameW, sizeof(WindowClassNameW));
+  UnicodeString WindowClassName = WindowClassNameW;
   //Sprawdzenie klasy okna
-  if((UnicodeString)WClassName=="TsRichEdit")
+  if(WindowClassName=="TsRichEdit")
   {
 	//Przypisanie uchwytu
 	hRichEdit = hWnd;
@@ -578,10 +593,11 @@ bool CALLBACK FindRichEdit(HWND hWnd, LPARAM)
 bool CALLBACK FindToolBar(HWND hWnd, LPARAM)
 {
   //Pobranie klasy okna
-  wchar_t WClassName[128];
-  GetClassNameW(hWnd, WClassName, sizeof(WClassName));
+  wchar_t WindowClassNameW[128];
+  GetClassNameW(hWnd, WindowClassNameW, sizeof(WindowClassNameW));
+  UnicodeString WindowClassName = WindowClassNameW;
   //Sprawdzenie klasy okna
-  if((UnicodeString)WClassName=="TToolBar")
+  if(WindowClassName=="TToolBar")
   {
 	//Przypisanie uchwytu
 	hToolBar = hWnd;
@@ -635,10 +651,11 @@ bool CALLBACK FindTabsBarEx(HWND hWnd, LPARAM)
 bool CALLBACK FindTabsBar(HWND hWnd, LPARAM)
 {
   //Pobranie klasy okna
-  wchar_t WClassName[128];
-  GetClassNameW(hWnd, WClassName, sizeof(WClassName));
+  wchar_t WindowClassNameW[128];
+  GetClassNameW(hWnd, WindowClassNameW, sizeof(WindowClassNameW));
+  UnicodeString WindowClassName = WindowClassNameW;
   //Sprawdenie klasy okna
-  if((UnicodeString)WClassName=="TsPanel")
+  if(WindowClassName=="TsPanel")
   {
 	//Szukanie kontrolki dziecka - paska narzedzi
 	HWND hTempHwnd = FindWindowEx(hWnd,NULL,L"TToolBar",NULL);
@@ -653,6 +670,58 @@ bool CALLBACK FindTabsBar(HWND hWnd, LPARAM)
 	}
   }
   return true;
+}
+//---------------------------------------------------------------------------
+
+//Aktywcja okna kontaktow + nadanie fokusa na kontrolce IE
+void ActivateFrmMain()
+{
+  //Aktywacja okna
+  SetForegroundWindow(hFrmMain);
+  //Ustawienie fokusa
+  SetFocus(hFrmMainFocus);
+}
+//---------------------------------------------------------------------------
+
+//Ustawienie fokusa na polu wpisywania wiadomosci
+void FocusRichEdit()
+{
+  //Ustawianie fokusa
+  SetFocus(hRichEdit);
+  //Emulacja klikniecia
+  TRect RichEditRect;
+  GetWindowRect(hRichEdit,&RichEditRect);
+  POINT pCur;
+  if(GetCursorPos(&pCur))
+  {
+	if(SetCursorPos(RichEditRect.Left+5,RichEditRect.Top+5))
+	{
+	  mouse_event(MOUSEEVENTF_LEFTDOWN|MOUSEEVENTF_LEFTUP,0,0,0,0);
+	  SetCursorPos(pCur.x,pCur.y);
+	}
+  }
+  //Pobieranie dlugosci tekstu z RichEdit
+  int iLength = GetWindowTextLengthW(hRichEdit)+1;
+  //Zmiana pozycji kursora
+  CHARRANGE SelPos;
+  SendMessage(hRichEdit, EM_EXGETSEL, NULL, (LPARAM)&SelPos);
+  SelPos.cpMin = iLength;
+  SelPos.cpMax = iLength;
+  SendMessage(hRichEdit, EM_EXSETSEL, NULL, (LPARAM)&SelPos);
+}
+//---------------------------------------------------------------------------
+
+//Aktywcja okna rozmowy + nadanie fokusa na polu wpisywania wiadomosci
+void ActivateFocusFrmSend()
+{
+  //Aktywacja okna
+  SetForegroundWindow(hFrmSend);
+  //Brak przeciagania na pole wpisywania wiadomosci
+  if((!DragDetect(hFrmSend,Mouse->CursorPos))&&(hRichEdit))
+  {
+	//Ustawianie fokusa
+	FocusRichEdit();
+  }
 }
 //---------------------------------------------------------------------------
 
@@ -2286,10 +2355,11 @@ void ChkFullScreenMode()
   if((ActiveFrmRect.Width()==Screen->Width)&&(ActiveFrmRect.Height()==Screen->Height))
   {
 	//Pobieranie klasy aktywnego okna
-	wchar_t WClassName[128];
-	GetClassNameW(GetForegroundWindow(), WClassName, sizeof(WClassName));
+    wchar_t WindowClassNameW[128];
+	GetClassNameW(GetForegroundWindow(), WindowClassNameW, sizeof(WindowClassNameW));
+	UnicodeString WindowClassName = WindowClassNameW;
 	//Wyjatek dla pulpitu oraz programu DeskScapes
-	if(((UnicodeString)WClassName!="Progman")&&((UnicodeString)WClassName!="SysListView32")&&((UnicodeString)WClassName!="WorkerW")&&((UnicodeString)WClassName!="NDesk"))
+	if((WindowClassName!="Progman")&&(WindowClassName!="SysListView32")&&(WindowClassName!="WorkerW")&&(WindowClassName!="NDesk"))
 	{
 	  //Dodano jakies wyjatki w aplikacjach pelnoekranowych
 	  if((SideSlideExceptions->Count)&&(SideSlideFullScreenModeChk))
@@ -2301,9 +2371,9 @@ void ChkFullScreenMode()
 		 FullScreenModeExeptions = true;
 	  }
 	  //Wyjatek dla aplikacji Metro UI
-	  if(AnsiPos("Windows.UI.Core.CoreWindow",(UnicodeString)WClassName))
+	  if(WindowClassName.Pos("Windows.UI.Core.CoreWindow"))
 	   FullScreenModeExeptions = true;
-
+      //Aplikacja pelnoekranowa
 	  FullScreenMode = true;
 	}
 	else FullScreenMode = false;
@@ -2656,9 +2726,8 @@ void ShowToolBar()
 	//Pobieranie pozycji paska narzedzi
 	TRect WindowRect;
 	GetWindowRect(hToolBar,&WindowRect);
-	//int ToolBarHeight = WindowRect.Height();
 	//Pokazanie paska
-	if(!WindowRect.Height())//ToolBarHeight)
+	if(!WindowRect.Height())
 	{
 	  //Pokazanie paska
 	  SetWindowPos(hToolBar,NULL,0,0,WindowRect.Width(),23,SWP_NOMOVE);
@@ -2962,7 +3031,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	//Wylaczanie modalnosci okna wycinka
 	else if(wParam==TIMER_TURNOFFMODAL)
 	{
-      //Zatrzymanie timera
+	  //Zatrzymanie timera
 	  KillTimer(hTimerFrm,TIMER_TURNOFFMODAL);
 	  //Wylaczenie modalnosci dla okna kontatkow
 	  EnableWindow(hFrmMain,true);
@@ -3283,20 +3352,13 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		LBUTTONDBLCLK = false;
 	  }
 	}
-	//Emulacja klikniecia myszka w pole tekstowe
+	//Aktywacja pola wpisywania tekstu
 	else if(wParam==TIMER_ACTIVATERICHEDIT)
 	{
 	  //Zatrzymanie timera
 	  KillTimer(hTimerFrm,TIMER_ACTIVATERICHEDIT);
-	  //Emulacja klikniecia
-	  TRect RichEditRect;
-	  GetWindowRect(hRichEdit,&RichEditRect);
-	  POINT pCur;
-	  GetCursorPos(&pCur);
-	  SetCursorPos(RichEditRect.Left+1,RichEditRect.Top+1);
-	  mouse_event(MOUSEEVENTF_LEFTDOWN,RichEditRect.Left+1,RichEditRect.Top+1,0,0);
-	  mouse_event(MOUSEEVENTF_LEFTUP,RichEditRect.Left+1,RichEditRect.Top+1,0,0);
-	  SetCursorPos(pCur.x,pCur.y);
+	  //Ustawianie fokusa
+	  FocusRichEdit();
 	}
 	//Sprawdzanie pozycji myszki
 	else if(wParam==TIMER_MOUSEPOSITION)
@@ -3321,9 +3383,10 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			  ||(((FrmSendSlideEdge==3)||(FrmSendSlideEdge==4))&&((FrmSendRect.Left<=Mouse->CursorPos.x)&&(Mouse->CursorPos.x<=FrmSendRect.Right))))
 			  {
 				//Kursor nie znajduje sie w obrebie menu start
-				wchar_t WClassName[128];
-				GetClassNameW(WindowFromPoint(Mouse->CursorPos), WClassName, sizeof(WClassName));
-				if(((UnicodeString)WClassName!="DesktopProgramsMFU")&&((UnicodeString)WClassName!="DV2ControlHost"))
+				wchar_t WindowCaptionNameW[128];
+				GetClassNameW(WindowFromPoint(Mouse->CursorPos), WindowCaptionNameW, sizeof(WindowCaptionNameW));
+				UnicodeString WindowCaptionName = WindowCaptionNameW;
+				if((WindowCaptionName!="DesktopProgramsMFU")&&(WindowCaptionName!="DV2ControlHost"))
 				{
 				  if(!PreFrmSendSlideIn)
 				  {
@@ -3388,12 +3451,13 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			  {
 				//Sprawdzenia okna w ktorym znajduje sie kursor
 				HWND hCurActiveFrm = WindowFromPoint(Mouse->CursorPos);
-				wchar_t WClassName[128];
-				GetClassNameW(hCurActiveFrm, WClassName, sizeof(WClassName));
+				wchar_t WindowCaptionNameW[128];
+				GetClassNameW(hCurActiveFrm, WindowCaptionNameW, sizeof(WindowCaptionNameW));
+				UnicodeString WindowCaptionName = WindowCaptionNameW;
 				DWORD PID;
 				GetWindowThreadProcessId(hCurActiveFrm, &PID);
 				//Gdy kursor nie znajduje sie w obrebie menu z okna
-				if(!(((UnicodeString)WClassName=="#32768")&&(PID==ProcessPID)))
+				if(!((WindowCaptionName=="#32768")&&(PID==ProcessPID)))
 				{
 				  //Tymczasowa blokada FrmSendSlideOut
 				  if(PopupMenuBlockSlide)
@@ -3415,7 +3479,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				  }
 				}
 				//Gdy kursor znajduje sie w obrebie menu z okna
-				else if(((UnicodeString)WClassName=="#32768")&&(PID==ProcessPID)&&(FrmSendSlideHideMode==3))
+				else if((WindowCaptionName=="#32768")&&(PID==ProcessPID)&&(FrmSendSlideHideMode==3))
 				 PopupMenuBlockSlide = true;
 			  }
 			  //Tymczasowa blokada FrmSendSlideOut
@@ -3465,9 +3529,10 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			  ||(((FrmMainSlideEdge==3)||(FrmMainSlideEdge==4))&&((FrmMainRect.Left<=Mouse->CursorPos.x)&&(Mouse->CursorPos.x<=FrmMainRect.Right))))
 			  {
 				//Kursor nie znajduje sie w obrebie menu start
-				wchar_t WClassName[128];
-				GetClassNameW(WindowFromPoint(Mouse->CursorPos), WClassName, sizeof(WClassName));
-				if(((UnicodeString)WClassName!="DesktopProgramsMFU")&&((UnicodeString)WClassName!="DV2ControlHost"))
+				wchar_t WindowCaptionNameW[128];
+				GetClassNameW(WindowFromPoint(Mouse->CursorPos), WindowCaptionNameW, sizeof(WindowCaptionNameW));
+				UnicodeString WindowCaptionName = WindowCaptionNameW;
+				if((WindowCaptionName!="DesktopProgramsMFU")&&(WindowCaptionName!="DV2ControlHost"))
 				{
 				  if(!PreFrmMainSlideIn)
 				  {
@@ -3532,12 +3597,13 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			  {
 				//Sprawdzenia okna w ktorym znajduje sie kursor
 				HWND hCurActiveFrm = WindowFromPoint(Mouse->CursorPos);
-				wchar_t WClassName[128];
-				GetClassNameW(hCurActiveFrm, WClassName, sizeof(WClassName));
+                wchar_t WindowCaptionNameW[128];
+				GetClassNameW(hCurActiveFrm, WindowCaptionNameW, sizeof(WindowCaptionNameW));
+				UnicodeString WindowCaptionName = WindowCaptionNameW;
 				DWORD PID;
 				GetWindowThreadProcessId(hCurActiveFrm, &PID);
 				//Gdy kursor nie znajduje sie w obrebie menu z okna
-				if(!(((UnicodeString)WClassName=="#32768")&&(PID==ProcessPID)))
+				if(!((WindowCaptionName=="#32768")&&(PID==ProcessPID)))
 				{
 				  //Tymczasowa blokada FrmMainSlideOut
 				  if(PopupMenuBlockSlide)
@@ -3556,7 +3622,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				  }
 				}
 				//Gdy kursor znajduje sie w obrebie menu z okna
-				else if(((UnicodeString)WClassName=="#32768")&&(PID==ProcessPID)&&(FrmMainSlideHideMode==3))
+				else if((WindowCaptionName=="#32768")&&(PID==ProcessPID)&&(FrmMainSlideHideMode==3))
 				 PopupMenuBlockSlide = true;
 			  }
               //Tymczasowa blokada FrmMainSlideOut
@@ -3606,23 +3672,24 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	  //Pobieranie aktywnego okna
 	  HWND hActiveFrm = GetForegroundWindow();
 	  //Pobieranie klasy aktywnego okna
-	  wchar_t WClassName[128];
-	  GetClassNameW(hActiveFrm, WClassName, sizeof(WClassName));
+	  wchar_t WindowCaptionNameW[128];
+	  GetClassNameW(hActiveFrm, WindowCaptionNameW, sizeof(WindowCaptionNameW));
+	  UnicodeString WindowCaptionName = WindowCaptionNameW;
 	  //Ustawianie uchwytu do nowego aktywnego okna
 	  if((hActiveFrm!=LastActiveWindow)&&(hActiveFrm!=hFrmSend)&&(hActiveFrm!=hFrmMain)&&(IsWindow(hActiveFrm)))
 	  {
-		if(((UnicodeString)WClassName!="ToolbarWindow32")
-		&&((UnicodeString)WClassName!="MSTaskListWClass")
-		&&((UnicodeString)WClassName!="TaskSwitcherWnd")
-		&&((UnicodeString)WClassName!="Shell_TrayWnd")
-		&&((UnicodeString)WClassName!="TrayShowDesktopButtonWClass"))
+		if((WindowCaptionName!="ToolbarWindow32")
+		&&(WindowCaptionName!="MSTaskListWClass")
+		&&(WindowCaptionName!="TaskSwitcherWnd")
+		&&(WindowCaptionName!="Shell_TrayWnd")
+		&&(WindowCaptionName!="TrayShowDesktopButtonWClass"))
 		 LastActiveWindow = hActiveFrm;
 	  }
 	  //Pobranie PID aktywnego okna
 	  DWORD PID;
 	  GetWindowThreadProcessId(hActiveFrm, &PID);
 	  //Otworzenie okna tworzenia konferencji GG
-	  if(((UnicodeString)WClassName=="TfrmCreateChat")&&(!FrmCreateChatExists)&&(PID==ProcessPID))
+	  if((WindowCaptionName=="TfrmCreateChat")&&(!FrmCreateChatExists)&&(PID==ProcessPID))
 	  {
 		//Okno istnieje
 		FrmCreateChatExists = true;
@@ -3631,15 +3698,12 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		FrmMainBlockSlideWndEvent = true;
 	  }
 	  //Zamkniecie okna tworzenia konferencji GG
-	  else if(((UnicodeString)WClassName!="TfrmCreateChat")&&(FrmCreateChatExists)&&(PID==ProcessPID))
+	  else if((WindowCaptionName!="TfrmCreateChat")&&(FrmCreateChatExists)&&(PID==ProcessPID))
 	  {
 		//Okno nie istnieje
 		FrmCreateChatExists = false;
 		//Aktywacja okna kontaktow
-		BringWindowToTop(hFrmMain);
-		SetForegroundWindow(hFrmMain);
-		SetFocus(hFrmMainFocus);
-		SetActiveWindow(hFrmMain);
+		ActivateFrmMain();
 		//Ustawienie statusu okna dla SideSlide
 		if(FrmMainSlideHideMode==3) SetTimer(hTimerFrm,TIMER_FRMMAINBLOCKSLIDE,1500,(TIMERPROC)TimerFrmProc);
 		else
@@ -3660,9 +3724,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			//Gdy okno nie jest innym oknem aplikacji
 			if(PID!=ProcessPID)
 			{
-			  //Pobieranie klasy nowego aktywnego okna
-			  GetClassNameW(GetForegroundWindow(), WClassName, sizeof(WClassName));
-			  if((UnicodeString)WClassName!="TaskSwitcherWnd")
+			  if(WindowCaptionName!="TaskSwitcherWnd")
 			  {
 				//Status FrmSendSlideOut
 				FrmSendSlideOut = true;
@@ -3686,9 +3748,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			//Gdy okno nie jest innym oknem aplikacji
 			if(PID!=ProcessPID)
 			{
-			  //Pobieranie klasy nowego aktywnego okna
-			  GetClassNameW(GetForegroundWindow(), WClassName, sizeof(WClassName));
-			  if((UnicodeString)WClassName!="TaskSwitcherWnd")
+			  if(WindowCaptionName!="TaskSwitcherWnd")
 			  {
 				//Status FrmMainSlideOut
 				FrmMainSlideOut = true;
@@ -3704,11 +3764,11 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	  //Pobieranie okna w ktorym znajduje sie kursor
 	  HWND hCurActiveFrm = WindowFromPoint(Mouse->CursorPos);
 	  //Pobieranie klasy okna w ktorym znajduje sie kursor
-	  GetClassNameW(hCurActiveFrm, WClassName, sizeof(WClassName));
+	  GetClassNameW(hCurActiveFrm, WindowCaptionNameW, sizeof(WindowCaptionNameW));
 	  //Pobranie PID okna w ktorym znajduje sie kursor
 	  GetWindowThreadProcessId(hCurActiveFrm, &PID);
 	  //Gdy kursor znajduje sie w obrebie menu z okna aplikacji
-	  if(((UnicodeString)WClassName=="#32768")&&(PID==ProcessPID))
+	  if((WindowCaptionName=="#32768")&&(PID==ProcessPID))
 	   hPopupMenu = hCurActiveFrm;
 	}
 	//FrmSendSlideOut (part I)
@@ -3724,14 +3784,14 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		TRect WindowRect;
 		GetWindowRect(hFrmSend,&WindowRect);
 		if(WindowRect.Left!=FrmSendRect.Left)
-		 SetWindowPos(hFrmSend,HWND_TOPMOST,WindowRect.Left,FrmSendRect.Top,0,0,SWP_ASYNCWINDOWPOS|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
+		 SetWindowPos(hFrmSend,HWND_TOPMOST,WindowRect.Left,FrmSendRect.Top,0,0,SWP_NOSIZE);
 	  }
 	  else
 	  {
 		TRect WindowRect;
 		GetWindowRect(hFrmSend,&WindowRect);
 		if(WindowRect.Top!=FrmSendRect.Top)
-		 SetWindowPos(hFrmSend,HWND_TOPMOST,FrmSendRect.Left,WindowRect.Top,0,0,SWP_ASYNCWINDOWPOS|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
+		 SetWindowPos(hFrmSend,HWND_TOPMOST,FrmSendRect.Left,WindowRect.Top,0,0,SWP_NOSIZE);
 	  }
 	  //Pobranie rozmiaru+pozycji okna rozmowy
 	  GetFrmSendRect();
@@ -3756,7 +3816,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		//Right
 		else FrmSendSlideLeft = FrmSendSlideLeft + Steps;
 		//Zmiana pozycji okna rozmowy
-		SetWindowPos(hFrmSend,HWND_TOPMOST,FrmSendSlideLeft,FrmSendRect.Top,0,0,SWP_ASYNCWINDOWPOS|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
+		SetWindowPos(hFrmSend,HWND_TOPMOST,FrmSendSlideLeft,FrmSendRect.Top,0,0,SWP_NOSIZE);
 	  }
 	  //Bottom or Top
 	  else
@@ -3768,7 +3828,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		//Top
 		else FrmSendSlideTop = FrmSendSlideTop - Steps;
 		//Zmiana pozycji okna rozmowy
-		SetWindowPos(hFrmSend,HWND_TOPMOST,FrmSendRect.Left,FrmSendSlideTop,0,0,SWP_ASYNCWINDOWPOS|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
+		SetWindowPos(hFrmSend,HWND_TOPMOST,FrmSendRect.Left,FrmSendSlideTop,0,0,SWP_NOSIZE);
 	  }
 	  //Koncowy etap
 	  if(((FrmSendSlideEdge==1)&&(FrmSendSlideLeft<(0-FrmSendRect.Right)))
@@ -3795,10 +3855,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		if((FrmMainSlideChk)&&(FrmMainSlideHideMode==2)&&(FrmSendSlideHideMode!=2)&&(FrmMainVisible)&&(!FrmMainSlideOut)&&(!FrmMainSlideIn))
 		{
 		  //Aktywacja okna kontaktow
-		  BringWindowToTop(hFrmMain);
-		  SetForegroundWindow(hFrmMain);
-		  SetFocus(hFrmMainFocus);
-		  SetActiveWindow(hFrmMain);
+		  ActivateFrmMain();
 		}
 		else
 		{
@@ -3812,10 +3869,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			  if((Mouse->CursorPos.y>FrmMainRect.Top)&&(FrmMainRect.Bottom>Mouse->CursorPos.y)&&(Mouse->CursorPos.x>FrmMainRect.Left)&&(FrmMainRect.Right>Mouse->CursorPos.x))
 			  {
 				//Aktywacja okna kontaktow
-				BringWindowToTop(hFrmMain);
-				SetForegroundWindow(hFrmMain);
-				SetFocus(hFrmMainFocus);
-				SetActiveWindow(hFrmMain);
+				ActivateFrmMain();
 				ActiveFrmMain = true;
 			  }
 			}
@@ -3851,13 +3905,14 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	  //Zatrzymanie timera
 	  KillTimer(hTimerFrm,TIMER_PREFRMSENDSLIDEIN);
 	  //Pobieranie nowego aktywnego okna
-	  wchar_t WClassName[128];
-	  GetClassNameW(GetForegroundWindow(), WClassName, sizeof(WClassName));
-	  if(((UnicodeString)WClassName!="ToolbarWindow32")
-	  &&((UnicodeString)WClassName!="MSTaskListWClass")
-	  &&((UnicodeString)WClassName!="TaskSwitcherWnd")
-	  &&((UnicodeString)WClassName!="Shell_TrayWnd")
-	  &&((UnicodeString)WClassName!="TrayShowDesktopButtonWClass"))
+	  wchar_t WindowCaptionNameW[128];
+	  GetClassNameW(GetForegroundWindow(), WindowCaptionNameW, sizeof(WindowCaptionNameW));
+	  UnicodeString WindowCaptionName = WindowCaptionNameW;
+	  if((WindowCaptionName!="ToolbarWindow32")
+	  &&(WindowCaptionName!="MSTaskListWClass")
+	  &&(WindowCaptionName!="TaskSwitcherWnd")
+	  &&(WindowCaptionName!="Shell_TrayWnd")
+	  &&(WindowCaptionName!="TrayShowDesktopButtonWClass"))
 	   LastActiveWindow_PreFrmSendSlideIn = GetForegroundWindow();
 	  //Sprawdzanie czy aktywna jest aplikacja pelno ekranowa
 	  ChkFullScreenMode();
@@ -3906,7 +3961,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	  if(FrmSendRestoreRect)
 	  {
 		FrmSendRestoreRect = false;
-		SetWindowPos(hFrmSend,NULL,0,0,FrmSendRect.Width(),FrmSendRect.Height(),SWP_NOMOVE|SWP_NOACTIVATE);
+		SetWindowPos(hFrmSend,NULL,0,0,FrmSendRect.Width(),FrmSendRect.Height(),SWP_NOMOVE);
 	  }
 	  int Steps = FrmSendSlideInTime / FrmSendStepInterval;
 	  //Left or Right
@@ -3928,7 +3983,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		}
 		if(!IsWindowVisible(hFrmSend)) ShowWindow(hFrmSend, SW_SHOWNA);
 		//Zmiana pozycji okna rozmowy
-		SetWindowPos(hFrmSend,HWND_TOPMOST,FrmSendSlideLeft,FrmSendRect.Top,0,0,SWP_NOSIZE|SWP_NOACTIVATE);
+		SetWindowPos(hFrmSend,HWND_TOPMOST,FrmSendSlideLeft,FrmSendRect.Top,0,0,SWP_NOSIZE);
 	  }
 	  else
 	  {
@@ -3948,7 +4003,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		}
 		if(!IsWindowVisible(hFrmSend)) ShowWindow(hFrmSend, SW_SHOWNA);
 		//Zmiana pozycji okna rozmowy
-		SetWindowPos(hFrmSend,HWND_TOPMOST,FrmSendRect.Left,FrmSendSlideTop,0,0,SWP_NOSIZE|SWP_NOACTIVATE);
+		SetWindowPos(hFrmSend,HWND_TOPMOST,FrmSendRect.Left,FrmSendSlideTop,0,0,SWP_NOSIZE);
 	  }
 	  //Koncowy etap
 	  if((((FrmSendSlideEdge==1)||(FrmSendSlideEdge==2))&&(FrmSendSlideLeft==FrmSendRect.Left))
@@ -3964,24 +4019,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		  if(hHideFrm) ShowWindow(hHideFrm,SW_HIDE);
 		}
 		//Aktywacja okna
-		SetForegroundWindow(hFrmSend);
-		//Aktywacja pola wpisywania tekstu
-		if((!DragDetect(hFrmSend,Mouse->CursorPos))&&(hRichEdit))
-		{
-		  //Blokada lokalnego hooka na myszke
-		  FrmSendActivate = true;
-		  //Emulacja klikniecia myszka w pole tekstowe
-		  TRect RichEditRect;
-		  GetWindowRect(hRichEdit,&RichEditRect);
-		  POINT pCur;
-		  GetCursorPos(&pCur);
-		  SetCursorPos(RichEditRect.Left+1,RichEditRect.Top+1);
-		  mouse_event(MOUSEEVENTF_LEFTDOWN,RichEditRect.Left+1,RichEditRect.Top+1,0,0);
-		  mouse_event(MOUSEEVENTF_LEFTUP,RichEditRect.Left+1,RichEditRect.Top+1,0,0);
-		  SetCursorPos(pCur.x,pCur.y);
-		  //Wlaczenie timera wylaczania blokady lokalnego hooka na myszke
-		  SetTimer(hTimerFrm,TIMER_FRMSENDUNBLOCKMOUSE,100,(TIMERPROC)TimerFrmProc);
-		}
+		ActivateFocusFrmSend();
 		//Wylaczenie statusu okna na wierzchu
 		if(FrmSendSlideHideMode==2)
 		 SetWindowPos(hFrmSend,HWND_NOTOPMOST,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
@@ -4085,10 +4123,11 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	else if(wParam==TIMER_FRMSENDSETTOPMOST)
 	{
 	  //Pobieranie klasy nowego okna
-	  wchar_t WClassName[128];
-	  GetClassNameW(GetForegroundWindow(), WClassName, sizeof(WClassName));
+	  wchar_t WindowCaptionNameW[128];
+	  GetClassNameW(GetForegroundWindow(), WindowCaptionNameW, sizeof(WindowCaptionNameW));
+	  UnicodeString WindowCaptionName = WindowCaptionNameW;
 	  //Wlaczenie timera ustawienia okna na wierzchu
-	  if(((UnicodeString)WClassName!="TaskSwitcherWnd")&&((UnicodeString)WClassName!="DV2ControlHost")&&((UnicodeString)WClassName!="Shell_TrayWnd"))
+	  if((WindowCaptionName!="TaskSwitcherWnd")&&(WindowCaptionName!="DV2ControlHost")&&(WindowCaptionName!="Shell_TrayWnd"))
 	  {
 		//Zatrzymanie timera
 		KillTimer(hTimerFrm,TIMER_FRMSENDSETTOPMOST);
@@ -4102,10 +4141,11 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	else if(wParam==TIMER_FRMSENDSETTOPMOSTANDSLIDE)
 	{
 	  //Pobieranie klasy nowego okna
-	  wchar_t WClassName[128];
-	  GetClassNameW(GetForegroundWindow(), WClassName, sizeof(WClassName));
+	  wchar_t WindowCaptionNameW[128];
+	  GetClassNameW(GetForegroundWindow(), WindowCaptionNameW, sizeof(WindowCaptionNameW));
+	  UnicodeString WindowCaptionName = WindowCaptionNameW;
 	  //Wlaczenie timera ustawienia okna na wierzchu
-	  if(((UnicodeString)WClassName!="TaskSwitcherWnd")&&((UnicodeString)WClassName!="DV2ControlHost"))
+	  if((WindowCaptionName!="TaskSwitcherWnd")&&(WindowCaptionName!="DV2ControlHost"))
 	  {
 		//Zatrzymanie timera
 		KillTimer(hTimerFrm,TIMER_FRMSENDSETTOPMOSTANDSLIDE);
@@ -4116,7 +4156,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		  PreFrmSendSlideOut = true;
 		  //Pobieranie nowego aktywnego okna
 		  LastActiveWindow_WmInactiveFrmSendSlide = GetForegroundWindow();
-		  //Ponowna aktywacja okna
+		  //Ustawienie okna na wierzchu
 		  SetWindowPos(hFrmSend,HWND_TOPMOST,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
 		  //Wlaczenie FrmSendSlideOut (part I)
 		  SetTimer(hTimerFrm,TIMER_PREFRMSENDSLIDEOUT,1,(TIMERPROC)TimerFrmProc);
@@ -4126,35 +4166,10 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		  //Pobranie uchwytu
 		  LastActiveWindow_PreFrmSendSlideIn = GetForegroundWindow();
 		  //Aktywacja okna
-		  SetForegroundWindow(hFrmSend);
-		  //Aktywacja pola wpisywania tekstu
-		  if((!DragDetect(hFrmSend,Mouse->CursorPos))&&(hRichEdit))
-		  {
-			//Blokada lokalnego hooka na myszke
-			FrmSendActivate = true;
-			//Emulacja klikniecia myszka w pole tekstowe
-			TRect RichEditRect;
-			GetWindowRect(hRichEdit,&RichEditRect);
-			POINT pCur;
-			GetCursorPos(&pCur);
-			SetCursorPos(RichEditRect.Left+1,RichEditRect.Top+1);
-			mouse_event(MOUSEEVENTF_LEFTDOWN,RichEditRect.Left+1,RichEditRect.Top+1,0,0);
-			mouse_event(MOUSEEVENTF_LEFTUP,RichEditRect.Left+1,RichEditRect.Top+1,0,0);
-			SetCursorPos(pCur.x,pCur.y);
-			//Wlaczenie timera wylaczania blokady lokalnego hooka na myszke
-			SetTimer(hTimerFrm,TIMER_FRMSENDUNBLOCKMOUSE,100,(TIMERPROC)TimerFrmProc);
-		  }
+		  ActivateFocusFrmSend();
 		}
 	  }
 	}
-	//Wylaczanie blokady lokalnego hooka na myszke
-	else if(wParam==TIMER_FRMSENDUNBLOCKMOUSE)
-	{
-      //Zatrzymanie timera
-	  KillTimer(hTimerFrm,TIMER_FRMSENDUNBLOCKMOUSE);
-	  //Wylaczenie blokady
-      FrmSendActivate = false;
-    }
 	//FrmMainSlideOut (part I)
 	else if(wParam==TIMER_PREFRMMAINDSLIDEOUT)
 	{
@@ -4170,20 +4185,22 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		TRect WindowRect;
 		GetWindowRect(hFrmMain,&WindowRect);
 		if(WindowRect.Left!=FrmMainRect.Left)
-		 SetWindowPos(hFrmMain,HWND_TOPMOST,WindowRect.Left,FrmMainRect.Top,0,0,SWP_NOSIZE|SWP_NOACTIVATE);
+		 SetWindowPos(hFrmMain,HWND_TOPMOST,WindowRect.Left,FrmMainRect.Top,0,0,SWP_NOSIZE);
 	  }
 	  else
 	  {
 		TRect WindowRect;
 		GetWindowRect(hFrmMain,&WindowRect);
 		if(WindowRect.Top!=FrmMainRect.Top)
-		 SetWindowPos(hFrmMain,HWND_TOPMOST,FrmMainRect.Left,WindowRect.Top,0,0,SWP_NOSIZE|SWP_NOACTIVATE);
+		 SetWindowPos(hFrmMain,HWND_TOPMOST,FrmMainRect.Left,WindowRect.Top,0,0,SWP_NOSIZE);
 	  }
 	  //Pobranie rozmiaru+pozycji okna kontatkow
 	  GetFrmMainRect();
 	  //Poczatkowa pozycja okna kontaktow podczas SlideIn/SlideOut
 	  FrmMainSlideLeft = FrmMainRect.Left;
 	  FrmMainSlideTop = FrmMainRect.Top;
+	  //Ponowna aktywacja okna kontaktow
+	  ActivateFrmMain();
 	  //Wlacznie FrmSendSlideIn (part II)
 	  SetTimer(hTimerFrm,TIMER_FRMMAINSLIDEOUT,FrmSendStepInterval,(TIMERPROC)TimerFrmProc);
 	}
@@ -4201,15 +4218,8 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		if(FrmMainSlideEdge==1) FrmMainSlideLeft = FrmMainSlideLeft - Steps;
 		//Right
 		else FrmMainSlideLeft = FrmMainSlideLeft + Steps;
-		//Ponowna aktywacja okna kontaktow
-		FrmMainSlideOutWndActiv = true;
-		BringWindowToTop(hFrmMain);
-		SetForegroundWindow(hFrmMain);
-		SetFocus(hFrmMainFocus);
-		SetActiveWindow(hFrmMain);
-		FrmMainSlideOutWndActiv = false;
 		//Zmiana pozycji okna kontaktow
-		SetWindowPos(hFrmMain,HWND_TOPMOST,FrmMainSlideLeft,FrmMainRect.Top,0,0,SWP_NOSIZE|SWP_NOACTIVATE);
+		SetWindowPos(hFrmMain,HWND_TOPMOST,FrmMainSlideLeft,FrmMainRect.Top,0,0,SWP_NOSIZE);
 	  }
 	  //Bottom or Top
 	  else
@@ -4220,15 +4230,8 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		if(FrmMainSlideEdge==3) FrmMainSlideTop = FrmMainSlideTop + Steps;
 		//Top
 		else FrmMainSlideTop = FrmMainSlideTop - Steps;
-		//Ponowna aktywacja okna kontaktow
-		FrmMainSlideOutWndActiv = true;
-		BringWindowToTop(hFrmMain);
-		SetForegroundWindow(hFrmMain);
-		SetFocus(hFrmMainFocus);
-		SetActiveWindow(hFrmMain);
-		FrmMainSlideOutWndActiv = false;
 		//Zmiana pozycji okna kontaktow
-		SetWindowPos(hFrmMain,HWND_TOPMOST,FrmMainRect.Left,FrmMainSlideTop,0,0,SWP_NOSIZE|SWP_NOACTIVATE);
+		SetWindowPos(hFrmMain,HWND_TOPMOST,FrmMainRect.Left,FrmMainSlideTop,0,0,SWP_NOSIZE);
 	  }
 	  //Koncowy etap
 	  if(((FrmMainSlideEdge==1)&&(FrmMainSlideLeft<(0-FrmMainRect.Right)))
@@ -4256,24 +4259,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		  if(!FrmPosExist)
 		  {
 			//Aktywacja okna rozmowy
-			SetForegroundWindow(hFrmSend);
-			//Aktywacja pola wpisywania tekstu
-			if((!DragDetect(hFrmSend,Mouse->CursorPos))&&(hRichEdit))
-			{
-			  //Blokada lokalnego hooka na myszke
-			  FrmSendActivate = true;
-			  //Emulacja klikniecia myszka w pole tekstowe
-			  TRect RichEditRect;
-			  GetWindowRect(hRichEdit,&RichEditRect);
-			  POINT pCur;
-			  GetCursorPos(&pCur);
-			  SetCursorPos(RichEditRect.Left+1,RichEditRect.Top+1);
-			  mouse_event(MOUSEEVENTF_LEFTDOWN,RichEditRect.Left+1,RichEditRect.Top+1,0,0);
-			  mouse_event(MOUSEEVENTF_LEFTUP,RichEditRect.Left+1,RichEditRect.Top+1,0,0);
-			  SetCursorPos(pCur.x,pCur.y);
-			  //Wlaczenie timera wylaczania blokady lokalnego hooka na myszke
-			  SetTimer(hTimerFrm,TIMER_FRMSENDUNBLOCKMOUSE,100,(TIMERPROC)TimerFrmProc);
-			}
+			ActivateFocusFrmSend();
 		  }
 		}
 		else
@@ -4304,24 +4290,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			  //Status FrmMainSlideOut
 			  FrmMainSlideOutActivFrmSend = false;
 			  //Aktywacja okna
-			  SetForegroundWindow(hFrmSend);
-			  //Aktywacja pola wpisywania tekstu
-			  if((!DragDetect(hFrmSend,Mouse->CursorPos))&&(hRichEdit))
-			  {
-				//Blokada lokalnego hooka na myszke
-				FrmSendActivate = true;
-				//Emulacja klikniecia myszka w pole tekstowe
-				TRect RichEditRect;
-				GetWindowRect(hRichEdit,&RichEditRect);
-				POINT pCur;
-				GetCursorPos(&pCur);
-				SetCursorPos(RichEditRect.Left+1,RichEditRect.Top+1);
-				mouse_event(MOUSEEVENTF_LEFTDOWN,RichEditRect.Left+1,RichEditRect.Top+1,0,0);
-				mouse_event(MOUSEEVENTF_LEFTUP,RichEditRect.Left+1,RichEditRect.Top+1,0,0);
-				SetCursorPos(pCur.x,pCur.y);
-				//Wlaczenie timera wylaczania blokady lokalnego hooka na myszke
-				SetTimer(hTimerFrm,TIMER_FRMSENDUNBLOCKMOUSE,100,(TIMERPROC)TimerFrmProc);
-			  }
+			  ActivateFocusFrmSend();
 			}
 		  }
 		  //Aktywacja okna spod kursora
@@ -4341,13 +4310,14 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	  //Zatrzymanie timera
 	  KillTimer(hTimerFrm,TIMER_PREFRMMAINSLIDEIN);
 	  //Pobieranie nowego aktywnego okna
-	  wchar_t WClassName[128];
-	  GetClassNameW(GetForegroundWindow(), WClassName, sizeof(WClassName));
-	  if(((UnicodeString)WClassName!="ToolbarWindow32")
-	  &&((UnicodeString)WClassName!="MSTaskListWClass")
-	  &&((UnicodeString)WClassName!="TaskSwitcherWnd")
-	  &&((UnicodeString)WClassName!="Shell_TrayWnd")
-	  &&((UnicodeString)WClassName!="TrayShowDesktopButtonWClass"))
+	  wchar_t WindowCaptionNameW[128];
+	  GetClassNameW(GetForegroundWindow(), WindowCaptionNameW, sizeof(WindowCaptionNameW));
+	  UnicodeString WindowCaptionName = WindowCaptionNameW;
+	  if((WindowCaptionName!="ToolbarWindow32")
+	  &&(WindowCaptionName!="MSTaskListWClass")
+	  &&(WindowCaptionName!="TaskSwitcherWnd")
+	  &&(WindowCaptionName!="Shell_TrayWnd")
+	  &&(WindowCaptionName!="TrayShowDesktopButtonWClass"))
 	   LastActiveWindow_PreFrmMainSlideIn = GetForegroundWindow();
 	  //Sprawdzanie czy aktywna jest aplikacja pelno ekranowa
 	  ChkFullScreenMode();
@@ -4397,7 +4367,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		}
 		if(!IsWindowVisible(hFrmMain)) ShowWindow(hFrmMain, SW_SHOWNA);
 		//Zmiana pozycji okna kontaktow
-		SetWindowPos(hFrmMain,HWND_TOPMOST,FrmMainSlideLeft,FrmMainRect.Top,0,0,SWP_NOSIZE|SWP_NOACTIVATE);
+		SetWindowPos(hFrmMain,HWND_TOPMOST,FrmMainSlideLeft,FrmMainRect.Top,0,0,SWP_NOSIZE);
 	  }
 	  else
 	  {
@@ -4417,7 +4387,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		}
 		if(!IsWindowVisible(hFrmMain)) ShowWindow(hFrmMain, SW_SHOWNA);
 		//Zmiana pozycji okna kontaktow
-		SetWindowPos(hFrmMain,HWND_TOPMOST,FrmMainRect.Left,FrmMainSlideTop,0,0,SWP_NOSIZE|SWP_NOACTIVATE);
+		SetWindowPos(hFrmMain,HWND_TOPMOST,FrmMainRect.Left,FrmMainSlideTop,0,0,SWP_NOSIZE);
 	  }
 	  //Koncowy etap
 	  if((((FrmMainSlideEdge==1)||(FrmMainSlideEdge==2))&&(FrmMainSlideLeft==FrmMainRect.Left))
@@ -4433,10 +4403,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		  ShowWindow(hHideFrm,SW_HIDE);
 		}
 		//Aktywacja okna kontaktow
-		BringWindowToTop(hFrmMain);
-		SetForegroundWindow(hFrmMain);
-		SetFocus(hFrmMainFocus);
-		SetActiveWindow(hFrmMain);
+		ActivateFrmMain();
 		//Wylaczenie statusu okna na wierzchu
 		if(FrmMainSlideHideMode==2) SetWindowPos(hFrmMain,HWND_NOTOPMOST,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
 		//Status FrmMainSlideIn
@@ -4466,20 +4433,18 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	else if(wParam==TIMER_FRMMAINSETTOPMOST)
 	{
 	  //Pobieranie klasy nowego okna
-	  wchar_t WClassName[128];
-	  GetClassNameW(GetForegroundWindow(), WClassName, sizeof(WClassName));
+	  wchar_t WindowCaptionNameW[128];
+	  GetClassNameW(GetForegroundWindow(), WindowCaptionNameW, sizeof(WindowCaptionNameW));
+	  UnicodeString WindowCaptionName = WindowCaptionNameW;
 	  //Wlaczenie timera ustawienia okna na wierzchu
-	  if(((UnicodeString)WClassName!="TaskSwitcherWnd")&&((UnicodeString)WClassName!="DV2ControlHost")&&((UnicodeString)WClassName!="Shell_TrayWnd"))
+	  if((WindowCaptionName!="TaskSwitcherWnd")&&(WindowCaptionName!="DV2ControlHost")&&(WindowCaptionName!="Shell_TrayWnd"))
 	  {
 		//Zatrzymanie timera
 		KillTimer(hTimerFrm,TIMER_FRMMAINSETTOPMOST);
 		//Pobranie uchwytu
 		LastActiveWindow_PreFrmMainSlideIn = GetForegroundWindow();
 		//Aktywacja okna kontaktow
-		BringWindowToTop(hFrmMain);
-		SetForegroundWindow(hFrmMain);
-		SetFocus(hFrmMainFocus);
-		SetActiveWindow(hFrmMain);
+		ActivateFrmMain();
 	  }
 	}
 	//SideSlide - ustawienie okna kontaktow na wierzchu
@@ -4492,10 +4457,11 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	  if(PID!=ProcessPID)
 	  {
 		//Pobieranie klasy nowego okna
-		wchar_t WClassName[128];
-		GetClassNameW(GetForegroundWindow(), WClassName, sizeof(WClassName));
+		wchar_t WindowCaptionNameW[128];
+		GetClassNameW(GetForegroundWindow(), WindowCaptionNameW, sizeof(WindowCaptionNameW));
+		UnicodeString WindowCaptionName = WindowCaptionNameW;
 		//Porownanie klasy nowego aktywnego okna
-		if(((UnicodeString)WClassName!="TaskSwitcherWnd")&&((UnicodeString)WClassName!="DV2ControlHost"))
+		if((WindowCaptionName!="TaskSwitcherWnd")&&(WindowCaptionName!="DV2ControlHost"))
 		 //Ustawienie okna kontaktow na wierzchu
 		 SetWindowPos(hFrmMain,HWND_TOPMOST,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
 	  }
@@ -4504,10 +4470,11 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	else if(wParam==TIMER_FRMMAINSETTOPMOSTANDSLIDE)
 	{
 	  //Pobieranie klasy nowego okna
-	  wchar_t WClassName[128];
-	  GetClassNameW(GetForegroundWindow(), WClassName, sizeof(WClassName));
+	  wchar_t WindowCaptionNameW[128];
+	  GetClassNameW(GetForegroundWindow(), WindowCaptionNameW, sizeof(WindowCaptionNameW));
+	  UnicodeString WindowCaptionName = WindowCaptionNameW;
 	  //Wlaczenie timera ustawienia okna na wierzchu
-	  if(((UnicodeString)WClassName!="TaskSwitcherWnd")&&((UnicodeString)WClassName!="DV2ControlHost"))
+	  if((WindowCaptionName!="TaskSwitcherWnd")&&(WindowCaptionName!="DV2ControlHost"))
 	  {
 		//Zatrzymanie timera
 		KillTimer(hTimerFrm,TIMER_FRMMAINSETTOPMOSTANDSLIDE);
@@ -4518,9 +4485,6 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		  PreFrmMainSlideOut = true;
 		  //Pobieranie nowego aktywnego okna
 		  LastActiveWindow_WmInactiveFrmMainSlide = GetForegroundWindow();
-		  //Ponowna aktywacja okna
-		  BringWindowToTop(hFrmMain);
-		  SetForegroundWindow(hFrmMain);
 		  //Ustawienie okna na wierzchu
 		  SetWindowPos(hFrmMain,HWND_TOPMOST,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
 		  //Wlaczenie FrmMainSlideOut (part I)
@@ -4531,8 +4495,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		  //Pobranie uchwytu
 		  LastActiveWindow_PreFrmMainSlideIn = GetForegroundWindow();
 		  //Ponowna aktywacja okna
-		  BringWindowToTop(hFrmMain);
-		  SetForegroundWindow(hFrmMain);
+		  ActivateFrmMain();
 		}
 	  }
 	}
@@ -4555,16 +4518,17 @@ LRESULT CALLBACK FrmMainProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	  //Pobieranie okna w ktorym znajduje sie kursor
 	  HWND hCurActiveFrm = WindowFromPoint(Mouse->CursorPos);
 	  //Pobieranie klasy okna w ktorym znajduje sie kursor
-	  wchar_t WClassName[128];
-	  GetClassNameW(hCurActiveFrm, WClassName, sizeof(WClassName));
+	  wchar_t WindowCaptionNameW[128];
+	  GetClassNameW(hCurActiveFrm, WindowCaptionNameW, sizeof(WindowCaptionNameW));
+	  UnicodeString WindowCaptionName = WindowCaptionNameW;
 	  //Pobranie PID okna w ktorym znajduje sie kursor
 	  DWORD PID;
 	  GetWindowThreadProcessId(hCurActiveFrm, &PID);
 	  //Gdy kursor znajduje sie w obrebie menu z okna aplikacji lub w oknie kontaktow
-	  if((((UnicodeString)WClassName=="#32768")&&(PID==ProcessPID))||((Mouse->CursorPos.y>FrmMainRect.Top+FrmMainRealTopPos-FrmMain_Shell_TrayWndTop)&&(FrmMainRect.Bottom+FrmMainRealBottomPos+FrmMain_Shell_TrayWndBottom>Mouse->CursorPos.y)&&(Mouse->CursorPos.x>FrmMainRect.Left+FrmMainRealLeftPos-FrmMain_Shell_TrayWndLeft)&&(FrmMainRect.Right+FrmMainRealRightPos+FrmMain_Shell_TrayWndRight>Mouse->CursorPos.x)))
-	   SetWindowPos(hFrmMain,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE);
+	  if(((WindowCaptionName=="#32768")&&(PID==ProcessPID))||((Mouse->CursorPos.y>FrmMainRect.Top+FrmMainRealTopPos-FrmMain_Shell_TrayWndTop)&&(FrmMainRect.Bottom+FrmMainRealBottomPos+FrmMain_Shell_TrayWndBottom>Mouse->CursorPos.y)&&(Mouse->CursorPos.x>FrmMainRect.Left+FrmMainRealLeftPos-FrmMain_Shell_TrayWndLeft)&&(FrmMainRect.Right+FrmMainRealRightPos+FrmMain_Shell_TrayWndRight>Mouse->CursorPos.x)))
+	   SetWindowPos(hFrmMain,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 	  else
-	   SetWindowPos(hFrmMain,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE);
+	   SetWindowPos(hFrmMain,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 	}
 	//Aktywacja okna kontatow
 	else if((uMsg==WM_ACTIVATE)&&(!LoadExecuted))
@@ -4592,9 +4556,10 @@ LRESULT CALLBACK FrmMainProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				if(PID!=ProcessPID)
 				{
 				  //Pobieranie klasy nowego aktywnego okna
-				  wchar_t WClassName[128];
-				  GetClassNameW(GetForegroundWindow(), WClassName, sizeof(WClassName));
-				  if((UnicodeString)WClassName!="TaskSwitcherWnd")
+				  wchar_t WindowCaptionNameW[128];
+				  GetClassNameW(GetForegroundWindow(), WindowCaptionNameW, sizeof(WindowCaptionNameW));
+				  UnicodeString WindowCaptionName = WindowCaptionNameW;
+				  if(WindowCaptionName!="TaskSwitcherWnd")
 				  {
 					//Status FrmMainSlideOut
 					FrmMainSlideOut = true;
@@ -4610,25 +4575,23 @@ LRESULT CALLBACK FrmMainProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			  else if(FrmMainSlideHideMode==1)
 			  {
 				//Pobieranie klasy nowego aktywnego okna
-				wchar_t WClassName[128];
-				GetClassNameW(GetForegroundWindow(), WClassName, sizeof(WClassName));
-				if((UnicodeString)WClassName!="TaskSwitcherWnd")
+				wchar_t WindowCaptionNameW[128];
+				GetClassNameW(GetForegroundWindow(), WindowCaptionNameW, sizeof(WindowCaptionNameW));
+				UnicodeString WindowCaptionName = WindowCaptionNameW;
+				if(WindowCaptionName!="TaskSwitcherWnd")
 				{
 				  //Status FrmMainSlideOut
 				  FrmMainSlideOut = true;
 				  PreFrmMainSlideOut = true;
 				  //Pobieranie nowego aktywnego okna
-				  wchar_t WClassName[128];
-				  GetClassNameW(WindowFromPoint(Mouse->CursorPos), WClassName, sizeof(WClassName));
-				  if(((UnicodeString)WClassName!="ToolbarWindow32")
-				  &&((UnicodeString)WClassName!="MSTaskListWClass")
-				  &&((UnicodeString)WClassName!="TaskSwitcherWnd")
-				  &&((UnicodeString)WClassName!="Shell_TrayWnd")
-				  &&((UnicodeString)WClassName!="TrayShowDesktopButtonWClass"))
+				  GetClassNameW(WindowFromPoint(Mouse->CursorPos), WindowCaptionNameW, sizeof(WindowCaptionNameW));
+				  UnicodeString WindowCaptionName = WindowCaptionNameW;
+				  if((WindowCaptionName!="ToolbarWindow32")
+				  &&(WindowCaptionName!="MSTaskListWClass")
+				  &&(WindowCaptionName!="TaskSwitcherWnd")
+				  &&(WindowCaptionName!="Shell_TrayWnd")
+				  &&(WindowCaptionName!="TrayShowDesktopButtonWClass"))
 				   LastActiveWindow_WmInactiveFrmMainSlide = WindowFromPoint(Mouse->CursorPos);
-				  //Ponowna aktywacja okna
-				  BringWindowToTop(hFrmMain);
-				  SetForegroundWindow(hFrmMain);
 				  //Ustawienie okna na wierzchu
 				  SetWindowPos(hFrmMain,HWND_TOPMOST,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
 				  //Wlaczenie FrmMainSlideOut (part I)
@@ -4644,19 +4607,15 @@ LRESULT CALLBACK FrmMainProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				FrmMainSlideOut = true;
 				PreFrmMainSlideOut = true;
 				//Pobieranie nowego aktywnego okna
-				wchar_t WClassName[128];
-				GetClassNameW(WindowFromPoint(Mouse->CursorPos), WClassName, sizeof(WClassName));
-				if(((UnicodeString)WClassName!="ToolbarWindow32")
-				&&((UnicodeString)WClassName!="MSTaskListWClass")
-				&&((UnicodeString)WClassName!="TaskSwitcherWnd")
-				&&((UnicodeString)WClassName!="Shell_TrayWnd")
-				&&((UnicodeString)WClassName!="TrayShowDesktopButtonWClass"))
+				wchar_t WindowCaptionNameW[128];
+				GetClassNameW(WindowFromPoint(Mouse->CursorPos), WindowCaptionNameW, sizeof(WindowCaptionNameW));
+				UnicodeString WindowCaptionName = WindowCaptionNameW;
+				if((WindowCaptionName!="ToolbarWindow32")
+				&&(WindowCaptionName!="MSTaskListWClass")
+				&&(WindowCaptionName!="TaskSwitcherWnd")
+				&&(WindowCaptionName!="Shell_TrayWnd")
+				&&(WindowCaptionName!="TrayShowDesktopButtonWClass"))
 				 LastActiveWindow_WmInactiveFrmMainSlide = WindowFromPoint(Mouse->CursorPos);
-				//Ponowna aktywacja okna
-				BringWindowToTop(hFrmMain);
-				SetForegroundWindow(hFrmMain);
-				//Ustawienie okna na wierzchu
-				SetWindowPos(hFrmMain,HWND_TOPMOST,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
 				//Wlaczenie FrmMainSlideOut (part I)
 				SetTimer(hTimerFrm,TIMER_PREFRMMAINDSLIDEOUT,1,(TIMERPROC)TimerFrmProc);
 			  }
@@ -4689,11 +4648,13 @@ LRESULT CALLBACK FrmMainProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		//FrmMainSlideIn
 		if(wParam==WA_ACTIVE)
 		{
-		  wchar_t WClassName[128];
-		  GetClassNameW(LastActiveWindow, WClassName, sizeof(WClassName));
-		  wchar_t WClassName2[128];
-		  GetClassNameW(WindowFromPoint(Mouse->CursorPos), WClassName2, sizeof(WClassName2));
-		  if((!FrmMainVisible)&&(!FrmMainBlockSlide)&&(!FrmMainSlideOut)&&(!FrmMainSlideIn)&&(!IsIconic(LastActiveWindow))&&((IsWindowVisible(LastActiveWindow))||((UnicodeString)WClassName=="TaskSwitcherWnd"))&&((UnicodeString)WClassName2!="TrayShowDesktopButtonWClass")&&((WindowFromPoint(Mouse->CursorPos)!=hToolbarWindow32)||(PseudoFrmMainSlideIn)))
+		  wchar_t WindowCaptionNameW[128];
+		  GetClassNameW(LastActiveWindow, WindowCaptionNameW, sizeof(WindowCaptionNameW));
+		  UnicodeString WindowCaptionName = WindowCaptionNameW;
+		  wchar_t WindowCaptionNameW2[128];
+		  GetClassNameW(WindowFromPoint(Mouse->CursorPos), WindowCaptionNameW2, sizeof(WindowCaptionNameW2));
+		  UnicodeString WindowCaptionName2 = WindowCaptionNameW2;
+		  if((!FrmMainVisible)&&(!FrmMainBlockSlide)&&(!FrmMainSlideOut)&&(!FrmMainSlideIn)&&(!IsIconic(LastActiveWindow))&&((IsWindowVisible(LastActiveWindow))||(WindowCaptionName=="TaskSwitcherWnd"))&&(WindowCaptionName2!="TrayShowDesktopButtonWClass")&&((WindowFromPoint(Mouse->CursorPos)!=hToolbarWindow32)||(PseudoFrmMainSlideIn)))
 		  {
 			//Status pseudo FrmMainSlideIn
 			PseudoFrmMainSlideIn = false;
@@ -4709,17 +4670,11 @@ LRESULT CALLBACK FrmMainProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			{
 			  //Status FrmMainSlideIn
 			  FrmMainSlideIn = true;
-			  //Aktywacja okna kontaktow
-			  BringWindowToTop(hFrmMain);
-			  SetForegroundWindow(hFrmMain);
 			  //Wlacznie FrmMainSlideIn (part II)
 			  SetTimer(hTimerFrm,TIMER_FRMMAINSLIDEIN,FrmMainStepInterval,(TIMERPROC)TimerFrmProc);
 			}
 		  }
 		}
-		//Ustawianie na wierzchu okna wyszukiwarki
-		if((hFrmSeekOnList)&&((wParam==WA_ACTIVE)||(wParam==WA_CLICKACTIVE)))
-		 SetWindowPos(hFrmSeekOnList,HWND_TOPMOST,0,0,0,0,SWP_NOACTIVATE|SWP_NOSIZE|SWP_NOMOVE);
 	  }
 	}
 	//Zabezpieczenie przed "zamknieciem" okna przy aktywnym SideSlide
@@ -4792,9 +4747,9 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	  if(TweakFrmSendTitlebarChk)
 	  {
 		//Pobranie aktualnego tekstu belki okna
-		wchar_t* TitlebarW = new wchar_t[512];
-		GetWindowTextW(hFrmSend,TitlebarW,512);
-		UnicodeString Titlebar = (wchar_t*)TitlebarW;
+		wchar_t TitlebarW[512];
+		GetWindowTextW(hFrmSend, TitlebarW, sizeof(TitlebarW));
+		UnicodeString Titlebar = TitlebarW;
 		//Sprawdzanie czy belka zostal juz zmieniona ostatnio
 		ShortString TitlebarShort = UTF8EncodeToShortString(Titlebar);
 		UnicodeString ChangedTitlebar = UTF8ToUnicodeString((IniStrToStr(ChangedTitlebarList->ReadString("Titlebar", StrToIniStr(TitlebarShort.operator AnsiString()), ""))).w_str());
@@ -4810,9 +4765,9 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	  if((TweakFrmSendTitlebarChk)&&(GetActiveWindow()==hFrmSend))
 	  {
 		//Pobranie aktualnego tekstu belki okna
-		wchar_t* TitlebarW = new wchar_t[512];
-		GetWindowTextW(hFrmSend,TitlebarW,512);
-		UnicodeString Titlebar = (wchar_t*)TitlebarW;
+		wchar_t TitlebarW[512];
+		GetWindowTextW(hFrmSend, TitlebarW, sizeof(TitlebarW));
+		UnicodeString Titlebar = TitlebarW;
 		//Sprawdzanie czy belka zostal juz zmieniona ostatnio
 		ShortString TitlebarShort = UTF8EncodeToShortString(Titlebar);
 		UnicodeString ChangedTitlebar = UTF8ToUnicodeString((IniStrToStr(ChangedTitlebarList->ReadString("Titlebar", StrToIniStr(TitlebarShort.operator AnsiString()), ""))).w_str());
@@ -4876,7 +4831,7 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	  if((FrmSendSlideChk)&&(!FrmSendBlockSlideOnRestore))
 	  {
 		//FrmSendSlideOut
-		if((wParam==WA_INACTIVE)&&(!FrmMainSlideOutWndActiv))
+		if(wParam==WA_INACTIVE)
 		{
 		  //Wylaczenie tymczasowej blokady
 		  if((FrmSendVisible)&&(FrmSendSlideHideMode==3)&&(!FrmSendBlockSlideWndEvent))
@@ -4899,9 +4854,10 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				if(PID!=ProcessPID)
 				{
 				  //Pobieranie klasy nowego aktywnego okna
-				  wchar_t WClassName[128];
-				  GetClassNameW(GetForegroundWindow(), WClassName, sizeof(WClassName));
-				  if((UnicodeString)WClassName!="TaskSwitcherWnd")
+                  wchar_t WindowCaptionNameW[128];
+				  GetClassNameW(GetForegroundWindow(), WindowCaptionNameW, sizeof(WindowCaptionNameW));
+				  UnicodeString WindowCaptionName = WindowCaptionNameW;
+				  if(WindowCaptionName!="TaskSwitcherWnd")
 				  {
 					//Status FrmSendSlideOut
 					FrmSendSlideOut = true;
@@ -4917,23 +4873,24 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			  else if(FrmSendSlideHideMode==1)
 			  {
 				//Pobieranie klasy nowego aktywnego okna
-				wchar_t WClassName[128];
-				GetClassNameW(GetForegroundWindow(), WClassName, sizeof(WClassName));
-				if((UnicodeString)WClassName!="TaskSwitcherWnd")
+				wchar_t WindowCaptionNameW[128];
+				GetClassNameW(GetForegroundWindow(), WindowCaptionNameW, sizeof(WindowCaptionNameW));
+				UnicodeString WindowCaptionName = WindowCaptionNameW;
+				if(WindowCaptionName!="TaskSwitcherWnd")
 				{
 				  //Status FrmSendSlideOut
 				  FrmSendSlideOut = true;
 				  PreFrmSendSlideOut = true;
 				  //Pobieranie nowego aktywnego okna
-				  wchar_t WClassName[128];
-				  GetClassNameW(WindowFromPoint(Mouse->CursorPos), WClassName, sizeof(WClassName));
-				  if(((UnicodeString)WClassName!="ToolbarWindow32")
-				  &&((UnicodeString)WClassName!="MSTaskListWClass")
-				  &&((UnicodeString)WClassName!="TaskSwitcherWnd")
-				  &&((UnicodeString)WClassName!="Shell_TrayWnd")
-				  &&((UnicodeString)WClassName!="TrayShowDesktopButtonWClass"))
+				  GetClassNameW(GetForegroundWindow(), WindowCaptionNameW, sizeof(WindowCaptionNameW));
+				  WindowCaptionName = WindowCaptionNameW;;
+				  if((WindowCaptionName!="ToolbarWindow32")
+				  &&(WindowCaptionName!="MSTaskListWClass")
+				  &&(WindowCaptionName!="TaskSwitcherWnd")
+				  &&(WindowCaptionName!="Shell_TrayWnd")
+				  &&(WindowCaptionName!="TrayShowDesktopButtonWClass"))
 				   LastActiveWindow_WmInactiveFrmSendSlide = WindowFromPoint(Mouse->CursorPos);
-				  //Ponowna aktywacja okna
+				  //Ustawienie okna na wierzchu
 				  SetWindowPos(hFrmSend,HWND_TOPMOST,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
 				  //Wlaczenie FrmSendSlideOut (part I)
 				  SetTimer(hTimerFrm,TIMER_PREFRMSENDSLIDEOUT,1,(TIMERPROC)TimerFrmProc);
@@ -4948,15 +4905,16 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				FrmSendSlideOut = true;
 				PreFrmSendSlideOut = true;
 				//Pobieranie nowego aktywnego okna
-				wchar_t WClassName[128];
-				GetClassNameW(WindowFromPoint(Mouse->CursorPos), WClassName, sizeof(WClassName));
-				if(((UnicodeString)WClassName!="ToolbarWindow32")
-				&&((UnicodeString)WClassName!="MSTaskListWClass")
-				&&((UnicodeString)WClassName!="TaskSwitcherWnd")
-				&&((UnicodeString)WClassName!="Shell_TrayWnd")
-				&&((UnicodeString)WClassName!="TrayShowDesktopButtonWClass"))
+				wchar_t WindowCaptionNameW[128];
+				GetClassNameW(WindowFromPoint(Mouse->CursorPos), WindowCaptionNameW, sizeof(WindowCaptionNameW));
+				UnicodeString WindowCaptionName = WindowCaptionNameW;
+				if((WindowCaptionName!="ToolbarWindow32")
+				&&(WindowCaptionName!="MSTaskListWClass")
+				&&(WindowCaptionName!="TaskSwitcherWnd")
+				&&(WindowCaptionName!="Shell_TrayWnd")
+				&&(WindowCaptionName!="TrayShowDesktopButtonWClass"))
 				 LastActiveWindow_WmInactiveFrmSendSlide = WindowFromPoint(Mouse->CursorPos);
-				//Ponowna aktywacja okna
+				//Ustawienie okna na wierzchu
 				SetWindowPos(hFrmSend,HWND_TOPMOST,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
 				//Wlaczenie FrmSendSlideOut (part I)
 				SetTimer(hTimerFrm,TIMER_PREFRMSENDSLIDEOUT,1,(TIMERPROC)TimerFrmProc);
@@ -4990,11 +4948,13 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		//FrmSendSlideIn
 		if(wParam==WA_ACTIVE)
 		{
-		  wchar_t WClassName[128];
-		  GetClassNameW(LastActiveWindow, WClassName, sizeof(WClassName));
-		  wchar_t WClassName2[128];
-		  GetClassNameW(WindowFromPoint(Mouse->CursorPos), WClassName2, sizeof(WClassName2));
-		  if((!FrmSendVisible)&&(!FrmSendBlockSlide)&&(!FrmSendSlideOut)&&(!FrmSendSlideIn)&&(!IsIconic(LastActiveWindow))&&((IsWindowVisible(LastActiveWindow))||((UnicodeString)WClassName=="TaskSwitcherWnd")||((UnicodeString)WClassName2=="MSTaskListWClass")||((UnicodeString)WClassName2=="ToolbarWindow32")))
+		  wchar_t WindowCaptionNameW[128];
+		  GetClassNameW(LastActiveWindow, WindowCaptionNameW, sizeof(WindowCaptionNameW));
+		  UnicodeString WindowCaptionName = WindowCaptionNameW;
+		  wchar_t WindowCaptionNameW2[128];
+		  GetClassNameW(WindowFromPoint(Mouse->CursorPos), WindowCaptionNameW2, sizeof(WindowCaptionNameW2));
+		  UnicodeString WindowCaptionName2 = WindowCaptionNameW2;
+		  if((!FrmSendVisible)&&(!FrmSendBlockSlide)&&(!FrmSendSlideOut)&&(!FrmSendSlideIn)&&(!IsIconic(LastActiveWindow))&&((IsWindowVisible(LastActiveWindow))||(WindowCaptionName=="TaskSwitcherWnd")||(WindowCaptionName2=="MSTaskListWClass")||(WindowCaptionName2=="ToolbarWindow32")))
 		  {
 			//Sprawdzanie czy aktywna jest aplikacja pelno ekranowa
 			ChkFullScreenMode();
@@ -5081,9 +5041,10 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		//FrmSendSlideIn
 		else
 		{
-		  wchar_t WClassName[128];
-		  GetClassNameW(WindowFromPoint(Mouse->CursorPos), WClassName, sizeof(WClassName));
-		  if((UnicodeString)WClassName!="TrayShowDesktopButtonWClass")
+		  wchar_t WindowCaptionNameW[128];
+		  GetClassNameW(WindowFromPoint(Mouse->CursorPos), WindowCaptionNameW, sizeof(WindowCaptionNameW));
+		  UnicodeString WindowCaptionName = WindowCaptionNameW;
+		  if(WindowCaptionName!="TrayShowDesktopButtonWClass")
 		  {
 			//Status FrmSendSlideIn
 			FrmSendSlideIn = true;
@@ -5985,8 +5946,8 @@ LRESULT CALLBACK ThreadMouseProc(int nCode, WPARAM wParam, LPARAM lParam)
   //Blad
   if((nCode<0)||(ForceUnloadExecuted)) return CallNextHookEx(hThreadMouse, nCode, wParam, lParam);
 
-  //Jezeli w tym momencie okno rozmowy nie jest aktywowane oraz nie jest aktywne popupmenu
-  if((!FrmSendActivate)&&(!IsWindow(hPopupMenu)))
+  //Nie jest aktywne popupmenu
+  if(!IsWindow(hPopupMenu))
   {
 	//Przywracanie zakladek za pomoca myszki
 	if((ClosedTabsChk)&&((UnCloseTabSPMouseChk)||(UnCloseTabLPMouseChk)))
@@ -6462,9 +6423,9 @@ int __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 		if(!ActiveTabContact.IsChat)
 		{
 		  //Pobranie aktualnego tekstu belki okna
-		  wchar_t* TitlebarW = new wchar_t[512];
-		  GetWindowTextW(hFrmSend,TitlebarW,512);
-		  UnicodeString Titlebar = (wchar_t*)TitlebarW;
+		  wchar_t TitlebarW[512];
+		  GetWindowTextW(hFrmSend, TitlebarW, sizeof(TitlebarW));
+		  UnicodeString Titlebar = TitlebarW;
 		  //Zmienna zmienionego tekstu na belce
 		  UnicodeString ChangedTitlebar;
 		  //Pobranie pseudonimu kontaktu
@@ -6599,9 +6560,9 @@ int __stdcall OnAddLine(WPARAM wParam, LPARAM lParam)
 				//Pobranie oryginalnego tekstu paska tytulu okna rozmowy
 				if((FrmSendTitlebar.IsEmpty())&&(!InactiveFrmNewMsgCount))
 				{
-				  wchar_t* TempTitlebarW = new wchar_t[512];
-				  GetWindowTextW(hFrmSend,TempTitlebarW,512);
-				  FrmSendTitlebar = (wchar_t*)TempTitlebarW;
+				  wchar_t TitlebarW[512];
+				  GetWindowTextW(hFrmSend, TitlebarW, sizeof(TitlebarW));
+				  FrmSendTitlebar = TitlebarW;
 				}
 				//Dodanie 1 do licznika nieprzeczytachy wiadomosci
 				InactiveFrmNewMsgCount++;
@@ -7985,9 +7946,9 @@ int __stdcall OnPrimaryTab(WPARAM wParam, LPARAM lParam)
 		if(TweakFrmSendTitlebarChk)
 		{
 		  //Pobranie aktualnego tekstu belki okna
-		  wchar_t* TitlebarW = new wchar_t[512];
-		  GetWindowTextW(hFrmSend,TitlebarW,512);
-		  UnicodeString Titlebar = (wchar_t*)TitlebarW;
+		  wchar_t TitlebarW[512];
+		  GetWindowTextW(hFrmSend, TitlebarW, sizeof(TitlebarW));
+		  UnicodeString Titlebar = TitlebarW;
 		  //Zmienna zmienionego tekstu na belce
 		  UnicodeString ChangedTitlebar;
 		  //Pseudonim i opis kontatku
@@ -8148,9 +8109,9 @@ int __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 			  //Pobranie oryginalnego tekstu paska tytulu okna rozmowy
 			  if((FrmSendTitlebar.IsEmpty())&&(!InactiveFrmNewMsgCount))
 			  {
-				wchar_t* TempTitlebarW = new wchar_t[512];
-				GetWindowTextW(hFrmSend,TempTitlebarW,512);
-				FrmSendTitlebar = (wchar_t*)TempTitlebarW;
+                wchar_t TitlebarW[512];
+				GetWindowTextW(hFrmSend, TitlebarW, sizeof(TitlebarW));
+				FrmSendTitlebar = TitlebarW;
 			  }
 			  //Dodanie 1 do licznika nieprzeczytachy wiadomosci
 			  InactiveFrmNewMsgCount++;
@@ -9555,10 +9516,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 		//Pobranie rozmiaru+pozycji okna kontatkow
 		GetFrmMainRect();
 		//Aktywacja okna kontaktow
-		BringWindowToTop(hFrmMain);
-		SetForegroundWindow(hFrmMain);
-		SetFocus(hFrmMainFocus);
-		SetActiveWindow(hFrmMain);
+		ActivateFrmMain();
 		//Zapisanie pozycji okna kontaktow do ustawiem AQQ
 		TSaveSetup SaveSetup;
 		SaveSetup.Section = L"Position";
@@ -9889,7 +9847,7 @@ int __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  //Trzymanie okna na wierzchu
 	  if(((StayOnTopChk)&&(StayOnTopStatus))||((FrmSendSlideChk)&&(FrmSendSlideHideMode!=2)))
 	   SetWindowPos(hFrmSend,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
-	  //Tworzenie timera emulacji klikniecia myszka w pole tekstowe
+	  //Tworzenie timera aktywacji pola wpisywania tekstu
 	  if((!FrmSetStateExist)&&(hRichEdit))
 	   SetTimer(hTimerFrm,TIMER_ACTIVATERICHEDIT,500,(TIMERPROC)TimerFrmProc);
 	}
@@ -11170,7 +11128,7 @@ extern "C" int __declspec(dllexport) __stdcall Unload()
 	CurrentFrmMainProc = NULL;
   }
   //Wyladowanie timerow
-  for(int TimerID=10;TimerID<=360;TimerID=TimerID+10) KillTimer(hTimerFrm,TimerID);
+  for(int TimerID=10;TimerID<=350;TimerID=TimerID+10) KillTimer(hTimerFrm,TimerID);
   //Usuwanie okna timera
   DestroyWindow(hTimerFrm);
   //Wyrejestowanie klasy okna timera
@@ -11469,7 +11427,7 @@ extern "C" PPluginInfo __declspec(dllexport) __stdcall AQQPluginInfo(DWORD AQQVe
 {
   PluginInfo.cbSize = sizeof(TPluginInfo);
   PluginInfo.ShortName = L"TabKit";
-  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,7,6,0);
+  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,7,7,0);
   PluginInfo.Description = L"Wtyczka oferuje masê funkcjonalnoœci usprawniaj¹cych korzystanie z komunikatora np. zapamiêtywanie zamkniêtych zak³adek, inteligentne prze³¹czanie, zapamiêtywanie sesji.";
   PluginInfo.Author = L"Krzysztof Grochocki (Beherit)";
   PluginInfo.AuthorMail = L"kontakt@beherit.pl";

@@ -1,3 +1,13 @@
+1.7.7.0
+-----
+* Zmiana sposobu aktywacji pola wiadomoœci okna rozmowy.
+* Poprawki w aktywacji okna kontaktów.
+* Poprawne wyszukiwanie uchwytu do kontrolki IE w oknie kontaktów.
+* Wyszukiwarka kontaktów nie psuje dzia³ania okna listy kontaktów przy aktywnym chowaniu za krawêdŸ ekranu.
+* Drobna zmiana w plikach INI trzymanych w pamiêci.
+* Inne mniej wa¿ne zmiany w kodzie.
+* Aktualizacja komponentów AlphaControls do nowszej wersji (8.45).
+
 1.7.6.0
 -----
 * Personalizacja funkcji skracania odnoœników.
