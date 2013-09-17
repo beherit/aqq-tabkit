@@ -12,7 +12,7 @@ Autorem wtyczki TabKit jest Krzysztof Grochocki. Możesz skontaktować się z ni
 
 Licencja
 -------
-Wtyczka TabKit wykorzystuje licencję [GNU General Public License 3](http://www.gnu.org/copyleft/gpl.html).
+Wtyczka TabKit objęta jest licencją [GNU General Public License 3](http://www.gnu.org/copyleft/gpl.html).
 
     TabKit
     Copyright (C) 2010-2013  Krzysztof Grochocki
