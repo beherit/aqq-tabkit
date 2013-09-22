@@ -205,6 +205,8 @@ bool ToolBarShowing = false;
 bool LBUTTONDBLCLK = false;
 //EmuTabsW
 bool EmuTabsWSupport;
+//Blokowanie lokalnego hooka na myszke
+bool BlockThreadMouseProc = false;
 //INNE-----------------------------------------------------------------------
 //Aktywna otwarta zakladka
 UnicodeString ActiveTabJID;
@@ -347,6 +349,7 @@ int FASTACCESS;
 #define TIMER_FRMMAINSETTOPMOST 330
 #define TIMER_FRMMAINSETTOPMOSTEX 340
 #define TIMER_FRMMAINSETTOPMOSTANDSLIDE 350
+#define TIMER_UNBLOCKMOUSEPROC 360
 //SETTINGS-------------------------------------------------------------------
 //ClosedTabs
 bool ClosedTabsChk;
@@ -687,27 +690,26 @@ void ActivateFrmMain()
 void FocusRichEdit()
 {
   //Ustawianie fokusa
-  SetFocus(hRichEdit);
+  //SetFocus(hRichEdit);
+  //Blokada lokalnego hooka na myszke
+  BlockThreadMouseProc = true;
   //Emulacja klikniecia
   TRect RichEditRect;
   GetWindowRect(hRichEdit,&RichEditRect);
   POINT pCur;
-  if(GetCursorPos(&pCur))
-  {
-	if(SetCursorPos(RichEditRect.Left+5,RichEditRect.Top+5))
-	{
-	  mouse_event(MOUSEEVENTF_LEFTDOWN|MOUSEEVENTF_LEFTUP,0,0,0,0);
-	  SetCursorPos(pCur.x,pCur.y);
-	}
-  }
+  GetCursorPos(&pCur);
+  SetCursorPos(RichEditRect.Right-5,RichEditRect.Bottom-5);
+  mouse_event(MOUSEEVENTF_LEFTDOWN|MOUSEEVENTF_LEFTUP,0,0,0,0);
+  SetCursorPos(pCur.x,pCur.y);
+  //Wlaczenie timera wylaczania blokady lokalnego hooka na myszke
+  SetTimer(hTimerFrm,TIMER_UNBLOCKMOUSEPROC,100,(TIMERPROC)TimerFrmProc);
   //Pobieranie dlugosci tekstu z RichEdit
-  int iLength = GetWindowTextLengthW(hRichEdit)+1;
+  /*int iLength = GetWindowTextLengthW(hRichEdit);
   //Zmiana pozycji kursora
   CHARRANGE SelPos;
-  SendMessage(hRichEdit, EM_EXGETSEL, NULL, (LPARAM)&SelPos);
   SelPos.cpMin = iLength;
   SelPos.cpMax = iLength;
-  SendMessage(hRichEdit, EM_EXSETSEL, NULL, (LPARAM)&SelPos);
+  SendMessage(hRichEdit, EM_EXSETSEL, NULL, (LPARAM)&SelPos);*/
 }
 //---------------------------------------------------------------------------
 
@@ -4499,6 +4501,14 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		}
 	  }
 	}
+	//Wylaczanie blokady lokalnego hooka na myszke
+	else if(wParam==TIMER_UNBLOCKMOUSEPROC)
+	{
+	  //Zatrzymanie timera
+	  KillTimer(hTimerFrm,TIMER_UNBLOCKMOUSEPROC);
+	  //Wylaczenie blokady
+	  BlockThreadMouseProc = false;
+    }
 
 	return 0;
   }
@@ -5946,8 +5956,8 @@ LRESULT CALLBACK ThreadMouseProc(int nCode, WPARAM wParam, LPARAM lParam)
   //Blad
   if((nCode<0)||(ForceUnloadExecuted)) return CallNextHookEx(hThreadMouse, nCode, wParam, lParam);
 
-  //Nie jest aktywne popupmenu
-  if(!IsWindow(hPopupMenu))
+  //Nie jest aktywne popupmenu i hook nie jest zablokowany
+  if((!IsWindow(hPopupMenu))&&(!BlockThreadMouseProc))
   {
 	//Przywracanie zakladek za pomoca myszki
 	if((ClosedTabsChk)&&((UnCloseTabSPMouseChk)||(UnCloseTabLPMouseChk)))
@@ -11128,7 +11138,7 @@ extern "C" int __declspec(dllexport) __stdcall Unload()
 	CurrentFrmMainProc = NULL;
   }
   //Wyladowanie timerow
-  for(int TimerID=10;TimerID<=350;TimerID=TimerID+10) KillTimer(hTimerFrm,TimerID);
+  for(int TimerID=10;TimerID<=360;TimerID=TimerID+10) KillTimer(hTimerFrm,TimerID);
   //Usuwanie okna timera
   DestroyWindow(hTimerFrm);
   //Wyrejestowanie klasy okna timera
@@ -11427,7 +11437,7 @@ extern "C" PPluginInfo __declspec(dllexport) __stdcall AQQPluginInfo(DWORD AQQVe
 {
   PluginInfo.cbSize = sizeof(TPluginInfo);
   PluginInfo.ShortName = L"TabKit";
-  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,7,7,0);
+  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,7,7,2);
   PluginInfo.Description = L"Wtyczka oferuje masê funkcjonalnoœci usprawniaj¹cych korzystanie z komunikatora np. zapamiêtywanie zamkniêtych zak³adek, inteligentne prze³¹czanie, zapamiêtywanie sesji.";
   PluginInfo.Author = L"Krzysztof Grochocki (Beherit)";
   PluginInfo.AuthorMail = L"kontakt@beherit.pl";

@@ -1,3 +1,7 @@
+1.7.7.2
+-----
+* Poprawka w procesie aktywacji pola wiadomoœci okna rozmowy.
+
 1.7.7.0
 -----
 * Zmiana sposobu aktywacji pola wiadomoœci okna rozmowy.
