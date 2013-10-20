@@ -10344,7 +10344,7 @@ void LoadSettings()
   RestoreMsgSessionChk = Ini->ReadBool("SessionRemember","RestoreMsg",false);
   //NewMsg
   InactiveFrmNewMsgChk = Ini->ReadBool("NewMsg","InactiveFrm",true);
-  KeyboardFlasherChk = Ini->ReadBool("NewMsg","KeyboardFlasher",true);
+  KeyboardFlasherChk = Ini->ReadBool("NewMsg","KeyboardFlasher",false);
   KeyboardFlasherModeChk = Ini->ReadInteger("NewMsg","KeyboardFlasherMode",0);
   bool CoreInactiveTabsNewMsgChk = Ini->ReadBool("NewMsg","CoreInactiveTabs",true);
   PluginLink.CallService(AQQ_SYSTEM_FUNCTION_SETENABLED,SYS_FUNCTION_MSGCOUNTER,CoreInactiveTabsNewMsgChk);

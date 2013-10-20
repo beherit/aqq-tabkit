@@ -291,7 +291,7 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   RestoreMsgSessionCheckBox->Checked = Ini->ReadBool("SessionRemember","RestoreMsg",false);
   //NewMsg
   InactiveFrmNewMsgCheckBox->Checked = Ini->ReadBool("NewMsg","InactiveFrm",true);
-  KeyboardFlasherCheckBox->Checked = Ini->ReadBool("NewMsg","KeyboardFlasher",true);
+  KeyboardFlasherCheckBox->Checked = Ini->ReadBool("NewMsg","KeyboardFlasher",false);
   KeyboardFlasherModeComboBox->ItemIndex = Ini->ReadInteger("NewMsg","KeyboardFlasherMode",0);
   OffCoreInactiveTabsNewMsgCheckBox->Checked = !Ini->ReadBool("NewMsg","CoreInactiveTabs",true);
   InactiveTabsNewMsgCheckBox->Checked = Ini->ReadBool("NewMsg","InactiveTabs",false);
