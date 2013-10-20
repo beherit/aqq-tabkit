@@ -1,3 +1,26 @@
+1.8.0.0
+-----
+* Mruganie diod¹ LED klawiatury po przyjœciu nowej wiadomoœci (nie dzia³a z klawiaturami USB).
+* Schowane za okno rozmowy pokazuje siê na ekranie, gdy wybierzemy je z miniaturek na pasku zadañ.
+* Nowe regu³y blokowania chowania okien przy chowaniu, gdy aplikacja straci fokus.
+* Poprawne wyœwietlanie licznika nieprzeczytanych wiadomoœci na belce okna rozmowy.
+* Poprawne usuwanie informacji o pisaniu wiadomoœci z belki okna rozmowy.
+* Poprawne tymczasowe blokowanie chowania okna rozmowy po wysuniêciu przy otwarciu nowej zak³adki.
+* Dalsze poprawki w aktywacji okien.
+* Okno menu start nie jest przykrywane oknem rozmowy.
+* Okno kontaktów nie znika z pierwszego planu przy dezaktywacji i aktywnej wyszukiwarce.
+* Poprawki w pobieraniu tytu³ów filmów YouTube.
+* Spore zmiany w funkcji skracania odnoœników.
+* Zwijanie przes³anych obrazków do formy za³¹cznika dzia³a znowu poprawnie.
+* Poprawne dzia³anie blokady chowania okna rozmowy przy aktywnym oknie szybkiego wstawiania emotek.
+* Zmiana stanu kontaktu z aktywnej zak³adki nie przywraca domyœlnego tekstu na belce okna rozmowy.
+* Usuniêcie zabezpieczenia przed zamykaniem wielu zak³adek jednoczeœnie.
+* Usuniêcie wsparcia dla bota Blipa (funkcjonalnoœæ zakomentowana i przeznaczona dla bota Blablera).
+* Inne zmiany optymalizacyjne w kodzie.
+* Kompilacja pod poprawionymi nag³ówkami dla wersji 64-bitowej.
+* Zmniejszenie rozmiaru wtyczki 64-bitowej poprzez u¿ycie kompresji LZMA.
+* Aktualizacja komponentów AlphaControls do nowszej wersji (8.46).
+
 1.7.7.2
 -----
 * Poprawka w procesie aktywacji pola wiadomoœci okna rozmowy.

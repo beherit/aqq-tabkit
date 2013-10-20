@@ -24,6 +24,7 @@
 #define SettingsFrmH
 #define WM_ALPHAWINDOWS (WM_USER + 666)
 //---------------------------------------------------------------------------
+#include "acAlphaImageList.hpp"
 #include "acPNG.hpp"
 #include "sBevel.hpp"
 #include "sButton.hpp"
@@ -32,6 +33,7 @@
 #include "sEdit.hpp"
 #include "sGroupBox.hpp"
 #include "sLabel.hpp"
+#include "sMemo.hpp"
 #include "sPageControl.hpp"
 #include "sRadioButton.hpp"
 #include "sSkinManager.hpp"
@@ -42,6 +44,10 @@
 #include <IdCoder.hpp>
 #include <IdCoder3to4.hpp>
 #include <IdCoderMIME.hpp>
+#include <IdComponent.hpp>
+#include <IdHTTP.hpp>
+#include <IdTCPClient.hpp>
+#include <IdTCPConnection.hpp>
 #include <IdThreadComponent.hpp>
 #include <System.Actions.hpp>
 #include <System.Classes.hpp>
@@ -51,15 +57,8 @@
 #include <Vcl.Controls.hpp>
 #include <Vcl.ExtCtrls.hpp>
 #include <Vcl.FileCtrl.hpp>
-#include <Vcl.StdCtrls.hpp>
-#include "acAlphaImageList.hpp"
 #include <Vcl.ImgList.hpp>
-#include <IdComponent.hpp>
-#include <IdHTTP.hpp>
-#include <IdTCPClient.hpp>
-#include <IdTCPConnection.hpp>
-#include <IdAntiFreezeBase.hpp>
-#include <Vcl.IdAntiFreeze.hpp>
+#include <Vcl.StdCtrls.hpp>
 //---------------------------------------------------------------------------
 class TSettingsForm : public TForm
 {
@@ -126,7 +125,6 @@ __published:	// IDE-managed Components
 	TAction *aOtherChk;
 	TsCheckBox *InactiveNotiferNewMsgCheckBox;
 	TsCheckBox *RestoreLastMsgClosedTabsCheckBox;
-	TsCheckBox *EmuTabsWCheckBox;
 	TsCheckBox *ShowTimeClosedTabsCheckBox;
 	TsCheckBox *FastClearClosedTabsCheckBox;
 	TsCheckBox *FastClearUnsentMsgCheckBox;
@@ -261,6 +259,9 @@ __published:	// IDE-managed Components
 	TIdThreadComponent *GetYouTubeTitleThread;
 	TTimer *RefreshTimer;
 	TsComboBox *ShortenLinksModeComboBox;
+	TsCheckBox *KeyboardFlasherCheckBox;
+	TsComboBox *KeyboardFlasherModeComboBox;
+	TsMemo *FileMemo;
 	void __fastcall UnsentMsgTrayIconClick(TObject *Sender);
 	void __fastcall aExitExecute(TObject *Sender);
 	void __fastcall CancelButtonClick(TObject *Sender);
