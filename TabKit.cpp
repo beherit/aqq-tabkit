@@ -1034,8 +1034,8 @@ void HideFrmMain()
 void FocusRichEdit()
 {
   //Okno rozmowy jest aktywne
-  if(GetForegroundWindow()==hFrmSend)
-  {
+  //if(GetForegroundWindow()==hFrmSend)
+  //{
 	//Ustawianie fokusa
 	//SetFocus(hRichEdit);
 	//Blokada lokalnego hooka na myszke
@@ -1057,7 +1057,7 @@ void FocusRichEdit()
 	//SelPos.cpMin = iLength;
 	//SelPos.cpMax = iLength;
     //SendMessage(hRichEdit, EM_EXSETSEL, NULL, (LPARAM)&SelPos);
-  }
+  //}
 }
 //---------------------------------------------------------------------------
 
