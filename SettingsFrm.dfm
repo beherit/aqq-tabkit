@@ -3598,8 +3598,8 @@ object SettingsForm: TSettingsForm
       SkinData.CustomFont = False
       object ChatStateNotiferNewMsgCheckBox: TsCheckBox
         Left = 12
-        Top = 148
-        Width = 341
+        Top = 182
+        Width = 344
         Height = 28
         Caption = 
           'Informuj graficznie o pisaniu nowej wiadomo'#347'ci na zak'#322'adkach ora' +
@@ -3608,7 +3608,7 @@ object SettingsForm: TSettingsForm
         AutoSize = False
         Checked = True
         State = cbChecked
-        TabOrder = 4
+        TabOrder = 6
         OnClick = aNewMsgChkExecute
         SkinData.SkinSection = 'CHECKBOX'
         ImgChecked = 0
@@ -3635,14 +3635,14 @@ object SettingsForm: TSettingsForm
       end
       object InactiveNotiferNewMsgCheckBox: TsCheckBox
         Left = 12
-        Top = 114
+        Top = 148
         Width = 285
         Height = 28
         Caption = 
           'Pokazuj w chmurce informacyjnej tre'#347#263' nowej wiadomo'#347'ci pochodz'#261'c' +
           'ej z nieaktywnej zak'#322'adki'
         AutoSize = False
-        TabOrder = 3
+        TabOrder = 5
         OnClick = aNewMsgChkExecute
         SkinData.SkinSection = 'CHECKBOX'
         ImgChecked = 0
@@ -3651,14 +3651,14 @@ object SettingsForm: TSettingsForm
       end
       object InactiveTabsNewMsgCheckBox: TsCheckBox
         Left = 12
-        Top = 80
+        Top = 114
         Width = 317
         Height = 28
         Caption = 
           'Wy'#347'wietlaj liczb'#281' nieprzeczytanych wiadomo'#347'ci na nieaktywnych za' +
           'k'#322'adkach w formie tekstowej'
         AutoSize = False
-        TabOrder = 2
+        TabOrder = 4
         OnClick = aNewMsgChkExecute
         SkinData.SkinSection = 'CHECKBOX'
         ImgChecked = 0
@@ -3667,14 +3667,14 @@ object SettingsForm: TSettingsForm
       end
       object OffCoreInactiveTabsNewMsgCheckBox: TsCheckBox
         Left = 12
-        Top = 46
+        Top = 80
         Width = 341
         Height = 28
         Caption = 
           'Wy'#322#261'cz wbudowany w komunikator graficzny licznik nieprzeczytanyc' +
           'h wiadomo'#347'ci'
         AutoSize = False
-        TabOrder = 1
+        TabOrder = 3
         OnClick = aNewMsgChkExecute
         SkinData.SkinSection = 'CHECKBOX'
         ImgChecked = 0
@@ -3683,14 +3683,14 @@ object SettingsForm: TSettingsForm
       end
       object TaskbarPenCheckBox: TsCheckBox
         Left = 12
-        Top = 208
+        Top = 242
         Width = 253
         Height = 28
         Caption = 
           'Wy'#322#261'cz wbudowan'#261' w komunikator funkcj'#281' pisaka na pasku tytu'#322'u ok' +
           'na rozmowy'
         AutoSize = False
-        TabOrder = 6
+        TabOrder = 8
         OnClick = aNewMsgChkExecute
         SkinData.SkinSection = 'CHECKBOX'
         ImgChecked = 0
@@ -3699,15 +3699,57 @@ object SettingsForm: TSettingsForm
       end
       object ChatGoneNotiferNewMsgCheckBox: TsCheckBox
         Left = 28
-        Top = 182
+        Top = 216
         Width = 316
         Height = 20
         Caption = 'Informuj graficznie na zak'#322'adkach o zamkni'#281'ciu okna rozmowy'
-        TabOrder = 5
+        TabOrder = 7
         OnClick = aNewMsgChkExecute
         SkinData.SkinSection = 'CHECKBOX'
         ImgChecked = 0
         ImgUnchecked = 0
+      end
+      object KeyboardFlasherCheckBox: TsCheckBox
+        Left = 12
+        Top = 46
+        Width = 250
+        Height = 28
+        Caption = 
+          'Mrugaj diod'#261' LED klawiatury po przyj'#347'ciu nowej wiadomo'#347'ci (nie d' +
+          'zia'#322'a z klawiaturami USB)'
+        AutoSize = False
+        TabOrder = 1
+        OnClick = aNewMsgChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object KeyboardFlasherModeComboBox: TsComboBox
+        Left = 268
+        Top = 49
+        Width = 76
+        Height = 21
+        Alignment = taLeftJustify
+        BoundLabel.Indent = 0
+        BoundLabel.Font.Charset = DEFAULT_CHARSET
+        BoundLabel.Font.Color = clWindowText
+        BoundLabel.Font.Height = -11
+        BoundLabel.Font.Name = 'Tahoma'
+        BoundLabel.Font.Style = []
+        BoundLabel.Layout = sclLeft
+        BoundLabel.MaxWidth = 0
+        BoundLabel.UseSkinColor = True
+        SkinData.SkinSection = 'COMBOBOX'
+        Style = csDropDownList
+        ItemIndex = 0
+        TabOrder = 2
+        Text = 'Scroll Lock'
+        OnChange = aNewMsgChkExecute
+        Items.Strings = (
+          'Scroll Lock'
+          'Num Lock'
+          'Caps Lock')
       end
     end
     object TitlebarTabSheet: TsTabSheet
@@ -4598,7 +4640,7 @@ object SettingsForm: TSettingsForm
         BiDiMode = bdLeftToRight
         Caption = 'Wyczy'#347#263' plik cache z informacji na temat'
         ParentBiDiMode = False
-        TabOrder = 15
+        TabOrder = 14
         CaptionLayout = clTopCenter
         SkinData.SkinSection = 'GROUPBOX'
         object SessionRememberEraseButton: TsButton
@@ -4682,18 +4724,6 @@ object SettingsForm: TSettingsForm
         ImgChecked = 0
         ImgUnchecked = 0
       end
-      object EmuTabsWCheckBox: TsCheckBox
-        Left = 12
-        Top = 266
-        Width = 295
-        Height = 20
-        Caption = 'Ostrzegaj przed zamykaniem wielu zak'#322'adek jednocze'#347'nie'
-        TabOrder = 11
-        OnClick = aOtherChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-      end
       object HideTabCloseButtonCheckBox: TsCheckBox
         Left = 12
         Top = 188
@@ -4721,7 +4751,7 @@ object SettingsForm: TSettingsForm
       object MinimizeRestoreCheckBox: TsCheckBox
         Left = 12
         Top = 94
-        Width = 206
+        Width = 208
         Height = 28
         Caption = 
           'Minimalizuj / przywracaj okno rozmowy przy pomocy skr'#243'tu klawiat' +
@@ -4735,7 +4765,7 @@ object SettingsForm: TSettingsForm
         WordWrap = True
       end
       object MinimizeRestoreHotKey: THotKey
-        Left = 224
+        Left = 226
         Top = 99
         Width = 103
         Height = 19
@@ -4765,7 +4795,7 @@ object SettingsForm: TSettingsForm
       object StayOnTopCheckBox: TsCheckBox
         Left = 12
         Top = 128
-        Width = 312
+        Width = 314
         Height = 28
         Caption = 
           'Dodaj do okna rozmowy przycisk trzymaj'#261'cy okno zawsze na wierzch' +
@@ -4810,7 +4840,7 @@ object SettingsForm: TSettingsForm
         Width = 214
         Height = 78
         Caption = 'Ustawienia chmurek informacyjnych'
-        TabOrder = 16
+        TabOrder = 15
         CaptionLayout = clTopCenter
         SkinData.SkinSection = 'GROUPBOX'
         object CloudTimeOutSpinEdit: TsSpinEdit
@@ -4879,11 +4909,11 @@ object SettingsForm: TSettingsForm
       end
       object SearchOnListCheckBox: TsCheckBox
         Left = 12
-        Top = 292
+        Top = 266
         Width = 230
         Height = 20
         Caption = 'Wy'#322#261'cz funkcj'#281' szukania na li'#347'cie kontakt'#243'w'
-        TabOrder = 12
+        TabOrder = 11
         OnClick = aOtherChkExecute
         SkinData.SkinSection = 'CHECKBOX'
         ImgChecked = 0
@@ -4891,13 +4921,13 @@ object SettingsForm: TSettingsForm
       end
       object ShortenLinksCheckBox: TsCheckBox
         Left = 12
-        Top = 318
+        Top = 292
         Width = 295
         Height = 20
         Caption = 'Skracaj wy'#347'wietlanie odno'#347'nik'#243'w do wygodniejszej formy'
         Checked = True
         State = cbChecked
-        TabOrder = 13
+        TabOrder = 12
         OnClick = aOtherChkExecute
         SkinData.SkinSection = 'CHECKBOX'
         ImgChecked = 0
@@ -4916,7 +4946,7 @@ object SettingsForm: TSettingsForm
         Checked = True
         Enabled = False
         State = cbChecked
-        TabOrder = 17
+        TabOrder = 16
         SkinData.SkinSection = 'CHECKBOX'
         ImgChecked = 0
         ImgUnchecked = 0
@@ -4924,7 +4954,7 @@ object SettingsForm: TSettingsForm
       end
       object ShortenLinksModeComboBox: TsComboBox
         Left = 313
-        Top = 317
+        Top = 291
         Width = 108
         Height = 21
         Alignment = taLeftJustify
@@ -4940,7 +4970,7 @@ object SettingsForm: TSettingsForm
         SkinData.SkinSection = 'COMBOBOX'
         Style = csDropDownList
         ItemIndex = 0
-        TabOrder = 14
+        TabOrder = 13
         Text = 'Wsz'#281'dzie'
         OnChange = aOtherChkExecute
         Items.Strings = (
@@ -4949,6 +4979,26 @@ object SettingsForm: TSettingsForm
           'W opisach')
       end
     end
+  end
+  object FileMemo: TsMemo
+    Left = 0
+    Top = 0
+    Width = 0
+    Height = 0
+    ScrollBars = ssBoth
+    TabOrder = 5
+    Visible = False
+    WordWrap = False
+    BoundLabel.Indent = 0
+    BoundLabel.Font.Charset = DEFAULT_CHARSET
+    BoundLabel.Font.Color = clWindowText
+    BoundLabel.Font.Height = -11
+    BoundLabel.Font.Name = 'Tahoma'
+    BoundLabel.Font.Style = []
+    BoundLabel.Layout = sclLeft
+    BoundLabel.MaxWidth = 0
+    BoundLabel.UseSkinColor = True
+    SkinData.SkinSection = 'EDIT'
   end
   object UnsentMsgTrayIcon: TTrayIcon
     BalloonFlags = bfInfo
@@ -5063,6 +5113,7 @@ object SettingsForm: TSettingsForm
     ThirdParty.ThirdScrollControl = ' '#13#10
     ThirdParty.ThirdUpDown = ' '#13#10
     ThirdParty.ThirdScrollBar = ' '
+    ThirdParty.ThirdStaticText = ' '
     Left = 96
     Top = 368
   end

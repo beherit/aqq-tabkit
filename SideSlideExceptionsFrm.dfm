@@ -30,6 +30,8 @@ object SideSlideExceptionsForm: TSideSlideExceptionsForm
     Top = 181
     Width = 75
     Height = 25
+    Align = alCustom
+    Anchors = [akRight, akBottom]
     Caption = 'Zapisz'
     Enabled = False
     TabOrder = 0
@@ -62,6 +64,8 @@ object SideSlideExceptionsForm: TSideSlideExceptionsForm
       Top = 27
       Width = 202
       Height = 96
+      Align = alCustom
+      Anchors = [akLeft, akTop, akRight, akBottom]
       ItemHeight = 13
       TabOrder = 0
       OnClick = ProcessListBoxClick
@@ -81,6 +85,8 @@ object SideSlideExceptionsForm: TSideSlideExceptionsForm
       Top = 129
       Width = 75
       Height = 25
+      Align = alCustom
+      Anchors = [akLeft, akBottom]
       Caption = 'Dodaj'
       TabOrder = 1
       OnClick = AddButtonClick
@@ -91,6 +97,8 @@ object SideSlideExceptionsForm: TSideSlideExceptionsForm
       Top = 129
       Width = 75
       Height = 25
+      Align = alCustom
+      Anchors = [akRight, akBottom]
       Caption = 'Usu'#324
       Enabled = False
       TabOrder = 2
@@ -103,6 +111,8 @@ object SideSlideExceptionsForm: TSideSlideExceptionsForm
     Top = 181
     Width = 75
     Height = 25
+    Align = alCustom
+    Anchors = [akRight, akBottom]
     Caption = 'Anuluj'
     TabOrder = 2
     OnClick = aExitExecute

@@ -29,6 +29,7 @@
 #include <XMLDoc.hpp>
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
+#pragma link "acAlphaImageList"
 #pragma link "acPNG"
 #pragma link "sBevel"
 #pragma link "sButton"
@@ -37,13 +38,13 @@
 #pragma link "sEdit"
 #pragma link "sGroupBox"
 #pragma link "sLabel"
+#pragma link "sMemo"
 #pragma link "sPageControl"
 #pragma link "sRadioButton"
 #pragma link "sSkinManager"
 #pragma link "sSkinProvider"
 #pragma link "sSpeedButton"
 #pragma link "sSpinEdit"
-#pragma link "acAlphaImageList"
 #pragma resource "*.dfm"
 TSettingsForm *SettingsForm;
 //---------------------------------------------------------------------------
@@ -59,6 +60,7 @@ __declspec(dllimport)int GetSaturation();
 __declspec(dllimport)bool ChkAvatarsListItem();
 __declspec(dllimport)void RefreshList();
 __declspec(dllimport)UnicodeString GetYouTubeTitleListItem();
+__declspec(dllimport)void AddToYouTubeExcludeList(UnicodeString ID);
 __declspec(dllimport)void LoadSettings();
 __declspec(dllimport)UnicodeString StrToIniStr(UnicodeString Str);
 __declspec(dllimport)UnicodeString IniStrToStr(UnicodeString Str);
@@ -289,6 +291,8 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   RestoreMsgSessionCheckBox->Checked = Ini->ReadBool("SessionRemember","RestoreMsg",false);
   //NewMsg
   InactiveFrmNewMsgCheckBox->Checked = Ini->ReadBool("NewMsg","InactiveFrm",true);
+  KeyboardFlasherCheckBox->Checked = Ini->ReadBool("NewMsg","KeyboardFlasher",true);
+  KeyboardFlasherModeComboBox->ItemIndex = Ini->ReadInteger("NewMsg","KeyboardFlasherMode",0);
   OffCoreInactiveTabsNewMsgCheckBox->Checked = !Ini->ReadBool("NewMsg","CoreInactiveTabs",true);
   InactiveTabsNewMsgCheckBox->Checked = Ini->ReadBool("NewMsg","InactiveTabs",false);
   InactiveNotiferNewMsgCheckBox->Checked = Ini->ReadBool("NewMsg","InactiveNotifer",false);
@@ -410,7 +414,6 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   pHideTabCloseButtonChk = HideTabCloseButtonCheckBox->Checked;
   HideScrollTabButtonsCheckBox->Checked = Ini->ReadBool("Other","HideScrollTabButtons",false);
   CloseBy2xLPMCheckBox->Checked = Ini->ReadBool("Other","CloseBy2xLPM",false);
-  EmuTabsWCheckBox->Checked = Ini->ReadBool("Other","EmuTabsW",false);
   CloudTimeOutSpinEdit->Value = Ini->ReadInteger("Other","CloudTimeOut",6);
   CloudTickModeComboBox->ItemIndex = Ini->ReadBool("Other","CloudTickMode",true);
   SearchOnListCheckBox->Checked = !Ini->ReadBool("Other","SearchOnList",true);
@@ -540,6 +543,8 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
   }
   //NewMsg
   Ini->WriteBool("NewMsg","InactiveFrm",InactiveFrmNewMsgCheckBox->Checked);
+  Ini->WriteBool("NewMsg","KeyboardFlasher",KeyboardFlasherCheckBox->Checked);
+  Ini->WriteInteger("NewMsg","KeyboardFlasherMode",KeyboardFlasherModeComboBox->ItemIndex);
   Ini->WriteBool("NewMsg","CoreInactiveTabs",!OffCoreInactiveTabsNewMsgCheckBox->Checked);
   Ini->WriteBool("NewMsg","InactiveTabs",InactiveTabsNewMsgCheckBox->Checked);
   Ini->WriteBool("NewMsg","InactiveNotifer",InactiveNotiferNewMsgCheckBox->Checked);
@@ -630,7 +635,6 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
   Ini->WriteBool("Other","HideTabCloseButton",HideTabCloseButtonCheckBox->Checked);
   Ini->WriteBool("Other","HideScrollTabButtons",HideScrollTabButtonsCheckBox->Checked);
   Ini->WriteBool("Other","CloseBy2xLPM",CloseBy2xLPMCheckBox->Checked);
-  Ini->WriteBool("Other","EmuTabsW",EmuTabsWCheckBox->Checked);
   Ini->WriteInteger("Other","CloudTimeOut",CloudTimeOutSpinEdit->Value);
   Ini->WriteBool("Other","CloudTickMode",CloudTickModeComboBox->ItemIndex);
   Ini->WriteBool("Other","SearchOnList",!SearchOnListCheckBox->Checked);
@@ -759,12 +763,12 @@ void __fastcall TSettingsForm::aSessionRememberChkExecute(TObject *Sender)
 
 void __fastcall TSettingsForm::aNewMsgChkExecute(TObject *Sender)
 {
+  KeyboardFlasherModeComboBox->Enabled = KeyboardFlasherCheckBox->Checked;
   OffCoreInactiveTabsNewMsgCheckBox->Enabled = !InactiveTabsNewMsgCheckBox->Checked;
   if((InactiveFrmNewMsgCheckBox->Checked)||(TweakFrmSendTitlebarCheckBox->Checked))
    TaskbarPenCheckBox->Enabled = false;
   else
    TaskbarPenCheckBox->Enabled = true;
-
   ChatGoneNotiferNewMsgCheckBox->Enabled = ChatStateNotiferNewMsgCheckBox->Checked;
 
   SaveButton->Enabled = true;
@@ -1078,14 +1082,24 @@ void __fastcall TSettingsForm::GetYouTubeTitleThreadRun(TIdThreadComponent *Send
 	//Pobieranie tytulu
 	UnicodeString XML = IdHTTPGet("http://gdata.youtube.com/feeds/api/videos/"+ID+"?fields=title");
 	//Parsowanie pliku XML
-	_di_IXMLDocument XMLDoc = LoadXMLData(XML);
-	_di_IXMLNode MainNode = XMLDoc->DocumentElement;
-	_di_IXMLNode ChildNode = MainNode->ChildNodes->GetNode(0);
-	UnicodeString Title = ChildNode->GetText();
-	//Zapisywanie tytulu do cache
-	TIniFile *Ini = new TIniFile(GetPluginUserDir() + "\\\\TabKit\\\\Session.ini");
-	Ini->WriteString("YouTube",ID,StrToIniStr(Title));
-	delete Ini;
+	if(!XML.IsEmpty())
+	{
+	  _di_IXMLDocument XMLDoc = LoadXMLData(XML);
+	  _di_IXMLNode MainNode = XMLDoc->DocumentElement;
+	  _di_IXMLNode ChildNode = MainNode->ChildNodes->GetNode(0);
+	  UnicodeString Title = ChildNode->GetText();
+	  //Zapisywanie tytulu do cache
+	  if(!Title.IsEmpty())
+	  {
+		TIniFile *Ini = new TIniFile(GetPluginUserDir() + "\\\\TabKit\\\\Session.ini");
+		Ini->WriteString("YouTube",ID,StrToIniStr(Title));
+		delete Ini;
+	  }
+	  //Blokowanie wskaznego ID na czas sesji
+	  else AddToYouTubeExcludeList(ID);
+	}
+	//Blokowanie wskaznego ID na czas sesji
+	else AddToYouTubeExcludeList(ID);
   }
   //Brak itemow do przetworzenia
   if(!ChkAvatarsListItem())
