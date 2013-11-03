@@ -1637,7 +1637,7 @@ UnicodeString TrimLinks(UnicodeString Body, bool Status)
 	  {
 		//Szukanie ID w cache
 		TIniFile *Ini = new TIniFile(SessionFileDir);
-		UnicodeString Title = UTF8ToUnicodeString(IniStrToStr(Ini->ReadString("YouTube",ID,"")));
+		UnicodeString Title = IniStrToStr(Ini->ReadString("YouTube",ID,""));
 		delete Ini;
 		//Tytul pobrany z cache
 		if(!Title.IsEmpty())
@@ -2561,7 +2561,7 @@ void GetUnsentMsg()
 		  for(int Count=0;Count<MsgCount;Count++)
 		  {
 			UnicodeString JID = Messages->Strings[Count];
-			UnicodeString Body = UTF8ToUnicodeString(IniStrToStr(Ini->ReadString("Messages", JID, "")));
+			UnicodeString Body = IniStrToStr(Ini->ReadString("Messages", JID, ""));
 			if(Body.Length()>25) Body = Body.SetLength(25) + "...";
 			PluginShowInfo.cbSize = sizeof(TPluginShowInfo);
 			PluginShowInfo.Event = tmeInfo;
@@ -5067,8 +5067,7 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		UnicodeString Titlebar = TitlebarW;
 		Titlebar = StringReplace(Titlebar, "\r\n", "", TReplaceFlags() << rfReplaceAll);
 		//Sprawdzanie czy belka zostal juz zmieniona ostatnio
-		ShortString TitlebarShort = UTF8EncodeToShortString(Titlebar);
-		UnicodeString ChangedTitlebar = UTF8ToUnicodeString(IniStrToStr(ChangedTitlebarList->ReadString("Titlebar", MD5(Titlebar), "")));
+		UnicodeString ChangedTitlebar = IniStrToStr(ChangedTitlebarList->ReadString("Titlebar", MD5(Titlebar), ""));
 		//Ustawianie nowego tekstu na belce okna
 		if((!ChangedTitlebar.IsEmpty())&&(Titlebar!=ChangedTitlebar))
 		 SetWindowTextW(hFrmSend,ChangedTitlebar.w_str());
@@ -5087,8 +5086,7 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		Titlebar = StringReplace(Titlebar, "\r\n", "", TReplaceFlags() << rfReplaceAll);
 		Titlebar = StringReplace(Titlebar, "  ", " ", TReplaceFlags() << rfReplaceAll);
 		//Sprawdzanie czy belka zostal juz zmieniona ostatnio
-		ShortString TitlebarShort = UTF8EncodeToShortString(Titlebar);
-		UnicodeString ChangedTitlebar = UTF8ToUnicodeString(IniStrToStr(ChangedTitlebarList->ReadString("Titlebar", MD5(Titlebar), "")));
+		UnicodeString ChangedTitlebar = IniStrToStr(ChangedTitlebarList->ReadString("Titlebar", MD5(Titlebar), ""));
 		//Ustawianie nowego tekstu na belce okna
 		if((!ChangedTitlebar.IsEmpty())&&(Titlebar!=ChangedTitlebar))
 		 SetWindowTextW(hFrmSend,ChangedTitlebar.w_str());
@@ -6220,7 +6218,7 @@ INT_PTR __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 		  //Odczytywanie sesji wiadomosci
 		  if((RestoreMsgSessionChk)&&(RestoringSession))
 		  {
-			UnicodeString Body = UTF8ToUnicodeString(IniStrToStr(Ini->ReadString("SessionMsg", JID, "")));
+			UnicodeString Body = IniStrToStr(Ini->ReadString("SessionMsg", JID, ""));
 			//Wczytanie tresci wiadomosci do pola RichEdit
 			if(!Body.IsEmpty())
 			{
@@ -6247,7 +6245,7 @@ INT_PTR __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 		{
 		  //Odczyt pliku sesji
 		  TIniFile *Ini = new TIniFile(SessionFileDir);
-		  UnicodeString Body = UTF8ToUnicodeString(IniStrToStr(Ini->ReadString("Messages", JID, "")));
+		  UnicodeString Body = IniStrToStr(Ini->ReadString("Messages", JID, ""));
 		  //Wczytanie tresci wiadomosci do pola RichEdit
 		  if(!Body.IsEmpty())
 		  {
@@ -6441,7 +6439,7 @@ INT_PTR __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 		  //Odczytywanie sesji wiadomosci
 		  if((RestoreMsgSessionChk)&&(RestoringSession))
 		  {
-			UnicodeString Body = UTF8ToUnicodeString(IniStrToStr(Ini->ReadString("SessionMsg", JID, "")));
+			UnicodeString Body = IniStrToStr(Ini->ReadString("SessionMsg", JID, ""));
 			//Wczytanie tresci wiadomosci do pola RichEdit
 			if(!Body.IsEmpty())
 			{
@@ -6525,9 +6523,7 @@ INT_PTR __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 			//Zmiana tekstu na belce
 			SetWindowTextW(hFrmSend,ChangedTitlebar.w_str());
 			//Zapisywanie zmienionego tekstu belki do cache
-			ShortString TitlebarShort = UTF8EncodeToShortString(Titlebar);
-			ShortString ChangedTitlebarShort = UTF8EncodeToShortString(ChangedTitlebar);
-			ChangedTitlebarList->WriteString("Titlebar",MD5(Titlebar),StrToIniStr(ChangedTitlebarShort.operator AnsiString()));
+			ChangedTitlebarList->WriteString("Titlebar",MD5(Titlebar),StrToIniStr(Titlebar));
 		  }
 		}
 	  }
@@ -7088,8 +7084,7 @@ INT_PTR __stdcall OnCloseTabMessage(WPARAM wParam, LPARAM lParam)
 	  if(!ForceUnloadExecuted) DestroyFrmUnsentMsg();
 	  //Zapis pliku sesji
 	  TIniFile *Ini = new TIniFile(SessionFileDir);
-	  ShortString BodyShort = UTF8EncodeToShortString(Body);
-	  Ini->WriteString("Messages", JID, StrToIniStr(BodyShort.operator AnsiString()));
+	  Ini->WriteString("Messages", JID, StrToIniStr(Body));
 	  delete Ini;
 	  //Szybki dostep niewyslanych wiadomosci
 	  if(!ForceUnloadExecuted) BuildFrmUnsentMsg();
@@ -7250,9 +7245,7 @@ INT_PTR __stdcall OnContactsUpdate(WPARAM wParam, LPARAM lParam)
 			 FrmSendTitlebar = ChangedTitlebar;
 		  }
 		  //Zapisywanie zmienionego tekstu belki do cache
-		  ShortString TitlebarShort = UTF8EncodeToShortString(Titlebar);
-		  ShortString ChangedTitlebarShort = UTF8EncodeToShortString(ChangedTitlebar);
-		  ChangedTitlebarList->WriteString("Titlebar",MD5(Titlebar),StrToIniStr(ChangedTitlebarShort.operator AnsiString()));
+		  ChangedTitlebarList->WriteString("Titlebar",MD5(Titlebar),StrToIniStr(ChangedTitlebar));
 		  //Zmiana tekstu na belce
 		  SetWindowTextW(hFrmSend,ChangedTitlebar.w_str());
 		}
@@ -7405,7 +7398,7 @@ INT_PTR __stdcall OnFetchAllTabs(WPARAM wParam, LPARAM lParam)
 	  //Odczytywanie sesji wiadomosci
 	  if((RestoreMsgSessionChk)&&(RestoringSession))
 	  {
-		UnicodeString Body = UTF8ToUnicodeString(IniStrToStr(Ini->ReadString("SessionMsg", JID, "")));
+		UnicodeString Body = IniStrToStr(Ini->ReadString("SessionMsg", JID, ""));
 		//Wczytanie tresci wiadomosci do pola RichEdit
 		if(!Body.IsEmpty())
 		{
@@ -7735,8 +7728,7 @@ INT_PTR __stdcall OnMsgComposing(WPARAM wParam, LPARAM lParam)
 	  {
 		//Zapisanie sesji do pliku
 		TIniFile *Ini = new TIniFile(SessionFileDir);
-		ShortString BodyShort = UTF8EncodeToShortString(Body);
-		Ini->WriteString("SessionMsg", JID, StrToIniStr(BodyShort.operator AnsiString()));
+		Ini->WriteString("SessionMsg", JID, StrToIniStr(Body));
 		delete Ini;
 	  }
 	  //Tekst jest pusty
@@ -8087,9 +8079,7 @@ INT_PTR __stdcall OnPrimaryTab(WPARAM wParam, LPARAM lParam)
 		  if(!ChangedTitlebar.IsEmpty())
 		  {
 			//Zapisywanie zmienionego tekstu belki do cache
-			ShortString TitlebarShort = UTF8EncodeToShortString(Titlebar);
-			ShortString ChangedTitlebarShort = UTF8EncodeToShortString(ChangedTitlebar);
-			ChangedTitlebarList->WriteString("Titlebar",MD5(Titlebar),StrToIniStr(ChangedTitlebarShort.operator AnsiString()));
+			ChangedTitlebarList->WriteString("Titlebar",MD5(Titlebar),StrToIniStr(ChangedTitlebar));
 			//Zmiana tekstu na belce
 			SetWindowTextW(hFrmSend,ChangedTitlebar.w_str());
 		  }
