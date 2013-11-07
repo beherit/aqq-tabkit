@@ -936,6 +936,7 @@ void ActivateAndSetTopmostFrmMain()
   //Aktywacja okna
   SetForegroundWindow(hFrmMain);
   //Ustawienie okna na wierzchu
+  SetWindowPos(hFrmMain,HWND_TOP,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
   SetWindowPos(hFrmMain,HWND_TOPMOST,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
 }
 //---------------------------------------------------------------------------
@@ -1033,31 +1034,18 @@ void HideFrmMain()
 //Ustawienie fokusa na polu wpisywania wiadomosci
 void FocusRichEdit()
 {
-  //Okno rozmowy jest aktywne
-  //if(GetForegroundWindow()==hFrmSend)
-  //{
-	//Ustawianie fokusa
-	//SetFocus(hRichEdit);
-	//Blokada lokalnego hooka na myszke
-	BlockThreadMouseProc = true;
-	//Emulacja klikniecia
-	TRect RichEditRect;
-	GetWindowRect(hRichEdit,&RichEditRect);
-	POINT pCur;
-	GetCursorPos(&pCur);
-	SetCursorPos(RichEditRect.Right-5,RichEditRect.Bottom-5);
-	mouse_event(MOUSEEVENTF_LEFTDOWN|MOUSEEVENTF_LEFTUP,0,0,0,0);
-	SetCursorPos(pCur.x,pCur.y);
-	//Wlaczenie timera wylaczania blokady lokalnego hooka na myszke
-	SetTimer(hTimerFrm,TIMER_UNBLOCK_MOUSE_PROC,100,(TIMERPROC)TimerFrmProc);
-	//Pobieranie dlugosci tekstu z RichEdit
-	//int iLength = GetWindowTextLengthW(hRichEdit);
-	//Zmiana pozycji kursora
-	//CHARRANGE SelPos;
-	//SelPos.cpMin = iLength;
-	//SelPos.cpMax = iLength;
-    //SendMessage(hRichEdit, EM_EXSETSEL, NULL, (LPARAM)&SelPos);
-  //}
+  //Blokada lokalnego hooka na myszke
+  BlockThreadMouseProc = true;
+  //Emulacja klikniecia
+  TRect RichEditRect;
+  GetWindowRect(hRichEdit,&RichEditRect);
+  POINT pCur;
+  GetCursorPos(&pCur);
+  SetCursorPos(RichEditRect.Right-5,RichEditRect.Bottom-5);
+  mouse_event(MOUSEEVENTF_LEFTDOWN|MOUSEEVENTF_LEFTUP,0,0,0,0);
+  SetCursorPos(pCur.x,pCur.y);
+  //Wlaczenie timera wylaczania blokady lokalnego hooka na myszke
+  SetTimer(hTimerFrm,TIMER_UNBLOCK_MOUSE_PROC,100,(TIMERPROC)TimerFrmProc);
 }
 //---------------------------------------------------------------------------
 
@@ -1128,6 +1116,7 @@ void ActivateAndSetTopmostFrmSend()
   //Aktywacja okna
   SetForegroundWindow(hFrmSend);
   //Ustawienie okna na wierzchu
+  SetWindowPos(hFrmSend,HWND_TOP,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
   SetWindowPos(hFrmSend,HWND_TOPMOST,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
 }
 //---------------------------------------------------------------------------
