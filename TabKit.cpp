@@ -92,8 +92,8 @@ UnicodeString ComposingIconBig;
 UnicodeString PauseIconSmall;
 UnicodeString PauseIconBig;
 //Oryginalne ikony okna rozmowy
-HICON hIconSmall = NULL;
-HICON hIconBig = NULL;
+HICON hIconSmall = 0;
+HICON hIconBig = 0;
 //Poprzedni stan pisania wiadomosci
 int LastChatState = 0;
 //Miganie diodami LED klawiatury
@@ -189,10 +189,10 @@ bool FullScreenModeExeptions = false;
 HWND FullScreenWindow;
 //Ostatnio aktywne okno
 HWND LastActiveWindow;
-HWND LastActiveWindow_WmInactiveFrmSendSlide = NULL;
-HWND LastActiveWindow_PreFrmSendSlideIn = NULL;
-HWND LastActiveWindow_WmInactiveFrmMainSlide = NULL;
-HWND LastActiveWindow_PreFrmMainSlideIn = NULL;
+HWND LastActiveWindow_WmInactiveFrmSendSlide;
+HWND LastActiveWindow_PreFrmSendSlideIn;
+HWND LastActiveWindow_WmInactiveFrmMainSlide;
+HWND LastActiveWindow_PreFrmMainSlideIn;
 //Blokada okna przy aktywnym popupmenu poza obszarem okna
 bool PopupMenuBlockSlide = false;
 //Blokada przy zmianie pozycji okien
@@ -1081,13 +1081,13 @@ void ActivateAndFocusFrmSend()
 	if(hIconSmall)
 	{
 	  SendMessage(hFrmSend, WM_SETICON, ICON_SMALL, (LPARAM)hIconSmall);
-	  hIconSmall = NULL;
+	  hIconSmall = 0;
 	}
 	//Ustawienie oryginalnej duzej ikonki
 	if(hIconBig)
 	{
 	  SendMessage(hFrmSend, WM_SETICON, ICON_BIG, (LPARAM)hIconBig);
-	  hIconBig = NULL;
+	  hIconBig = 0;
 	}
   }
   //Miganie diodami LED klawiatury - wylaczanie mrugania
@@ -5174,13 +5174,13 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		  if(hIconSmall)
 		  {
 			SendMessage(hFrmSend, WM_SETICON, ICON_SMALL, (LPARAM)hIconSmall);
-			hIconSmall = NULL;
+			hIconSmall = 0;
 		  }
 		  //Ustawienie oryginalnej duzej ikonki
 		  if(hIconBig)
 		  {
 			SendMessage(hFrmSend, WM_SETICON, ICON_BIG, (LPARAM)hIconBig);
-			hIconBig = NULL;
+			hIconBig = 0;
 		  }
 		}
 	  }
@@ -8516,13 +8516,13 @@ INT_PTR __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 			if(hIconSmall)
 			{
 			  SendMessage(hFrmSend, WM_SETICON, ICON_SMALL, (LPARAM)hIconSmall);
-			  hIconSmall = NULL;
+			  hIconSmall = 0;
 			}
 			//Ustawienie oryginalnej duzej ikonki
 			if(hIconBig)
 			{
 			  SendMessage(hFrmSend, WM_SETICON, ICON_BIG, (LPARAM)hIconBig);
-			  hIconBig = NULL;
+			  hIconBig = 0;
 			}
 		  }
 		}
@@ -9774,8 +9774,8 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 		//Resetowanie poprzedniego stanu pisania wiadomosci
 		LastChatState = 0;
 		//Usuniecie uchwytow do ikonek okna rozmowy
-		hIconSmall = NULL;
-		hIconBig = NULL;
+		hIconSmall = 0;
+		hIconBig = 0;
 		//Otwieranie przypietych zakladek
 		if((OpenClipTabsChk)&&(!RestoringSession))
 		{
