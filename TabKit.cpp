@@ -9448,7 +9448,8 @@ INT_PTR __stdcall OnThemeChanged(WPARAM wParam, LPARAM lParam)
 	//Stan widocznosci okna rozmowy
 	FrmSendVisible = true;
 	//Tymczasowa blokada chowania/pokazywania okna rozmowy
-	FrmSendBlockSlide = false;
+	if(StayOnTopChk) FrmSendBlockSlide = StayOnTopStatus;
+	else FrmSendBlockSlide = false;
 	//Wlaczenie funkcjanalnosci
 	FrmSendSlideChk = true;
   }
