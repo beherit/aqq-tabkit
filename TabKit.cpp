@@ -254,6 +254,8 @@ bool FrmSetStateExist = false;
 bool FrmInstallAddonExist = false;
 //Informacja o widoczym oknie tworzenia wycinka
 bool FrmPosExist = false;
+//Informacja o widocznym oknie dolaczania do konferencji
+bool FrmChatJoinExist = false;
 //LOAD/UNLOAD-PLUGIN---------------------------------------------------------
 //Gdy zostalo uruchomione zaladowanie wtyczki
 bool LoadExecuted = false;
@@ -3082,29 +3084,35 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		  //Zakladka z kontaktem nie jest jeszcze otwarta
 		  if(TabsList->IndexOf(JID)==-1)
 		  {
-			//Ustawianie prawidlowego identyfikatora
-			JID = JID.Delete(1,7);
-			//Pobieranie nazwy kanalu
-			TIniFile *Ini = new TIniFile(SessionFileDir);
-			UnicodeString Channel = Ini->ReadString("Channels",JID,"");
-			delete Ini;
-			if(Channel.IsEmpty())
+			//Okno dolaczania do konferencji nie jest aktywne
+			if(!FrmChatJoinExist)
 			{
-			  Channel = JID;
-			  Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
+			  //Ustawianie prawidlowego identyfikatora
+			  JID = JID.Delete(1,7);
+			  //Pobieranie nazwy kanalu
+			  TIniFile *Ini = new TIniFile(SessionFileDir);
+			  UnicodeString Channel = Ini->ReadString("Channels",JID,"");
+			  delete Ini;
+			  if(Channel.IsEmpty())
+			  {
+				Channel = JID;
+				Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
+			  }
+			  //Wypenianie struktury czatu
+			  TPluginChatPrep PluginChatPrep;
+			  PluginChatPrep.cbSize = sizeof(TPluginChatPrep);
+			  PluginChatPrep.UserIdx = GetContactIndexW(JID);
+			  PluginChatPrep.JID = JID.w_str();
+			  PluginChatPrep.Channel = Channel.w_str();
+			  PluginChatPrep.CreateNew = false;
+			  PluginChatPrep.Fast = true;
+			  //Przywracanie zakladki czatowej
+			  PluginLink.CallService(AQQ_SYSTEM_CHAT,0,(LPARAM)&PluginChatPrep);
+			  //Ponowne wlaczenie timera
+			  SetTimer(hTimerFrm,TIMER_RESTORE_SESSION,3000,(TIMERPROC)TimerFrmProc);
 			}
-			//Wypenianie struktury czatu
-			TPluginChatPrep PluginChatPrep;
-			PluginChatPrep.cbSize = sizeof(TPluginChatPrep);
-			PluginChatPrep.UserIdx = GetContactIndexW(JID);
-			PluginChatPrep.JID = JID.w_str();
-			PluginChatPrep.Channel = Channel.w_str();
-			PluginChatPrep.CreateNew = false;
-			PluginChatPrep.Fast = true;
-			//Przywracanie zakladki czatowej
-			PluginLink.CallService(AQQ_SYSTEM_CHAT,0,(LPARAM)&PluginChatPrep);
 			//Ponowne wlaczenie timera
-			SetTimer(hTimerFrm,TIMER_RESTORE_SESSION,3000,(TIMERPROC)TimerFrmProc);
+			else SetTimer(hTimerFrm,TIMER_RESTORE_SESSION,1000,(TIMERPROC)TimerFrmProc);
 		  }
 		  else
 		  {
@@ -10094,6 +10102,19 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	{
 	  //Usuniecie uchwytu do okna archiwum
 	  hFrmArch = NULL;
+	}
+
+	//Otwarcie okna dolaczania do konferencji
+	if((ClassName=="TfrmChatJoin")&&(Event==WINDOW_EVENT_CREATE))
+	{
+	  //Informacja o otwarciu okna dolaczania do konferencji
+	  FrmChatJoinExist = true;
+	}
+	//Zamkniecie okna dolaczania do konferencji
+	if((ClassName=="TfrmChatJoin")&&(Event==WINDOW_EVENT_CLOSE))
+	{
+	  //Informacja o zamknieciu okna dolaczania do konferencji
+	  FrmChatJoinExist = false;
 	}
   }
 
