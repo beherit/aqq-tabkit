@@ -62,8 +62,8 @@ __declspec(dllimport)void RefreshList();
 __declspec(dllimport)UnicodeString GetYouTubeTitleListItem();
 __declspec(dllimport)void AddToYouTubeExcludeList(UnicodeString ID);
 __declspec(dllimport)void LoadSettings();
-__declspec(dllimport)UnicodeString StrToIniStr(UnicodeString Str);
-__declspec(dllimport)UnicodeString IniStrToStr(UnicodeString Str);
+__declspec(dllimport)UnicodeString EncodeBase64(UnicodeString Str);
+//__declspec(dllimport)UnicodeString DecodeBase64(UnicodeString Str)
 __declspec(dllimport)void RefreshTabs();
 __declspec(dllimport)void DestroyFrmClosedTabs();
 __declspec(dllimport)void BuildFrmClosedTabs();
@@ -1092,7 +1092,7 @@ void __fastcall TSettingsForm::GetYouTubeTitleThreadRun(TIdThreadComponent *Send
 	  if(!Title.IsEmpty())
 	  {
 		TIniFile *Ini = new TIniFile(GetPluginUserDir() + "\\\\TabKit\\\\Session.ini");
-		Ini->WriteString("YouTube",ID,StrToIniStr(Title));
+		Ini->WriteString("YouTube64",ID,EncodeBase64(Title));
 		delete Ini;
 	  }
 	  //Blokowanie wskaznego ID na czas sesji
