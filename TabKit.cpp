@@ -145,8 +145,6 @@ bool PreFrmMainSlideOut = false;
 bool FrmMainSlideOut = false;
 bool FrmMainSlideOutActiveFrmSend = false;
 bool FrmCreateChatExists = false;
-//bool FrmMainShownByTaskSwitcher = false;
-//bool FrmMainShownByTaskSwitcherTimer = false;
 //Dane paska menu start dla okna rozmowy
 int FrmMain_Shell_TrayWndLeft;
 int FrmMain_Shell_TrayWndRight;
@@ -174,8 +172,6 @@ bool FrmSendSlideIn = false;
 bool PreFrmSendSlideOut = false;
 bool FrmSendSlideOut = false;
 bool FrmCompletionExists = false;
-//bool FrmSendShownByTaskSwitcher = false;
-//bool FrmSendShownByTaskSwitcherTimer = false;
 bool FrmSendShownByThumbnail = false;
 bool FrmSendShownByThumbnailTimer = false;
 //Dane paska menu start dla okna rozmowy
@@ -349,7 +345,6 @@ int FASTACCESS;
 #define TIMER_FRMSEND_TOPMOST_AND_SLIDEOUT 250
 #define TIMER_FRMSEND_FOCUS_RICHEDIT 260
 #define TIMER_FRMSEND_UNBLOCK_THUMBNAIL 270
-//#define TIMER_FRMSEND_UNBLOCK_TASKSWITCHER X
 #define TIMER_FRMMAIN_PRE_SLIDEOUT 280
 #define TIMER_FRMMAIN_SLIDEOUT 290
 #define TIMER_FRMMAIN_PRE_SLIDEIN 300
@@ -358,7 +353,6 @@ int FASTACCESS;
 #define TIMER_FRMMAIN_TOPMOST 330
 #define TIMER_FRMMAIN_TOPMOST_EX 340
 #define TIMER_FRMMAIN_TOPMOST_AND_SLIDEOUT 350
-//#define TIMER_FRMMAIN_UNBLOCK_TASKSWITCHER X
 //SETTINGS-------------------------------------------------------------------
 //ClosedTabs
 bool ClosedTabsChk;
@@ -3750,26 +3744,6 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		  }
 		}
 	  }
-	  //Aktywnym oknem nie jest okno przelaczania zadan
-	  /*if((WindowCaptionName!="TaskSwitcherWnd")&&((FrmSendShownByTaskSwitcher)||(FrmMainShownByTaskSwitcher)))
-	  {
-		//Wlaczenie timera odblokowania pokazywania okna rozmowy poprzez okno przelaczania zadan
-		if(!FrmSendShownByTaskSwitcherTimer)
-		{
-		  //Odznaczenie wlaczenia timera
-		  FrmSendShownByTaskSwitcherTimer = true;
-		  //Wlaczenie timera
-		  SetTimer(hTimerFrm,TIMER_FRMSEND_UNBLOCK_TASKSWITCHER,100,(TIMERPROC)TimerFrmProc);
-		}
-		//Wlaczenie timera odblokowania pokazywania okna kontaktow poprzez okno przelaczania zadan
-		if(!FrmMainShownByTaskSwitcherTimer)
-		{
-		  //Odznaczenie wlaczenia timera
-		  FrmMainShownByTaskSwitcherTimer = true;
-		  //Wlaczenie timera
-		  SetTimer(hTimerFrm,TIMER_FRMMAIN_UNBLOCK_TASKSWITCHER,100,(TIMERPROC)TimerFrmProc);
-		}
-	  }*/
 	  //Pobieranie okna w ktorym znajduje sie kursor
 	  HWND hCurActiveFrm = WindowFromPoint(Mouse->CursorPos);
 	  //Pobieranie klasy okna w ktorym znajduje sie kursor
@@ -4270,26 +4244,6 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	  //Odznaczenie wlaczenia timera
 	  FrmSendShownByThumbnailTimer = false;
 	}
-	//Odblokowanie pokazywania okna rozmowy poprzez poprzez okno przelaczania zadan
-	/*else if(wParam==TIMER_FRMSEND_UNBLOCK_TASKSWITCHER)
-	{
-      //Zatrzymanie timera
-	  KillTimer(hTimerFrm,TIMER_FRMSEND_UNBLOCK_TASKSWITCHER);
-	  //Pokazywanie okna rozmowy poprzez okno przelaczania zadan
-	  if(FrmSendShownByTaskSwitcher)
-	  {
-		//Odznaczenie pokazania okna rozmowy  poprzez poprzez okno przelaczania zadan
-		FrmSendShownByTaskSwitcher = false;
-		//Schowanie okna rozmowy za krawedz ekranu
-		HideFrmSend();
-		//Stan widocznosci okna rozmowy
-		FrmSendVisible = false;
-		//Tymczasowa blokada chowania/pokazywania okna rozmowy
-		FrmSendBlockSlide = false;
-	  }
-	  //Odznaczenie wlaczenia timera
-	  FrmSendShownByTaskSwitcherTimer = false;
-	}*/
 	//Chowanie okna kontaktow (part I)
 	else if(wParam==TIMER_FRMMAIN_PRE_SLIDEOUT)
 	{
@@ -4634,26 +4588,6 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		}
 	  }
 	}
-	//Odblokowanie pokazywania okna kontaktow poprzez poprzez okno przelaczania zadan
-	/*else if(wParam==TIMER_FRMMAIN_UNBLOCK_TASKSWITCHER)
-	{
-      //Zatrzymanie timera
-	  KillTimer(hTimerFrm,TIMER_FRMMAIN_UNBLOCK_TASKSWITCHER);
-	  //Pokazywanie okna kontaktow poprzez okno przelaczania zadan
-	  if(FrmMainShownByTaskSwitcher)
-	  {
-		//Odznaczenie pokazania okna kontaktow  poprzez poprzez okno przelaczania zadan
-		FrmMainShownByTaskSwitcher = false;
-		//Schowanie okna kontaktow za krawedz ekranu
-		HideFrmMain();
-		//Stan widocznosci okna kontaktow
-		FrmMainVisible = false;
-		//Tymczasowa blokada chowania/pokazywania okna kontaktow
-		FrmMainBlockSlide = false;
-	  }
-	  //Odznaczenie wlaczenia timera
-	  FrmMainShownByTaskSwitcherTimer = false;
-	}*/
 
 	return 0;
   }
@@ -4668,34 +4602,7 @@ LRESULT CALLBACK FrmMainProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
   //Kompozycja nie jest zmieniana / komunikator nie jest zamykany
   if((!ThemeChanging)&&(!ForceUnloadExecuted))
   {
-	//Pokazywanie okna za pomoca okna przelaczania zadan
-	/*if(uMsg==WM_GETICON)
-	{
-      //Okno kontaktow jest schowane za krawedzia ekranu
-	  if((FrmMainSlideChk)&&(!FrmMainVisible)&&(!FrmMainShownByTaskSwitcher))
-	  {
-		//Pobieranie aktywnego okna
-		HWND hActiveFrm = GetForegroundWindow();
-		//Pobieranie klasy aktywnego okna
-		wchar_t WindowCaptionNameW[128];
-		GetClassNameW(hActiveFrm, WindowCaptionNameW, sizeof(WindowCaptionNameW));
-		UnicodeString WindowCaptionName = WindowCaptionNameW;
-		//Aktywnym oknem jest okno przelaczania zadan
-		if(WindowCaptionName=="TaskSwitcherWnd")
-		{
-		  //Odznaczenie pokazania okna za pomoca okna przelaczania zadan
-		  FrmMainShownByTaskSwitcher = true;
-		  //Wysuniecie okna kontaktow zza krawedzi ekranu
-		  ShowFrmMain();
-		  //Tymczasowa blokada chowania/pokazywania okna kontaktow
-		  FrmMainBlockSlide = true;
-		  //Stan widocznosci okna kontaktow
-		  FrmMainVisible = true;
-		}
-	  }
-	}
-	//Poprawka na znikanie popupmenu w oknie kontaktow podczas pisania wiadomosci przez kontakt
-	else*/ if((uMsg==WM_SETICON)&&(FrmMainSlideChk)&&(FrmMainSlideHideMode!=2)&&(FrmMainVisible))
+	if((uMsg==WM_SETICON)&&(FrmMainSlideChk)&&(FrmMainSlideHideMode!=2)&&(FrmMainVisible))
 	{
 	  //Pobieranie okna w ktorym znajduje sie kursor
 	  HWND hCurActiveFrm = WindowFromPoint(Mouse->CursorPos);
@@ -4712,37 +4619,9 @@ LRESULT CALLBACK FrmMainProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	  else
 	   SetWindowPos(hFrmMain,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 	}
-	//Aktywacja lub dezaktywacja obszaru nonclient okna kontatow
-	/*else if(uMsg==WM_NCACTIVATE)
-	{
-      //Okno zostalo aktywowane za pomoca okna przelaczania zadan
-	  if((FrmMainShownByTaskSwitcher)&&(GetForegroundWindow()==hFrmMain))
-	  {
-		//Zatrzymanie timera odblokowania pokazywania okna kontatow poprzez okno przelaczania zadan
-		KillTimer(hTimerFrm,TIMER_FRMMAIN_UNBLOCK_TASKSWITCHER);
-		//Odznaczenie wlaczenia timera odblokowania pokazywania okna kontatow poprzez okno przelaczania zadan
-		FrmMainShownByTaskSwitcherTimer = false;
-		//Odznaczenie pokazania okna kontatow poprzez okno przelaczania zadan
-		FrmMainShownByTaskSwitcher = false;
-		//Wlaczenie timera wylaczenia tymczasowej blokady chowania/pokazywania okna kontatow
-		SetTimer(hTimerFrm,TIMER_FRMMAIN_UNBLOCK_SLIDE,2000,(TIMERPROC)TimerFrmProc);
-	  }
-	}*/
 	//Aktywacja lub dezaktywacja okna kontatow
 	else if((uMsg==WM_ACTIVATE)&&(!LoadExecuted))
 	{
-	  //Okno zostalo aktywowane za pomoca okna przelaczania zadan
-	  /*if((FrmMainShownByTaskSwitcher)&&((wParam==WA_ACTIVE)||(wParam==WA_CLICKACTIVE)))
-	  {
-		//Zatrzymanie timera odblokowania pokazywania okna kontatow poprzez okno przelaczania zadan
-		KillTimer(hTimerFrm,TIMER_FRMMAIN_UNBLOCK_TASKSWITCHER);
-		//Odznaczenie wlaczenia timera odblokowania pokazywania okna kontatow poprzez okno przelaczania zadan
-		FrmMainShownByTaskSwitcherTimer = false;
-		//Odznaczenie pokazania okna kontatow poprzez okno przelaczania zadan
-		FrmMainShownByTaskSwitcher = false;
-		//Wlaczenie timera wylaczenia tymczasowej blokady chowania/pokazywania okna kontatow
-		SetTimer(hTimerFrm,TIMER_FRMMAIN_UNBLOCK_SLIDE,2000,(TIMERPROC)TimerFrmProc);
-	  }*/
 	  //Funkcjonalnosc chowania okna kontaktow
 	  if(FrmMainSlideChk)
 	  {
@@ -4960,34 +4839,7 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
   //Kompozycja nie jest zmieniana / komunikator nie jest zamykany
   if((!ThemeChanging)&&(!ForceUnloadExecuted))
   {
-	//Pokazywanie okna za pomoca okna przelaczania zadan
-	/*if(uMsg==WM_GETICON)
-	{
-      //Okno rozmowy jest schowane za krawedzia ekranu
-	  if((FrmSendSlideChk)&&(!FrmSendVisible)&&(!FrmSendShownByTaskSwitcher))
-	  {
-		//Pobieranie aktywnego okna
-		HWND hActiveFrm = GetForegroundWindow();
-		//Pobieranie klasy aktywnego okna
-		wchar_t WindowCaptionNameW[128];
-		GetClassNameW(hActiveFrm, WindowCaptionNameW, sizeof(WindowCaptionNameW));
-		UnicodeString WindowCaptionName = WindowCaptionNameW;
-		//Aktywnym oknem jest okno przelaczania zadan
-		if(WindowCaptionName=="TaskSwitcherWnd")
-		{
-		  //Odznaczenie pokazania okna za pomoca okna przelaczania zadan
-		  FrmSendShownByTaskSwitcher = true;
-		  //Wysuniecie okna rozmowy zza krawedzi ekranu
-		  ShowFrmSend();
-		  //Tymczasowa blokada chowania/pokazywania okna rozmowy
-		  FrmSendBlockSlide = true;
-		  //Stan widocznosci okna rozmowy
-		  FrmSendVisible = true;
-		}
-	  }
-	}
-	//Blokowanie zmiany tekstu na belce okna
-	else*/ if(uMsg==WM_SETICON)
+	if(uMsg==WM_SETICON)
 	{
 	  //Wlaczony jest licznik nowych wiadomosci na oknie rozmowy oraz licznik jest rozny od 0
 	  if((InactiveFrmNewMsgChk)&&(InactiveFrmNewMsgCount))
@@ -5030,37 +4882,9 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		 SetWindowTextW(hFrmSend,ChangedTitlebar.w_str());
 	  }
 	}
-	//Aktywacja lub dezaktywacja obszaru nonclient okna rozmowy
-	/*else if(uMsg==WM_NCACTIVATE)
-	{
-      //Okno zostalo aktywowane za pomoca okna przelaczania zadan
-	  if((FrmSendShownByTaskSwitcher)&&(GetForegroundWindow()==hFrmSend))
-	  {
-		//Zatrzymanie timera odblokowania pokazywania okna rozmowy poprzez okno przelaczania zadan
-		KillTimer(hTimerFrm,TIMER_FRMSEND_UNBLOCK_TASKSWITCHER);
-		//Odznaczenie wlaczenia timera odblokowania pokazywania okna rozmowy poprzez okno przelaczania zadan
-		FrmSendShownByTaskSwitcherTimer = false;
-		//Odznaczenie pokazania okna rozmowy poprzez okno przelaczania zadan
-		FrmSendShownByTaskSwitcher = false;
-		//Wlaczenie timera wylaczenia tymczasowej blokady chowania/pokazywania okna rozmowy
-		SetTimer(hTimerFrm,TIMER_FRMSEND_UNBLOCK_SLIDE,2000,(TIMERPROC)TimerFrmProc);
-	  }
-	}*/
 	//Aktywacja lub dezaktywacja okna rozmowy
 	else if(uMsg==WM_ACTIVATE)
 	{
-	  //Okno zostalo aktywowane za pomoca okna przelaczania zadan
-	  /*if((FrmSendShownByTaskSwitcher)&&((wParam==WA_ACTIVE)||(wParam==WA_CLICKACTIVE)))
-	  {
-		//Zatrzymanie timera odblokowania pokazywania okna rozmowy poprzez okno przelaczania zadan
-		KillTimer(hTimerFrm,TIMER_FRMSEND_UNBLOCK_TASKSWITCHER);
-		//Odznaczenie wlaczenia timera odblokowania pokazywania okna rozmowy poprzez okno przelaczania zadan
-		FrmSendShownByTaskSwitcherTimer = false;
-		//Odznaczenie pokazania okna rozmowy poprzez okno przelaczania zadan
-		FrmSendShownByTaskSwitcher = false;
-		//Wlaczenie timera wylaczenia tymczasowej blokady chowania/pokazywania okna rozmowy
-		SetTimer(hTimerFrm,TIMER_FRMSEND_UNBLOCK_SLIDE,2000,(TIMERPROC)TimerFrmProc);
-	  }*/
 	  //Okno zostalo aktywowane za pomoca miniaturki z paska zadan
 	  if((FrmSendShownByThumbnail)&&((wParam==WA_ACTIVE)||(wParam==WA_CLICKACTIVE)))
 	  {
