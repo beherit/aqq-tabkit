@@ -7389,9 +7389,6 @@ INT_PTR __stdcall OnFetchAllTabs(WPARAM wParam, LPARAM lParam)
 		  //Generowanie pliku PNG 16x16 z awataru kontaktu
 		  else
 		  {
-			//Przypisanie uchwytu do formy
-			Application->Handle = (HWND)SettingsForm;
-			TSettingsForm *hModalSettingsForm = new TSettingsForm(Application);
 			//Odczyt pliku INI z danymi kontaktu
 			TIniFile *Ini = new TIniFile(GetContactsUserDir()+JID+".ini");
 			//Dekodowanie sciezki awatara
@@ -7405,8 +7402,13 @@ INT_PTR __stdcall OnFetchAllTabs(WPARAM wParam, LPARAM lParam)
 			   Avatar = StringReplace(Avatar, "{PROFILEPATH}", GetUserDir(), TReplaceFlags());
 			  else
 			   Avatar = StringReplace(Avatar, "{APPPATH}", GetApplicationPath(), TReplaceFlags());
+			  //Przypisanie uchwytu do formy
+			  Application->Handle = (HWND)SettingsForm;
+			  TSettingsForm *hModalSettingsForm = new TSettingsForm(Application);
 			  //Konwersja awatara do ikonki PNG 16x16
 			  hModalSettingsForm->ConvertImage(Avatar,PluginUserDir+"\\\\TabKit\\\\Avatars\\\\"+JID+".png");
+			  //Usuniecie uchwytu do formy
+			  delete hModalSettingsForm;
 			  //Konwersja przeszla prawidlowo
 			  if(FileExists(PluginUserDir+"\\\\TabKit\\\\Avatars\\\\"+JID+".png"))
 			  {
@@ -7418,8 +7420,6 @@ INT_PTR __stdcall OnFetchAllTabs(WPARAM wParam, LPARAM lParam)
 				PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)Icon,(LPARAM)&FetchAllTabsContact);
 			  }
 			}
-			//Usuniecie uchwytu do formy
-			delete hModalSettingsForm;
 		  }
 		}
 	  }
@@ -7512,9 +7512,6 @@ INT_PTR __stdcall OnFetchAllTabs_RefreshTabs(WPARAM wParam, LPARAM lParam)
 		  //Generowanie pliku PNG 16x16 z awataru kontaktu
 		  else
 		  {
-			//Przypisanie uchwytu do formy
-			Application->Handle = (HWND)SettingsForm;
-			TSettingsForm *hModalSettingsForm = new TSettingsForm(Application);
 			//Odczyt pliku INI z danymi kontaktu
 			TIniFile *Ini = new TIniFile(GetContactsUserDir()+JID+".ini");
 			//Dekodowanie sciezki awatara
@@ -7528,8 +7525,13 @@ INT_PTR __stdcall OnFetchAllTabs_RefreshTabs(WPARAM wParam, LPARAM lParam)
 			   Avatar = StringReplace(Avatar, "{PROFILEPATH}", GetUserDir(), TReplaceFlags());
 			  else
 			   Avatar = StringReplace(Avatar, "{APPPATH}", GetApplicationPath(), TReplaceFlags());
+			  //Przypisanie uchwytu do formy
+			  Application->Handle = (HWND)SettingsForm;
+			  TSettingsForm *hModalSettingsForm = new TSettingsForm(Application);
 			  //Konwersja awatara do ikonki PNG 16x16
 			  hModalSettingsForm->ConvertImage(Avatar,PluginUserDir+"\\\\TabKit\\\\Avatars\\\\"+JID+".png");
+			  //Usuniecie uchwytu do formy
+			  delete hModalSettingsForm;
 			  //Konwersja przeszla prawidlowo
 			  if(FileExists(PluginUserDir+"\\\\TabKit\\\\Avatars\\\\"+JID+".png"))
 			  {
@@ -7541,8 +7543,6 @@ INT_PTR __stdcall OnFetchAllTabs_RefreshTabs(WPARAM wParam, LPARAM lParam)
 				PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)Icon,(LPARAM)&FetchAllTabsContact);
 			  }
 			}
-			//Usuniecie uchwytu do formy
-			delete hModalSettingsForm;
 		  }
 		}
 	  }
@@ -9145,9 +9145,6 @@ INT_PTR __stdcall OnTabImage(WPARAM wParam, LPARAM lParam)
 				//Generowanie pliku PNG 16x16 z awataru kontaktu
 				else
 				{
-                  //Przypisanie uchwytu do formy
-				  Application->Handle = (HWND)SettingsForm;
-				  TSettingsForm *hModalSettingsForm = new TSettingsForm(Application);
 				  //Odczyt pliku INI z danymi kontaktu
 				  TIniFile *Ini = new TIniFile(GetContactsUserDir()+JID+".ini");
 				  //Dekodowanie sciezki awatara
@@ -9161,8 +9158,13 @@ INT_PTR __stdcall OnTabImage(WPARAM wParam, LPARAM lParam)
 					 Avatar = StringReplace(Avatar, "{PROFILEPATH}", GetUserDir(), TReplaceFlags());
 					else
 					 Avatar = StringReplace(Avatar, "{APPPATH}", GetApplicationPath(), TReplaceFlags());
+					//Przypisanie uchwytu do formy
+					Application->Handle = (HWND)SettingsForm;
+					TSettingsForm *hModalSettingsForm = new TSettingsForm(Application);
 					//Konwersja awatara do ikonki PNG 16x16
 					hModalSettingsForm->ConvertImage(Avatar,PluginUserDir+"\\\\TabKit\\\\Avatars\\\\"+JID+".png");
+					//Usuniecie uchwytu do formy
+					delete hModalSettingsForm;
 					//Konwersja przeszla prawidlowo
 					if(FileExists(PluginUserDir+"\\\\TabKit\\\\Avatars\\\\"+JID+".png"))
 					{
@@ -9174,8 +9176,6 @@ INT_PTR __stdcall OnTabImage(WPARAM wParam, LPARAM lParam)
 					  return Icon;
 					}
 				  }
-				  //Usuniecie uchwytu do formy
-				  delete hModalSettingsForm;
 				}
 			  }
 			}
