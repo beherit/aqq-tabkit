@@ -236,10 +236,6 @@ object SettingsForm: TSettingsForm
       Caption = 'Informacje o wtyczce'
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object PayPalImage: TImage
         Left = 350
         Top = 124
@@ -2844,7 +2840,7 @@ object SettingsForm: TSettingsForm
       object DonateLabelFX: TsLabelFX
         Left = 357
         Top = 46
-        Width = 183
+        Width = 182
         Height = 27
         Caption = 'Wesprzyj autora wtyczki!'
         ParentFont = False
@@ -2956,10 +2952,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 1
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object ClosedTabGroupBox: TsGroupBox
         Left = 18
         Top = 22
@@ -3262,10 +3254,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 2
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object RememberUnsentMsgGroupBox: TsGroupBox
         Left = 18
         Top = 22
@@ -3422,10 +3410,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 3
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object TabsHotKeysGroupBox: TsGroupBox
         Left = 18
         Top = 116
@@ -3540,10 +3524,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 4
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object RestoreTabsSessionGroupBox: TsGroupBox
         Left = 18
         Top = 22
@@ -3616,10 +3596,6 @@ object SettingsForm: TSettingsForm
       OnShow = NewMsgTabSheetShow
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object ChatStateNotiferNewMsgCheckBox: TsCheckBox
         Left = 12
         Top = 182
@@ -3781,10 +3757,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 6
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object TweakFrmMainTitlebarGroupBox: TsGroupBox
         Left = 18
         Top = 167
@@ -3945,10 +3917,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 7
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object OpenClipTabsCheckBox: TsCheckBox
         Left = 12
         Top = 12
@@ -4061,10 +4029,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 8
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object SideSlideFullScreenModeExceptionsButton: TsSpeedButton
         Left = 263
         Top = 314
@@ -4652,10 +4616,6 @@ object SettingsForm: TSettingsForm
       OnShow = OtherTabSheetShow
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object AntiSpimCheckBox: TsCheckBox
         Left = 12
         Top = 68
@@ -5114,11 +5074,6 @@ object SettingsForm: TSettingsForm
       OnExecute = aOtherChkExecute
     end
   end
-  object IdDecoderMIME: TIdDecoderMIME
-    FillChar = '='
-    Left = 64
-    Top = 368
-  end
   object sSkinManager: TsSkinManager
     ExtendedBorders = True
     AnimEffects.FormShow.Time = 200
@@ -5154,7 +5109,7 @@ object SettingsForm: TSettingsForm
     ThirdParty.ThirdUpDown = ' '#13#10
     ThirdParty.ThirdScrollBar = ' '
     ThirdParty.ThirdStaticText = ' '
-    Left = 96
+    Left = 64
     Top = 368
   end
   object PrepareXMLThread: TIdThreadComponent
@@ -5163,7 +5118,7 @@ object SettingsForm: TSettingsForm
     Priority = tpNormal
     StopMode = smTerminate
     OnRun = PrepareXMLThreadRun
-    Left = 160
+    Left = 128
     Top = 368
   end
   object sSkinProvider: TsSkinProvider
@@ -5174,7 +5129,7 @@ object SettingsForm: TSettingsForm
     AddedTitle.Font.Style = []
     SkinData.SkinSection = 'FORM'
     TitleButtons = <>
-    Left = 128
+    Left = 96
     Top = 368
   end
   object sAlphaImageList: TsAlphaImageList
@@ -5535,7 +5490,7 @@ object SettingsForm: TSettingsForm
           33D7342EA367D470FD1A73827989798131191798B891A37DA9C57C2C65CAFE23
           F0BCC8E433596AC16FA0C39B00F0D5509E0000000049454E44AE426082}
       end>
-    Left = 192
+    Left = 160
     Top = 368
     Bitmap = {}
   end
@@ -5555,7 +5510,7 @@ object SettingsForm: TSettingsForm
     Request.Ranges.Units = 'bytes'
     Request.Ranges = <>
     HTTPOptions = [hoForceEncodeParams]
-    Left = 256
+    Left = 224
     Top = 368
   end
   object GetYouTubeTitleThread: TIdThreadComponent
@@ -5564,14 +5519,14 @@ object SettingsForm: TSettingsForm
     Priority = tpNormal
     StopMode = smTerminate
     OnRun = GetYouTubeTitleThreadRun
-    Left = 224
+    Left = 192
     Top = 368
   end
   object RefreshTimer: TTimer
     Enabled = False
     Interval = 100
     OnTimer = RefreshTimerTimer
-    Left = 288
+    Left = 256
     Top = 368
   end
 end

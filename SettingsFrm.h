@@ -41,9 +41,6 @@
 #include "sSpeedButton.hpp"
 #include "sSpinEdit.hpp"
 #include <IdBaseComponent.hpp>
-#include <IdCoder.hpp>
-#include <IdCoder3to4.hpp>
-#include <IdCoderMIME.hpp>
 #include <IdComponent.hpp>
 #include <IdHTTP.hpp>
 #include <IdTCPClient.hpp>
@@ -133,7 +130,6 @@ __published:	// IDE-managed Components
 	TsCheckBox *AntiSpimCheckBox;
 	TsCheckBox *OnlyConversationTabsCheckBox;
 	TsCheckBox *HideToolBarCheckBox;
-	TIdDecoderMIME *IdDecoderMIME;
 	TsCheckBox *OpenClipTabsCheckBox;
 	TsButton *ClipTabsEraseButton;
 	TsCheckBox *InactiveClipTabsCheckBox;

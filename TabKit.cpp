@@ -1503,76 +1503,17 @@ void CheckHideScrollTabButtons()
 }
 //---------------------------------------------------------------------------
 
-//Konwersja ciagu znakow na potrzeby INI
-UnicodeString StrToIniStr(UnicodeString Str)
+//Kodowanie ciagu znakow do Base64
+UnicodeString EncodeBase64(UnicodeString Str)
 {
-  //Definicja zmiennych
-  wchar_t Buffer[50010];
-  wchar_t* B;
-  wchar_t* S;
-  //Przekazywanie ciagu znakow
-  S = Str.w_str();
-  //Ustalanie wskaznika
-  B = Buffer;
-  //Konwersja znakow
-  while(*S!='\0')
-  {
-	switch(*S)
-	{
-	  case 13:
-	  case 10:
-		if((*S==13)&&(S[1]==10)) S++;
-		else if((*S==10)&&(S[1] == 13)) S++;
-		*B = '\\';
-		B++;
-		*B = 'n';
-		B++;
-		S++;
-	  break;
-	  default:
-		*B = *S;
-		B++;
-		S++;
-	  break;
-	}
-  }
-  *B = '\0';
-  //Zwracanie zkonwertowanego ciagu znakow
-  return (wchar_t*)Buffer;
+  return (wchar_t*)PluginLink.CallService(AQQ_FUNCTION_BASE64,(WPARAM)Str.w_str(),1);
 }
 //---------------------------------------------------------------------------
-UnicodeString IniStrToStr(UnicodeString Str)
+
+//Dekodowanie ciagu znakow z Base64
+UnicodeString DecodeBase64(UnicodeString Str)
 {
-  //Definicja zmiennych
-  wchar_t Buffer[50010];
-  wchar_t* B;
-  wchar_t* S;
-  //Przekazywanie ciagu znakow
-  S = Str.w_str();
-  //Ustalanie wskaznika
-  B = Buffer;
-  //Konwersja znakow
-  while(*S!='\0')
-  {
-	if((S[0]=='\\')&&(S[1]=='n'))
-	{
-	  *B = 13;
-	  B++;
-	  *B = 10;
-	  B++;
-	  S++;
-	  S++;
-	}
-	else
-	{
-	  *B = *S;
-	  B++;
-	  S++;
-	}
-  }
-  *B = '\0';
-  //Zwracanie zkonwertowanego ciagu znakow
-  return (wchar_t*)Buffer;
+  return (wchar_t*)PluginLink.CallService(AQQ_FUNCTION_BASE64,(WPARAM)Str.w_str(),0);
 }
 //---------------------------------------------------------------------------
 
@@ -1626,7 +1567,7 @@ UnicodeString TrimLinks(UnicodeString Body, bool Status)
 	  {
 		//Szukanie ID w cache
 		TIniFile *Ini = new TIniFile(SessionFileDir);
-		UnicodeString Title = IniStrToStr(Ini->ReadString("YouTube",ID,""));
+		UnicodeString Title = DecodeBase64(Ini->ReadString("YouTube64",ID,""));
 		delete Ini;
 		//Tytul pobrany z cache
 		if(!Title.IsEmpty())
@@ -2550,7 +2491,7 @@ void GetUnsentMsg()
 		  for(int Count=0;Count<MsgCount;Count++)
 		  {
 			UnicodeString JID = Messages->Strings[Count];
-			UnicodeString Body = IniStrToStr(Ini->ReadString("Messages", JID, ""));
+			UnicodeString Body = DecodeBase64(Ini->ReadString("Messages", JID, ""));
 			if(Body.Length()>25) Body = Body.SetLength(25) + "...";
 			PluginShowInfo.cbSize = sizeof(TPluginShowInfo);
 			PluginShowInfo.Event = tmeInfo;
@@ -5056,7 +4997,7 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		UnicodeString Titlebar = TitlebarW;
 		Titlebar = StringReplace(Titlebar, "\r\n", "", TReplaceFlags() << rfReplaceAll);
 		//Sprawdzanie czy belka zostal juz zmieniona ostatnio
-		UnicodeString ChangedTitlebar = IniStrToStr(ChangedTitlebarList->ReadString("Titlebar", MD5(Titlebar), ""));
+		UnicodeString ChangedTitlebar = DecodeBase64(ChangedTitlebarList->ReadString("Titlebar", MD5(Titlebar), ""));
 		//Ustawianie nowego tekstu na belce okna
 		if((!ChangedTitlebar.IsEmpty())&&(Titlebar!=ChangedTitlebar))
 		 SetWindowTextW(hFrmSend,ChangedTitlebar.w_str());
@@ -5075,7 +5016,7 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		Titlebar = StringReplace(Titlebar, "\r\n", "", TReplaceFlags() << rfReplaceAll);
 		Titlebar = StringReplace(Titlebar, "  ", " ", TReplaceFlags() << rfReplaceAll);
 		//Sprawdzanie czy belka zostal juz zmieniona ostatnio
-		UnicodeString ChangedTitlebar = IniStrToStr(ChangedTitlebarList->ReadString("Titlebar", MD5(Titlebar), ""));
+		UnicodeString ChangedTitlebar = DecodeBase64(ChangedTitlebarList->ReadString("Titlebar", MD5(Titlebar), ""));
 		//Ustawianie nowego tekstu na belce okna
 		if((!ChangedTitlebar.IsEmpty())&&(Titlebar!=ChangedTitlebar))
 		 SetWindowTextW(hFrmSend,ChangedTitlebar.w_str());
@@ -6207,7 +6148,7 @@ INT_PTR __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 		  //Odczytywanie sesji wiadomosci
 		  if((RestoreMsgSessionChk)&&(RestoringSession))
 		  {
-			UnicodeString Body = IniStrToStr(Ini->ReadString("SessionMsg", JID, ""));
+			UnicodeString Body = DecodeBase64(Ini->ReadString("SessionMsg", JID, ""));
 			//Wczytanie tresci wiadomosci do pola RichEdit
 			if(!Body.IsEmpty())
 			{
@@ -6234,7 +6175,7 @@ INT_PTR __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 		{
 		  //Odczyt pliku sesji
 		  TIniFile *Ini = new TIniFile(SessionFileDir);
-		  UnicodeString Body = IniStrToStr(Ini->ReadString("Messages", JID, ""));
+		  UnicodeString Body = DecodeBase64(Ini->ReadString("Messages", JID, ""));
 		  //Wczytanie tresci wiadomosci do pola RichEdit
 		  if(!Body.IsEmpty())
 		  {
@@ -6428,7 +6369,7 @@ INT_PTR __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 		  //Odczytywanie sesji wiadomosci
 		  if((RestoreMsgSessionChk)&&(RestoringSession))
 		  {
-			UnicodeString Body = IniStrToStr(Ini->ReadString("SessionMsg", JID, ""));
+			UnicodeString Body = DecodeBase64(Ini->ReadString("SessionMsg", JID, ""));
 			//Wczytanie tresci wiadomosci do pola RichEdit
 			if(!Body.IsEmpty())
 			{
@@ -6512,7 +6453,7 @@ INT_PTR __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 			//Zmiana tekstu na belce
 			SetWindowTextW(hFrmSend,ChangedTitlebar.w_str());
 			//Zapisywanie zmienionego tekstu belki do cache
-			ChangedTitlebarList->WriteString("Titlebar",MD5(Titlebar),StrToIniStr(Titlebar));
+			ChangedTitlebarList->WriteString("Titlebar",MD5(Titlebar),EncodeBase64(Titlebar));
 		  }
 		}
 	  }
@@ -7073,7 +7014,7 @@ INT_PTR __stdcall OnCloseTabMessage(WPARAM wParam, LPARAM lParam)
 	  if(!ForceUnloadExecuted) DestroyFrmUnsentMsg();
 	  //Zapis pliku sesji
 	  TIniFile *Ini = new TIniFile(SessionFileDir);
-	  Ini->WriteString("Messages", JID, StrToIniStr(Body));
+	  Ini->WriteString("Messages", JID, EncodeBase64(Body));
 	  delete Ini;
 	  //Szybki dostep niewyslanych wiadomosci
 	  if(!ForceUnloadExecuted) BuildFrmUnsentMsg();
@@ -7234,7 +7175,7 @@ INT_PTR __stdcall OnContactsUpdate(WPARAM wParam, LPARAM lParam)
 			 FrmSendTitlebar = ChangedTitlebar;
 		  }
 		  //Zapisywanie zmienionego tekstu belki do cache
-		  ChangedTitlebarList->WriteString("Titlebar",MD5(Titlebar),StrToIniStr(ChangedTitlebar));
+		  ChangedTitlebarList->WriteString("Titlebar",MD5(Titlebar),EncodeBase64(ChangedTitlebar));
 		  //Zmiana tekstu na belce
 		  SetWindowTextW(hFrmSend,ChangedTitlebar.w_str());
 		}
@@ -7387,7 +7328,7 @@ INT_PTR __stdcall OnFetchAllTabs(WPARAM wParam, LPARAM lParam)
 	  //Odczytywanie sesji wiadomosci
 	  if((RestoreMsgSessionChk)&&(RestoringSession))
 	  {
-		UnicodeString Body = IniStrToStr(Ini->ReadString("SessionMsg", JID, ""));
+		UnicodeString Body = DecodeBase64(Ini->ReadString("SessionMsg", JID, ""));
 		//Wczytanie tresci wiadomosci do pola RichEdit
 		if(!Body.IsEmpty())
 		{
@@ -7454,7 +7395,7 @@ INT_PTR __stdcall OnFetchAllTabs(WPARAM wParam, LPARAM lParam)
 			//Odczyt pliku INI z danymi kontaktu
 			TIniFile *Ini = new TIniFile(GetContactsUserDir()+JID+".ini");
 			//Dekodowanie sciezki awatara
-			UnicodeString Avatar = hModalSettingsForm->IdDecoderMIME->DecodeString(Ini->ReadString("Other","Avatar",""));
+			UnicodeString Avatar = DecodeBase64(Ini->ReadString("Other","Avatar",""));
 			delete Ini;
 			//Sciezka awatata zostala prawidlowo pobrana
 			if((!Avatar.IsEmpty())&&(Avatar.Length()>1))
@@ -7577,7 +7518,7 @@ INT_PTR __stdcall OnFetchAllTabs_RefreshTabs(WPARAM wParam, LPARAM lParam)
 			//Odczyt pliku INI z danymi kontaktu
 			TIniFile *Ini = new TIniFile(GetContactsUserDir()+JID+".ini");
 			//Dekodowanie sciezki awatara
-			UnicodeString Avatar = hModalSettingsForm->IdDecoderMIME->DecodeString(Ini->ReadString("Other","Avatar",""));
+			UnicodeString Avatar = DecodeBase64(Ini->ReadString("Other","Avatar",""));
 			delete Ini;
 			//Sciezka awatata zostala prawidlowo pobrana
 			if((!Avatar.IsEmpty())&&(Avatar.Length()>1))
@@ -7717,7 +7658,7 @@ INT_PTR __stdcall OnMsgComposing(WPARAM wParam, LPARAM lParam)
 	  {
 		//Zapisanie sesji do pliku
 		TIniFile *Ini = new TIniFile(SessionFileDir);
-		Ini->WriteString("SessionMsg", JID, StrToIniStr(Body));
+		Ini->WriteString("SessionMsg", JID, EncodeBase64(Body));
 		delete Ini;
 	  }
 	  //Tekst jest pusty
@@ -8068,7 +8009,7 @@ INT_PTR __stdcall OnPrimaryTab(WPARAM wParam, LPARAM lParam)
 		  if(!ChangedTitlebar.IsEmpty())
 		  {
 			//Zapisywanie zmienionego tekstu belki do cache
-			ChangedTitlebarList->WriteString("Titlebar",MD5(Titlebar),StrToIniStr(ChangedTitlebar));
+			ChangedTitlebarList->WriteString("Titlebar",MD5(Titlebar),EncodeBase64(ChangedTitlebar));
 			//Zmiana tekstu na belce
 			SetWindowTextW(hFrmSend,ChangedTitlebar.w_str());
 		  }
@@ -9210,7 +9151,7 @@ INT_PTR __stdcall OnTabImage(WPARAM wParam, LPARAM lParam)
 				  //Odczyt pliku INI z danymi kontaktu
 				  TIniFile *Ini = new TIniFile(GetContactsUserDir()+JID+".ini");
 				  //Dekodowanie sciezki awatara
-				  UnicodeString Avatar = hModalSettingsForm->IdDecoderMIME->DecodeString(Ini->ReadString("Other","Avatar",""));
+				  UnicodeString Avatar = DecodeBase64(Ini->ReadString("Other","Avatar",""));
 				  delete Ini;
 				  //Sciezka awatata zostala prawidlowo pobrana
 				  if((!Avatar.IsEmpty())&&(Avatar.Length()>1))
