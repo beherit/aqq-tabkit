@@ -870,12 +870,6 @@ void __fastcall TSettingsForm::aExitExecute(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TSettingsForm::CancelButtonClick(TObject *Sender)
-{
-  Close();
-}
-//---------------------------------------------------------------------------
-
 void __fastcall TSettingsForm::SaveButtonClick(TObject *Sender)
 {
   SaveButton->Enabled = false;

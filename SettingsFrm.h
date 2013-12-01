@@ -260,7 +260,6 @@ __published:	// IDE-managed Components
 	TsMemo *FileMemo;
 	void __fastcall UnsentMsgTrayIconClick(TObject *Sender);
 	void __fastcall aExitExecute(TObject *Sender);
-	void __fastcall CancelButtonClick(TObject *Sender);
 	void __fastcall aLoadSettingsExecute(TObject *Sender);
 	void __fastcall aUnsentMsgChkExecute(TObject *Sender);
 	void __fastcall aSaveSettingsExecute(TObject *Sender);

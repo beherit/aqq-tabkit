@@ -181,7 +181,7 @@ object SettingsForm: TSettingsForm
     Height = 25
     Caption = 'Anuluj'
     TabOrder = 2
-    OnClick = CancelButtonClick
+    OnClick = aExitExecute
     SkinData.SkinSection = 'BUTTON'
   end
   object OkButton: TsButton
@@ -3741,6 +3741,7 @@ object SettingsForm: TSettingsForm
         BoundLabel.MaxWidth = 0
         BoundLabel.UseSkinColor = True
         SkinData.SkinSection = 'COMBOBOX'
+        VerticalAlignment = taAlignTop
         Style = csDropDownList
         ItemIndex = 0
         TabOrder = 2
@@ -3829,6 +3830,7 @@ object SettingsForm: TSettingsForm
           BoundLabel.MaxWidth = 0
           BoundLabel.UseSkinColor = True
           SkinData.SkinSection = 'COMBOBOX'
+          VerticalAlignment = taAlignTop
           Style = csDropDownList
           ItemIndex = -1
           TabOrder = 1
@@ -4824,6 +4826,7 @@ object SettingsForm: TSettingsForm
         BoundLabel.MaxWidth = 0
         BoundLabel.UseSkinColor = True
         SkinData.SkinSection = 'COMBOBOX'
+        VerticalAlignment = taAlignTop
         Style = csDropDownList
         ItemIndex = 0
         TabOrder = 2
@@ -4885,6 +4888,7 @@ object SettingsForm: TSettingsForm
           BoundLabel.MaxWidth = 0
           BoundLabel.UseSkinColor = True
           SkinData.SkinSection = 'COMBOBOX'
+          VerticalAlignment = taAlignTop
           Style = csDropDownList
           ItemIndex = 1
           TabOrder = 1
@@ -4968,6 +4972,7 @@ object SettingsForm: TSettingsForm
         BoundLabel.MaxWidth = 0
         BoundLabel.UseSkinColor = True
         SkinData.SkinSection = 'COMBOBOX'
+        VerticalAlignment = taAlignTop
         Style = csDropDownList
         ItemIndex = 0
         TabOrder = 13
