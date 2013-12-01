@@ -1522,7 +1522,7 @@ UnicodeString TrimLinks(UnicodeString Body, bool Status)
   //Formatowanie tresci wiadomosci
   while(Body.Pos("[CC_LINK_END]"))
   {
-    //Wyciagniecie kodu HTML odnosnika
+	//Wyciagniecie kodu HTML odnosnika
 	UnicodeString URL = Body;
 	URL.Delete(1,URL.Pos("[CC_LINK_START]")+14);
 	URL.Delete(URL.Pos("[CC_LINK_END]"),URL.Length());
@@ -1533,7 +1533,7 @@ UnicodeString TrimLinks(UnicodeString Body, bool Status)
 	//Link do filmu YouTube (tylko dla opisow)
 	if((Status)&&(((Text.Pos("youtube.com"))&&(((Text.Pos("watch?"))&&(Text.Pos("v=")))||(Text.Pos("/v/"))))||(Text.Pos("youtu.be"))))
 	{
-      //Zmienna ID
+	  //Zmienna ID
 	  UnicodeString ID;
 	  //Wyciaganie ID - fullscreenowy
 	  if(Text.Pos("/v/"))
@@ -1649,7 +1649,7 @@ UnicodeString GetContactNick(UnicodeString JID)
   //Pseudonim nie zostal pobrany
   if(Nick.IsEmpty())
   {
-    //Skracanie JID do ladniejszej formy
+	//Skracanie JID do ladniejszej formy
 	if(JID.Pos("@")) JID.Delete(JID.Pos("@"),JID.Length());
 	return JID;
   }
@@ -3183,6 +3183,14 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			ActiveTabBeforeOpenClipTabs = "";
 		  }
 		}
+		//Przebudowa kolejnosci zakladek w pliku sesji
+		//Usuwanie listy zakladek
+		TabsList->Clear();
+		ResTabsList->Clear();
+		//Hook na pobieranie aktywnych zakladek
+		PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_FETCHALLTABS,OnFetchAllTabs_GetOnlyList);
+		PluginLink.CallService(AQQ_CONTACTS_BUDDY_FETCHALLTABS,0,0);
+	  	PluginLink.UnhookEvent(OnFetchAllTabs_GetOnlyList);
 	  }
 	}
 	//Otwieranie przypietych zakladek wraz z oknem rozmowy
@@ -3274,6 +3282,14 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			PluginTriple.Param2 = Count-1;
 			PluginLink.CallService(AQQ_FUNCTION_TABMOVE,(WPARAM)&PluginTriple,0);
 		  }
+		  //Przebudowa kolejnosci zakladek w pliku sesji
+		  //Usuwanie listy zakladek
+		  TabsList->Clear();
+		  ResTabsList->Clear();
+		  //Hook na pobieranie aktywnych zakladek
+		  PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_FETCHALLTABS,OnFetchAllTabs_GetOnlyList);
+		  PluginLink.CallService(AQQ_CONTACTS_BUDDY_FETCHALLTABS,0,0);
+		  PluginLink.UnhookEvent(OnFetchAllTabs_GetOnlyList);
 		}
 	  }
 	}
@@ -5996,7 +6012,7 @@ INT_PTR __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 		  delete Ini;
 		}
 		//Przypiete zakladki
-		if(ClipTabsList->IndexOf(JID)!=-1)
+		if((ClipTabsList->IndexOf(JID)!=-1)&&(!RestoringSession))
 		{
 		  //Wlaczanie timera do zmiany miejsca zakladki
 		  if(!ActiveTabContact.IsChat) SetTimer(hTimerFrm,TIMER_CLIPTABS_MOVE,500,(TIMERPROC)TimerFrmProc);
@@ -7281,6 +7297,21 @@ INT_PTR __stdcall OnFetchAllTabs_GetOnlyList(WPARAM wParam, LPARAM lParam)
 	{
 	  if(TabsList->IndexOf(JID)==-1) TabsList->Add(JID);
 	  ResTabsList->Add(JID+Res);
+	}
+	//Zapisywanie sesji
+	if(RestoreTabsSessionChk)
+	{
+	  TIniFile *Ini = new TIniFile(SessionFileDir);
+	  Ini->EraseSection("Session");
+	  //Petla zapisywania otwartych zakladek
+	  for(int Count=0;Count<TabsList->Count;Count++)
+	  {
+		if(((TabsList->Strings[Count].Pos("@plugin"))&&(TabsList->Strings[Count].Pos("ischat_")))||(TabsList->Strings[Count]=="aqq.eu"))
+		{ /* Blokada czatu pochodzacego z wtyczki oraz bota aqq.eu */ }
+		else
+		 Ini->WriteString("Session","Tab"+IntToStr(Count+1),TabsList->Strings[Count]);
+	  }
+	  delete Ini;
 	}
   }
 
@@ -8640,8 +8671,8 @@ INT_PTR __stdcall OnSetHTMLStatus(WPARAM wParam, LPARAM lParam)
   if((ShortenLinksChk)&&((ShortenLinksMode==1)||(ShortenLinksMode==3))&&(!ForceUnloadExecuted))
   {
 	//Pobieranie sformatowanego opisu
-    UnicodeString Body = (wchar_t*)lParam;
-    //Jezeli opis cos zawiera
+	UnicodeString Body = (wchar_t*)lParam;
+	//Jezeli opis cos zawiera
     if(!Body.IsEmpty())
     {
 	  //Zapisywanie oryginalnego opisu
@@ -9047,8 +9078,8 @@ INT_PTR __stdcall OnThemeChanged(WPARAM wParam, LPARAM lParam)
 		else hSettingsForm->sSkinManager->AnimEffects->FormShow->Time = 0;
 		hSettingsForm->sSkinManager->Effects->AllowGlowing = ChkThemeGlowing();
 		//Zmiana kolorystyki AlphaControls
-        hSettingsForm->sSkinManager->HueOffset = GetHUE();
-	    hSettingsForm->sSkinManager->Saturation = GetSaturation();
+		hSettingsForm->sSkinManager->HueOffset = GetHUE();
+		hSettingsForm->sSkinManager->Saturation = GetSaturation();
 		//Aktywacja skorkowania AlphaControls
 		hSettingsForm->sSkinManager->Active = true;
 	  }
@@ -9402,14 +9433,16 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 			  if(!JID.Pos("ischat_"))
 			  {
 				//Kontakt bez zasobu
-				if(!JID.Pos("/")) PluginLink.CallService(AQQ_FUNCTION_EXECUTEMSG_NOPRIORITY,0,(LPARAM)JID.w_str());
+				if(!JID.Pos("/")) PluginLink.CallService(AQQ_FUNCTION_EXECUTEMSG,0,(LPARAM)JID.w_str());
 				//Kontakt z zasobem
-				else PluginLink.CallService(AQQ_FUNCTION_EXECUTEMSG_NOPRIORITY,(WPARAM)GetContactIndex(JID),(LPARAM)JID.w_str());
+				else PluginLink.CallService(AQQ_FUNCTION_EXECUTEMSG,(WPARAM)GetContactIndex(JID),(LPARAM)JID.w_str());
 			  }
 			  //"Otwieranie" zakladki z czatem
 			  else ChatSessionList->Add(JID);
 			}
 		  }
+		  //Zmiana aktywnej zakladki na pierwsza
+		  ChangeActiveTab(ResTabsList->Strings[0]);
 		  //Usuwanie sesji wiadomosci
 		  Ini->EraseSection("SessionMsg");
 		  //Kasowanie uchwytu do ostatnio aktywnego okna - anty never endig SlideIn FrmMain
