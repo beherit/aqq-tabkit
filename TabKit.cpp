@@ -208,6 +208,9 @@ bool StayOnTopStatus = false;
 bool ToolBarShowing = false;
 //Zamykanie zakladki poprzez 2xLPM
 bool LBUTTONDBLCLK_EXECUTED = false;
+//Zmiana miejsca zakladek
+bool LBUTTONDOWN_ON_TABSBAR_EXECUTED = false;
+int CursorPosX, CursorPosY;
 //Blokowanie lokalnego hooka na myszke
 bool BlockThreadMouseProc = false;
 //INNE-----------------------------------------------------------------------
@@ -331,28 +334,29 @@ int FASTACCESS;
 #define TIMER_CLIPTABS_OPEN 110
 #define TIMER_CHKSETTINGS 120
 #define TIMER_CLOSEBY2XLPM 130
-#define TIMER_MOUSE_POSITION 140
-#define TIMER_UNBLOCK_MOUSE_PROC 150
-#define TIMER_ACTIVE_WINDOW 160
-#define TIMER_FRMSEND_PRE_SLIDEOUT 170
-#define TIMER_FRMSEND_SLIDEOUT 180
-#define TIMER_FRMSEND_PRE_SLIDEIN 190
-#define TIMER_FRMSEND_SLIDEIN 200
-#define TIMER_FRMSEND_UNBLOCK_SLIDE 210
-#define TIMER_FRMSEND_MINIMIZED 220
-#define TIMER_FRMSEND_CHANGEPOS 230
-#define TIMER_FRMSEND_TOPMOST 240
-#define TIMER_FRMSEND_TOPMOST_AND_SLIDEOUT 250
-#define TIMER_FRMSEND_FOCUS_RICHEDIT 260
-#define TIMER_FRMSEND_UNBLOCK_THUMBNAIL 270
-#define TIMER_FRMMAIN_PRE_SLIDEOUT 280
-#define TIMER_FRMMAIN_SLIDEOUT 290
-#define TIMER_FRMMAIN_PRE_SLIDEIN 300
-#define TIMER_FRMMAIN_SLIDEIN 310
-#define TIMER_FRMMAIN_UNBLOCK_SLIDE 320
-#define TIMER_FRMMAIN_TOPMOST 330
-#define TIMER_FRMMAIN_TOPMOST_EX 340
-#define TIMER_FRMMAIN_TOPMOST_AND_SLIDEOUT 350
+#define TIMER_REBUILD_TABS_LIST 140
+#define TIMER_MOUSE_POSITION 150
+#define TIMER_UNBLOCK_MOUSE_PROC 160
+#define TIMER_ACTIVE_WINDOW 170
+#define TIMER_FRMSEND_PRE_SLIDEOUT 180
+#define TIMER_FRMSEND_SLIDEOUT 190
+#define TIMER_FRMSEND_PRE_SLIDEIN 200
+#define TIMER_FRMSEND_SLIDEIN 210
+#define TIMER_FRMSEND_UNBLOCK_SLIDE 220
+#define TIMER_FRMSEND_MINIMIZED 230
+#define TIMER_FRMSEND_CHANGEPOS 240
+#define TIMER_FRMSEND_TOPMOST 250
+#define TIMER_FRMSEND_TOPMOST_AND_SLIDEOUT 260
+#define TIMER_FRMSEND_FOCUS_RICHEDIT 270
+#define TIMER_FRMSEND_UNBLOCK_THUMBNAIL 280
+#define TIMER_FRMMAIN_PRE_SLIDEOUT 290
+#define TIMER_FRMMAIN_SLIDEOUT 300
+#define TIMER_FRMMAIN_PRE_SLIDEIN 310
+#define TIMER_FRMMAIN_SLIDEIN 320
+#define TIMER_FRMMAIN_UNBLOCK_SLIDE 330
+#define TIMER_FRMMAIN_TOPMOST 340
+#define TIMER_FRMMAIN_TOPMOST_EX 350
+#define TIMER_FRMMAIN_TOPMOST_AND_SLIDEOUT 360
 //SETTINGS-------------------------------------------------------------------
 //ClosedTabs
 bool ClosedTabsChk;
@@ -3356,6 +3360,19 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		LBUTTONDBLCLK_EXECUTED = false;
 	  }
 	}
+	 //Przebudowa kolejnosci zakladek w pliku sesji
+	else if(wParam==TIMER_REBUILD_TABS_LIST)
+	{
+	  //Zatrzymanie timera
+	  KillTimer(hTimerFrm,TIMER_REBUILD_TABS_LIST);
+	  //Usuwanie listy zakladek
+	  TabsList->Clear();
+	  ResTabsList->Clear();
+	  //Hook na pobieranie aktywnych zakladek
+	  PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_FETCHALLTABS,OnFetchAllTabs_GetOnlyList);
+	  PluginLink.CallService(AQQ_CONTACTS_BUDDY_FETCHALLTABS,0,0);
+	  PluginLink.UnhookEvent(OnFetchAllTabs_GetOnlyList);
+	}
 	//Sprawdzanie pozycji myszki
 	else if(wParam==TIMER_MOUSE_POSITION)
 	{
@@ -5371,13 +5388,6 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 		  bool Shift;
 		  if(GetKeyState(VK_LSHIFT)<0) Shift = true;
 		  else Shift = false;
-		  //Usuwanie listy zakladek
-		  TabsList->Clear();
-		  ResTabsList->Clear();
-		  //Hook na pobieranie aktywnych zakladek
-		  PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_FETCHALLTABS,OnFetchAllTabs_GetOnlyList);
-		  PluginLink.CallService(AQQ_CONTACTS_BUDDY_FETCHALLTABS,0,0);
-		  PluginLink.UnhookEvent(OnFetchAllTabs_GetOnlyList);
 		  //Pobieranie pozycji aktywnej zakladki
 		  int ActiveTabInx = ResTabsList->IndexOf(ActiveTabJIDRes);
 		  //Okreslenie pozycji poprzedniej zakladki
@@ -5464,13 +5474,6 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 		  int Key;
 		  if(TabsHotKeysMode==1) Key = (int)wParam - 111;
 		  else Key = (int)wParam - 48;
-		  //Usuwanie listy zakladek
-		  TabsList->Clear();
-		  ResTabsList->Clear();
-		  //Hook na pobieranie aktywnych zakladek
-		  PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_FETCHALLTABS,OnFetchAllTabs_GetOnlyList);
-		  PluginLink.CallService(AQQ_CONTACTS_BUDDY_FETCHALLTABS,0,0);
-		  PluginLink.UnhookEvent(OnFetchAllTabs_GetOnlyList);
 		  //Niepomijanie przypietych zakladek
 		  if(!ExClipTabsFromTabsHotKeysChk)
 		  {
@@ -5796,6 +5799,24 @@ LRESULT CALLBACK ThreadMouseProc(int nCode, WPARAM wParam, LPARAM lParam)
 		  //Wlaczenie timera zamykania zakladki poprzez 2xLPM
 		  SetTimer(hTimerFrm,TIMER_CLOSEBY2XLPM,100,(TIMERPROC)TimerFrmProc);
 		}
+	  }
+	}
+	//Zmiana miejsca zakladek
+	if((wParam==WM_LBUTTONDOWN)&&(WindowFromPoint(Mouse->CursorPos)==hTabsBar))
+	{
+	  //Odznaczenie wcisniecia LPM
+	  LBUTTONDOWN_ON_TABSBAR_EXECUTED = true;
+	  //Zapamietanie pozycji myszki
+	  CursorPosX = Mouse->CursorPos.X;
+	  CursorPosY = Mouse->CursorPos.Y;
+	}
+	if((wParam==WM_LBUTTONUP)&&(LBUTTONDOWN_ON_TABSBAR_EXECUTED))
+	{
+	  //Pozycja myszki zostala zmieniona
+	  if((Mouse->CursorPos.X!=CursorPosX)||(Mouse->CursorPos.Y!=CursorPosY))
+	  {
+		//Przebudowa kolejnosci zakladek w pliku sesji
+		SetTimer(hTimerFrm,TIMER_REBUILD_TABS_LIST,100,(TIMERPROC)TimerFrmProc);
 	  }
 	}
   }
@@ -11042,7 +11063,7 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Unload()
 	CurrentFrmSeekOnListProc = NULL;
   }
   //Wyladowanie timerow
-  for(int TimerID=10;TimerID<=350;TimerID=TimerID+10) KillTimer(hTimerFrm,TimerID);
+  for(int TimerID=10;TimerID<=360;TimerID=TimerID+10) KillTimer(hTimerFrm,TimerID);
   //Usuwanie okna timera
   DestroyWindow(hTimerFrm);
   //Wyrejestowanie klasy okna timera
