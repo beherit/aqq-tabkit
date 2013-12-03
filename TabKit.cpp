@@ -474,6 +474,7 @@ INT_PTR __stdcall OnMsgContextPopup(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall OnPerformCopyData(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall OnPreSendMsg(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall OnPrimaryTab(WPARAM wParam, LPARAM lParam);
+INT_PTR __stdcall OnPrimaryTab_GetOnlyList(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall OnRecvOldProc(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall OnReplyList(WPARAM wParam, LPARAM lParam);
@@ -925,6 +926,8 @@ void ActivateAndFocusFrmMain()
 {
   //Aktywacja okna
   SetForegroundWindow(hFrmMain);
+  SetActiveWindow(hFrmMain);
+  SetFocus(hFrmMain);
   //Ustawienie fokusa
   SetFocus(hFrmMainFocus);
 }
@@ -935,8 +938,10 @@ void ActivateAndSetTopmostFrmMain()
 {
   //Aktywacja okna
   SetForegroundWindow(hFrmMain);
+  SetActiveWindow(hFrmMain);
+  SetFocus(hFrmMain);
   //Ustawienie okna na wierzchu
-  SetWindowPos(hFrmMain,HWND_TOP,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
+  //SetWindowPos(hFrmMain,HWND_TOP,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
   SetWindowPos(hFrmMain,HWND_TOPMOST,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
 }
 //---------------------------------------------------------------------------
@@ -1115,8 +1120,10 @@ void ActivateAndSetTopmostFrmSend()
 {
   //Aktywacja okna
   SetForegroundWindow(hFrmSend);
+  SetActiveWindow(hFrmSend);
+  SetFocus(hFrmSend);
   //Ustawienie okna na wierzchu
-  SetWindowPos(hFrmSend,HWND_TOP,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
+  //SetWindowPos(hFrmSend,HWND_TOP,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
   SetWindowPos(hFrmSend,HWND_TOPMOST,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
 }
 //---------------------------------------------------------------------------
@@ -3193,8 +3200,10 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		ResTabsList->Clear();
 		//Hook na pobieranie aktywnych zakladek
 		PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_FETCHALLTABS,OnFetchAllTabs_GetOnlyList);
+		PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_PRIMARYTAB,OnPrimaryTab_GetOnlyList);
 		PluginLink.CallService(AQQ_CONTACTS_BUDDY_FETCHALLTABS,0,0);
-	  	PluginLink.UnhookEvent(OnFetchAllTabs_GetOnlyList);
+		PluginLink.UnhookEvent(OnPrimaryTab_GetOnlyList);
+		PluginLink.UnhookEvent(OnFetchAllTabs_GetOnlyList);
 	  }
 	}
 	//Otwieranie przypietych zakladek wraz z oknem rozmowy
@@ -3292,7 +3301,9 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		  ResTabsList->Clear();
 		  //Hook na pobieranie aktywnych zakladek
 		  PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_FETCHALLTABS,OnFetchAllTabs_GetOnlyList);
+		  PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_PRIMARYTAB,OnPrimaryTab_GetOnlyList);
 		  PluginLink.CallService(AQQ_CONTACTS_BUDDY_FETCHALLTABS,0,0);
+		  PluginLink.UnhookEvent(OnPrimaryTab_GetOnlyList);
 		  PluginLink.UnhookEvent(OnFetchAllTabs_GetOnlyList);
 		}
 	  }
@@ -3370,7 +3381,9 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	  ResTabsList->Clear();
 	  //Hook na pobieranie aktywnych zakladek
 	  PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_FETCHALLTABS,OnFetchAllTabs_GetOnlyList);
+	  PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_PRIMARYTAB,OnPrimaryTab_GetOnlyList);
 	  PluginLink.CallService(AQQ_CONTACTS_BUDDY_FETCHALLTABS,0,0);
+	  PluginLink.UnhookEvent(OnPrimaryTab_GetOnlyList);
 	  PluginLink.UnhookEvent(OnFetchAllTabs_GetOnlyList);
 	}
 	//Sprawdzanie pozycji myszki
@@ -5998,40 +6011,6 @@ INT_PTR __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 		//Pobieranie i zapisywanie indeksu kontaktu
 		if(!ActiveTabContact.IsChat)
 		 ContactsIndexList->WriteInteger("Index",JID,ActiveTabContact.UserIdx);
-		//Zapisywanie sesji
-		if(RestoreTabsSessionChk)
-		{
-		  TIniFile *Ini = new TIniFile(SessionFileDir);
-		  Ini->EraseSection("Session");
-		  //Petla zapisywania otwartych zakladek
-		  for(int Count=0;Count<TabsList->Count;Count++)
-		  {
-			if((TabsList->Strings[Count].Pos("@plugin"))&&(TabsList->Strings[Count].Pos("ischat_")))
-			{ /* Blokada czatu pochodzacego z wtyczki */ }
-			else
-			 Ini->WriteString("Session","Tab"+IntToStr(Count+1),TabsList->Strings[Count]);
-		  }
-		  //Wczytywanie ostatnio przeprowadzonej rozmowy
-		  if((RestoringSession)&&(!ActiveTabContact.IsChat))
-		   PluginLink.CallService(AQQ_FUNCTION_LOADLASTCONV,(WPARAM)JID.w_str(),(LPARAM)ActiveTabContact.UserIdx);
-		  //Odczytywanie sesji wiadomosci
-		  if((RestoreMsgSessionChk)&&(RestoringSession))
-		  {
-			UnicodeString Body = DecodeBase64(Ini->ReadString("SessionMsg", JID, ""));
-			//Wczytanie tresci wiadomosci do pola RichEdit
-			if(!Body.IsEmpty())
-			{
-			  //Ustawianie tekstu
-			  SetWindowTextW(hRichEdit, Body.w_str());
-			  //Ustawianie pozycji kursora
-			  CHARRANGE SelPos;
-			  SelPos.cpMin = Body.Length();
-			  SelPos.cpMax = SelPos.cpMin;
-			  SendMessage(hRichEdit, EM_EXSETSEL, NULL, (LPARAM)&SelPos);
-			}
-		  }
-		  delete Ini;
-		}
 		//Przypiete zakladki
 		if((ClipTabsList->IndexOf(JID)!=-1)&&(!RestoringSession))
 		{
@@ -6219,40 +6198,43 @@ INT_PTR __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 			FrmSendTitlebar = "";
 		  }
 		}
-		//Zapisywanie sesji
-		if(RestoreTabsSessionChk)
+	  }
+	  //Zapisywanie sesji
+	  if(RestoreTabsSessionChk)
+	  {
+		TIniFile *Ini = new TIniFile(SessionFileDir);
+		Ini->EraseSection("Session");
+		//Petla zapisywania otwartych zakladek
+		for(int Count=0;Count<TabsList->Count;Count++)
 		{
-		  TIniFile *Ini = new TIniFile(SessionFileDir);
-		  Ini->EraseSection("Session");
-		  //Petla zapisywania otwartych zakladek
-		  for(int Count=0;Count<TabsList->Count;Count++)
-		  {
-			if(((TabsList->Strings[Count].Pos("@plugin"))&&(TabsList->Strings[Count].Pos("ischat_")))||(TabsList->Strings[Count]=="aqq.eu"))
-			{ /* Blokada czatu pochodzacego z wtyczki oraz bota aqq.eu */ }
-			else
-			 Ini->WriteString("Session","Tab"+IntToStr(Count+1),TabsList->Strings[Count]);
-		  }
-		  //Wczytywanie ostatnio przeprowadzonej rozmowy
-		  if((RestoringSession)&&(!ActiveTabContact.IsChat))
-		   PluginLink.CallService(AQQ_FUNCTION_LOADLASTCONV,(WPARAM)JID.w_str(),(LPARAM)ActiveTabContact.UserIdx);
-		  //Odczytywanie sesji wiadomosci
-		  if((RestoreMsgSessionChk)&&(RestoringSession))
-		  {
-			UnicodeString Body = DecodeBase64(Ini->ReadString("SessionMsg", JID, ""));
-			//Wczytanie tresci wiadomosci do pola RichEdit
-			if(!Body.IsEmpty())
-			{
-			  //Ustawianie tekstu
-			  SetWindowTextW(hRichEdit, Body.w_str());
-			  //Ustawianie pozycji kursora
-			  CHARRANGE SelPos;
-			  SelPos.cpMin = Body.Length();
-			  SelPos.cpMax = SelPos.cpMin;
-			  SendMessage(hRichEdit, EM_EXSETSEL, NULL, (LPARAM)&SelPos);
-			}
-		  }
-		  delete Ini;
+		  if((TabsList->Strings[Count].Pos("@plugin"))&&(TabsList->Strings[Count].Pos("ischat_")))
+		  { /* Blokada czatu pochodzacego z wtyczki */ }
+		  else
+		   Ini->WriteString("Session","Tab"+IntToStr(Count+1),TabsList->Strings[Count]);
 		}
+		//Zapisywanie aktywnej zakladki
+		if(!((ActiveTabContact.FromPlugin)&&(ActiveTabContact.IsChat)))
+		 Ini->WriteString("SessionEx","ActiveTab",JID);
+		//Wczytywanie ostatnio przeprowadzonej rozmowy
+		if((RestoringSession)&&(!ActiveTabContact.IsChat))
+		 PluginLink.CallService(AQQ_FUNCTION_LOADLASTCONV,(WPARAM)JID.w_str(),(LPARAM)ActiveTabContact.UserIdx);
+		//Odczytywanie sesji wiadomosci
+		if((RestoreMsgSessionChk)&&(RestoringSession))
+		{
+		  UnicodeString Body = DecodeBase64(Ini->ReadString("SessionMsg", JID, ""));
+		  //Wczytanie tresci wiadomosci do pola RichEdit
+		  if(!Body.IsEmpty())
+		  {
+			//Ustawianie tekstu
+			SetWindowTextW(hRichEdit, Body.w_str());
+			//Ustawianie pozycji kursora
+			CHARRANGE SelPos;
+			SelPos.cpMin = Body.Length();
+			SelPos.cpMax = SelPos.cpMin;
+			SendMessage(hRichEdit, EM_EXSETSEL, NULL, (LPARAM)&SelPos);
+		  }
+		}
+		delete Ini;
 	  }
 	  //Zmiana caption okna rozmowy
 	  if(TweakFrmSendTitlebarChk)
@@ -6803,12 +6785,14 @@ INT_PTR __stdcall OnCloseTab(WPARAM wParam, LPARAM lParam)
 		//Petla zapisywania otwartych zakladek
 		for(int Count=0;Count<TabsList->Count;Count++)
 		{
-		  if(((TabsList->Strings[Count].Pos("@plugin"))&&(TabsList->Strings[Count].Pos("ischat_")))||(TabsList->Strings[Count]=="aqq.eu"))
-		  { /* Blokada czatu pochodzacego z wtyczki oraz bota aqq.eu */ }
+		  if((TabsList->Strings[Count].Pos("@plugin"))&&(TabsList->Strings[Count].Pos("ischat_")))
+		  { /* Blokada czatu pochodzacego z wtyczki */ }
 		  else
 		   Ini->WriteString("Session","Tab"+IntToStr(Count+1),TabsList->Strings[Count]);
 		}
 	  }
+	  //Usuwanie aktywnej zakladki
+	  if(JID==ActiveTabJID) Ini->DeleteKey("SessionEx","ActiveTab");
 	}
 	//Usuwanie JID z kolejki przelaczania sie na nowe wiadomosci
 	if(SwitchToNewMsgChk)
@@ -7186,8 +7170,8 @@ INT_PTR __stdcall OnFetchAllTabs(WPARAM wParam, LPARAM lParam)
 	  //Petla zapisywania otwartych zakladek
 	  for(int Count=0;Count<TabsList->Count;Count++)
 	  {
-		if(((TabsList->Strings[Count].Pos("@plugin"))&&(TabsList->Strings[Count].Pos("ischat_")))||(TabsList->Strings[Count]=="aqq.eu"))
-		{ /* Blokada czatu pochodzacego z wtyczki oraz bota aqq.eu */ }
+		if((TabsList->Strings[Count].Pos("@plugin"))&&(TabsList->Strings[Count].Pos("ischat_")))
+		{ /* Blokada czatu pochodzacego z wtyczki */ }
 		else
 		 Ini->WriteString("Session","Tab"+IntToStr(Count+1),TabsList->Strings[Count]);
 	  }
@@ -7327,8 +7311,8 @@ INT_PTR __stdcall OnFetchAllTabs_GetOnlyList(WPARAM wParam, LPARAM lParam)
 	  //Petla zapisywania otwartych zakladek
 	  for(int Count=0;Count<TabsList->Count;Count++)
 	  {
-		if(((TabsList->Strings[Count].Pos("@plugin"))&&(TabsList->Strings[Count].Pos("ischat_")))||(TabsList->Strings[Count]=="aqq.eu"))
-		{ /* Blokada czatu pochodzacego z wtyczki oraz bota aqq.eu */ }
+		if((TabsList->Strings[Count].Pos("@plugin"))&&(TabsList->Strings[Count].Pos("ischat_")))
+		{ /* Blokada czatu pochodzacego z wtyczki */ }
 		else
 		 Ini->WriteString("Session","Tab"+IntToStr(Count+1),TabsList->Strings[Count]);
 	  }
@@ -7837,6 +7821,17 @@ INT_PTR __stdcall OnPrimaryTab(WPARAM wParam, LPARAM lParam)
 	  //Aktywna zakladka
 	  ActiveTabJID = JID;
 	  ActiveTabJIDRes = JID + Res;
+	  //Zapisywanie sesji
+	  if(RestoreTabsSessionChk)
+	  {
+		//Zapisywanie aktywnej zakladki
+		if(!((PrimaryTabContact.FromPlugin)&&(PrimaryTabContact.IsChat)))
+		{
+		  TIniFile *Ini = new TIniFile(SessionFileDir);
+		  Ini->WriteString("SessionEx","ActiveTab",JID);
+		  delete Ini;
+		}
+	  }
 	  //Zmiana tekstu paska tytulu okna rozmowy
 	  if(!PrimaryTabContact.IsChat)
 	  {
@@ -7915,7 +7910,7 @@ INT_PTR __stdcall OnPrimaryTab(WPARAM wParam, LPARAM lParam)
 	//Zmiana tekstu paska tytulu okna rozmowy przy wyladowaniu wtyczki
 	else if(TweakFrmSendTitlebarChk)
 	{
-      //Pobieranie danych kontaktu
+	  //Pobieranie danych kontaktu
 	  TPluginContact PrimaryTabContact = *(PPluginContact)lParam;
 	  //Jezeli kontakt nie jest czatem
 	  if(!PrimaryTabContact.IsChat)
@@ -7937,6 +7932,30 @@ INT_PTR __stdcall OnPrimaryTab(WPARAM wParam, LPARAM lParam)
 		else
 		 //Ustawianie nowego testku na pasku tytulu okna rozmowy
 		 SetWindowTextW(hFrmSend,(Nick + " - " + JID).w_str());
+	  }
+	}
+  }
+
+  return 0;
+}
+//---------------------------------------------------------------------------
+INT_PTR __stdcall OnPrimaryTab_GetOnlyList(WPARAM wParam, LPARAM lParam)
+{
+  //Komunikator nie jest zamykany
+  if(!ForceUnloadExecuted)
+  {
+	//Pobieranie danych kontaktu
+	TPluginContact PrimaryTabContact = *(PPluginContact)lParam;
+    //Zapisywanie sesji
+	if(RestoreTabsSessionChk)
+	{
+	  //Zapisywanie aktywnej zakladki
+	  if(!((PrimaryTabContact.FromPlugin)&&(PrimaryTabContact.IsChat)))
+	  {
+		TIniFile *Ini = new TIniFile(SessionFileDir);
+		UnicodeString JID = (wchar_t*)PrimaryTabContact.JID;
+		Ini->WriteString("SessionEx","ActiveTab",JID);
+		delete Ini;
 	  }
 	}
   }
@@ -9463,9 +9482,7 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 			}
 		  }
 		  //Zmiana aktywnej zakladki na pierwsza
-		  ChangeActiveTab(ResTabsList->Strings[0]);
-		  //Usuwanie sesji wiadomosci
-		  Ini->EraseSection("SessionMsg");
+		  ChangeActiveTab(Ini->ReadString("SessionEx","ActiveTab",ResTabsList->Strings[0]));
 		  //Kasowanie uchwytu do ostatnio aktywnego okna - anty never endig SlideIn FrmMain
 		  LastActiveWindow = NULL;
 		  //Status przywracania sesji
@@ -11147,6 +11164,7 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Unload()
   PluginLink.UnhookEvent(OnPreSendMsg);
   PluginLink.UnhookEvent(OnPerformCopyData);
   PluginLink.UnhookEvent(OnPrimaryTab);
+  PluginLink.UnhookEvent(OnPrimaryTab_GetOnlyList);
   PluginLink.UnhookEvent(OnRecvMsg);
   PluginLink.UnhookEvent(OnRecvOldProc);
   PluginLink.UnhookEvent(OnReplyList);
@@ -11204,6 +11222,7 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Unload()
   {
 	TIniFile *Ini = new TIniFile(SessionFileDir);
 	Ini->EraseSection("Session");
+	Ini->EraseSection("SessionEx");
 	delete Ini;
   }
   //Dodawanie aktywnych zakladek do ostatnio zamknietych
