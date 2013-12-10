@@ -6119,67 +6119,73 @@ INT_PTR __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 		  //Pobranie ilosci nieprzeczytanych wiadomosci
 		  int Count = InactiveTabsNewMsgCount->ReadInteger("TabsMsg",JID+Resource,0);
 		  //Tylko dla zakladki z licznikiem nieprzeczytanych wiadomosci
-		  if((Count)&&(ClipTabsList->IndexOf(JID)==-1))
+		  if(Count)
 		  {
 			//Wyladowanie hooka na zmiane tekstu na zakladce
 			PluginLink.UnhookEvent(OnTabCaption);
-			//Zakladka ze zwyklym kontatem
-			if(!ActiveTabContact.IsChat)
-			 PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)ActiveTabContact.Nick,(LPARAM)&ActiveTabContact);
-			//Zakladka z czatem
-			else
+			//Zakladka nie jest przypieta
+			if(ClipTabsList->IndexOf(JID)==-1)
 			{
-			  //Czat nie ze wtyczki
-			  if(!ActiveTabContact.FromPlugin)
-			  {
-				UnicodeString tmpJID = JID;
-				tmpJID = tmpJID.Delete(1,7);
-				TIniFile *Ini = new TIniFile(SessionFileDir);
-				UnicodeString Channel = Ini->ReadString("Channels",tmpJID,"");
-				delete Ini;
-				if(Channel.IsEmpty())
-				{
-				  Channel = tmpJID;
-				  Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
-				}
-				PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)Channel.w_str(),(LPARAM)&ActiveTabContact);
-			  }
-			  //Czat z wtyczki
+			  //Zakladka ze zwyklym kontatem
+			  if(!ActiveTabContact.IsChat)
+			   PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)ActiveTabContact.Nick,(LPARAM)&ActiveTabContact);
+			  //Zakladka z czatem
 			  else
 			  {
-				UnicodeString Caption = JID;
-				Caption = Caption.Delete(1,7);
-				Caption = Caption.Delete(Caption.Pos("@"),Caption.Length());
-				//Usuwanie licznika
-				wstring input = Caption.w_str();
-				wregex expr(L"[^A-Za-z]");
-				wstring replace = L"";
-				wstring result = regex_replace(input, expr, replace, match_default | format_sed);
-				Caption = result.c_str();
-				//Pierwsza duza litera
-				UnicodeString FirstUpper = Caption;
-				Caption = Caption.Delete(1,1);
-				FirstUpper = FirstUpper.Delete(2,FirstUpper.Length());
-				Caption = FirstUpper.UpperCase() + Caption;
-				//Rodzaj
-				UnicodeString Type = JID;
-				Type.Delete(1,Type.Pos("@plugin.")+7);
-				Type.Delete(Type.Pos("."),Type.Length());
-				Caption = Caption + " " + Type.UpperCase();
-				//Numer
-				UnicodeString Number = JID;
-				Number = Number.Delete(1,7);
-				Number = Number.Delete(Number.Pos("@"),Number.Length());
-				wstring input2 = Number.c_str();
-				wregex expr2(L"[^1-9]");
-				wstring replace2 = L"";
-				wstring result2 = regex_replace(input2, expr2, replace2, match_default | format_sed);
-				Number = result2.c_str();
-				Caption = Caption + " [nr" + Number + "]";
-				//Ustawianie sformatowanego tekstu
-				PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)Caption.w_str(),(LPARAM)&ActiveTabContact);
+				//Czat nie ze wtyczki
+				if(!ActiveTabContact.FromPlugin)
+				{
+				  UnicodeString tmpJID = JID;
+				  tmpJID = tmpJID.Delete(1,7);
+				  TIniFile *Ini = new TIniFile(SessionFileDir);
+				  UnicodeString Channel = Ini->ReadString("Channels",tmpJID,"");
+				  delete Ini;
+				  if(Channel.IsEmpty())
+				  {
+					Channel = tmpJID;
+					Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
+				  }
+				  PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)Channel.w_str(),(LPARAM)&ActiveTabContact);
+				}
+				//Czat z wtyczki
+				else
+				{
+				  UnicodeString Caption = JID;
+				  Caption = Caption.Delete(1,7);
+				  Caption = Caption.Delete(Caption.Pos("@"),Caption.Length());
+				  //Usuwanie licznika
+				  wstring input = Caption.w_str();
+				  wregex expr(L"[^A-Za-z]");
+				  wstring replace = L"";
+				  wstring result = regex_replace(input, expr, replace, match_default | format_sed);
+				  Caption = result.c_str();
+				  //Pierwsza duza litera
+				  UnicodeString FirstUpper = Caption;
+				  Caption = Caption.Delete(1,1);
+				  FirstUpper = FirstUpper.Delete(2,FirstUpper.Length());
+				  Caption = FirstUpper.UpperCase() + Caption;
+				  //Rodzaj
+				  UnicodeString Type = JID;
+				  Type.Delete(1,Type.Pos("@plugin.")+7);
+				  Type.Delete(Type.Pos("."),Type.Length());
+				  Caption = Caption + " " + Type.UpperCase();
+				  //Numer
+				  UnicodeString Number = JID;
+				  Number = Number.Delete(1,7);
+				  Number = Number.Delete(Number.Pos("@"),Number.Length());
+				  wstring input2 = Number.c_str();
+				  wregex expr2(L"[^1-9]");
+				  wstring replace2 = L"";
+				  wstring result2 = regex_replace(input2, expr2, replace2, match_default | format_sed);
+				  Number = result2.c_str();
+				  Caption = Caption + " [nr" + Number + "]";
+				  //Ustawianie sformatowanego tekstu
+				  PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)Caption.w_str(),(LPARAM)&ActiveTabContact);
+				}
 			  }
 			}
+			//Zakladka przypieta
+			else PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)L"",(LPARAM)&ActiveTabContact);
 			//Hook na zmiane tekstu na zakladce
 			PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_TABCAPTION,OnTabCaption);
 		  }
@@ -9482,7 +9488,8 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 			}
 		  }
 		  //Zmiana aktywnej zakladki na pierwsza
-		  ChangeActiveTab(Ini->ReadString("SessionEx","ActiveTab",ResTabsList->Strings[0]));
+		  if(!Ini->ReadString("SessionEx","ActiveTab",ResTabsList->Strings[0]).Pos("ischat_"))
+		   ChangeActiveTab(Ini->ReadString("SessionEx","ActiveTab",ResTabsList->Strings[0]));
 		  //Kasowanie uchwytu do ostatnio aktywnego okna - anty never endig SlideIn FrmMain
 		  LastActiveWindow = NULL;
 		  //Status przywracania sesji
