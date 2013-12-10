@@ -1510,6 +1510,30 @@ void CheckHideScrollTabButtons()
 }
 //---------------------------------------------------------------------------
 
+//Konwersja tekstu na liczbe
+int Convert(UnicodeString Char)
+{
+  for(int IntChar=-113;IntChar<=255;IntChar++)
+  {
+	if(Char==CHAR(IntChar))
+	 return IntChar;
+  }
+  return 0;
+}
+//---------------------------------------------------------------------------
+UnicodeString ConvertToInt(UnicodeString Text)
+{
+  UnicodeString ConvertedText;
+  for(int Count=1;Count<=Text.Length();Count++)
+  {
+	UnicodeString tmpStr = Text.SubString(Count, 1);
+	int tmpInt = Convert(tmpStr);
+	ConvertedText = ConvertedText + IntToStr(tmpInt);
+  }
+  return ConvertedText;
+}
+//---------------------------------------------------------------------------
+
 //Kodowanie ciagu znakow do Base64
 UnicodeString EncodeBase64(UnicodeString Str)
 {
@@ -1574,7 +1598,7 @@ UnicodeString TrimLinks(UnicodeString Body, bool Status)
 	  {
 		//Szukanie ID w cache
 		TIniFile *Ini = new TIniFile(SessionFileDir);
-		UnicodeString Title = DecodeBase64(Ini->ReadString("YouTube64",ID,""));
+		UnicodeString Title = DecodeBase64(Ini->ReadString("YouTube",ConvertToInt(ID),""));
 		delete Ini;
 		//Tytul pobrany z cache
 		if(!Title.IsEmpty())
@@ -1742,7 +1766,7 @@ void OpenNewTab(UnicodeString JID)
 	JID = JID.Delete(1,7);
 	//Pobieranie nazwy kanalu
 	TIniFile *Ini = new TIniFile(SessionFileDir);
-	UnicodeString Channel = Ini->ReadString("Channels",JID,"");
+	UnicodeString Channel = DecodeBase64(Ini->ReadString("Channels",JID,""));
 	delete Ini;
 	if(Channel.IsEmpty())
 	{
@@ -1940,7 +1964,7 @@ void BuildFrmClosedTabs()
 		  {
 			ItemJID = ItemJID.Delete(1,7);
 			TIniFile *Ini = new TIniFile(SessionFileDir);
-			UnicodeString Channel = Ini->ReadString("Channels",ItemJID,"");
+			UnicodeString Channel = DecodeBase64(Ini->ReadString("Channels",ItemJID,""));
 			delete Ini;
 			if(Channel.IsEmpty())
 			{
@@ -2344,7 +2368,7 @@ void BuildFrmUnsentMsg()
 		  {
 			ItemJID = ItemJID.Delete(1,7);
 			TIniFile *Ini = new TIniFile(SessionFileDir);
-			UnicodeString Channel = Ini->ReadString("Channels",ItemJID,"");
+			UnicodeString Channel = DecodeBase64(Ini->ReadString("Channels",ItemJID,""));
 			delete Ini;
 			if(Channel.IsEmpty())
 			{
@@ -2508,7 +2532,7 @@ void GetUnsentMsg()
 			{
 			  JID = JID.Delete(1,7);
 			  TIniFile *Ini = new TIniFile(SessionFileDir);
-			  UnicodeString Channel = Ini->ReadString("Channels",JID,"");
+			  UnicodeString Channel = DecodeBase64(Ini->ReadString("Channels",JID,""));
 			  delete Ini;
 			  if(Channel.IsEmpty())
 			  {
@@ -3096,7 +3120,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			  JID = JID.Delete(1,7);
 			  //Pobieranie nazwy kanalu
 			  TIniFile *Ini = new TIniFile(SessionFileDir);
-			  UnicodeString Channel = Ini->ReadString("Channels",JID,"");
+			  UnicodeString Channel = DecodeBase64(Ini->ReadString("Channels",JID,""));
 			  delete Ini;
 			  if(Channel.IsEmpty())
 			  {
@@ -3241,7 +3265,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			  JID = JID.Delete(1,7);
 			  //Pobieranie nazwy kanalu
 			  TIniFile *Ini = new TIniFile(SessionFileDir);
-			  UnicodeString Channel = Ini->ReadString("Channels",JID,"");
+			  UnicodeString Channel = DecodeBase64(Ini->ReadString("Channels",JID,""));
 			  delete Ini;
 			  if(Channel.IsEmpty())
 			  {
@@ -6138,7 +6162,7 @@ INT_PTR __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 				  UnicodeString tmpJID = JID;
 				  tmpJID = tmpJID.Delete(1,7);
 				  TIniFile *Ini = new TIniFile(SessionFileDir);
-				  UnicodeString Channel = Ini->ReadString("Channels",tmpJID,"");
+				  UnicodeString Channel = DecodeBase64(Ini->ReadString("Channels",tmpJID,""));
 				  delete Ini;
 				  if(Channel.IsEmpty())
 				  {
@@ -6219,8 +6243,10 @@ INT_PTR __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 		   Ini->WriteString("Session","Tab"+IntToStr(Count+1),TabsList->Strings[Count]);
 		}
 		//Zapisywanie aktywnej zakladki
-		if(!((ActiveTabContact.FromPlugin)&&(ActiveTabContact.IsChat)))
+		if(!ActiveTabContact.IsChat)
 		 Ini->WriteString("SessionEx","ActiveTab",JID);
+		else
+		 Ini->DeleteKey("SessionEx","ActiveTab");
 		//Wczytywanie ostatnio przeprowadzonej rozmowy
 		if((RestoringSession)&&(!ActiveTabContact.IsChat))
 		 PluginLink.CallService(AQQ_FUNCTION_LOADLASTCONV,(WPARAM)JID.w_str(),(LPARAM)ActiveTabContact.UserIdx);
@@ -6482,7 +6508,7 @@ INT_PTR __stdcall OnAddLine(WPARAM wParam, LPARAM lParam)
 					UnicodeString tmpJID = JID;
 					tmpJID = tmpJID.Delete(1,7);
 					TIniFile *Ini = new TIniFile(SessionFileDir);
-					TabCaption = Ini->ReadString("Channels",tmpJID,"");
+					TabCaption = DecodeBase64(Ini->ReadString("Channels",tmpJID,""));
 					delete Ini;
 					if(TabCaption.IsEmpty())
 					{
@@ -7444,7 +7470,7 @@ INT_PTR __stdcall OnFetchAllTabs_RefreshTabs(WPARAM wParam, LPARAM lParam)
 		  UnicodeString tmpJID = JID;
 		  tmpJID = tmpJID.Delete(1,7);
 		  TIniFile *Ini = new TIniFile(SessionFileDir);
-		  UnicodeString Channel = Ini->ReadString("Channels",tmpJID,"");
+		  UnicodeString Channel = DecodeBase64(Ini->ReadString("Channels",tmpJID,""));
 		  delete Ini;
 		  if(Channel.IsEmpty())
 		  {
@@ -7831,12 +7857,12 @@ INT_PTR __stdcall OnPrimaryTab(WPARAM wParam, LPARAM lParam)
 	  if(RestoreTabsSessionChk)
 	  {
 		//Zapisywanie aktywnej zakladki
-		if(!((PrimaryTabContact.FromPlugin)&&(PrimaryTabContact.IsChat)))
-		{
-		  TIniFile *Ini = new TIniFile(SessionFileDir);
-		  Ini->WriteString("SessionEx","ActiveTab",JID);
-		  delete Ini;
-		}
+		TIniFile *Ini = new TIniFile(SessionFileDir);
+		if(!PrimaryTabContact.IsChat)
+		 Ini->WriteString("SessionEx","ActiveTab",JID);
+		else
+		 Ini->DeleteKey("SessionEx","ActiveTab");
+		delete Ini;
 	  }
 	  //Zmiana tekstu paska tytulu okna rozmowy
 	  if(!PrimaryTabContact.IsChat)
@@ -7956,13 +7982,15 @@ INT_PTR __stdcall OnPrimaryTab_GetOnlyList(WPARAM wParam, LPARAM lParam)
 	if(RestoreTabsSessionChk)
 	{
 	  //Zapisywanie aktywnej zakladki
-	  if(!((PrimaryTabContact.FromPlugin)&&(PrimaryTabContact.IsChat)))
+	  TIniFile *Ini = new TIniFile(SessionFileDir);
+	  if(!PrimaryTabContact.IsChat)
 	  {
-		TIniFile *Ini = new TIniFile(SessionFileDir);
 		UnicodeString JID = (wchar_t*)PrimaryTabContact.JID;
 		Ini->WriteString("SessionEx","ActiveTab",JID);
-		delete Ini;
 	  }
+	  else
+	   Ini->DeleteKey("SessionEx","ActiveTab");
+	  delete Ini;
 	}
   }
 
@@ -8152,7 +8180,7 @@ INT_PTR __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 				  UnicodeString tmpJID = JID;
 				  tmpJID = tmpJID.Delete(1,7);
 				  TIniFile *Ini = new TIniFile(SessionFileDir);
-				  TabCaption = Ini->ReadString("Channels",tmpJID,"");
+				  TabCaption = DecodeBase64(Ini->ReadString("Channels",tmpJID,""));
 				  delete Ini;
 				  if(TabCaption.IsEmpty())
 				  {
@@ -8939,7 +8967,7 @@ INT_PTR __stdcall OnTabCaption(WPARAM wParam, LPARAM lParam)
 		UnicodeString tmpJID = JID;
 		tmpJID = tmpJID.Delete(1,7);
 		TIniFile *Ini = new TIniFile(SessionFileDir);
-		TabCaption = Ini->ReadString("Channels",tmpJID,"");
+		TabCaption = DecodeBase64(Ini->ReadString("Channels",tmpJID,""));
 		delete Ini;
 		if(TabCaption.IsEmpty())
 		{
@@ -9488,8 +9516,8 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 			}
 		  }
 		  //Zmiana aktywnej zakladki na pierwsza
-		  if(!Ini->ReadString("SessionEx","ActiveTab",ResTabsList->Strings[0]).Pos("ischat_"))
-		   ChangeActiveTab(Ini->ReadString("SessionEx","ActiveTab",ResTabsList->Strings[0]));
+		  //if(!Ini->ReadString("SessionEx","ActiveTab",ResTabsList->Strings[0]).Pos("ischat_"))
+		  ChangeActiveTab(Ini->ReadString("SessionEx","ActiveTab",ResTabsList->Strings[0]));
 		  //Kasowanie uchwytu do ostatnio aktywnego okna - anty never endig SlideIn FrmMain
 		  LastActiveWindow = NULL;
 		  //Status przywracania sesji
@@ -11163,15 +11191,12 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Unload()
   PluginLink.UnhookEvent(OnCloseTabMessage);
   PluginLink.UnhookEvent(OnColorChange);
   PluginLink.UnhookEvent(OnContactsUpdate);
-  PluginLink.UnhookEvent(OnFetchAllTabs);
   PluginLink.UnhookEvent(OnListReady);
   PluginLink.UnhookEvent(OnMsgComposing);
   PluginLink.UnhookEvent(OnMsgContextPopup);
   PluginLink.UnhookEvent(OnMsgContextClose);
-  PluginLink.UnhookEvent(OnPreSendMsg);
   PluginLink.UnhookEvent(OnPerformCopyData);
-  PluginLink.UnhookEvent(OnPrimaryTab);
-  PluginLink.UnhookEvent(OnPrimaryTab_GetOnlyList);
+  PluginLink.UnhookEvent(OnPreSendMsg);
   PluginLink.UnhookEvent(OnRecvMsg);
   PluginLink.UnhookEvent(OnRecvOldProc);
   PluginLink.UnhookEvent(OnReplyList);

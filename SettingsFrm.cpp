@@ -62,6 +62,7 @@ __declspec(dllimport)void RefreshList();
 __declspec(dllimport)UnicodeString GetYouTubeTitleListItem();
 __declspec(dllimport)void AddToYouTubeExcludeList(UnicodeString ID);
 __declspec(dllimport)void LoadSettings();
+__declspec(dllimport)UnicodeString ConvertToInt(UnicodeString Text);
 __declspec(dllimport)UnicodeString EncodeBase64(UnicodeString Str);
 //__declspec(dllimport)UnicodeString DecodeBase64(UnicodeString Str)
 __declspec(dllimport)void RefreshTabs();
@@ -1049,7 +1050,7 @@ void __fastcall TSettingsForm::PrepareXMLThreadRun(TIdThreadComponent *Sender)
 	//Normalizacja nazw kanalow
 	Channel = NormalizeChannel(Channel);
 	//Zapisywanie nazwy kanalu
-	Ini->WriteString("Channels",JID,Channel);
+	Ini->WriteString("Channels",JID,EncodeBase64(Channel));
   }
   delete Ini;
   //Wylaczenie watku
@@ -1086,7 +1087,7 @@ void __fastcall TSettingsForm::GetYouTubeTitleThreadRun(TIdThreadComponent *Send
 	  if(!Title.IsEmpty())
 	  {
 		TIniFile *Ini = new TIniFile(GetPluginUserDir() + "\\\\TabKit\\\\Session.ini");
-		Ini->WriteString("YouTube64",ID,EncodeBase64(Title));
+		Ini->WriteString("YouTube",ConvertToInt(ID),EncodeBase64(Title));
 		delete Ini;
 	  }
 	  //Blokowanie wskaznego ID na czas sesji
