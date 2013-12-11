@@ -333,30 +333,31 @@ int FASTACCESS;
 #define TIMER_CLIPTABS_MOVE 100
 #define TIMER_CLIPTABS_OPEN 110
 #define TIMER_CHKSETTINGS 120
-#define TIMER_CLOSEBY2XLPM 130
-#define TIMER_REBUILD_TABS_LIST 140
-#define TIMER_MOUSE_POSITION 150
-#define TIMER_UNBLOCK_MOUSE_PROC 160
-#define TIMER_ACTIVE_WINDOW 170
-#define TIMER_FRMSEND_PRE_SLIDEOUT 180
-#define TIMER_FRMSEND_SLIDEOUT 190
-#define TIMER_FRMSEND_PRE_SLIDEIN 200
-#define TIMER_FRMSEND_SLIDEIN 210
-#define TIMER_FRMSEND_UNBLOCK_SLIDE 220
-#define TIMER_FRMSEND_MINIMIZED 230
-#define TIMER_FRMSEND_CHANGEPOS 240
-#define TIMER_FRMSEND_TOPMOST 250
-#define TIMER_FRMSEND_TOPMOST_AND_SLIDEOUT 260
-#define TIMER_FRMSEND_FOCUS_RICHEDIT 270
-#define TIMER_FRMSEND_UNBLOCK_THUMBNAIL 280
-#define TIMER_FRMMAIN_PRE_SLIDEOUT 290
-#define TIMER_FRMMAIN_SLIDEOUT 300
-#define TIMER_FRMMAIN_PRE_SLIDEIN 310
-#define TIMER_FRMMAIN_SLIDEIN 320
-#define TIMER_FRMMAIN_UNBLOCK_SLIDE 330
-#define TIMER_FRMMAIN_TOPMOST 340
-#define TIMER_FRMMAIN_TOPMOST_EX 350
-#define TIMER_FRMMAIN_TOPMOST_AND_SLIDEOUT 360
+#define TIMER_UNCLOSEBY2XLPM 130
+#define TIMER_CLOSEBY2XLPM 140
+#define TIMER_REBUILD_TABS_LIST 150
+#define TIMER_MOUSE_POSITION 160
+#define TIMER_UNBLOCK_MOUSE_PROC 170
+#define TIMER_ACTIVE_WINDOW 180
+#define TIMER_FRMSEND_PRE_SLIDEOUT 190
+#define TIMER_FRMSEND_SLIDEOUT 200
+#define TIMER_FRMSEND_PRE_SLIDEIN 210
+#define TIMER_FRMSEND_SLIDEIN 220
+#define TIMER_FRMSEND_UNBLOCK_SLIDE 230
+#define TIMER_FRMSEND_MINIMIZED 240
+#define TIMER_FRMSEND_CHANGEPOS 250
+#define TIMER_FRMSEND_TOPMOST 260
+#define TIMER_FRMSEND_TOPMOST_AND_SLIDEOUT 270
+#define TIMER_FRMSEND_FOCUS_RICHEDIT 280
+#define TIMER_FRMSEND_UNBLOCK_THUMBNAIL 290
+#define TIMER_FRMMAIN_PRE_SLIDEOUT 300
+#define TIMER_FRMMAIN_SLIDEOUT 310
+#define TIMER_FRMMAIN_PRE_SLIDEIN 320
+#define TIMER_FRMMAIN_SLIDEIN 330
+#define TIMER_FRMMAIN_UNBLOCK_SLIDE 340
+#define TIMER_FRMMAIN_TOPMOST 350
+#define TIMER_FRMMAIN_TOPMOST_EX 360
+#define TIMER_FRMMAIN_TOPMOST_AND_SLIDEOUT 370
 //SETTINGS-------------------------------------------------------------------
 //ClosedTabs
 bool ClosedTabsChk;
@@ -371,6 +372,7 @@ int UnCloseTabHotKeyMode;
 int UnCloseTabHotKeyDef;
 bool UnCloseTabSPMouseChk;
 bool UnCloseTabLPMouseChk;
+bool UnCloseTab2xLPMouseChk;
 int CountUnCloseTabVal;
 bool RestoreLastMsgChk;
 bool OnlyConversationTabsChk;
@@ -3381,6 +3383,14 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	  //Tworzenie timera
 	  SetTimer(hTimerFrm,TIMER_CHKSETTINGS,500,(TIMERPROC)TimerFrmProc);
 	}
+	//
+	else if(wParam==TIMER_UNCLOSEBY2XLPM)
+	{
+      //Zatrzymanie timera
+	  KillTimer(hTimerFrm,TIMER_UNCLOSEBY2XLPM);
+	  //Przywrocenie zakladki
+	  if(!TabWasChanged) UnCloseTabHotKeyExecute();
+	}
 	//Zamykanie zakladki poprzez 2xLPM
 	else if(wParam==TIMER_CLOSEBY2XLPM)
 	{
@@ -5774,7 +5784,7 @@ LRESULT CALLBACK ThreadMouseProc(int nCode, WPARAM wParam, LPARAM lParam)
   else if((nCode==HC_ACTION)&&(hTabsBar)&&(!IsWindow(hPopupMenu))&&(!BlockThreadMouseProc))
   {
 	//Przywracanie zakladek za pomoca myszki
-	if((ClosedTabsChk)&&((UnCloseTabSPMouseChk)||(UnCloseTabLPMouseChk)))
+	if((ClosedTabsChk)&&((UnCloseTabSPMouseChk)||(UnCloseTabLPMouseChk)||(UnCloseTab2xLPMouseChk)))
 	{
 	  //Niewywolano zamkniecia poprzez 2xLPM
 	  if(!LBUTTONDBLCLK_EXECUTED)
@@ -5805,6 +5815,7 @@ LRESULT CALLBACK ThreadMouseProc(int nCode, WPARAM wParam, LPARAM lParam)
 		  //Wcisniecie LPM
 		  if((wParam==WM_LBUTTONDOWN)&&((GetKeyState(VK_LCONTROL)<0)||(GetKeyState(VK_RCONTROL)<0)))
 		  {
+			//Kusor znajduje sie w obrebie paska zakladek
 			if(WindowFromPoint(Mouse->CursorPos)==hTabsBar)
 			 TabWasChanged = false;
 		  }
@@ -5815,6 +5826,22 @@ LRESULT CALLBACK ThreadMouseProc(int nCode, WPARAM wParam, LPARAM lParam)
 			if(WindowFromPoint(Mouse->CursorPos)==hTabsBar)
 			{
 			  if(!TabWasChanged) UnCloseTabHotKeyExecute();
+			}
+		  }
+		}
+		//Przywracanie zakladki za pomoca 2xLPM
+		if(UnCloseTab2xLPMouseChk)
+		{
+          //Wcisniecie 2xLPM
+		  if(wParam==WM_LBUTTONDBLCLK)
+		  {
+			//Kusor znajduje sie w obrebie paska zakladek
+			if(WindowFromPoint(Mouse->CursorPos)==hTabsBar)
+			{
+			  //Zmienna pomocnicza przywracania zakladki za pomoca myszki
+			  TabWasChanged = false;
+			  //Wlaczenie timera przywracania zakladki poprzez 2xLPM
+			  SetTimer(hTimerFrm,TIMER_UNCLOSEBY2XLPM,100,(TIMERPROC)TimerFrmProc);
 			}
 		  }
 		}
@@ -5930,7 +5957,7 @@ INT_PTR __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
   //Komunikator nie jest zamykany
   if(!ForceUnloadExecuted)
   {
-    //Przywracanie zakladki za pomoca myszki
+	//Przywracanie zakladki za pomoca myszki
 	TabWasChanged = true;
 	//Wylaczenie blokady otwierania paru zakladek jednoczesnie
 	NewMgsHoyKeyExecute = false;
@@ -10191,6 +10218,7 @@ void LoadSettings()
   UnCloseTabHotKeyDef = Ini->ReadInteger("ClosedTabs","HotKeyDef",0);
   UnCloseTabSPMouseChk = Ini->ReadBool("ClosedTabs","SPMouse",true);
   UnCloseTabLPMouseChk = Ini->ReadBool("ClosedTabs","LPMouse",false);
+  UnCloseTab2xLPMouseChk = Ini->ReadBool("ClosedTabs","2xLPMouse",false);
   CountUnCloseTabVal = Ini->ReadInteger("ClosedTabs","Count",10);
   RestoreLastMsgChk = Ini->ReadBool("ClosedTabs","RestoreLastMsg",false);
   OnlyConversationTabsChk = Ini->ReadBool("ClosedTabs","OnlyConversationTabs",false);
@@ -11115,7 +11143,7 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Unload()
 	CurrentFrmSeekOnListProc = NULL;
   }
   //Wyladowanie timerow
-  for(int TimerID=10;TimerID<=360;TimerID=TimerID+10) KillTimer(hTimerFrm,TimerID);
+  for(int TimerID=10;TimerID<=370;TimerID=TimerID+10) KillTimer(hTimerFrm,TimerID);
   //Usuwanie okna timera
   DestroyWindow(hTimerFrm);
   //Wyrejestowanie klasy okna timera
@@ -11396,7 +11424,7 @@ extern "C" PPluginInfo __declspec(dllexport) __stdcall AQQPluginInfo(DWORD AQQVe
 {
   PluginInfo.cbSize = sizeof(TPluginInfo);
   PluginInfo.ShortName = L"TabKit";
-  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,8,1,0);
+  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,8,2,0);
   PluginInfo.Description = L"Wtyczka oferuje masê funkcjonalnoœci usprawniaj¹cych korzystanie z komunikatora np. zapamiêtywanie zamkniêtych zak³adek, inteligentne prze³¹czanie, zapamiêtywanie sesji.";
   PluginInfo.Author = L"Krzysztof Grochocki (Beherit)";
   PluginInfo.AuthorMail = L"kontakt@beherit.pl";

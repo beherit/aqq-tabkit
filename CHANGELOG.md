@@ -1,3 +1,7 @@
+1.8.2.0
+-----
+* Mo¿liwoœæ przywrócenia ostatnio zamkniêtej zak³adki za pomoc¹ 2xLPM.
+
 1.8.1.0
 -----
 * Drobne poprawki w wysuwaniu okien zza krawêdzi ekranu.

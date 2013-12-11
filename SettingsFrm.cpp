@@ -261,6 +261,7 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   UnCloseTabHotKeyInput->HotKey = Ini->ReadInteger("ClosedTabs","HotKeyDef",0);
   UnCloseTabSPMouseCheckBox->Checked = Ini->ReadBool("ClosedTabs","SPMouse",true);
   UnCloseTabLPMouseCheckBox->Checked = Ini->ReadBool("ClosedTabs","LPMouse",false);
+  UnCloseTab2xLPMouseCheckBox->Checked = Ini->ReadBool("ClosedTabs","2xLPMouse",false);
   CountClosedTabsSpinEdit->Value = Ini->ReadInteger("ClosedTabs","Count",5);
   RestoreLastMsgClosedTabsCheckBox->Checked = Ini->ReadBool("ClosedTabs","RestoreLastMsg",false);
   OnlyConversationTabsCheckBox->Checked = Ini->ReadBool("ClosedTabs","OnlyConversationTabs",false);
@@ -502,6 +503,7 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
   Ini->WriteInteger("ClosedTabs","HotKeyDef",UnCloseTabHotKeyInput->HotKey);
   Ini->WriteBool("ClosedTabs","SPMouse",UnCloseTabSPMouseCheckBox->Checked);
   Ini->WriteBool("ClosedTabs","LPMouse",UnCloseTabLPMouseCheckBox->Checked);
+  Ini->WriteBool("ClosedTabs","2xLPMouse",UnCloseTab2xLPMouseCheckBox->Checked);
   Ini->WriteInteger("ClosedTabs","Count",CountClosedTabsSpinEdit->Value);
   Ini->WriteBool("ClosedTabs","RestoreLastMsg",RestoreLastMsgClosedTabsCheckBox->Checked);
   Ini->WriteBool("ClosedTabs","OnlyConversationTabs",OnlyConversationTabsCheckBox->Checked);
@@ -698,6 +700,7 @@ void __fastcall TSettingsForm::aClosedTabsChkExecute(TObject *Sender)
   UnCloseMouseLabel->Enabled = RememberClosedTabsCheckBox->Checked;
   UnCloseTabSPMouseCheckBox->Enabled = RememberClosedTabsCheckBox->Checked;
   UnCloseTabLPMouseCheckBox->Enabled = RememberClosedTabsCheckBox->Checked;
+  UnCloseTab2xLPMouseCheckBox->Enabled = RememberClosedTabsCheckBox->Checked;
   if(!RememberClosedTabsCheckBox->Checked)
   {
 	FrmMainClosedTabsCheckBox->Enabled = false;
