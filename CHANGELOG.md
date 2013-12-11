@@ -1,3 +1,19 @@
+1.8.1.0
+-----
+* Drobne poprawki w wysuwaniu okien zza krawêdzi ekranu.
+* Ma³e zmiany w usuwaniu notyfikacji pisania wiadomoœci z belki okna rozmowy.
+* Zmiana kompozycji nie usuwa trzymania okna na wierzchu.
+* Dekodowanie Base64 za pomoc¹ SDK.
+* Kodowanie niektórych danych sesji do Base64.
+* Drobne poprawki w zapisywaniu do cache tytu³ów filmów z YouTube.
+* Poprawki w przywracaniu i zapamiêtywaniu sesji.
+* Zapamiêtywanie aktywnej zak³adki sesji.
+* Przebudowa kolejnoœci zak³adek w pliku sesji po zmianie miejsca zak³adki oraz po otwarciu przypiêtej zak³adki.
+* Poprawne usuwanie tekstowego licznika nieprzeczytanych wiadomoœci z przypiêtej zak³adki.
+* Usuniêcie przebudowy kolejnoœci zak³adek w pliku sesji po wciœniêciu przycisku przejœcia do danej zak³adki.
+* Inne mniej wa¿nie zmiany w kodzie.
+* Aktualizacja komponentów AlphaControls do nowszej wersji (8.51).
+
 1.8.0.0
 -----
 * Mruganie diod¹ LED klawiatury po przyjœciu nowej wiadomoœci (nie dzia³a z klawiaturami USB).
