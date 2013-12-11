@@ -258,6 +258,7 @@ __published:	// IDE-managed Components
 	TsCheckBox *KeyboardFlasherCheckBox;
 	TsComboBox *KeyboardFlasherModeComboBox;
 	TsMemo *FileMemo;
+	TsCheckBox *UnCloseTab2xLPMouseCheckBox;
 	void __fastcall UnsentMsgTrayIconClick(TObject *Sender);
 	void __fastcall aExitExecute(TObject *Sender);
 	void __fastcall aLoadSettingsExecute(TObject *Sender);

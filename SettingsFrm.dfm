@@ -2975,7 +2975,7 @@ object SettingsForm: TSettingsForm
           end
           object CountClosedTabsLabel: TsLabel
             Left = 14
-            Top = 83
+            Top = 109
             Width = 163
             Height = 13
             Caption = 'Liczba zapami'#281'tywanych zak'#322'adek'
@@ -3008,28 +3008,12 @@ object SettingsForm: TSettingsForm
           end
           object RestoreLastMsgClosedTabsCheckBox: TsCheckBox
             Left = 10
-            Top = 102
+            Top = 128
             Width = 261
             Height = 28
             Caption = 
               'Przy przywracaniu zak'#322'adki wczytuj ostatnio przeprowadzon'#261' rozmo' +
               'w'#281
-            AutoSize = False
-            TabOrder = 3
-            OnClick = aClosedTabsChkExecute
-            SkinData.SkinSection = 'CHECKBOX'
-            ImgChecked = 0
-            ImgUnchecked = 0
-            WordWrap = True
-          end
-          object OnlyConversationTabsCheckBox: TsCheckBox
-            Left = 10
-            Top = 136
-            Width = 261
-            Height = 28
-            Caption = 
-              'Zapami'#281'tuj wy'#322#261'cznie zak'#322'adki z kontaktami z kt'#243'rymi przeprowadz' +
-              'ili'#347'my rozmow'#281
             AutoSize = False
             TabOrder = 4
             OnClick = aClosedTabsChkExecute
@@ -3038,12 +3022,28 @@ object SettingsForm: TSettingsForm
             ImgUnchecked = 0
             WordWrap = True
           end
+          object OnlyConversationTabsCheckBox: TsCheckBox
+            Left = 10
+            Top = 162
+            Width = 261
+            Height = 28
+            Caption = 
+              'Zapami'#281'tuj wy'#322#261'cznie zak'#322'adki z kontaktami z kt'#243'rymi przeprowadz' +
+              'ili'#347'my rozmow'#281
+            AutoSize = False
+            TabOrder = 5
+            OnClick = aClosedTabsChkExecute
+            SkinData.SkinSection = 'CHECKBOX'
+            ImgChecked = 0
+            ImgUnchecked = 0
+            WordWrap = True
+          end
           object CountClosedTabsSpinEdit: TsSpinEdit
             Left = 183
-            Top = 80
+            Top = 106
             Width = 36
             Height = 21
-            TabOrder = 2
+            TabOrder = 3
             Text = '5'
             OnChange = aClosedTabsChkExecute
             SkinData.SkinSection = 'EDIT'
@@ -3059,6 +3059,18 @@ object SettingsForm: TSettingsForm
             MaxValue = 30
             MinValue = 5
             Value = 5
+          end
+          object UnCloseTab2xLPMouseCheckBox: TsCheckBox
+            Left = 26
+            Top = 83
+            Width = 239
+            Height = 20
+            Caption = 'dwukrotne wci'#347'ni'#281'cie lewego przycisku myszki'
+            TabOrder = 2
+            OnClick = aClosedTabsChkExecute
+            SkinData.SkinSection = 'CHECKBOX'
+            ImgChecked = 0
+            ImgUnchecked = 0
           end
         end
         object UnCloseTabHotKeyGroupBox: TsGroupBox
@@ -3524,6 +3536,10 @@ object SettingsForm: TSettingsForm
       ImageIndex = 4
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object RestoreTabsSessionGroupBox: TsGroupBox
         Left = 18
         Top = 22
@@ -3596,6 +3612,10 @@ object SettingsForm: TSettingsForm
       OnShow = NewMsgTabSheetShow
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object ChatStateNotiferNewMsgCheckBox: TsCheckBox
         Left = 12
         Top = 182
@@ -3758,6 +3778,10 @@ object SettingsForm: TSettingsForm
       ImageIndex = 6
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object TweakFrmMainTitlebarGroupBox: TsGroupBox
         Left = 18
         Top = 167
@@ -3919,6 +3943,10 @@ object SettingsForm: TSettingsForm
       ImageIndex = 7
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object OpenClipTabsCheckBox: TsCheckBox
         Left = 12
         Top = 12
@@ -4031,6 +4059,10 @@ object SettingsForm: TSettingsForm
       ImageIndex = 8
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object SideSlideFullScreenModeExceptionsButton: TsSpeedButton
         Left = 263
         Top = 314
@@ -4618,6 +4650,10 @@ object SettingsForm: TSettingsForm
       OnShow = OtherTabSheetShow
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object AntiSpimCheckBox: TsCheckBox
         Left = 12
         Top = 68
