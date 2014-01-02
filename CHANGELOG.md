@@ -1,3 +1,9 @@
+1.8.3.0
+-----
+* Drobna poprawka przy przywracaniu sesji samych zak³adek czatowych.
+* Blokada rêcznego przywracania zak³adki czatowej przy braku po³¹czenia z sieci¹.
+* Dok³adniejsze sprawdzanie stanu po³¹czenia konta podczas przywracania sesji zak³adki czatowej.
+
 1.8.2.0
 -----
 * Mo¿liwoœæ przywrócenia ostatnio zamkniêtej zak³adki za pomoc¹ 2xLPM.

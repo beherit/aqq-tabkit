@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------------
-// Copyright (C) 2010-2013 Krzysztof Grochocki
+// Copyright (C) 2010-2014 Krzysztof Grochocki
 //
 // This file is part of TabKit
 //
@@ -1764,27 +1764,34 @@ void OpenNewTab(UnicodeString JID)
   //Otwieranie zakladki z czatem
   else
   {
-	//Ustawianie prawidlowego identyfikatora
-	JID = JID.Delete(1,7);
-	//Pobieranie nazwy kanalu
-	TIniFile *Ini = new TIniFile(SessionFileDir);
-	UnicodeString Channel = DecodeBase64(Ini->ReadString("Channels",JID,""));
-	delete Ini;
-	if(Channel.IsEmpty())
+	//Sprawdzenie stanu konta przypisanego do czatu
+	TPluginStateChange PluginStateChange;
+	PluginLink.CallService(AQQ_FUNCTION_GETNETWORKSTATE,(WPARAM)(&PluginStateChange),(LPARAM)GetContactIndexW(JID));
+	//Konto jest polaczone z siecia
+	if(PluginStateChange.NewState!=0)
 	{
-	  Channel = JID;
-	  Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
+	  //Ustawianie prawidlowego identyfikatora
+	  JID = JID.Delete(1,7);
+	  //Pobieranie nazwy kanalu
+	  TIniFile *Ini = new TIniFile(SessionFileDir);
+	  UnicodeString Channel = DecodeBase64(Ini->ReadString("Channels",JID,""));
+	  delete Ini;
+	  if(Channel.IsEmpty())
+	  {
+		Channel = JID;
+		Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
+	  }
+	  //Wypenianie struktury czatu
+	  TPluginChatPrep PluginChatPrep;
+	  PluginChatPrep.cbSize = sizeof(TPluginChatPrep);
+	  PluginChatPrep.UserIdx = GetContactIndexW(JID);
+	  PluginChatPrep.JID = JID.w_str();
+	  PluginChatPrep.Channel = Channel.w_str();
+	  PluginChatPrep.CreateNew = false;
+	  PluginChatPrep.Fast = true;
+	  //Otwieranie zakladki czatowej
+	  PluginLink.CallService(AQQ_SYSTEM_CHAT,0,(LPARAM)&PluginChatPrep);
 	}
-	//Wypenianie struktury czatu
-	TPluginChatPrep PluginChatPrep;
-	PluginChatPrep.cbSize = sizeof(TPluginChatPrep);
-	PluginChatPrep.UserIdx = GetContactIndexW(JID);
-	PluginChatPrep.JID = JID.w_str();
-	PluginChatPrep.Channel = Channel.w_str();
-	PluginChatPrep.CreateNew = false;
-	PluginChatPrep.Fast = true;
-	//Otwieranie zakladki czatowej
-	PluginLink.CallService(AQQ_SYSTEM_CHAT,0,(LPARAM)&PluginChatPrep);
   }
 }
 //---------------------------------------------------------------------------
@@ -3118,27 +3125,33 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			//Okno dolaczania do konferencji nie jest aktywne
 			if(!FrmChatJoinExist)
 			{
-			  //Ustawianie prawidlowego identyfikatora
-			  JID = JID.Delete(1,7);
-			  //Pobieranie nazwy kanalu
-			  TIniFile *Ini = new TIniFile(SessionFileDir);
-			  UnicodeString Channel = DecodeBase64(Ini->ReadString("Channels",JID,""));
-			  delete Ini;
-			  if(Channel.IsEmpty())
+              //Sprawdzenie stanu konta przypisanego do czatu
+			  PluginLink.CallService(AQQ_FUNCTION_GETNETWORKSTATE,(WPARAM)(&PluginStateChange),(LPARAM)GetContactIndexW(JID));
+			  //Konto jest polaczone z siecia
+			  if(PluginStateChange.NewState!=0)
 			  {
-				Channel = JID;
-				Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
+				//Ustawianie prawidlowego identyfikatora
+				JID = JID.Delete(1,7);
+				//Pobieranie nazwy kanalu
+				TIniFile *Ini = new TIniFile(SessionFileDir);
+				UnicodeString Channel = DecodeBase64(Ini->ReadString("Channels",JID,""));
+				delete Ini;
+				if(Channel.IsEmpty())
+				{
+				  Channel = JID;
+				  Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
+				}
+				//Wypenianie struktury czatu
+				TPluginChatPrep PluginChatPrep;
+				PluginChatPrep.cbSize = sizeof(TPluginChatPrep);
+				PluginChatPrep.UserIdx = GetContactIndexW(JID);
+				PluginChatPrep.JID = JID.w_str();
+				PluginChatPrep.Channel = Channel.w_str();
+				PluginChatPrep.CreateNew = false;
+				PluginChatPrep.Fast = true;
+				//Przywracanie zakladki czatowej
+				PluginLink.CallService(AQQ_SYSTEM_CHAT,0,(LPARAM)&PluginChatPrep);
 			  }
-			  //Wypenianie struktury czatu
-			  TPluginChatPrep PluginChatPrep;
-			  PluginChatPrep.cbSize = sizeof(TPluginChatPrep);
-			  PluginChatPrep.UserIdx = GetContactIndexW(JID);
-			  PluginChatPrep.JID = JID.w_str();
-			  PluginChatPrep.Channel = Channel.w_str();
-			  PluginChatPrep.CreateNew = false;
-			  PluginChatPrep.Fast = true;
-			  //Przywracanie zakladki czatowej
-			  PluginLink.CallService(AQQ_SYSTEM_CHAT,0,(LPARAM)&PluginChatPrep);
 			  //Ponowne wlaczenie timera
 			  SetTimer(hTimerFrm,TIMER_RESTORE_SESSION,3000,(TIMERPROC)TimerFrmProc);
 			}
@@ -9544,7 +9557,7 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 		  }
 		  //Zmiana aktywnej zakladki na pierwsza
 		  //if(!Ini->ReadString("SessionEx","ActiveTab",ResTabsList->Strings[0]).Pos("ischat_"))
-		  ChangeActiveTab(Ini->ReadString("SessionEx","ActiveTab",ResTabsList->Strings[0]));
+		  if(ResTabsList->Count) ChangeActiveTab(Ini->ReadString("SessionEx","ActiveTab",ResTabsList->Strings[0]));
 		  //Kasowanie uchwytu do ostatnio aktywnego okna - anty never endig SlideIn FrmMain
 		  LastActiveWindow = NULL;
 		  //Status przywracania sesji
@@ -11424,7 +11437,7 @@ extern "C" PPluginInfo __declspec(dllexport) __stdcall AQQPluginInfo(DWORD AQQVe
 {
   PluginInfo.cbSize = sizeof(TPluginInfo);
   PluginInfo.ShortName = L"TabKit";
-  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,8,2,0);
+  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,8,3,0);
   PluginInfo.Description = L"Wtyczka oferuje masê funkcjonalnoœci usprawniaj¹cych korzystanie z komunikatora np. zapamiêtywanie zamkniêtych zak³adek, inteligentne prze³¹czanie, zapamiêtywanie sesji.";
   PluginInfo.Author = L"Krzysztof Grochocki (Beherit)";
   PluginInfo.AuthorMail = L"kontakt@beherit.pl";
