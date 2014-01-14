@@ -243,6 +243,8 @@ UnicodeString SettingsFileDir;
 UnicodeString PluginUserDir;
 //PID procesu
 DWORD ProcessPID;
+//Wersja komunikatora
+DWORD IMVersion;
 //SecureMode
 bool SecureMode = false;
 //ID wywolania enumeracji listy kontaktow
@@ -1539,14 +1541,20 @@ UnicodeString ConvertToInt(UnicodeString Text)
 //Kodowanie ciagu znakow do Base64
 UnicodeString EncodeBase64(UnicodeString Str)
 {
-  return (wchar_t*)PluginLink.CallService(AQQ_FUNCTION_BASE64,(WPARAM)Str.w_str(),1);
+  if(PLUGIN_COMPARE_VERSION(IMVersion,PLUGIN_MAKE_VERSION(2,5,0,17))<0)
+   return (wchar_t*)PluginLink.CallService(AQQ_FUNCTION_BASE64,(WPARAM)Str.w_str(),1);
+  else
+   return (wchar_t*)PluginLink.CallService(AQQ_FUNCTION_BASE64,(WPARAM)Str.w_str(),3);
 }
 //---------------------------------------------------------------------------
 
 //Dekodowanie ciagu znakow z Base64
 UnicodeString DecodeBase64(UnicodeString Str)
 {
-  return (wchar_t*)PluginLink.CallService(AQQ_FUNCTION_BASE64,(WPARAM)Str.w_str(),0);
+  if(PLUGIN_COMPARE_VERSION(IMVersion,PLUGIN_MAKE_VERSION(2,5,0,17))<0)
+   return (wchar_t*)PluginLink.CallService(AQQ_FUNCTION_BASE64,(WPARAM)Str.w_str(),0);
+  else
+   return (wchar_t*)PluginLink.CallService(AQQ_FUNCTION_BASE64,(WPARAM)Str.w_str(),2);
 }
 //---------------------------------------------------------------------------
 
@@ -11435,9 +11443,11 @@ extern "C" INT_PTR __declspec(dllexport)__stdcall Settings()
 //Informacje o wtyczce
 extern "C" PPluginInfo __declspec(dllexport) __stdcall AQQPluginInfo(DWORD AQQVersion)
 {
+  IMVersion = AQQVersion;
+
   PluginInfo.cbSize = sizeof(TPluginInfo);
   PluginInfo.ShortName = L"TabKit";
-  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,8,3,0);
+  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,8,4,0);
   PluginInfo.Description = L"Wtyczka oferuje masê funkcjonalnoœci usprawniaj¹cych korzystanie z komunikatora np. zapamiêtywanie zamkniêtych zak³adek, inteligentne prze³¹czanie, zapamiêtywanie sesji.";
   PluginInfo.Author = L"Krzysztof Grochocki (Beherit)";
   PluginInfo.AuthorMail = L"kontakt@beherit.pl";

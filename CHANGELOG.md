@@ -1,3 +1,7 @@
+1.8.4.0
+-----
+* Poprawne kodowanie danych w formacie UTF-8 do Base64.
+
 1.8.3.0
 -----
 * Drobna poprawka przy przywracaniu sesji samych zak³adek czatowych.
