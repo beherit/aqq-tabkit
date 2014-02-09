@@ -214,7 +214,7 @@ object SettingsForm: TSettingsForm
     Margins.Top = 6
     Margins.Right = 6
     Margins.Bottom = 6
-    ActivePage = DefaultTabSheet
+    ActivePage = TitlebarTabSheet
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -2676,9 +2676,9 @@ object SettingsForm: TSettingsForm
       object JabberWebLabel: TsWebLabel
         Left = 165
         Top = 98
-        Width = 78
+        Width = 66
         Height = 13
-        Caption = 'beherit@aqq.eu'
+        Caption = 'im@beherit.pl'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
@@ -2690,7 +2690,7 @@ object SettingsForm: TSettingsForm
         HoverFont.Height = -11
         HoverFont.Name = 'Tahoma'
         HoverFont.Style = [fsUnderline]
-        URL = 'xmpp:beherit@aqq.eu'
+        URL = 'xmpp:im@beherit.pl'
       end
       object URLWebLabel: TsWebLabel
         Left = 165
@@ -3266,10 +3266,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 2
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object RememberUnsentMsgGroupBox: TsGroupBox
         Left = 18
         Top = 22
@@ -3426,10 +3422,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 3
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object TabsHotKeysGroupBox: TsGroupBox
         Left = 18
         Top = 116
@@ -3544,10 +3536,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 4
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object RestoreTabsSessionGroupBox: TsGroupBox
         Left = 18
         Top = 22
@@ -3943,10 +3931,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 7
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object OpenClipTabsCheckBox: TsCheckBox
         Left = 12
         Top = 12
@@ -4059,10 +4043,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 8
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object SideSlideFullScreenModeExceptionsButton: TsSpeedButton
         Left = 263
         Top = 314

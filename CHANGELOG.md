@@ -1,3 +1,11 @@
+1.9.0.0
+-----
+* Rozró¿nianie kontaktów miêdzy kontami.
+* Mo¿liwoœæ pokazania nazwy przypiêtej zak³adki.
+* Poprawki w odblokowywaniu chowania okna kontaktów przy zamykaniu wyszukiwarki.
+* Usuniêcie sprawdzania wersji komunikatora w kodowaniu/dekodowaniu danych Base64.
+* Aktualizacja komponentów AlphaControls do nowszej wersji (8.53).
+
 1.8.4.0
 -----
 * Poprawne kodowanie danych w formacie UTF-8 do Base64.
