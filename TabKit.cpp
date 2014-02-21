@@ -116,6 +116,7 @@ UnicodeString ResourceName;
 //ClipTabs-------------------------------------------------------------------
 //JID kontaktu z menu popTab
 UnicodeString ClipTabPopup;
+UnicodeString ClipTabPopupEx;
 //Lista JID przypietych zakladek
 TStringList *ClipTabsList = new TStringList;
 TMemIniFile* ClipTabsIconList = new TMemIniFile(ChangeFileExt(Application->ExeName, ".INI"));
@@ -1871,6 +1872,66 @@ int GetTabIndex(UnicodeString JID)
 }
 //---------------------------------------------------------------------------
 
+//Zmiana pozycji przypietej zakladki
+void ChangeClipTabPos(UnicodeString JID,UnicodeString JIDEx)
+{
+  //Sprawdzanie stanu pokazywania nazwy przypietej zakladki
+  TIniFile *Ini = new TIniFile(SessionFileDir);
+  bool ClipTabsEx = Ini->ValueExists("ClipTabsEx",JID);
+  delete Ini;
+  //Zmiana miejsca zakladki z niewidoczna nazwa zakladki
+  if(ClipTabsEx)
+  {
+	//Sprawdzanie kolejno wszystkich otwartych zakladek
+	for(int Count=0;Count<TabsList->Count;Count++)
+	{
+	  //Pobieranie JID zakladki
+	  JID = TabsList->Strings[Count];
+	  //Sprawdzanie stanu pokazywania nazwy przypietej zakladki
+	  TIniFile *Ini = new TIniFile(SessionFileDir);
+	  ClipTabsEx = Ini->ValueExists("ClipTabsEx",JID);
+	  delete Ini;
+	  //Zakladka nie jest przypieta lub przypieta z widoczna nazwa
+	  if(ClipTabsList->IndexOf(JID)==-1)
+	  {
+		//Zamiana miejsca przypietej zakladki
+		TPluginTriple PluginTriple;
+		PluginTriple.cbSize = sizeof(TPluginTriple);
+		PluginTriple.Handle1 = (int)hFrmSend;
+		PluginTriple.Param1 = GetTabIndex(JIDEx);
+		PluginTriple.Param2 = Count;
+		PluginLink.CallService(AQQ_FUNCTION_TABMOVE,(WPARAM)&PluginTriple,0);
+		//Zakonczenie petli
+		Count = TabsList->Count;
+	  }
+	  //Zakladka jest przypieta z widoczna nazwa
+	  else if((ClipTabsList->IndexOf(JID)!=-1)&&(ClipTabsEx))
+	  {
+        //Zamiana miejsca przypietej zakladki
+		TPluginTriple PluginTriple;
+		PluginTriple.cbSize = sizeof(TPluginTriple);
+		PluginTriple.Handle1 = (int)hFrmSend;
+		PluginTriple.Param1 = GetTabIndex(JIDEx);
+		PluginTriple.Param2 = Count+1;
+		PluginLink.CallService(AQQ_FUNCTION_TABMOVE,(WPARAM)&PluginTriple,0);
+		//Zakonczenie petli
+		Count = TabsList->Count;
+	  }
+	}
+  }
+  //Zmiana miejsca zakladki z widoczna nazwa zakladki
+  else
+  {
+	TPluginTriple PluginTriple;
+	PluginTriple.cbSize = sizeof(TPluginTriple);
+	PluginTriple.Handle1 = (int)hFrmSend;
+	PluginTriple.Param1 = GetTabIndex(JID);
+	PluginTriple.Param2 = 0;
+	PluginLink.CallService(AQQ_FUNCTION_TABMOVE,(WPARAM)&PluginTriple,0);
+  }
+}
+//---------------------------------------------------------------------------
+
 //Sprawdzanie listy ID filmow YouTube do przetworzenia
 bool ChkAvatarsListItem()
 {
@@ -2788,13 +2849,7 @@ INT_PTR __stdcall ServiceClipTabItem(WPARAM wParam, LPARAM lParam)
 	if(Index)
 	{
 	  //Zmiana miejsca zakladki
-	  TPluginTriple PluginTriple;
-	  ZeroMemory(&PluginTriple, sizeof(TPluginTriple));
-	  PluginTriple.cbSize = sizeof(TPluginTriple);
-	  PluginTriple.Handle1 = (int)hFrmSend;
-	  PluginTriple.Param1 = Index;
-	  PluginTriple.Param2 = 0;
-	  PluginLink.CallService(AQQ_FUNCTION_TABMOVE,(WPARAM)&PluginTriple,0);
+	  ChangeClipTabPos(ClipTabPopup,ClipTabPopupEx);
 	}
 	//Odswiezenie wszystkich zakladek
 	RefreshTabs();
@@ -2864,6 +2919,8 @@ INT_PTR __stdcall ServiceClipTabCaptionItem(WPARAM wParam, LPARAM lParam)
   }
   //Zamkniecie pliku sesji
   delete Ini;
+  //Zmiana miejsca zakladki
+  ChangeClipTabPos(ClipTabPopup,ClipTabPopupEx);
   //Odswiezenie wszystkich zakladek
   RefreshTabs();
 
@@ -3166,7 +3223,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	  //Ustawienie okna na wierzchu
 	  SetWindowPos(hFrmSend,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 	}
-	//Wylaczanie modalnosci okna wycinka
+	//Wylaczanie modalnosci oknien
 	else if(wParam==TIMER_DISABLE_MODAL)
 	{
 	  //Zatrzymanie timera
@@ -3269,9 +3326,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	  //Zatrzymanie timera
 	  KillTimer(hTimerFrm,TIMER_CLIPTABS_MOVE);
 	  //Definicja tymczasowego JID aktywnej zakladki
-	  UnicodeString JID = ActiveTabJIDEx;
-	  //Usuwanie zasobu z JID
-	  if(JID.Pos("/")) JID = JID.Delete(JID.Pos("/"),JID.Length());
+	  UnicodeString JID = ActiveTabJID;
 	  //Aktywna zakladka jest przypieta
 	  if(ClipTabsList->IndexOf(JID)!=-1)
 	  {
@@ -3281,12 +3336,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		if(Index)
 		{
 		  //Zmiana miejsca zakladki
-		  TPluginTriple PluginTriple;
-		  PluginTriple.cbSize = sizeof(TPluginTriple);
-		  PluginTriple.Handle1 = (int)hFrmSend;
-		  PluginTriple.Param1 = Index;
-		  PluginTriple.Param2 = 0;
-		  PluginLink.CallService(AQQ_FUNCTION_TABMOVE,(WPARAM)&PluginTriple,0);
+		  ChangeClipTabPos(ActiveTabJID,ActiveTabJIDEx);
 		  //Ponowne pobranie JID aktywnej zakladki
 		  JID = ActiveTabJID;
 		  //Zakladka byla otwierana przy otwarciu okna jako ostatnia
@@ -3342,6 +3392,14 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			  //Otwieranie zakladki
 			  OpenNewTab(JID);
 			}
+			//Pobieranie pozycji otwartej zakladki
+			int Index = GetTabIndex(ActiveTabJIDEx);
+			//Zakladka nie znajduje sie na pierwszej pozycji
+			if(Index)
+			{
+			  //Zmiana miejsca zakladki
+			  ChangeClipTabPos(ActiveTabJID,ActiveTabJIDEx);
+			}
 		  }
 		}
 		//Liczba otwartych zakladek wieksza od 1
@@ -3349,18 +3407,6 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		{
 		  //Zmiana aktywnej zakladki na wskazany kontakt/czat
 		  ChangeActiveTab(ActiveTab);
-		  //Ponieranie ilosci zakladek
-		  TPluginTriple PluginTriple;
-		  PluginTriple.cbSize = sizeof(TPluginTriple);
-		  PluginTriple.Handle1 = (int)hFrmSend;
-		  int Count = PluginLink.CallService(AQQ_FUNCTION_TABCOUNT,(WPARAM)&PluginTriple,0);
-		  //Pobieranie aktualnej pozycji zakladki
-		  int Index = GetTabIndex(ActiveTab);
-		  //Zmiana miejsca zakladki
-		  PluginTriple.cbSize = sizeof(TPluginTriple);
-		  PluginTriple.Param1 = Index;
-		  PluginTriple.Param2 = Count-1;
-		  PluginLink.CallService(AQQ_FUNCTION_TABMOVE,(WPARAM)&PluginTriple,0);
 		  //Przebudowa kolejnosci zakladek w pliku sesji
 		  //Usuwanie listy zakladek
 		  TabsList->Clear();
@@ -5463,7 +5509,7 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
     }
 	//Pomijanie przypietych zakladek w przelaczaniu
 	if((ExClipTabsFromTabSwitchingChk)&&((!ExClipTabsFromSwitchToNewMsgChk)||((ExClipTabsFromSwitchToNewMsgChk)&&(!MsgList->Count))))
-    {
+	{
 	  //Wcisniety Ctrl+Tab lub Ctrl+Shift+Tab
 	  if(((GetKeyState(VK_CONTROL)<0)&&(GetKeyState(VK_LSHIFT)>=0)&&(wParam==VK_TAB))
 	  ||((GetKeyState(VK_CONTROL)<0)&&(GetKeyState(VK_LSHIFT)<0)&&(wParam==VK_TAB)))
@@ -5493,12 +5539,16 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
               //Zakonczenie petli
 			  if(TabInx==ActiveTabInx) return -1;
 			}
-            //Pobieranie JID zakladki
+			//Pobieranie JID zakladki
 			UnicodeString JID = TabsListEx->Strings[TabInx];
 			//Usuwanie zasobu z JID
 			if(JID.Pos("/")) JID = JID.Delete(JID.Pos("/"),JID.Length());
-			//Jezeli zakladka nie jest przypieta
-			if(ClipTabsList->IndexOf(JID)==-1)
+			//Sprawdzanie stanu pokazywania nazwy przypietej zakladki
+			TIniFile *Ini = new TIniFile(SessionFileDir);
+			bool ClipTabsEx = Ini->ValueExists("ClipTabsEx",JID);
+			delete Ini;
+			 //Jezeli zakladka nie jest przypieta lub jest przypieta i ma widocza nazwe
+			if((ClipTabsList->IndexOf(JID)==-1)||((ClipTabsList->IndexOf(JID)!=-1)&&(ClipTabsEx)))
 			{
 			  //Pobieranie pelnego identyfikatora nowej zakladki
 			  JID = TabsListEx->Strings[TabInx];
@@ -5518,7 +5568,7 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
     }
 	//Inteligentne przelaczenia zakladek
 	if(SwitchToNewMsgChk)
-    {
+	{
 	  //Wcisniety Ctrl+Tab
 	  if((GetKeyState(VK_CONTROL)<0)&&(wParam==VK_TAB))
 	  {
@@ -5605,8 +5655,12 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 			  //Usuwanie zasobu z JID
 			  UnicodeString JID = TabsListEx->Strings[Count];
 			  if(JID.Pos("/")) JID = JID.Delete(JID.Pos("/"),JID.Length());
-			  //Jezeli zakladka nie jest przypieta
-			  if(ClipTabsList->IndexOf(JID)==-1)
+			  //Sprawdzanie stanu pokazywania nazwy przypietej zakladki
+			  TIniFile *Ini = new TIniFile(SessionFileDir);
+			  bool ClipTabsEx = Ini->ValueExists("ClipTabsEx",JID);
+			  delete Ini;
+			  //Jezeli zakladka nie jest przypieta lub jest przypieta i ma widocza nazwe
+			  if((ClipTabsList->IndexOf(JID)==-1)||((ClipTabsList->IndexOf(JID)!=-1)&&(ClipTabsEx)))
 			   //Dodawanie zakladki do nowej listy
 			   ExTabsList->Add(TabsListEx->Strings[Count]);
 			}
@@ -6554,8 +6608,12 @@ INT_PTR __stdcall OnAddLine(WPARAM wParam, LPARAM lParam)
 			  Res = "";
 			}
 			UnicodeString UserIdx = ":" + IntToStr(AddLineContact.UserIdx);
+			//Sprawdzanie stanu pokazywania nazwy przypietej zakladki
+			TIniFile *Ini = new TIniFile(SessionFileDir);
+			bool ClipTabsEx = Ini->ValueExists("ClipTabsEx",JID+UserIdx);
+			delete Ini;
 			//Jezeli licznik nie ma byc dodawany na przypietej zakladce
-			if((ClipTabsList->IndexOf(JID+UserIdx)!=-1)&&(InactiveClipTabsChk))
+			if((ClipTabsList->IndexOf(JID+UserIdx)!=-1)&&(InactiveClipTabsChk)&&(!ClipTabsEx))
 			 goto SkipInactiveTabsNewMsgChk;
 			//Jezeli JID jest rozny od JID z aktywnej zakladki i zakladka jest otwarta
 			if((JID+Res+UserIdx!=ActiveTabJIDEx)&&(TabsListEx->IndexOf(JID+Res+UserIdx)!=-1))
@@ -7311,15 +7369,17 @@ INT_PTR __stdcall OnFetchAllTabs(WPARAM wParam, LPARAM lParam)
 	//Zakladka jest przypieta
 	if(ClipTabsList->IndexOf(JID+UserIdx)!=-1)
 	{
-	  //Ustawianie pustego tekstu na przypietej zakladce
+	  //Sprawdzanie stanu pokazywania nazwy przypietej zakladki
 	  TIniFile *Ini = new TIniFile(SessionFileDir);
-	  if(!Ini->ValueExists("ClipTabsEx",JID+UserIdx))
+	  bool ClipTabsEx = Ini->ValueExists("ClipTabsEx",JID+UserIdx);
+	  delete Ini;
+	  //Ustawianie pustego tekstu na przypietej zakladce
+	  if(!ClipTabsEx)
 	  {
 		PluginLink.UnhookEvent(OnTabCaption);
 		PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)L"",(LPARAM)&FetchAllTabsContact);
 		PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_TABCAPTION,OnTabCaption);
 	  }
-	  delete Ini;
 	  //Zakladka z botem Blabler
 	  /*if((JID=="blabler.k2t.eu")||(JID.Pos("48263287@plugin.gg")==1))
 	  {
@@ -7333,7 +7393,7 @@ INT_PTR __stdcall OnFetchAllTabs(WPARAM wParam, LPARAM lParam)
 		PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)131,(LPARAM)&FetchAllTabsContact);
 	  }
 	  //Zakladka ze zwyklym kontaktem
-	  else if((!JID.Pos("ischat_"))&&(MiniAvatarsClipTabsChk))
+	  else if((!JID.Pos("ischat_"))&&(MiniAvatarsClipTabsChk)&&(!ClipTabsEx))
 	  {
 		//Pobieranie indeksu ikonki z pamieci
 		int Icon = ClipTabsIconList->ReadInteger("ClipTabsIcon",JID+UserIdx,0);
@@ -7538,7 +7598,7 @@ INT_PTR __stdcall OnFetchAllTabs_RefreshTabs(WPARAM wParam, LPARAM lParam)
 		PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)131,(LPARAM)&FetchAllTabsContact);
 	  }
 	  //Zakladka ze zwyklym kontaktem
-	  else if((!FetchAllTabsContact.IsChat)&&(MiniAvatarsClipTabsChk))
+	  else if((!FetchAllTabsContact.IsChat)&&(MiniAvatarsClipTabsChk)&&(!ClipTabsEx))
 	  {
 		//Pobieranie indeksu ikonki z pamieci
 		int Icon = ClipTabsIconList->ReadInteger("ClipTabsIcon",JID+UserIdx,0);
@@ -7599,7 +7659,7 @@ INT_PTR __stdcall OnFetchAllTabs_RefreshTabs(WPARAM wParam, LPARAM lParam)
 		}
 	  }
 	  //Ustawienie domyslnej ikonki kontaktu
-	  else if((!FetchAllTabsContact.IsChat)&&(!MiniAvatarsClipTabsChk))
+	  else if(!FetchAllTabsContact.IsChat)
 	   PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)GetContactState(JID+UserIdx),(LPARAM)&FetchAllTabsContact);
 	}
 	//Zakladka nie jest przypieta
@@ -8303,8 +8363,12 @@ INT_PTR __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 		Res = "";
 	  }
 	  UnicodeString UserIdx = ":" + IntToStr(RecvMsgContact.UserIdx);
+	  //Sprawdzanie stanu pokazywania nazwy przypietej zakladki
+	  TIniFile *Ini = new TIniFile(SessionFileDir);
+	  bool ClipTabsEx = Ini->ValueExists("ClipTabsEx",JID+UserIdx);
+	  delete Ini;
 	  //Licznik nie ma byc dodawany na przypietej zakladce
-	  if((ClipTabsList->IndexOf(JID+UserIdx)!=-1)&&(InactiveClipTabsChk))
+	  if((ClipTabsList->IndexOf(JID+UserIdx)!=-1)&&(InactiveClipTabsChk)&&(!ClipTabsEx))
 	   goto SkipInactiveTabsNewMsgChk;
 	  //JID jest rozny od JID z aktywnej zakladki i zakladka jest otwarta
 	  if((JID+Res+UserIdx!=ActiveTabJIDEx)&&(TabsListEx->IndexOf(JID+Res+UserIdx)!=-1))
@@ -9036,11 +9100,19 @@ INT_PTR __stdcall OnSystemPopUp(WPARAM wParam, LPARAM lParam)
 	  TPluginContact SystemPopUContact = *(PPluginContact)wParam;
 	  //Pobieranie JID kontaktu z zakladki
 	  UnicodeString JID = (wchar_t*)SystemPopUContact.JID;
-	  if(SystemPopUContact.IsChat) JID = "ischat_" + JID;
+	  //Pobieranie zasobu kontaktu
+	  UnicodeString Res = (wchar_t*)SystemPopUContact.Resource;
+	  if(!Res.IsEmpty()) Res = "/" + Res;
+	  if(SystemPopUContact.IsChat)
+	  {
+		JID = "ischat_" + JID;
+		Res = "";
+	  }
 	  //Pobieranie indeksu konta kontaktu z zakladki
 	  UnicodeString UserIdx = ":" + IntToStr(SystemPopUContact.UserIdx);
 	  //Zapisanie JID do zmiennej globalnej
 	  ClipTabPopup = JID+UserIdx;
+	  ClipTabPopupEx = JID+Res+UserIdx;
 	  //Zakladka nie jest przypieta
 	  if(ClipTabsList->IndexOf(JID+UserIdx)==-1)
 	  {
@@ -9143,14 +9215,8 @@ INT_PTR __stdcall OnTabCaption(WPARAM wParam, LPARAM lParam)
 	  int Count = InactiveTabsNewMsgCount->ReadInteger("TabsMsg",JID+Res+UserIdx,0);
 	  if(Count)
 	  {
-		//Licznik umieszczany na przypietej zakladce
-		if((ClipTabsList->IndexOf(JID+UserIdx)!=-1)&&(TabCaption!="["+IntToStr(Count)+"]"))
-		{
-		  TabCaption = "[" + IntToStr(Count) + "] " + TabCaption;
-		  TabCaption = TabCaption.Trim();
-		}
-		//Licznik umieszczany na nie przypietej zakladce
-		else if((ClipTabsList->IndexOf(JID+UserIdx)==-1)&&(TabCaption.Pos("[" + IntToStr(Count) + "] ")!=1))
+		//Licznik nie zostal jeszcze umieszczany na zakladce
+		if(TabCaption.Pos("[" + IntToStr(Count) + "] ")!=1)
 		{
 		 TabCaption = "[" + IntToStr(Count) + "] " + TabCaption;
 		  TabCaption = TabCaption.Trim();
@@ -9251,6 +9317,10 @@ INT_PTR __stdcall OnTabImage(WPARAM wParam, LPARAM lParam)
 		  //Ustawiona jest ikonka nieustawiona przez wtyczke
 		  if((TabImage!=COMPOSING)&&(TabImage!=PAUSE)&&(TabImage!=GONE)&&(TabImage!=8))
 		  {
+			//Sprawdzanie stanu pokazywania nazwy przypietej zakladki
+			TIniFile *Ini = new TIniFile(SessionFileDir);
+			bool ClipTabsEx = Ini->ValueExists("ClipTabsEx",JID+UserIdx);
+			delete Ini;
 			//Zakladka z botem Blabler
 			/*if((JID=="blabler.k2t.eu")||(JID.Pos("48263287@plugin.gg")==1))
 			{
@@ -9262,7 +9332,7 @@ INT_PTR __stdcall OnTabImage(WPARAM wParam, LPARAM lParam)
 			  return 131;
 			}
 			//Zakladka ze zwyklym kontaktem
-			else if(MiniAvatarsClipTabsChk)
+			else if((MiniAvatarsClipTabsChk)&&(!ClipTabsEx))
 			{
 			  //Pobieranie indeksu ikonki z pamieci
 			  int Icon = ClipTabsIconList->ReadInteger("ClipTabsIcon",JID+UserIdx,0);
@@ -10044,9 +10114,7 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 		//Normalizacja okna rozmowy/kontaktow
 		if(((StayOnTopChk)&&(StayOnTopStatus))||(FrmSendSlideChk)) SetWindowPos(hFrmSend,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 		if((FrmMainSlideChk)&&(FrmMainVisible)) SetWindowPos(hFrmMain,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
-	  }
-	  //Timer wylaczenia modalnosci okna wycinka
-	  SetTimer(hTimerFrm,TIMER_DISABLE_MODAL,500,(TIMERPROC)TimerFrmProc);
+	  };
 	}
 	//Zamkniecie okna tworzenia wycinka
 	if((ClassName=="TfrmPos")&&(Event==WINDOW_EVENT_CLOSE))
@@ -11595,7 +11663,7 @@ extern "C" PPluginInfo __declspec(dllexport) __stdcall AQQPluginInfo(DWORD AQQVe
 {
   PluginInfo.cbSize = sizeof(TPluginInfo);
   PluginInfo.ShortName = L"TabKit";
-  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,9,0,0);
+  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,9,1,0);
   PluginInfo.Description = L"Wtyczka oferuje masê funkcjonalnoœci usprawniaj¹cych korzystanie z komunikatora np. zapamiêtywanie zamkniêtych zak³adek, inteligentne prze³¹czanie, zapamiêtywanie sesji.";
   PluginInfo.Author = L"Krzysztof Grochocki (Beherit)";
   PluginInfo.AuthorMail = L"kontakt@beherit.pl";

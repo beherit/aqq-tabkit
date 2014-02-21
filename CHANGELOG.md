@@ -1,3 +1,13 @@
+1.9.1.0
+-----
+* Pozycja przypiêtych zak³adek z widoczn¹ nazw¹ jest ustawiana przed normalnymi zak³adkami.
+* Przypiête zak³adki z widoczn¹ nazw¹ nie s¹ pomijane w skrótach klawiaturowych.
+* Na przypiêtych zak³adkach z widoczn¹ nazw¹ nie s¹ ustawiane mini awatary.
+* Tekstowa licznik nieprzeczytanych wiadomoœci jest zawsze widoczna na przypiêtych zak³adkach z widoczn¹ nazw¹.
+* Brak dublowania tekstowego licznika nieprzeczytanych wiadomoœci na przypiêtych zak³adkach z widoczn¹ nazw¹.
+* Usuniêcie funkcji wy³¹czania modalnoœci okna wycinka.
+* Ma³e kosmetyczne zmiany na formie ustawieñ.
+
 1.9.0.0
 -----
 * Rozró¿nianie kontaktów miêdzy kontami.
