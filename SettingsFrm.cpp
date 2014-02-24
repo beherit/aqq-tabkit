@@ -51,7 +51,6 @@ TSettingsForm *SettingsForm;
 __declspec(dllimport)UnicodeString GetPluginUserDir();
 __declspec(dllimport)UnicodeString GetPluginUserDirW();
 __declspec(dllimport)UnicodeString GetThemeSkinDir();
-__declspec(dllimport)UnicodeString NormalizeChannel(UnicodeString Channel);
 __declspec(dllimport)bool ChkSkinEnabled();
 __declspec(dllimport)bool ChkThemeAnimateWindows();
 __declspec(dllimport)bool ChkThemeGlowing();
@@ -1024,40 +1023,6 @@ void __fastcall TSettingsForm::NewMsgTabSheetShow(TObject *Sender)
    TaskbarPenCheckBox->Enabled = false;
   else
    TaskbarPenCheckBox->Enabled = true;
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TSettingsForm::PrepareXMLThreadRun(TIdThreadComponent *Sender)
-{
-  //Odczyt pakietu XML
-  XML = UTF8ToUnicodeString(XML.w_str());
-  _di_IXMLDocument XMLDoc = LoadXMLData(XML);
-  _di_IXMLNode Nodes = XMLDoc->DocumentElement;
-  Nodes = Nodes->ChildNodes->GetNode(0);
-  int ItemsCount = Nodes->ChildNodes->GetCount();
-  TIniFile *Ini = new TIniFile(GetPluginUserDir() + "\\\\TabKit\\\\Session.ini");
-  for(int Count=0;Count<ItemsCount;Count++)
-  {
-	//Parsowanie XML
-	_di_IXMLNode ChildNodes = Nodes->ChildNodes->GetNode(Count);
-	UnicodeString JID = ChildNodes->Attributes["jid"];
-	UnicodeString Channel = ChildNodes->Attributes["name"];
-	Channel = Channel.Delete(Channel.LastDelimiter("("),Channel.Length());
-	Channel = Channel.Trim();
-	//Kodowanie HTML
-	Channel = StringReplace(Channel, "&quot;", '"', TReplaceFlags() << rfReplaceAll);
-	Channel = StringReplace(Channel, "&apos;", "'", TReplaceFlags() << rfReplaceAll);
-	Channel = StringReplace(Channel, "&amp;", "&", TReplaceFlags() << rfReplaceAll);
-	Channel = StringReplace(Channel, "&lt;", "<", TReplaceFlags() << rfReplaceAll);
-	Channel = StringReplace(Channel, "&gt;", ">", TReplaceFlags() << rfReplaceAll);
-	//Normalizacja nazw kanalow
-	Channel = NormalizeChannel(Channel);
-	//Zapisywanie nazwy kanalu
-	Ini->WriteString("Channels",JID,EncodeBase64(Channel));
-  }
-  delete Ini;
-  //Wylaczenie watku
-  PrepareXMLThread->Stop();
 }
 //---------------------------------------------------------------------------
 

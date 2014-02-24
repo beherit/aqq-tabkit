@@ -29,6 +29,7 @@
 #include <inifiles.hpp>
 #include <process.h>
 #include <tlhelp32.h>
+#include <XMLDoc.hpp>
 #include <IdHashMessageDigest.hpp>
 #include <boost/regex.hpp>
 using namespace boost;
@@ -234,6 +235,8 @@ TMemIniFile* ContactsNickList = new TMemIniFile(ChangeFileExt(Application->ExeNa
 TStringList *GetYouTubeTitleList = new TStringList;
 //Lista ID filmow YouTube wykluczonych na czas sesji
 TStringList *YouTubeExcludeList = new TStringList;
+//Tablica ID pakietow XML
+TStringList *XMLIDList = new TStringList;
 //Sciezka do pliku sesji
 UnicodeString SessionFileDir;
 //Sciezka do pliku ustawien
@@ -524,6 +527,7 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 void RefreshTabs();
 void CheckHideScrollTabButtons();
 void OpenNewTab(UnicodeString JID);
+UnicodeString GetChannelName(UnicodeString JID);
 //void LoadSettings();
 UnicodeString MD5(UnicodeString Text);
 //---------------------------------------------------------------------------
@@ -1786,21 +1790,12 @@ void OpenNewTab(UnicodeString JID)
 	{
 	  //Ustawianie prawidlowego identyfikatora
 	  JID = JID.Delete(1,7);
-	  //Pobieranie nazwy kanalu
-	  TIniFile *Ini = new TIniFile(SessionFileDir);
-	  UnicodeString Channel = DecodeBase64(Ini->ReadString("Channels",JID,""));
-	  delete Ini;
-	  if(Channel.IsEmpty())
-	  {
-		Channel = JID;
-		Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
-	  }
 	  //Wypenianie struktury czatu
 	  TPluginChatPrep PluginChatPrep;
 	  PluginChatPrep.cbSize = sizeof(TPluginChatPrep);
 	  PluginChatPrep.UserIdx = StrToInt(UserIdx);
 	  PluginChatPrep.JID = JID.w_str();
-	  PluginChatPrep.Channel = Channel.w_str();
+	  PluginChatPrep.Channel = GetChannelName(JID).w_str();
 	  PluginChatPrep.CreateNew = false;
 	  PluginChatPrep.Fast = true;
 	  //Otwieranie zakladki czatowej
@@ -1967,10 +1962,44 @@ void RefreshList()
 }
 //---------------------------------------------------------------------------
 
+//Pobieranie nazwy konta przez podanie jego indeksu
+UnicodeString ReceiveAccountName(int UserIdx)
+{
+  TPluginStateChange PluginStateChange;
+  PluginLink.CallService(AQQ_FUNCTION_GETNETWORKSTATE,(WPARAM)(&PluginStateChange),(LPARAM)UserIdx);
+  UnicodeString Name = (wchar_t*)PluginStateChange.JID;
+  Name = Name + "/" + (wchar_t*)PluginStateChange.Resource;
+  return Name;
+}
+//---------------------------------------------------------------------------
+
 //Normalizacja nazw kanalow
 UnicodeString NormalizeChannel(UnicodeString Channel)
 {
   return (wchar_t*)PluginLink.CallService(AQQ_FUNCTION_NORMALIZE,0,(LPARAM)Channel.w_str());
+}
+//---------------------------------------------------------------------------
+
+//Pobieranie nazwy kanalu
+UnicodeString GetChannelName(UnicodeString JID)
+{
+  //Ustawianie prawidlowego identyfikatora
+  if(JID.Pos("ischat_")) JID = JID.Delete(1,7);
+  //Usuwanie zasobu z JID
+  if(JID.Pos("/")) JID = JID.Delete(JID.Pos("/"),JID.Length());
+  //Usuwanie indeksu konta z JID
+  if(JID.Pos(":")) JID = JID.Delete(JID.Pos(":"),JID.Length());
+  //Pobieranie nazwy kanalu
+  TIniFile *Ini = new TIniFile(SessionFileDir);
+  UnicodeString Channel = DecodeBase64(Ini->ReadString("Channels",JID,""));
+  delete Ini;
+  if(Channel.IsEmpty())
+  {
+	Channel = JID;
+	Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
+  }
+  //Zwrocenie nazwy kanalu
+  return Channel;
 }
 //---------------------------------------------------------------------------
 
@@ -2085,15 +2114,6 @@ void BuildFrmClosedTabs()
 		  }
 		  else
 		  {
-			ItemJID = ItemJID.Delete(1,7);
-			TIniFile *Ini = new TIniFile(SessionFileDir);
-			UnicodeString Channel = DecodeBase64(Ini->ReadString("Channels",ItemJID,""));
-			delete Ini;
-			if(Channel.IsEmpty())
-			{
-			  Channel = ItemJID;
-			  Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
-			}
 			TPluginAction BuildClosedTabsItem;
 			ZeroMemory(&BuildClosedTabsItem,sizeof(TPluginAction));
 			BuildClosedTabsItem.cbSize = sizeof(TPluginAction);
@@ -2103,9 +2123,9 @@ void BuildFrmClosedTabs()
 			UnicodeString pszService = "sTabKitClosedTabsItem"+IntToStr(Count);
 			BuildClosedTabsItem.pszService = pszService.w_str();
 			if(ShowTimeClosedTabsChk)
-			 BuildClosedTabsItem.pszCaption = (Channel+" ("+ClosedTabsTimeList->Strings[Count]+")").w_str();
+			 BuildClosedTabsItem.pszCaption = (GetChannelName(ItemJID)+" ("+ClosedTabsTimeList->Strings[Count]+")").w_str();
 			else
-			 BuildClosedTabsItem.pszCaption = Channel.w_str();
+			 BuildClosedTabsItem.pszCaption = GetChannelName(ItemJID).w_str();
 			BuildClosedTabsItem.Position = Count;
 			BuildClosedTabsItem.pszPopupName = L"TabKitClosedTabsPopUp";
 			PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildClosedTabsItem));
@@ -2513,15 +2533,6 @@ void BuildFrmUnsentMsg()
 		  }
 		  else
 		  {
-			ItemJID = ItemJID.Delete(1,7);
-			TIniFile *Ini = new TIniFile(SessionFileDir);
-			UnicodeString Channel = DecodeBase64(Ini->ReadString("Channels",ItemJID,""));
-			delete Ini;
-			if(Channel.IsEmpty())
-			{
-			  Channel = ItemJID;
-			  Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
-			}
 			TPluginAction BuildUnsentMsgItem;
 			ZeroMemory(&BuildUnsentMsgItem,sizeof(TPluginAction));
 			BuildUnsentMsgItem.cbSize = sizeof(TPluginAction);
@@ -2530,7 +2541,7 @@ void BuildFrmUnsentMsg()
 			BuildUnsentMsgItem.pszName = ItemName.w_str();
 			UnicodeString ItemService = "sTabKitUnsentMsgItem"+IntToStr(Count);
 			BuildUnsentMsgItem.pszService = ItemService.w_str();
-			BuildUnsentMsgItem.pszCaption = Channel.w_str();
+			BuildUnsentMsgItem.pszCaption = GetChannelName(ItemJID).w_str();
 			BuildUnsentMsgItem.Position = Count;
 			BuildUnsentMsgItem.pszPopupName = L"TabKitUnsentMsgPopUp";
 			PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildUnsentMsgItem));
@@ -2676,19 +2687,8 @@ void GetUnsentMsg()
 			if(!JID.Pos("ischat_"))
 			 PluginShowInfo.Text = (GetContactNick(JID) + "\r\n" + Body).w_str();
 			else
-			{
-			  JID = JID.Delete(1,7);
-			  TIniFile *Ini = new TIniFile(SessionFileDir);
-			  UnicodeString Channel = DecodeBase64(Ini->ReadString("Channels",JID,""));
-			  delete Ini;
-			  if(Channel.IsEmpty())
-			  {
-				Channel = JID;
-				Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
-			  }
-			  PluginShowInfo.Text = (Channel + "\r\n" + Body).w_str();
-            }
-			PluginShowInfo.ImagePath = (wchar_t*)PluginLink.CallService(AQQ_FUNCTION_GETPNG_FILEPATH,8,0);
+			 PluginShowInfo.Text = (GetChannelName(JID) + "\r\n" + Body).w_str();
+            PluginShowInfo.ImagePath = (wchar_t*)PluginLink.CallService(AQQ_FUNCTION_GETPNG_FILEPATH,8,0);
 			PluginShowInfo.TimeOut = 1000 * CloudTimeOut;
 			PluginShowInfo.Tick = 0;
 			PluginLink.CallService(AQQ_FUNCTION_SHOWINFO,0,(LPARAM)(&PluginShowInfo));
@@ -3276,21 +3276,12 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			{
 			  //Ustawianie prawidlowego identyfikatora
 			  JID = JID.Delete(1,7);
-			  //Pobieranie nazwy kanalu
-			  TIniFile *Ini = new TIniFile(SessionFileDir);
-			  UnicodeString Channel = DecodeBase64(Ini->ReadString("Channels",JID,""));
-			  delete Ini;
-			  if(Channel.IsEmpty())
-			  {
-				Channel = JID;
-				Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
-			  }
 			  //Wypenianie struktury czatu
 			  TPluginChatPrep PluginChatPrep;
 			  PluginChatPrep.cbSize = sizeof(TPluginChatPrep);
 			  PluginChatPrep.UserIdx = StrToInt(UserIdx);
 			  PluginChatPrep.JID = JID.w_str();
-			  PluginChatPrep.Channel = Channel.w_str();
+			  PluginChatPrep.Channel = GetChannelName(JID).w_str();
 			  PluginChatPrep.CreateNew = false;
 			  PluginChatPrep.Fast = true;
 			  //Przywracanie zakladki czatowej
@@ -5542,7 +5533,13 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 			//Pobieranie JID zakladki
 			UnicodeString JID = TabsListEx->Strings[TabInx];
 			//Usuwanie zasobu z JID
-			if(JID.Pos("/")) JID = JID.Delete(JID.Pos("/"),JID.Length());
+			if(JID.Pos("/"))
+			{
+			  UnicodeString UserIdx = JID;
+			  while(UserIdx.Pos(":")) UserIdx = UserIdx.Delete(1,UserIdx.Pos(":"));
+			  JID = JID.Delete(JID.Pos("/"),JID.Length());
+			  JID = JID + ":" + UserIdx;
+			}
 			//Sprawdzanie stanu pokazywania nazwy przypietej zakladki
 			TIniFile *Ini = new TIniFile(SessionFileDir);
 			bool ClipTabsEx = Ini->ValueExists("ClipTabsEx",JID);
@@ -5652,9 +5649,16 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 			TStringList *ExTabsList = new TStringList;
 			for(int Count=0;Count<TabsListEx->Count;Count++)
 			{
-			  //Usuwanie zasobu z JID
+			  //Pobieranie JID zakladki
 			  UnicodeString JID = TabsListEx->Strings[Count];
-			  if(JID.Pos("/")) JID = JID.Delete(JID.Pos("/"),JID.Length());
+			  //Usuwanie zasobu z JID
+              if(JID.Pos("/"))
+			  {
+				UnicodeString UserIdx = JID;
+				while(UserIdx.Pos(":")) UserIdx = UserIdx.Delete(1,UserIdx.Pos(":"));
+				JID = JID.Delete(JID.Pos("/"),JID.Length());
+				JID = JID + ":" + UserIdx;
+			  }
 			  //Sprawdzanie stanu pokazywania nazwy przypietej zakladki
 			  TIniFile *Ini = new TIniFile(SessionFileDir);
 			  bool ClipTabsEx = Ini->ValueExists("ClipTabsEx",JID);
@@ -6255,11 +6259,28 @@ INT_PTR __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 			BuildFrmClosedTabs();
 		  }
 		}
+		//Pobieranie aktualnej nazwy kanalu zakladki czatowej
+		if((ActiveTabContact.IsChat)&&(!ActiveTabContact.FromPlugin))
+		{
+		  //Pobranie identyfikatora czatu
+		  UnicodeString ChatJID = (wchar_t*)ActiveTabContact.JID;
+		  //Pobieranie indeksu konta
+		  int AccountUserIdx = ActiveTabContact.UserIdx;
+		  //Pobieranie nazwy konta
+		  UnicodeString Account = ReceiveAccountName(AccountUserIdx);
+		  //Generowanie unikatowego ID
+		  UnicodeString XMLID = (wchar_t*)PluginLink.CallService(AQQ_FUNCTION_GETSTRID,0,0);
+		  XMLIDList->Add(XMLID);
+		  //Generowane pakietu XML
+		  UnicodeString XML = "<iq from=\""+Account+"\" to=\""+ChatJID+"\" id=\""+XMLID+"\" type=\"get\" xml:lang=\"pl\"><query xmlns=\"http://jabber.org/protocol/disco#info\"/></iq>";
+		  //Wyslanie pakietu XML na wskazane konto
+		  PluginLink.CallService(AQQ_SYSTEM_SENDXML,(WPARAM)XML.w_str(),AccountUserIdx);
+		}
 	  }
 	  //Zakladka z kontaktem jest juz otwarta
 	  else
 	  {
-		//Usuwanie licznik nowych wiadomosci na zakladkach
+		//Usuwanie licznika nowych wiadomosci na zakladkach
 		if(InactiveTabsNewMsgChk)
 		{
 		  //Pobranie ilosci nieprzeczytanych wiadomosci
@@ -6281,58 +6302,7 @@ INT_PTR __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 			   PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)ActiveTabContact.Nick,(LPARAM)&ActiveTabContact);
 			  //Zakladka z czatem
 			  else
-			  {
-				//Czat nie ze wtyczki
-				if(!ActiveTabContact.FromPlugin)
-				{
-				  UnicodeString tmpJID = JID;
-				  tmpJID = tmpJID.Delete(1,7);
-				  TIniFile *Ini = new TIniFile(SessionFileDir);
-				  UnicodeString Channel = DecodeBase64(Ini->ReadString("Channels",tmpJID,""));
-				  delete Ini;
-				  if(Channel.IsEmpty())
-				  {
-					Channel = tmpJID;
-					Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
-				  }
-				  PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)Channel.w_str(),(LPARAM)&ActiveTabContact);
-				}
-				//Czat z wtyczki
-				else
-				{
-				  UnicodeString Caption = JID;
-				  Caption = Caption.Delete(1,7);
-				  Caption = Caption.Delete(Caption.Pos("@"),Caption.Length());
-				  //Usuwanie licznika
-				  wstring input = Caption.w_str();
-				  wregex expr(L"[^A-Za-z]");
-				  wstring replace = L"";
-				  wstring result = regex_replace(input, expr, replace, match_default | format_sed);
-				  Caption = result.c_str();
-				  //Pierwsza duza litera
-				  UnicodeString FirstUpper = Caption;
-				  Caption = Caption.Delete(1,1);
-				  FirstUpper = FirstUpper.Delete(2,FirstUpper.Length());
-				  Caption = FirstUpper.UpperCase() + Caption;
-				  //Rodzaj
-				  UnicodeString Type = JID;
-				  Type.Delete(1,Type.Pos("@plugin.")+7);
-				  Type.Delete(Type.Pos("."),Type.Length());
-				  Caption = Caption + " " + Type.UpperCase();
-				  //Numer
-				  UnicodeString Number = JID;
-				  Number = Number.Delete(1,7);
-				  Number = Number.Delete(Number.Pos("@"),Number.Length());
-				  wstring input2 = Number.c_str();
-				  wregex expr2(L"[^1-9]");
-				  wstring replace2 = L"";
-				  wstring result2 = regex_replace(input2, expr2, replace2, match_default | format_sed);
-				  Number = result2.c_str();
-				  Caption = Caption + " [nr" + Number + "]";
-				  //Ustawianie sformatowanego tekstu
-				  PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)Caption.w_str(),(LPARAM)&ActiveTabContact);
-				}
-			  }
+			   PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)GetChannelName(JID).w_str(),(LPARAM)&ActiveTabContact);
 			}
 			//Zakladka przypieta
 			else PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)L"",(LPARAM)&ActiveTabContact);
@@ -6632,62 +6602,13 @@ INT_PTR __stdcall OnAddLine(WPARAM wParam, LPARAM lParam)
 			  delete Ini;
 			  //Zakladka jest przypieta z niewidoczna nazwa
 			  if((ClipTabsList->IndexOf(JID+UserIdx)!=-1)&&(!ClipTabsEx)) TabCaption = "";
-			  //Zakladka nie jest przypieta lub jest przypieta z widoczna nazwaS
+			  //Zakladka nie jest przypieta lub jest przypieta z widoczna nazwa
 			  else
 			  {
 				//Zakladka ze zwyklyum
 				if(!AddLineContact.IsChat) TabCaption = (wchar_t*)AddLineContact.Nick;
 				//Zakladka z czatem
-				else
-				{
-				  //Czat nie ze wtyczki
-				  if(!AddLineContact.FromPlugin)
-				  {
-					UnicodeString tmpJID = JID;
-					tmpJID = tmpJID.Delete(1,7);
-					TIniFile *Ini = new TIniFile(SessionFileDir);
-					TabCaption = DecodeBase64(Ini->ReadString("Channels",tmpJID,""));
-					delete Ini;
-					if(TabCaption.IsEmpty())
-					{
-					  TabCaption = tmpJID;
-					  TabCaption = TabCaption.Delete(TabCaption.Pos("@"),TabCaption.Length());
-					}
-				  }
-				  //Czat z wtyczki
-				  else
-				  {
-					TabCaption = JID;
-					TabCaption = TabCaption.Delete(1,7);
-					TabCaption = TabCaption.Delete(TabCaption.Pos("@"),TabCaption.Length());
-					//Usuwanie licznika
-					wstring input = TabCaption.c_str();
-					wregex expr(L"[^A-Za-z]");
-					wstring replace = L"";
-					wstring result = regex_replace(input, expr, replace, match_default | format_sed);
-					TabCaption = result.c_str();
-					//Pierwsza duza litera
-					UnicodeString FirstUpper = TabCaption;
-					TabCaption = TabCaption.Delete(1,1);
-					FirstUpper = FirstUpper.Delete(2,FirstUpper.Length());
-					TabCaption = FirstUpper.UpperCase() + TabCaption;
-					//Rodzaj
-					UnicodeString Type = JID;
-					Type.Delete(1,Type.Pos("@plugin.")+7);
-					Type.Delete(Type.Pos("."),Type.Length());
-					TabCaption = TabCaption + " " + Type.UpperCase();
-					//Numer
-					UnicodeString Number = JID;
-					Number = Number.Delete(1,7);
-					Number = Number.Delete(Number.Pos("@"),Number.Length());
-					wstring input2 = Number.c_str();
-					wregex expr2(L"[^1-9]");
-					wstring replace2 = L"";
-					wstring result2 = regex_replace(input2, expr2, replace2, match_default | format_sed);
-					Number = result2.c_str();
-					TabCaption = TabCaption + " [nr" + Number + "]";
-				  }
-				}
+				else TabCaption = GetChannelName(JID);
 			  }
 			  //Dodanie licznka do tekstu na zakladce
 			  TabCaption = "[" + IntToStr(InactiveTabsCount) + "] " + TabCaption;
@@ -7530,58 +7451,7 @@ INT_PTR __stdcall OnFetchAllTabs_RefreshTabs(WPARAM wParam, LPARAM lParam)
 		 PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)FetchAllTabsContact.Nick,(LPARAM)&FetchAllTabsContact);
 		//Zakladka z czatem
 		else
-		{
-		  //Czat nie ze wtyczki
-		  if(!FetchAllTabsContact.FromPlugin)
-		  {
-			UnicodeString tmpJID = JID;
-			tmpJID = tmpJID.Delete(1,7);
-			TIniFile *Ini = new TIniFile(SessionFileDir);
-			UnicodeString Channel = DecodeBase64(Ini->ReadString("Channels",tmpJID,""));
-			delete Ini;
-			if(Channel.IsEmpty())
-			{
-			  Channel = tmpJID;
-			  Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
-			}
-			PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)Channel.w_str(),(LPARAM)&FetchAllTabsContact);
-		  }
-		  //Czat z wtyczki
-		  else
-		  {
-			UnicodeString Caption = JID;
-			Caption = Caption.Delete(1,7);
-			Caption = Caption.Delete(Caption.Pos("@"),Caption.Length());
-			//Usuwanie licznika
-			wstring input = Caption.w_str();
-			wregex expr(L"[^A-Za-z]");
-			wstring replace = L"";
-			wstring result = regex_replace(input, expr, replace, match_default | format_sed);
-			Caption = result.c_str();
-			//Pierwsza duza litera
-			UnicodeString FirstUpper = Caption;
-			Caption = Caption.Delete(1,1);
-			FirstUpper = FirstUpper.Delete(2,FirstUpper.Length());
-			Caption = FirstUpper.UpperCase() + Caption;
-			//Rodzaj
-			UnicodeString Type = JID;
-			Type.Delete(1,Type.Pos("@plugin.")+7);
-			Type.Delete(Type.Pos("."),Type.Length());
-			Caption = Caption + " " + Type.UpperCase();
-			//Numer
-			UnicodeString Number = JID;
-			Number = Number.Delete(1,7);
-			Number = Number.Delete(Number.Pos("@"),Number.Length());
-			wstring input2 = Number.c_str();
-			wregex expr2(L"[^1-9]");
-			wstring replace2 = L"";
-			wstring result2 = regex_replace(input2, expr2, replace2, match_default | format_sed);
-			Number = result2.c_str();
-			Caption = Caption + " [nr" + Number + "]";
-			//Ustawianie sformatowanego tekstu
-			PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)Caption.w_str(),(LPARAM)&FetchAllTabsContact);
-		  }
-		}
+		 PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)GetChannelName(JID).w_str(),(LPARAM)&FetchAllTabsContact);
 	  }
 	  //Hook na zmiane tekstu na zakladce
 	  PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_TABCAPTION,OnTabCaption);
@@ -7675,58 +7545,7 @@ INT_PTR __stdcall OnFetchAllTabs_RefreshTabs(WPARAM wParam, LPARAM lParam)
 	   PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)FetchAllTabsContact.Nick,(LPARAM)&FetchAllTabsContact);
 	  //Zakladka z czatem
 	  else
-	  {
-		//Czat nie ze wtyczki
-		if(!FetchAllTabsContact.FromPlugin)
-		{
-		  UnicodeString tmpJID = JID;
-		  tmpJID = tmpJID.Delete(1,7);
-		  TIniFile *Ini = new TIniFile(SessionFileDir);
-		  UnicodeString Channel = DecodeBase64(Ini->ReadString("Channels",tmpJID,""));
-		  delete Ini;
-		  if(Channel.IsEmpty())
-		  {
-			Channel = tmpJID;
-			Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
-		  }
-		  PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)Channel.w_str(),(LPARAM)&FetchAllTabsContact);
-		}
-		//Czat z wtyczki
-		else
-		{
-		  UnicodeString Caption = JID;
-		  Caption = Caption.Delete(1,7);
-		  Caption = Caption.Delete(Caption.Pos("@"),Caption.Length());
-		  //Usuwanie licznika
-		  wstring input = Caption.w_str();
-		  wregex expr(L"[^A-Za-z]");
-		  wstring replace = L"";
-		  wstring result = regex_replace(input, expr, replace, match_default | format_sed);
-		  Caption = result.c_str();
-		  //Pierwsza duza litera
-		  UnicodeString FirstUpper = Caption;
-		  Caption = Caption.Delete(1,1);
-		  FirstUpper = FirstUpper.Delete(2,FirstUpper.Length());
-		  Caption = FirstUpper.UpperCase() + Caption;
-		  //Rodzaj
-		  UnicodeString Type = JID;
-		  Type.Delete(1,Type.Pos("@plugin.")+7);
-		  Type.Delete(Type.Pos("."),Type.Length());
-		  Caption = Caption + " " + Type.UpperCase();
-		  //Numer
-		  UnicodeString Number = JID;
-		  Number = Number.Delete(1,7);
-		  Number = Number.Delete(Number.Pos("@"),Number.Length());
-		  wstring input2 = Number.c_str();
-		  wregex expr2(L"[^1-9]");
-		  wstring replace2 = L"";
-		  wstring result2 = regex_replace(input2, expr2, replace2, match_default | format_sed);
-		  Number = result2.c_str();
-		  Caption = Caption + " [nr" + Number + "]";
-		  //Ustawianie sformatowanego tekstu
-		  PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)Caption.w_str(),(LPARAM)&FetchAllTabsContact);
-		}
-	  }
+	   PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABCAPTION,(WPARAM)GetChannelName(JID).w_str(),(LPARAM)&FetchAllTabsContact);
 	  //Hook na zmiane tekstu na zakladce
 	  PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_TABCAPTION,OnTabCaption);
 	}
@@ -8401,56 +8220,7 @@ INT_PTR __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 			  //Zakladka ze zwyklym kontaktem
 			  if(!RecvMsgContact.IsChat) TabCaption = (wchar_t*)RecvMsgContact.Nick;
 			  //Zakladka z czatem
-			  else
-			  {
-				//Czat nie ze wtyczki
-				if(!RecvMsgContact.FromPlugin)
-				{
-				  UnicodeString tmpJID = JID;
-				  tmpJID = tmpJID.Delete(1,7);
-				  TIniFile *Ini = new TIniFile(SessionFileDir);
-				  TabCaption = DecodeBase64(Ini->ReadString("Channels",tmpJID,""));
-				  delete Ini;
-				  if(TabCaption.IsEmpty())
-				  {
-					TabCaption = tmpJID;
-					TabCaption = TabCaption.Delete(TabCaption.Pos("@"),TabCaption.Length());
-				  }
-				}
-				//Czat z wtyczki
-				else
-				{
-				  TabCaption = JID;
-				  TabCaption = TabCaption.Delete(1,7);
-				  TabCaption = TabCaption.Delete(TabCaption.Pos("@"),TabCaption.Length());
-				  //Usuwanie licznika
-				  wstring input = TabCaption.c_str();
-				  wregex expr(L"[^A-Za-z]");
-				  wstring replace = L"";
-				  wstring result = regex_replace(input, expr, replace, match_default | format_sed);
-				  TabCaption = result.c_str();
-				  //Pierwsza duza litera
-				  UnicodeString FirstUpper = TabCaption;
-				  TabCaption = TabCaption.Delete(1,1);
-				  FirstUpper = FirstUpper.Delete(2,FirstUpper.Length());
-				  TabCaption = FirstUpper.UpperCase() + TabCaption;
-				  //Rodzaj
-				  UnicodeString Type = JID;
-				  Type.Delete(1,Type.Pos("@plugin.")+7);
-				  Type.Delete(Type.Pos("."),Type.Length());
-				  TabCaption = TabCaption + " " + Type.UpperCase();
-				  //Numer
-				  UnicodeString Number = JID;
-				  Number = Number.Delete(1,7);
-				  Number = Number.Delete(Number.Pos("@"),Number.Length());
-				  wstring input2 = Number.c_str();
-				  wregex expr2(L"[^1-9]");
-				  wstring replace2 = L"";
-				  wstring result2 = regex_replace(input2, expr2, replace2, match_default | format_sed);
-				  Number = result2.c_str();
-				  TabCaption = TabCaption + " [nr" + Number + "]";
-				}
-			  }
+			  else TabCaption = GetChannelName(JID);
 			}
 			//Dodanie licznka do tekstu na zakladce
 			TabCaption = "[" + IntToStr(InactiveTabsCount) + "] " + TabCaption;
@@ -9224,21 +8994,36 @@ INT_PTR __stdcall OnTabCaption(WPARAM wParam, LPARAM lParam)
 	  }
 	}
 	//Nieprzypieta zakladka czatowa i normalizacja nazw
-	if((ClipTabsList->IndexOf(JID+UserIdx)==-1)&&(TabCaptionContact.IsChat)&&(!TabCaptionContact.FromPlugin))
+	if((ClipTabsList->IndexOf(JID+UserIdx)==-1)&&(TabCaptionContact.IsChat))
 	{
 	  int Count = InactiveTabsNewMsgCount->ReadInteger("TabsMsg",JID+Res+UserIdx,0);
 	  if(!Count)
 	  {
-		UnicodeString tmpJID = JID;
-		tmpJID = tmpJID.Delete(1,7);
+		//Normalizacja nazwy kanalu
+		if(!TabCaptionContact.FromPlugin) TabCaption = NormalizeChannel(TabCaption);
+		//Ustawianie prawidlowego identyfikatora
+		JID = JID.Delete(1,7);
+		//Zapisywanie nazwy kanalu
 		TIniFile *Ini = new TIniFile(SessionFileDir);
-		TabCaption = DecodeBase64(Ini->ReadString("Channels",tmpJID,""));
+		Ini->WriteString("Channels",JID,EncodeBase64(TabCaption));
 		delete Ini;
-		if(TabCaption.IsEmpty())
-		{
-		  TabCaption = tmpJID;
-		  TabCaption = TabCaption.Delete(TabCaption.Pos("@"),TabCaption.Length());
-		}
+	  }
+	  else
+	  {
+		//Pobieranie nazwy kanalu
+		UnicodeString OrgChannel = TabCaption;
+		OrgChannel = StringReplace(OrgChannel, "[" + IntToStr(Count) + "] ", "", TReplaceFlags());
+		//Normalizacja nazwy kanalu
+		UnicodeString NormChannel = OrgChannel;
+		if(!TabCaptionContact.FromPlugin) NormChannel = NormalizeChannel(NormChannel);
+		//Ustawianie prawidlowego identyfikatora
+		JID = JID.Delete(1,7);
+		//Zapisywanie nazwy kanalu
+		TIniFile *Ini = new TIniFile(SessionFileDir);
+		Ini->WriteString("Channels",JID,EncodeBase64(NormChannel));
+		delete Ini;
+		//Podmienianie nazwy kanalu
+		TabCaption = StringReplace(TabCaption, OrgChannel, NormChannel, TReplaceFlags());
 	  }
 	}
 	//Zwrot zmienionego caption
@@ -10322,21 +10107,53 @@ INT_PTR __stdcall OnXMLIDDebug(WPARAM wParam, LPARAM lParam)
   //Komunikator nie jest zamykany
   if(!ForceUnloadExecuted)
   {
-    //Pobranie pakietu XML
-	UnicodeString XML = (wchar_t*)wParam;
-	//Pakiet zawiera liste czatow
-	if(XML.Pos("<query xmlns='http://jabber.org/protocol/disco#items'>"))
+	//Pobranie danych o pakiecie XML
+	TPluginXMLChunk XMLChunk = *(PPluginXMLChunk)lParam;
+	UnicodeString ID = (wchar_t*)XMLChunk.ID;
+	//Sprawdzenie czy wskazany ID byl przez nas uzywany
+	if(XMLIDList->IndexOf(ID)!=-1)
 	{
-	  //Przypisanie uchwytu do formy ustawien
-	  if(!hSettingsForm)
+	  //Usuniecie ID z listy
+	  XMLIDList->Delete(XMLIDList->IndexOf(ID));
+	  //Pobranie pakietu XML
+	  UnicodeString XML = (wchar_t*)XMLChunk.XML;
+	  //Pobieranie identyfikatora nadawcy
+	  UnicodeString From = (wchar_t*)XMLChunk.From;
+	  //Pobranie indeksu konta
+	  int UserIdx = XMLChunk.UserIdx;
+	  //Kodowanie pakietu XML
+	  XML = UTF8ToUnicodeString(XML.w_str());
+	  //Wczytanie pakietu XML do parsera
+      _di_IXMLDocument XMLDoc = LoadXMLData(XML);
+	  _di_IXMLNode Nodes = XMLDoc->DocumentElement;
+	  //Pobranie pierwszego dziecka
+	  Nodes = Nodes->ChildNodes->GetNode(0);
+	  //Pobranie ilosci kolejnych dzieci
+	  int ItemsCount = Nodes->ChildNodes->GetCount();
+	  //Parsowanie kolejnych elementow
+	  for(int Count=0;Count<ItemsCount;Count++)
 	  {
-		Application->Handle = (HWND)SettingsForm;
-		hSettingsForm = new TSettingsForm(Application);
+		//Pobieranie zawartosci dziecka
+		_di_IXMLNode ChildNodes = Nodes->ChildNodes->GetNode(Count);
+		//Sprawdzanie nazwy elementu
+		if(ChildNodes->NodeName=="identity")
+		{
+		  //Pobranie nazwy kanalu
+		  UnicodeString Channel = ChildNodes->Attributes["name"];
+		  //Normalizacja nazwy kanalu
+		  Channel = NormalizeChannel(Channel);
+		  //Otwarcie pliku sesji
+		  TIniFile *Ini = new TIniFile(SessionFileDir);
+		  //Pobranie poprzedniej nazwy kanalu
+		  UnicodeString PrevChannel = DecodeBase64(Ini->ReadString("Channels",From,""));
+		  //Zapisywanie nazwy kanalu
+		  Ini->WriteString("Channels",From,EncodeBase64(Channel));
+		  //Zamkniecie pliku sesji
+		  delete Ini;
+		  //Odswiezenie nazwy pokoju
+		  OpenNewTab("ischat_"+From+":"+IntToStr(UserIdx));
+		}
 	  }
-	  //Przekazanie XMLa na forme
-	  hSettingsForm->XML = XML;
-	  //Uruchomienie watku parsowania pakietu XML
-	  hSettingsForm->PrepareXMLThread->Start();
 	}
   }
 
@@ -11663,11 +11480,11 @@ extern "C" PPluginInfo __declspec(dllexport) __stdcall AQQPluginInfo(DWORD AQQVe
 {
   PluginInfo.cbSize = sizeof(TPluginInfo);
   PluginInfo.ShortName = L"TabKit";
-  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,9,1,0);
+  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,9,2,0);
   PluginInfo.Description = L"Wtyczka oferuje masê funkcjonalnoœci usprawniaj¹cych korzystanie z komunikatora np. zapamiêtywanie zamkniêtych zak³adek, inteligentne prze³¹czanie, zapamiêtywanie sesji.";
-  PluginInfo.Author = L"Krzysztof Grochocki (Beherit)";
+  PluginInfo.Author = L"Krzysztof Grochocki";
   PluginInfo.AuthorMail = L"kontakt@beherit.pl";
-  PluginInfo.Copyright = L"Krzysztof Grochocki (Beherit)";
+  PluginInfo.Copyright = L"Krzysztof Grochocki";
   PluginInfo.Homepage = L"http://beherit.pl";
   PluginInfo.Flag = 0;
   PluginInfo.ReplaceDefaultModule = 0;
