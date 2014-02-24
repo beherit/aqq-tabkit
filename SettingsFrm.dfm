@@ -2641,11 +2641,11 @@ object SettingsForm: TSettingsForm
         Caption = 'Jabber:'
       end
       object URLLabel: TsLabel
-        Left = 136
+        Left = 123
         Top = 117
-        Width = 23
+        Width = 36
         Height = 13
-        Caption = 'URL:'
+        Caption = 'Strona:'
       end
       object AuthorLabel2: TsLabel
         Left = 165
@@ -2695,9 +2695,9 @@ object SettingsForm: TSettingsForm
       object URLWebLabel: TsWebLabel
         Left = 165
         Top = 117
-        Width = 78
+        Width = 46
         Height = 13
-        Caption = 'http://beherit.pl'
+        Caption = 'beherit.pl'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
@@ -5127,15 +5127,6 @@ object SettingsForm: TSettingsForm
     Left = 64
     Top = 368
   end
-  object PrepareXMLThread: TIdThreadComponent
-    Active = False
-    Loop = False
-    Priority = tpNormal
-    StopMode = smTerminate
-    OnRun = PrepareXMLThreadRun
-    Left = 128
-    Top = 368
-  end
   object sSkinProvider: TsSkinProvider
     AddedTitle.Font.Charset = DEFAULT_CHARSET
     AddedTitle.Font.Color = clNone
@@ -5505,7 +5496,7 @@ object SettingsForm: TSettingsForm
           33D7342EA367D470FD1A73827989798131191798B891A37DA9C57C2C65CAFE23
           F0BCC8E433596AC16FA0C39B00F0D5509E0000000049454E44AE426082}
       end>
-    Left = 160
+    Left = 128
     Top = 368
     Bitmap = {}
   end
@@ -5525,7 +5516,7 @@ object SettingsForm: TSettingsForm
     Request.Ranges.Units = 'bytes'
     Request.Ranges = <>
     HTTPOptions = [hoForceEncodeParams]
-    Left = 224
+    Left = 192
     Top = 368
   end
   object GetYouTubeTitleThread: TIdThreadComponent
@@ -5534,14 +5525,14 @@ object SettingsForm: TSettingsForm
     Priority = tpNormal
     StopMode = smTerminate
     OnRun = GetYouTubeTitleThreadRun
-    Left = 192
+    Left = 160
     Top = 368
   end
   object RefreshTimer: TTimer
     Enabled = False
     Interval = 100
     OnTimer = RefreshTimerTimer
-    Left = 256
+    Left = 224
     Top = 368
   end
 end

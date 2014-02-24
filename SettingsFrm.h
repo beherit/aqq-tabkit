@@ -245,7 +245,6 @@ __published:	// IDE-managed Components
 	TImage *StarImage;
 	TsWebLabel *StarWebLabel;
 	TsCheckBox *NoMiniAvatarsClipTabsCheckBox;
-	TIdThreadComponent *PrepareXMLThread;
 	TsCheckBox *ChatGoneNotiferNewMsgCheckBox;
 	TsCheckBox *TurnOffModalCheckBox;
 	TsSpeedButton *SideSlideFullScreenModeExceptionsButton;
@@ -286,7 +285,6 @@ __published:	// IDE-managed Components
 	void __fastcall OtherTabSheetShow(TObject *Sender);
 	void __fastcall PayPalImageClick(TObject *Sender);
 	void __fastcall NewMsgTabSheetShow(TObject *Sender);
-	void __fastcall PrepareXMLThreadRun(TIdThreadComponent *Sender);
 	void __fastcall SideSlideFullScreenModeExceptionsButtonClick(TObject *Sender);
 	void __fastcall GetYouTubeTitleThreadRun(TIdThreadComponent *Sender);
 	void __fastcall RefreshTimerTimer(TObject *Sender);
