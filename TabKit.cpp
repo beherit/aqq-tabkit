@@ -5652,7 +5652,7 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 			  //Pobieranie JID zakladki
 			  UnicodeString JID = TabsListEx->Strings[Count];
 			  //Usuwanie zasobu z JID
-              if(JID.Pos("/"))
+			  if(JID.Pos("/"))
 			  {
 				UnicodeString UserIdx = JID;
 				while(UserIdx.Pos(":")) UserIdx = UserIdx.Delete(1,UserIdx.Pos(":"));
@@ -5700,6 +5700,58 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 			  }
 			}
 			else delete ExTabsList;
+		  }
+		}
+	  }
+	  //Wcisniete przyciski Shift + F1-F12 lub Ctr + Shift + 1-9
+	  else if(((ExClipTabsFromTabsHotKeysChk)&&(GetKeyState(VK_MENU)>=0)&&(GetKeyState(VK_SHIFT)<0))&&
+	  (((TabsHotKeysMode==1)&&((GetKeyState(VK_CONTROL)>=0)&&((int)wParam>=112)&&((int)wParam<=123)))
+	  ||((TabsHotKeysMode==2)&&((GetKeyState(VK_CONTROL)<0)&&((int)wParam>=49)&&((int)wParam<=57)))))
+	  {
+        //Sprawdzanie aktywnego okna
+		if(GetForegroundWindow()==hFrmSend)
+		{
+          //Identyfikacja klawisza
+		  int Key;
+		  if(TabsHotKeysMode==1) Key = (int)wParam - 111;
+		  else Key = (int)wParam - 48;
+		  //Tworzenie listy z przypietymi zakladkami
+		  TStringList *ExTabsList = new TStringList;
+		  for(int Count=0;Count<TabsListEx->Count;Count++)
+		  {
+			//Pobieranie JID zakladki
+			UnicodeString JID = TabsListEx->Strings[Count];
+			//Usuwanie zasobu z JID
+			if(JID.Pos("/"))
+			{
+			  UnicodeString UserIdx = JID;
+			  while(UserIdx.Pos(":")) UserIdx = UserIdx.Delete(1,UserIdx.Pos(":"));
+			  JID = JID.Delete(JID.Pos("/"),JID.Length());
+			  JID = JID + ":" + UserIdx;
+			}
+			//Sprawdzanie stanu pokazywania nazwy przypietej zakladki
+			TIniFile *Ini = new TIniFile(SessionFileDir);
+			bool ClipTabsEx = Ini->ValueExists("ClipTabsEx",JID);
+			delete Ini;
+			//Jezeli zakladka jest przypieta i nie ma widoczej nazwy
+			if((ClipTabsList->IndexOf(JID)!=-1)&&(!ClipTabsEx))
+			 //Dodawanie zakladki do nowej listy
+			 ExTabsList->Add(TabsListEx->Strings[Count]);
+		  }
+		  //Sprawdzanie czy wywolujemy zakladke "ducha"
+		  if(Key<=ExTabsList->Count)
+		  {
+			//Pobieranie JID
+			UnicodeString JID = ExTabsList->Strings[Key-1];
+			delete ExTabsList;
+			//Sprawdzanie rodzaju kontaktu
+			if(!JID.IsEmpty())
+			{
+			  //Zmiana aktywnej zakladki na wskazany kontakt/czat
+			  ChangeActiveTab(JID);
+			  //Blokada wcisniecia klawiszy
+			  return -1;
+			}
 		  }
 		}
 	  }
@@ -10274,7 +10326,7 @@ void LoadSettings()
   UnCloseTabLPMouseChk = Ini->ReadBool("ClosedTabs","LPMouse",false);
   UnCloseTab2xLPMouseChk = Ini->ReadBool("ClosedTabs","2xLPMouse",false);
   CountUnCloseTabVal = Ini->ReadInteger("ClosedTabs","Count",10);
-  RestoreLastMsgChk = Ini->ReadBool("ClosedTabs","RestoreLastMsg",false);
+  RestoreLastMsgChk = Ini->ReadBool("ClosedTabs","RestoreLastMsg",true);
   OnlyConversationTabsChk = Ini->ReadBool("ClosedTabs","OnlyConversationTabs",false);
   //UnsentMsg
   UnsentMsgChk = Ini->ReadBool("UnsentMsg","Enable",true);
@@ -10291,10 +10343,10 @@ void LoadSettings()
   SwitchToNewMsgMode = Ini->ReadInteger("TabsSwitching","SwitchToNewMsgMode",1);
   TabsHotKeysChk = Ini->ReadBool("TabsSwitching","TabsHotKeys",true);
   TabsHotKeysMode = Ini->ReadInteger("TabsSwitching","TabsHotKeysMode",2);
-  NewMgsHoyKeyChk = Ini->ReadBool("TabsSwitching","NewMgsHoyKey",false);
+  NewMgsHoyKeyChk = Ini->ReadBool("TabsSwitching","NewMgsHoyKey",true);
   //SessionRemember
   RestoreTabsSessionChk = Ini->ReadBool("SessionRemember","RestoreTabs",true);
-  ManualRestoreTabsSessionChk = Ini->ReadBool("SessionRemember","ManualRestoreTabs",false);
+  ManualRestoreTabsSessionChk = Ini->ReadBool("SessionRemember","ManualRestoreTabs",true);
   RestoreMsgSessionChk = Ini->ReadBool("SessionRemember","RestoreMsg",false);
   //NewMsg
   InactiveFrmNewMsgChk = Ini->ReadBool("NewMsg","InactiveFrm",true);
@@ -10306,7 +10358,7 @@ void LoadSettings()
   if((CoreInactiveTabsNewMsgChk)&&(InactiveTabsNewMsgChk)) PluginLink.CallService(AQQ_SYSTEM_FUNCTION_SETENABLED,SYS_FUNCTION_MSGCOUNTER,0);
   InactiveNotiferNewMsgChk = Ini->ReadBool("NewMsg","InactiveNotifer",false);
   ChatStateNotiferNewMsgChk = Ini->ReadBool("NewMsg","ChatStateNotifer",true);
-  ChatGoneNotiferNewMsgChk = Ini->ReadBool("NewMsg","ChatGoneNotifer",false);
+  ChatGoneNotiferNewMsgChk = Ini->ReadBool("NewMsg","ChatGoneNotifer",true);
   TaskbarPenChk = Ini->ReadBool("NewMsg","TaskbarPen",true);
   //Titlebar
   TweakFrmSendTitlebarChk = Ini->ReadBool("Titlebar","TweakSend",false);
@@ -10328,13 +10380,13 @@ void LoadSettings()
   OpenClipTabsChk = Ini->ReadBool("ClipTabs","OpenClipTabs",true);
   InactiveClipTabsChk = Ini->ReadBool("ClipTabs","InactiveClipTabs",false);
   CounterClipTabsChk = Ini->ReadBool("ClipTabs","Counter",false);
-  ExClipTabsFromTabSwitchingChk = Ini->ReadBool("ClipTabs","ExcludeFromTabSwitching",false);
-  ExClipTabsFromSwitchToNewMsgChk = !Ini->ReadBool("ClipTabs","ExcludeFromSwitchToNewMsg",true);
-  ExClipTabsFromTabsHotKeysChk = Ini->ReadBool("ClipTabs","ExcludeFromTabsHotKeys",false);
+  ExClipTabsFromTabSwitchingChk = Ini->ReadBool("ClipTabs","ExcludeFromTabSwitching",true);
+  ExClipTabsFromSwitchToNewMsgChk = !Ini->ReadBool("ClipTabs","ExcludeFromSwitchToNewMsg",false);
+  ExClipTabsFromTabsHotKeysChk = Ini->ReadBool("ClipTabs","ExcludeFromTabsHotKeys",true);
   MiniAvatarsClipTabsChk = Ini->ReadBool("ClipTabs","MiniAvatars",true);
   //SideSlide
   bool pFrmMainSlideChk = FrmMainSlideChk;
-  FrmMainSlideChk = Ini->ReadBool("SideSlide","SlideFrmMain",false);
+  FrmMainSlideChk = Ini->ReadBool("SideSlide","SlideFrmMain",true);
   int pFrmMainSlideEdge = FrmMainSlideEdge;
   FrmMainSlideEdge = Ini->ReadInteger("SideSlide","FrmMainEdge",2);
   FrmMainSlideHideMode = Ini->ReadInteger("SideSlide","FrmMainHideMode",3);
@@ -10475,10 +10527,10 @@ void LoadSettings()
 	PluginLink.CallService(AQQ_FUNCTION_REFRESHSETUP,0,0);
   }
   bool pFrmSendSlideChk = FrmSendSlideChk;
-  FrmSendSlideChk = Ini->ReadBool("SideSlide","SlideFrmSend",false);
+  FrmSendSlideChk = Ini->ReadBool("SideSlide","SlideFrmSend",true);
   int pFrmSendSlideEdge = FrmSendSlideEdge;
   FrmSendSlideEdge = Ini->ReadInteger("SideSlide","FrmSendEdge",1);
-  FrmSendSlideHideMode = Ini->ReadInteger("SideSlide","FrmSendHideMode",1);
+  FrmSendSlideHideMode = Ini->ReadInteger("SideSlide","FrmSendHideMode",3);
   FrmSendSlideInDelay = Ini->ReadInteger("SideSlide","FrmSendSlideInDelay",1000);
   FrmSendSlideOutDelay = Ini->ReadInteger("SideSlide","FrmSendSlideOutDelay",1);
   FrmSendSlideInTime = Ini->ReadInteger("SideSlide","FrmSendSlideInTime",300);
@@ -10635,9 +10687,9 @@ void LoadSettings()
   PluginLink.CallService(AQQ_SYSTEM_FUNCTION_SETENABLED,SYS_FUNCTION_ANTISPIM_LEN,Ini->ReadBool("Other","AntiSpim",false));
   MinimizeRestoreChk = Ini->ReadBool("Other","MinimizeRestore",false);
   MinimizeRestoreKey = Ini->ReadInteger("Other","MinimizeRestoreHotKey",24689);
-  StayOnTopChk = Ini->ReadBool("Other","StayOnTop",false);
+  StayOnTopChk = Ini->ReadBool("Other","StayOnTop",true);
   HideToolBarChk = Ini->ReadBool("Other","HideToolBar",false);
-  HideTabCloseButtonChk = Ini->ReadBool("Other","HideTabCloseButton",false);
+  HideTabCloseButtonChk = Ini->ReadBool("Other","HideTabCloseButton",true);
   PluginLink.CallService(AQQ_SYSTEM_FUNCTION_SETENABLED,SYS_FUNCTION_CLOSEBTN,!HideTabCloseButtonChk);
   HideScrollTabButtonsChk = Ini->ReadBool("Other","HideScrollTabButtons",false);
   CloseBy2xLPMChk = Ini->ReadBool("Other","CloseBy2xLPM",false);
@@ -11480,7 +11532,7 @@ extern "C" PPluginInfo __declspec(dllexport) __stdcall AQQPluginInfo(DWORD AQQVe
 {
   PluginInfo.cbSize = sizeof(TPluginInfo);
   PluginInfo.ShortName = L"TabKit";
-  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,9,2,0);
+  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,9,3,0);
   PluginInfo.Description = L"Wtyczka oferuje masê funkcjonalnoœci usprawniaj¹cych korzystanie z komunikatora np. zapamiêtywanie zamkniêtych zak³adek, inteligentne prze³¹czanie, zapamiêtywanie sesji.";
   PluginInfo.Author = L"Krzysztof Grochocki";
   PluginInfo.AuthorMail = L"kontakt@beherit.pl";

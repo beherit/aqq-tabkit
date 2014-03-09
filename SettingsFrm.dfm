@@ -3015,6 +3015,8 @@ object SettingsForm: TSettingsForm
               'Przy przywracaniu zak'#322'adki wczytuj ostatnio przeprowadzon'#261' rozmo' +
               'w'#281
             AutoSize = False
+            Checked = True
+            State = cbChecked
             TabOrder = 4
             OnClick = aClosedTabsChkExecute
             SkinData.SkinSection = 'CHECKBOX'
@@ -3460,6 +3462,8 @@ object SettingsForm: TSettingsForm
             'Otwieraj okno rozmowy z now'#261' wiadomo'#347'ci'#261' za pomoc'#261' skr'#243'tu aktual' +
             'nie nieprzypisanego do '#380'adnej otwartej zak'#322'adki'
           AutoSize = False
+          Checked = True
+          State = cbChecked
           TabOrder = 2
           OnClick = aTabsSwitchingChkExecute
           SkinData.SkinSection = 'CHECKBOX'
@@ -3564,6 +3568,8 @@ object SettingsForm: TSettingsForm
           Caption = 
             'Przywracaj r'#243'wnie'#380' zak'#322'adki zapami'#281'tane przy r'#281'cznym wy'#322#261'czeniu ' +
             'AQQ'
+          Checked = True
+          State = cbChecked
           TabOrder = 0
           OnClick = aSessionRememberChkExecute
           SkinData.SkinSection = 'CHECKBOX'
@@ -3715,6 +3721,8 @@ object SettingsForm: TSettingsForm
         Width = 316
         Height = 20
         Caption = 'Informuj graficznie na zak'#322'adkach o zamkni'#281'ciu okna rozmowy'
+        Checked = True
+        State = cbChecked
         TabOrder = 7
         OnClick = aNewMsgChkExecute
         SkinData.SkinSection = 'CHECKBOX'
@@ -3986,6 +3994,8 @@ object SettingsForm: TSettingsForm
           'Wy'#322#261'cz przypi'#281'te zak'#322'adki z prze'#322#261'czania zak'#322'adek za pomoc'#261' skr'#243 +
           'tu klawiaturowego Ctrl+Tab / Ctrl+Shift+Tab'
         AutoSize = False
+        Checked = True
+        State = cbChecked
         TabOrder = 3
         OnClick = aClipTabsChkExecute
         SkinData.SkinSection = 'CHECKBOX'
@@ -4002,6 +4012,8 @@ object SettingsForm: TSettingsForm
           'Nieaktywne dla inteligentnego prze'#322#261'czania do nieprzeczytanych w' +
           'iadomo'#347'ci'
         AutoSize = False
+        Checked = True
+        State = cbChecked
         TabOrder = 4
         OnClick = aClipTabsChkExecute
         SkinData.SkinSection = 'CHECKBOX'
@@ -4012,12 +4024,14 @@ object SettingsForm: TSettingsForm
       object ExcludeClipTabsFromTabsHotKeysCheckBox: TsCheckBox
         Left = 12
         Top = 158
-        Width = 253
+        Width = 280
         Height = 28
         Caption = 
-          'Wy'#322#261'cz przypisywanie skr'#243't'#243'w klawiaturowych dla przypi'#281'tych zak'#322 +
-          'adek'
+          'Wymagaj wci'#347'ni'#281'cia dodatkowo przycisku Shift w skr'#243'tach klawiatu' +
+          'rowych dla przypi'#281'tych zak'#322'adek'
         AutoSize = False
+        Checked = True
+        State = cbChecked
         TabOrder = 5
         OnClick = aClipTabsChkExecute
         SkinData.SkinSection = 'CHECKBOX'
@@ -4406,10 +4420,8 @@ object SettingsForm: TSettingsForm
             Width = 102
             Height = 20
             Caption = 'okno utraci fokus'
-            Checked = True
             Enabled = False
             TabOrder = 0
-            TabStop = True
             OnClick = aSideSlideChkExecute
             SkinData.SkinSection = 'RADIOBUTTON'
           end
@@ -4429,8 +4441,10 @@ object SettingsForm: TSettingsForm
             Width = 109
             Height = 20
             Caption = 'kursor opu'#347'ci okno'
+            Checked = True
             Enabled = False
             TabOrder = 2
+            TabStop = True
             OnClick = aSideSlideChkExecute
             SkinData.SkinSection = 'RADIOBUTTON'
           end
@@ -4573,6 +4587,8 @@ object SettingsForm: TSettingsForm
         Width = 229
         Height = 20
         Caption = 'Chowaj okno rozmowy za kraw'#281'dzi'#261' ekranu'
+        Checked = True
+        State = cbChecked
         TabOrder = 2
         OnClick = aSideSlideChkExecute
         SkinData.SkinSection = 'CHECKBOX'
@@ -4585,6 +4601,8 @@ object SettingsForm: TSettingsForm
         Width = 236
         Height = 20
         Caption = 'Chowaj okno kontakt'#243'w za kraw'#281'dzi'#261' ekranu'
+        Checked = True
+        State = cbChecked
         TabOrder = 0
         OnClick = aSideSlideChkExecute
         SkinData.SkinSection = 'CHECKBOX'
@@ -4744,6 +4762,8 @@ object SettingsForm: TSettingsForm
         Width = 233
         Height = 20
         Caption = 'Nie wy'#347'wietlaj przycisku zamykania zak'#322'adek'
+        Checked = True
+        State = cbChecked
         TabOrder = 8
         OnClick = aOtherChkExecute
         SkinData.SkinSection = 'CHECKBOX'
@@ -4815,6 +4835,8 @@ object SettingsForm: TSettingsForm
           'Dodaj do okna rozmowy przycisk trzymaj'#261'cy okno zawsze na wierzch' +
           'u'
         AutoSize = False
+        Checked = True
+        State = cbChecked
         TabOrder = 6
         OnClick = aOtherChkExecute
         SkinData.SkinSection = 'CHECKBOX'

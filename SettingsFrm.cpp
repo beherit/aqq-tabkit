@@ -262,7 +262,7 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   UnCloseTabLPMouseCheckBox->Checked = Ini->ReadBool("ClosedTabs","LPMouse",false);
   UnCloseTab2xLPMouseCheckBox->Checked = Ini->ReadBool("ClosedTabs","2xLPMouse",false);
   CountClosedTabsSpinEdit->Value = Ini->ReadInteger("ClosedTabs","Count",5);
-  RestoreLastMsgClosedTabsCheckBox->Checked = Ini->ReadBool("ClosedTabs","RestoreLastMsg",false);
+  RestoreLastMsgClosedTabsCheckBox->Checked = Ini->ReadBool("ClosedTabs","RestoreLastMsg",true);
   OnlyConversationTabsCheckBox->Checked = Ini->ReadBool("ClosedTabs","OnlyConversationTabs",false);
   //UnsentMsg
   RememberUnsentMsgCheckBox->Checked = Ini->ReadBool("UnsentMsg","Enable",true);
@@ -285,10 +285,10 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
    TabsHotKeysMode1RadioButton->Checked = true;
   else
    TabsHotKeysMode2RadioButton->Checked = true;
-  NewMgsHoyKeyCheckBox->Checked = Ini->ReadBool("TabsSwitching","NewMgsHoyKey",false);
+  NewMgsHoyKeyCheckBox->Checked = Ini->ReadBool("TabsSwitching","NewMgsHoyKey",true);
   //SessionRemember
   RestoreTabsSessionCheckBox->Checked = Ini->ReadBool("SessionRemember","RestoreTabs",true);
-  ManualRestoreTabsSessionCheckBox->Checked = Ini->ReadBool("SessionRemember","ManualRestoreTabs",false);
+  ManualRestoreTabsSessionCheckBox->Checked = Ini->ReadBool("SessionRemember","ManualRestoreTabs",true);
   RestoreMsgSessionCheckBox->Checked = Ini->ReadBool("SessionRemember","RestoreMsg",false);
   //NewMsg
   InactiveFrmNewMsgCheckBox->Checked = Ini->ReadBool("NewMsg","InactiveFrm",true);
@@ -298,7 +298,7 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   InactiveTabsNewMsgCheckBox->Checked = Ini->ReadBool("NewMsg","InactiveTabs",false);
   InactiveNotiferNewMsgCheckBox->Checked = Ini->ReadBool("NewMsg","InactiveNotifer",false);
   ChatStateNotiferNewMsgCheckBox->Checked = Ini->ReadBool("NewMsg","ChatStateNotifer",true);
-  ChatGoneNotiferNewMsgCheckBox->Checked = Ini->ReadBool("NewMsg","ChatGoneNotifer",false);
+  ChatGoneNotiferNewMsgCheckBox->Checked = Ini->ReadBool("NewMsg","ChatGoneNotifer",true);
   TaskbarPenCheckBox->Checked = !Ini->ReadBool("NewMsg","TaskbarPen",true);
   //Titlebar
   TweakFrmSendTitlebarCheckBox->Checked = Ini->ReadBool("Titlebar","TweakSend",false);
@@ -328,13 +328,13 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   OpenClipTabsCheckBox->Checked = Ini->ReadBool("ClipTabs","OpenClipTabs",true);
   InactiveClipTabsCheckBox->Checked = Ini->ReadBool("ClipTabs","InactiveClipTabs",false);
   CounterClipTabsCheckBox->Checked = Ini->ReadBool("ClipTabs","Counter",false);
-  ExcludeClipTabsFromTabSwitchingCheckBox->Checked = Ini->ReadBool("ClipTabs","ExcludeFromTabSwitching",false);
-  ExcludeClipTabsFromSwitchToNewMsgCheckBox->Checked = !Ini->ReadBool("ClipTabs","ExcludeFromSwitchToNewMsg",true);
-  ExcludeClipTabsFromTabsHotKeysCheckBox->Checked = Ini->ReadBool("ClipTabs","ExcludeFromTabsHotKeys",false);
+  ExcludeClipTabsFromTabSwitchingCheckBox->Checked = Ini->ReadBool("ClipTabs","ExcludeFromTabSwitching",true);
+  ExcludeClipTabsFromSwitchToNewMsgCheckBox->Checked = !Ini->ReadBool("ClipTabs","ExcludeFromSwitchToNewMsg",false);
+  ExcludeClipTabsFromTabsHotKeysCheckBox->Checked = Ini->ReadBool("ClipTabs","ExcludeFromTabsHotKeys",true);
   NoMiniAvatarsClipTabsCheckBox->Checked = !Ini->ReadBool("ClipTabs","MiniAvatars",true);
   pMiniAvatarsClipTabsChk = NoMiniAvatarsClipTabsCheckBox->Checked;
   //SideSlide
-  SlideFrmMainCheckBox->Checked = Ini->ReadBool("SideSlide","SlideFrmMain",false);
+  SlideFrmMainCheckBox->Checked = Ini->ReadBool("SideSlide","SlideFrmMain",true);
   switch(Ini->ReadInteger("SideSlide","FrmMainEdge",2))
   {
 	case 1:
@@ -367,7 +367,7 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   FrmMainSlideInTimeSpinEdit->Value = Ini->ReadInteger("SideSlide","FrmMainSlideInTime",300);
   FrmMainSlideOutTimeSpinEdit->Value = Ini->ReadInteger("SideSlide","FrmMainSlideOutTime",500);
   ChangeTabAfterSlideInCheckBox->Checked = Ini->ReadBool("SideSlide","ChangeTabAfterSlideIn",true);
-  SlideFrmSendCheckBox->Checked = Ini->ReadBool("SideSlide","SlideFrmSend",false);
+  SlideFrmSendCheckBox->Checked = Ini->ReadBool("SideSlide","SlideFrmSend",true);
   switch(Ini->ReadInteger("SideSlide","FrmSendEdge",1))
   {
 	case 1:
@@ -383,7 +383,7 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
 	 FrmSendEdgeTopRadioButton->Checked = true;
 	 break;
   }
-  switch(Ini->ReadInteger("SideSlide","FrmSendHideMode",1))
+  switch(Ini->ReadInteger("SideSlide","FrmSendHideMode",3))
   {
 	case 1:
 	 FrmSendHideFocusRadioButton->Checked = true;
@@ -409,9 +409,9 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   AntiSpimCheckBox->Checked = !Ini->ReadBool("Other","AntiSpim",false);
   MinimizeRestoreCheckBox->Checked = Ini->ReadBool("Other","MinimizeRestore",false);
   MinimizeRestoreHotKey->HotKey = Ini->ReadInteger("Other","MinimizeRestoreHotKey",24689);
-  StayOnTopCheckBox->Checked = Ini->ReadBool("Other","StayOnTop",false);
+  StayOnTopCheckBox->Checked = Ini->ReadBool("Other","StayOnTop",true);
   HideToolBarCheckBox->Checked = Ini->ReadBool("Other","HideToolBar",false);
-  HideTabCloseButtonCheckBox->Checked = Ini->ReadBool("Other","HideTabCloseButton",false);
+  HideTabCloseButtonCheckBox->Checked = Ini->ReadBool("Other","HideTabCloseButton",true);
   pHideTabCloseButtonChk = HideTabCloseButtonCheckBox->Checked;
   HideScrollTabButtonsCheckBox->Checked = Ini->ReadBool("Other","HideScrollTabButtons",false);
   CloseBy2xLPMCheckBox->Checked = Ini->ReadBool("Other","CloseBy2xLPM",false);
