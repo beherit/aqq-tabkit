@@ -1,3 +1,8 @@
+1.9.3.0
+-----
+* Przemianowanie opcji wy³¹czania przypisywania skrótów klawiaturowych dla przypiêtych zak³adek.
+* Zmiany w domyœlnie w³¹czonych/wy³¹czonych opcjach.
+
 1.9.2.0
 -----
 * Poprawki w funkcji pomijania przypiêtych zak³adek w skrótach klawiaturowych.
