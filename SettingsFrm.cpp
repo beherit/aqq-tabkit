@@ -334,7 +334,7 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   NoMiniAvatarsClipTabsCheckBox->Checked = !Ini->ReadBool("ClipTabs","MiniAvatars",true);
   pMiniAvatarsClipTabsChk = NoMiniAvatarsClipTabsCheckBox->Checked;
   //SideSlide
-  SlideFrmMainCheckBox->Checked = Ini->ReadBool("SideSlide","SlideFrmMain",true);
+  SlideFrmMainCheckBox->Checked = Ini->ReadBool("SideSlide","SlideFrmMain",false);
   switch(Ini->ReadInteger("SideSlide","FrmMainEdge",2))
   {
 	case 1:
@@ -367,7 +367,7 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   FrmMainSlideInTimeSpinEdit->Value = Ini->ReadInteger("SideSlide","FrmMainSlideInTime",300);
   FrmMainSlideOutTimeSpinEdit->Value = Ini->ReadInteger("SideSlide","FrmMainSlideOutTime",500);
   ChangeTabAfterSlideInCheckBox->Checked = Ini->ReadBool("SideSlide","ChangeTabAfterSlideIn",true);
-  SlideFrmSendCheckBox->Checked = Ini->ReadBool("SideSlide","SlideFrmSend",true);
+  SlideFrmSendCheckBox->Checked = Ini->ReadBool("SideSlide","SlideFrmSend",false);
   switch(Ini->ReadInteger("SideSlide","FrmSendEdge",1))
   {
 	case 1:

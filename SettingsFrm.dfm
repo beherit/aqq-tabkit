@@ -4587,8 +4587,6 @@ object SettingsForm: TSettingsForm
         Width = 229
         Height = 20
         Caption = 'Chowaj okno rozmowy za kraw'#281'dzi'#261' ekranu'
-        Checked = True
-        State = cbChecked
         TabOrder = 2
         OnClick = aSideSlideChkExecute
         SkinData.SkinSection = 'CHECKBOX'
@@ -4601,8 +4599,6 @@ object SettingsForm: TSettingsForm
         Width = 236
         Height = 20
         Caption = 'Chowaj okno kontakt'#243'w za kraw'#281'dzi'#261' ekranu'
-        Checked = True
-        State = cbChecked
         TabOrder = 0
         OnClick = aSideSlideChkExecute
         SkinData.SkinSection = 'CHECKBOX'
