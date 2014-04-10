@@ -1,3 +1,8 @@
+1.9.4.0
+-----
+* Zapisywanie informacji o nieotwartych wiadomoœciach przy zamykaniu komunikatora.
+* Zmiany w domyœlnie w³¹czonych/wy³¹czonych opcjach.
+
 1.9.3.0
 -----
 * Przemianowanie opcji wy³¹czania przypisywania skrótów klawiaturowych dla przypiêtych zak³adek.

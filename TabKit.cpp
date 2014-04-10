@@ -475,6 +475,7 @@ INT_PTR __stdcall OnListReady(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall OnMsgComposing(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall OnMsgContextClose(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall OnMsgContextPopup(WPARAM wParam, LPARAM lParam);
+INT_PTR __stdcall OnNotificationClosed(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall OnPerformCopyData(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall OnPreSendMsg(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall OnPrimaryTab(WPARAM wParam, LPARAM lParam);
@@ -7763,6 +7764,21 @@ INT_PTR __stdcall OnMsgContextPopup(WPARAM wParam, LPARAM lParam)
 }
 //---------------------------------------------------------------------------
 
+//Hook na zamkniecie notyfikacji o nowej wiadomosci w zasobniku systemowym
+INT_PTR __stdcall OnNotificationClosed(WPARAM wParam, LPARAM lParam)
+{
+  //Pobieranie identyfikatora kontaktu
+  UnicodeString JID = (wchar_t*)wParam;
+  //Pobieranie indeksu konta kontaktu
+  UnicodeString UserIdx =  ":" + IntToStr((int)lParam);
+  //Usuniecie nieprzeczytanej wiadomosci z kolejki
+  if(UnOpenMsgList->IndexOf(JID+UserIdx)!=-1)
+   UnOpenMsgList->Delete(UnOpenMsgList->IndexOf(JID+UserIdx));
+
+  return 0;
+}
+//---------------------------------------------------------------------------
+
 //Hook na pobieranie otwieranie adresow URL i przekazywanie plikow do aplikacji
 INT_PTR __stdcall OnPerformCopyData(WPARAM wParam, LPARAM lParam)
 {
@@ -10386,7 +10402,7 @@ void LoadSettings()
   MiniAvatarsClipTabsChk = Ini->ReadBool("ClipTabs","MiniAvatars",true);
   //SideSlide
   bool pFrmMainSlideChk = FrmMainSlideChk;
-  FrmMainSlideChk = Ini->ReadBool("SideSlide","SlideFrmMain",true);
+  FrmMainSlideChk = Ini->ReadBool("SideSlide","SlideFrmMain",false);
   int pFrmMainSlideEdge = FrmMainSlideEdge;
   FrmMainSlideEdge = Ini->ReadInteger("SideSlide","FrmMainEdge",2);
   FrmMainSlideHideMode = Ini->ReadInteger("SideSlide","FrmMainHideMode",3);
@@ -10527,7 +10543,7 @@ void LoadSettings()
 	PluginLink.CallService(AQQ_FUNCTION_REFRESHSETUP,0,0);
   }
   bool pFrmSendSlideChk = FrmSendSlideChk;
-  FrmSendSlideChk = Ini->ReadBool("SideSlide","SlideFrmSend",true);
+  FrmSendSlideChk = Ini->ReadBool("SideSlide","SlideFrmSend",false);
   int pFrmSendSlideEdge = FrmSendSlideEdge;
   FrmSendSlideEdge = Ini->ReadInteger("SideSlide","FrmSendEdge",1);
   FrmSendSlideHideMode = Ini->ReadInteger("SideSlide","FrmSendHideMode",3);
@@ -10991,6 +11007,8 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Load(PPluginLink Link)
   PluginLink.HookEvent(AQQ_SYSTEM_MSGCONTEXT_CLOSE,OnMsgContextClose);
   //Hook na otwarcie menu kontekstowego pola wiadomosci
   PluginLink.HookEvent(AQQ_SYSTEM_MSGCONTEXT_POPUP,OnMsgContextPopup);
+  //Hook na zamkniecie notyfikacji o nowej wiadomosci w zasobniku systemowym
+  PluginLink.HookEvent(AQQ_SYSTEM_NOTIFICATIONCLOSED,OnNotificationClosed);
   //Hook na pobieranie otwieranie adresow URL i przekazywanie plikow do aplikacji
   PluginLink.HookEvent(AQQ_SYSTEM_PERFORM_COPYDATA,OnPerformCopyData);
   //Hook na wysylanie nowej wiadomosci
@@ -11045,6 +11063,29 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Load(PPluginLink Link)
   BuildTabKitFastSettings();
   //Pobranie stylu zalacznika
   GetAttachmentStyle();
+  //Odczytywanie stanu nieprzeczytanych wiadomosci
+  if(FrmMainSlideChk)
+  {
+	//Odczytywanie danych do pliku sesji
+	TIniFile *Ini = new TIniFile(SessionFileDir);
+	//Informacja o nieprzeczytanych wiadomosciach istnieje
+	if(Ini->SectionExists("UnOpenMsgList"))
+	{
+	  TStringList *UnOpenMsgSection = new TStringList;
+	  Ini->ReadSection("UnOpenMsgList",UnOpenMsgSection);
+	  if(UnOpenMsgSection->Count)
+	  {
+		for(int Count=0;Count<UnOpenMsgSection->Count;Count++)
+		{
+		  UnicodeString JID = Ini->ReadString("UnOpenMsgList","Tab"+IntToStr(Count+1),"");
+		  if(!JID.IsEmpty()) UnOpenMsgList->Add(JID);
+		}
+	  }
+	  Ini->EraseSection("UnOpenMsgList");
+	  delete UnOpenMsgSection;
+	}
+	delete Ini;
+  }
   //Wszystkie moduly zostaly zaladowane
   if(PluginLink.CallService(AQQ_SYSTEM_MODULESLOADED,0,0))
   {
@@ -11330,6 +11371,7 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Unload()
   PluginLink.UnhookEvent(OnListReady);
   PluginLink.UnhookEvent(OnMsgComposing);
   PluginLink.UnhookEvent(OnMsgContextPopup);
+  PluginLink.UnhookEvent(OnNotificationClosed);
   PluginLink.UnhookEvent(OnMsgContextClose);
   PluginLink.UnhookEvent(OnPerformCopyData);
   PluginLink.UnhookEvent(OnPreSendMsg);
@@ -11451,6 +11493,18 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Unload()
 	}
 	delete Ini;
   }
+  //Zapamietywanie stanu nieprzeczytanych wiadomosci
+  if((ForceUnloadExecuted)&&(FrmMainSlideChk)&&(UnOpenMsgList->Count))
+  {
+	//Zapisywanie danych do pliku sesji
+	TIniFile *Ini = new TIniFile(SessionFileDir);
+	for(int Count=0;Count<UnOpenMsgList->Count;Count++)
+	{
+	  if(!UnOpenMsgList->Strings[Count].IsEmpty())
+	   Ini->WriteString("UnOpenMsgList","Tab"+IntToStr(Count+1),UnOpenMsgList->Strings[Count]);
+	}
+	delete Ini;
+  }
   //Przywracanie oryginalnego tekstu na pasku okna kontaktow
   if((TweakFrmMainTitlebarChk)&&(!ForceUnloadExecuted)&&(!FrmInstallAddonExist))
    SetWindowTextW(hFrmMain,FrmMainTitlebar);
@@ -11532,7 +11586,7 @@ extern "C" PPluginInfo __declspec(dllexport) __stdcall AQQPluginInfo(DWORD AQQVe
 {
   PluginInfo.cbSize = sizeof(TPluginInfo);
   PluginInfo.ShortName = L"TabKit";
-  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,9,3,0);
+  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,9,4,0);
   PluginInfo.Description = L"Wtyczka oferuje masê funkcjonalnoœci usprawniaj¹cych korzystanie z komunikatora np. zapamiêtywanie zamkniêtych zak³adek, inteligentne prze³¹czanie, zapamiêtywanie sesji.";
   PluginInfo.Author = L"Krzysztof Grochocki";
   PluginInfo.AuthorMail = L"kontakt@beherit.pl";
