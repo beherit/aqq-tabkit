@@ -1040,6 +1040,18 @@ void HideFrmMain()
 }
 //---------------------------------------------------------------------------
 
+//Zatrzymanie timera pokazywania okna kontaktow (part I)
+void StopPreFrmMainSlideIn()
+{
+  //Status pre-wysuwania okna kontaktow zza krawedzi ekranu
+  PreFrmMainSlideIn = true;
+  //Brak tymczasowej blokady po wysunieciu okna
+  FrmMainDontBlockSlide = true;
+  //Wlaczenie pokazywania okna kontaktow (part I)
+ SetTimer(hTimerFrm,TIMER_FRMMAIN_PRE_SLIDEIN,FrmMainSlideInDelay,(TIMERPROC)TimerFrmProc);
+}
+//---------------------------------------------------------------------------
+
 //Ustawienie fokusa na polu wpisywania wiadomosci
 void FocusRichEdit()
 {
@@ -1230,6 +1242,18 @@ void HideFrmSend()
   //Okno rozmowy chowane za dolna/gorna krawedzia ekranu
   else
    SetWindowPos(hFrmSend,HWND_TOPMOST,FrmSendRect.Left,FrmSendSlideTop,0,0,SWP_NOSIZE);
+}
+//---------------------------------------------------------------------------
+
+//Zatrzymanie timera pokazywania okna rozmowy (part I)
+void StopPreFrmSendSlideIn()
+{
+  //Zatrzymanie timera
+  KillTimer(hTimerFrm,TIMER_FRMSEND_PRE_SLIDEIN);
+  //Status pre-wysuwania okna rozmowy zza krawedzi ekranu
+  PreFrmSendSlideIn = false;
+  //Brak tymczasowej blokady po wysunieciu okna
+  FrmSendDontBlockSlide = false;
 }
 //---------------------------------------------------------------------------
 
@@ -1739,6 +1763,21 @@ int GetContactState(UnicodeString JID)
 }
 //---------------------------------------------------------------------------
 
+//Przebudowa kolejnosci zakladek w pliku sesji
+void RebuilSessionTabsList()
+{
+  //Usuwanie listy zakladek
+  TabsList->Clear();
+  TabsListEx->Clear();
+  //Hook na pobieranie aktywnych zakladek
+  PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_FETCHALLTABS,OnFetchAllTabs_GetOnlyList);
+  PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_PRIMARYTAB,OnPrimaryTab_GetOnlyList);
+  PluginLink.CallService(AQQ_CONTACTS_BUDDY_FETCHALLTABS,0,0);
+  PluginLink.UnhookEvent(OnPrimaryTab_GetOnlyList);
+  PluginLink.UnhookEvent(OnFetchAllTabs_GetOnlyList);
+}
+//---------------------------------------------------------------------------
+
 //Otwieranie zakladki z podanym kontaktem/czatem
 void OpenNewTab(UnicodeString JID)
 {
@@ -1871,65 +1910,164 @@ int GetTabIndex(UnicodeString JID)
 //Zmiana pozycji przypietej zakladki
 void ChangeClipTabPos(UnicodeString JID,UnicodeString JIDEx)
 {
-  //Sprawdzanie stanu pokazywania nazwy przypietej zakladki
+  //Wczytanie pliku sesji
   TIniFile *Ini = new TIniFile(SessionFileDir);
-  bool ClipTabsEx = Ini->ValueExists("ClipTabsEx",JID);
-  delete Ini;
-  //Zmiana miejsca zakladki z niewidoczna nazwa zakladki
-  if(ClipTabsEx)
+  TStringList *ClipTabs = new TStringList;
+  Ini->ReadSection("ClipTabs",ClipTabs);
+  int TabsCount = ClipTabs->Count;
+  //Wyczyszczenie zmiennej sesji
+  ClipTabs->Clear();
+  //Sa jakies przypiete zakladki
+  if(TabsCount>0)
   {
-	//Sprawdzanie kolejno wszystkich otwartych zakladek
-	for(int Count=0;Count<TabsList->Count;Count++)
+    //Odczyt kolejno wszystkich rekordow
+	for(int Count=0;Count<TabsCount;Count++)
 	{
-	  //Pobieranie JID zakladki
-	  JID = TabsList->Strings[Count];
-	  //Sprawdzanie stanu pokazywania nazwy przypietej zakladki
-	  TIniFile *Ini = new TIniFile(SessionFileDir);
-	  ClipTabsEx = Ini->ValueExists("ClipTabsEx",JID);
-	  delete Ini;
-	  //Zakladka nie jest przypieta lub przypieta z widoczna nazwa
-	  if(ClipTabsList->IndexOf(JID)==-1)
+	  //Odczytanie JID przypietej zakladki
+	  UnicodeString ClipTab = Ini->ReadString("ClipTabs", "Tab"+IntToStr(Count+1),"");
+	  //Dodanie zakladki do listy przypietych zakladek
+	  if((!ClipTab.IsEmpty())&&(TabsList->IndexOf(ClipTab)!=-1))
+	   ClipTabs->Add(ClipTab);
+	}
+  }
+  //Zamiana miejsca przypietej zakladki
+  TPluginTriple PluginTriple;
+  PluginTriple.cbSize = sizeof(TPluginTriple);
+  PluginTriple.Handle1 = (int)hFrmSend;
+  PluginTriple.Param1 = GetTabIndex(JIDEx);
+  PluginTriple.Param2 = ClipTabs->IndexOf(JID);
+  PluginLink.CallService(AQQ_FUNCTION_TABMOVE,(WPARAM)&PluginTriple,0);
+  //Usuniecie zmiennej sesji
+  delete ClipTabs;
+}
+//---------------------------------------------------------------------------
+
+//Przebowa listy przypietych zakladek
+void RebuildClipTabs()
+{
+  //Wczytanie pliku sesji i usuniecie listy przypietych zakladek
+  TIniFile *Ini = new TIniFile(SessionFileDir);
+  Ini->EraseSection("ClipTabs");
+  //Zapisywanie nowej listy
+  if(ClipTabsList->Count>0)
+  {
+	//Licznik przypietych zakladek
+	int ClipTabsCount = 1;
+	//Zapisywanie przypietych zakladek z niewidoczna nazwa zakladki
+	for(int Count=0;Count<ClipTabsList->Count;Count++)
+	{
+	  //Nazwa zakladki niewidoczna
+	  if(!Ini->ValueExists("ClipTabsEx",ClipTabsList->Strings[Count]))
 	  {
-		//Zamiana miejsca przypietej zakladki
-		TPluginTriple PluginTriple;
-		PluginTriple.cbSize = sizeof(TPluginTriple);
-		PluginTriple.Handle1 = (int)hFrmSend;
-		PluginTriple.Param1 = GetTabIndex(JIDEx);
-		PluginTriple.Param2 = Count;
-		PluginLink.CallService(AQQ_FUNCTION_TABMOVE,(WPARAM)&PluginTriple,0);
-		//Zakonczenie petli
-		Count = TabsList->Count;
+		Ini->WriteString("ClipTabs", "Tab"+IntToStr(ClipTabsCount), ClipTabsList->Strings[Count]);
+		ClipTabsCount++;
 	  }
-	  //Zakladka jest przypieta z widoczna nazwa
-	  else if((ClipTabsList->IndexOf(JID)!=-1)&&(ClipTabsEx))
+	}
+	//Zapisywanie przypietych zakladek z widoczna nazwa zakladki
+	for(int Count=0;Count<ClipTabsList->Count;Count++)
+	{
+	  //Nazwa zakladki niewidoczna
+	  if(Ini->ValueExists("ClipTabsEx",ClipTabsList->Strings[Count]))
 	  {
-        //Zamiana miejsca przypietej zakladki
-		TPluginTriple PluginTriple;
-		PluginTriple.cbSize = sizeof(TPluginTriple);
-		PluginTriple.Handle1 = (int)hFrmSend;
-		PluginTriple.Param1 = GetTabIndex(JIDEx);
-		PluginTriple.Param2 = Count+1;
-		PluginLink.CallService(AQQ_FUNCTION_TABMOVE,(WPARAM)&PluginTriple,0);
-		//Zakonczenie petli
-		Count = TabsList->Count;
+		Ini->WriteString("ClipTabs", "Tab"+IntToStr(ClipTabsCount), ClipTabsList->Strings[Count]);
+		ClipTabsCount++;
 	  }
 	}
   }
-  //Zmiana miejsca zakladki z widoczna nazwa zakladki
-  else
+  //Ponowne odczytanie pozycji przypietych zakladek z pliku
+  ClipTabsList->Clear();
+  TStringList *ClipTabs = new TStringList;
+  Ini->ReadSection("ClipTabs",ClipTabs);
+  int TabsCount = ClipTabs->Count;
+  delete ClipTabs;
+  //Sa jakies przypiete zakladki
+  if(TabsCount>0)
   {
-	TPluginTriple PluginTriple;
-	PluginTriple.cbSize = sizeof(TPluginTriple);
-	PluginTriple.Handle1 = (int)hFrmSend;
-	PluginTriple.Param1 = GetTabIndex(JID);
-	PluginTriple.Param2 = 0;
-	PluginLink.CallService(AQQ_FUNCTION_TABMOVE,(WPARAM)&PluginTriple,0);
+    //Odczyt kolejno wszystkich rekordow
+	for(int Count=0;Count<TabsCount;Count++)
+	{
+	  //Odczytanie JID przypietej zakladki
+	  UnicodeString ClipTab = Ini->ReadString("ClipTabs", "Tab"+IntToStr(Count+1),"");
+	  //Dodanie zakladki do listy przypietych zakladek
+	  if(!ClipTab.IsEmpty()) ClipTabsList->Add(ClipTab);
+	}
   }
+  delete Ini;
+}
+//---------------------------------------------------------------------------
+void RebuildClipTabsEx()
+{
+  //Wczytanie pliku sesji i usuniecie listy przypietych zakladek
+  TIniFile *Ini = new TIniFile(SessionFileDir);
+  Ini->EraseSection("ClipTabs");
+  //Zapisywanie nowej listy
+  if(ClipTabsList->Count>0)
+  {
+    //Licznik przypietych zakladek
+	int ClipTabsCount = 1;
+	//Zapisywanie przypietych zakladek z niewidoczna nazwa zakladki
+	for(int Count=0;Count<TabsList->Count;Count++)
+	{
+	  //Zakladka jest przypieta i nazwa zakladki jest niewidoczna
+	  if((ClipTabsList->IndexOf(TabsList->Strings[Count])!=-1)&&(!Ini->ValueExists("ClipTabsEx",TabsList->Strings[Count])))
+	  {
+		Ini->WriteString("ClipTabs", "Tab"+IntToStr(ClipTabsCount), TabsList->Strings[Count]);
+		ClipTabsCount++;
+	  }
+	}
+	for(int Count=0;Count<ClipTabsList->Count;Count++)
+	{
+	  //Nie otwarta przypieta zakladka z niewidoczna nazwa zakladki
+	  if(((TabsList->IndexOf(ClipTabsList->Strings[Count])==-1))&&(!Ini->ValueExists("ClipTabsEx",ClipTabsList->Strings[Count])))
+	  {
+	    Ini->WriteString("ClipTabs", "Tab"+IntToStr(ClipTabsCount), ClipTabsList->Strings[Count]);
+		ClipTabsCount++;
+	  }
+	}
+	//Zapisywanie przypietych zakladek z widoczna nazwa zakladki
+	for(int Count=0;Count<TabsList->Count;Count++)
+	{
+	  //Zakladka jest przypieta i nazwa zakladki jest niewidoczna
+	  if((ClipTabsList->IndexOf(TabsList->Strings[Count])!=-1)&&(Ini->ValueExists("ClipTabsEx",TabsList->Strings[Count])))
+	  {
+		Ini->WriteString("ClipTabs", "Tab"+IntToStr(ClipTabsCount), TabsList->Strings[Count]);
+		ClipTabsCount++;
+	  }
+	}
+	for(int Count=0;Count<ClipTabsList->Count;Count++)
+	{
+	  //Nie otwarta przypieta zakladka z niewidoczna nazwa zakladki
+	  if(((TabsList->IndexOf(ClipTabsList->Strings[Count])==-1))&&(Ini->ValueExists("ClipTabsEx",ClipTabsList->Strings[Count])))
+	  {
+	    Ini->WriteString("ClipTabs", "Tab"+IntToStr(ClipTabsCount), ClipTabsList->Strings[Count]);
+		ClipTabsCount++;
+	  }
+	}
+  }
+  //Ponowne odczytanie pozycji przypietych zakladek z pliku
+  ClipTabsList->Clear();
+  TStringList *ClipTabs = new TStringList;
+  Ini->ReadSection("ClipTabs",ClipTabs);
+  int TabsCount = ClipTabs->Count;
+  delete ClipTabs;
+  //Sa jakies przypiete zakladki
+  if(TabsCount>0)
+  {
+    //Odczyt kolejno wszystkich rekordow
+	for(int Count=0;Count<TabsCount;Count++)
+	{
+	  //Odczytanie JID przypietej zakladki
+	  UnicodeString ClipTab = Ini->ReadString("ClipTabs", "Tab"+IntToStr(Count+1),"");
+	  //Dodanie zakladki do listy przypietych zakladek
+	  if(!ClipTab.IsEmpty()) ClipTabsList->Add(ClipTab);
+	}
+  }
+  delete Ini;
 }
 //---------------------------------------------------------------------------
 
 //Sprawdzanie listy ID filmow YouTube do przetworzenia
-bool ChkAvatarsListItem()
+bool ChkYouTubeListItem()
 {
   if(GetYouTubeTitleList->Count) return true;
   else return false;
@@ -2836,22 +2974,10 @@ INT_PTR __stdcall ServiceClipTabItem(WPARAM wParam, LPARAM lParam)
   {
 	//Dodanie nowej zakladki do listy przypietych zakladek
 	ClipTabsList->Add(ClipTab);
-	//Zapisanie przypietej zakladki w pliku sesji
-	TIniFile *Ini = new TIniFile(SessionFileDir);
-	TStringList *ClipTabs = new TStringList;
-	Ini->ReadSection("ClipTabs",ClipTabs);
-	int Count = ClipTabs->Count;
-	delete ClipTabs;
-	Ini->WriteString("ClipTabs", "Tab"+IntToStr(Count+1), ClipTab);
-	delete Ini;
-	//Pobieranie aktualnej pozycji zakladki
-	int Index = GetTabIndex(ClipTab);
-	//Zakladka nie znajduje sie na pierwszej pozycji
-	if(Index)
-	{
-	  //Zmiana miejsca zakladki
-	  ChangeClipTabPos(ClipTabPopup,ClipTabPopupEx);
-	}
+	//Przebudowanie listy przypietych zakladek
+	RebuildClipTabs();
+	//Zmiana miejsca zakladki
+	ChangeClipTabPos(ClipTabPopup,ClipTabPopupEx);
 	//Odswiezenie wszystkich zakladek
 	RefreshTabs();
   }
@@ -2920,6 +3046,8 @@ INT_PTR __stdcall ServiceClipTabCaptionItem(WPARAM wParam, LPARAM lParam)
   }
   //Zamkniecie pliku sesji
   delete Ini;
+  //Przebudowanie listy przypietych zakladek
+  RebuildClipTabs();
   //Zmiana miejsca zakladki
   ChangeClipTabPos(ClipTabPopup,ClipTabPopupEx);
   //Odswiezenie wszystkich zakladek
@@ -3322,36 +3450,20 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	  //Aktywna zakladka jest przypieta
 	  if(ClipTabsList->IndexOf(JID)!=-1)
 	  {
-		//Pobieranie aktualnej pozycji zakladki
-		int Index = GetTabIndex(ActiveTabJIDEx);
-		//Zakladka nie znajduje sie na pierwszej pozycji
-		if(Index)
+		//Zmiana miejsca zakladki
+		ChangeClipTabPos(ActiveTabJID,ActiveTabJIDEx);
+		//Zakladka byla otwierana przy otwarciu okna jako ostatnia
+		if(JID==LastOpenedChatClipTab)
 		{
-		  //Zmiana miejsca zakladki
-		  ChangeClipTabPos(ActiveTabJID,ActiveTabJIDEx);
-		  //Ponowne pobranie JID aktywnej zakladki
-		  JID = ActiveTabJID;
-		  //Zakladka byla otwierana przy otwarciu okna jako ostatnia
-		  if(JID==LastOpenedChatClipTab)
-		  {
-			//Usuniecie JID ostatniej otwartej przypietej zakladki czatowej
-			LastOpenedChatClipTab = "";
-			//Zmiana aktywnej zakladki na wskazany kontakt/czat
-			ChangeActiveTab(ActiveTabBeforeOpenClipTabs);
-			//Usuniecie JID ostatnio aktywnej zakladki przed otwieraniem przypietych czatow
-			ActiveTabBeforeOpenClipTabs = "";
-		  }
-		  //Przebudowa kolejnosci zakladek w pliku sesji
-		  //Usuwanie listy zakladek
-		  TabsList->Clear();
-		  TabsListEx->Clear();
-		  //Hook na pobieranie aktywnych zakladek
-		  PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_FETCHALLTABS,OnFetchAllTabs_GetOnlyList);
-		  PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_PRIMARYTAB,OnPrimaryTab_GetOnlyList);
-		  PluginLink.CallService(AQQ_CONTACTS_BUDDY_FETCHALLTABS,0,0);
-		  PluginLink.UnhookEvent(OnPrimaryTab_GetOnlyList);
-		  PluginLink.UnhookEvent(OnFetchAllTabs_GetOnlyList);
+		  //Usuniecie JID ostatniej otwartej przypietej zakladki czatowej
+		  LastOpenedChatClipTab = "";
+		  //Zmiana aktywnej zakladki na wskazany kontakt/czat
+		  ChangeActiveTab(ActiveTabBeforeOpenClipTabs);
+		  //Usuniecie JID ostatnio aktywnej zakladki przed otwieraniem przypietych czatow
+		  ActiveTabBeforeOpenClipTabs = "";
 		}
+		//Przebudowa kolejnosci zakladek w pliku sesji
+		RebuilSessionTabsList();
 	  }
 	}
 	//Otwieranie przypietych zakladek wraz z oknem rozmowy
@@ -3384,14 +3496,8 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			  //Otwieranie zakladki
 			  OpenNewTab(JID);
 			}
-			//Pobieranie pozycji otwartej zakladki
-			int Index = GetTabIndex(ActiveTabJIDEx);
-			//Zakladka nie znajduje sie na pierwszej pozycji
-			if(Index)
-			{
-			  //Zmiana miejsca zakladki
-			  ChangeClipTabPos(ActiveTabJID,ActiveTabJIDEx);
-			}
+			//Zmiana miejsca zakladki
+			ChangeClipTabPos(ActiveTabJID,ActiveTabJIDEx);
 		  }
 		}
 		//Liczba otwartych zakladek wieksza od 1
@@ -3400,15 +3506,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		  //Zmiana aktywnej zakladki na wskazany kontakt/czat
 		  ChangeActiveTab(ActiveTab);
 		  //Przebudowa kolejnosci zakladek w pliku sesji
-		  //Usuwanie listy zakladek
-		  TabsList->Clear();
-		  TabsListEx->Clear();
-		  //Hook na pobieranie aktywnych zakladek
-		  PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_FETCHALLTABS,OnFetchAllTabs_GetOnlyList);
-		  PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_PRIMARYTAB,OnPrimaryTab_GetOnlyList);
-		  PluginLink.CallService(AQQ_CONTACTS_BUDDY_FETCHALLTABS,0,0);
-		  PluginLink.UnhookEvent(OnPrimaryTab_GetOnlyList);
-		  PluginLink.UnhookEvent(OnFetchAllTabs_GetOnlyList);
+		  RebuilSessionTabsList();
 		}
 	  }
 	}
@@ -3488,15 +3586,13 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	{
 	  //Zatrzymanie timera
 	  KillTimer(hTimerFrm,TIMER_REBUILD_TABS_LIST);
-	  //Usuwanie listy zakladek
-	  TabsList->Clear();
-	  TabsListEx->Clear();
-	  //Hook na pobieranie aktywnych zakladek
-	  PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_FETCHALLTABS,OnFetchAllTabs_GetOnlyList);
-	  PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_PRIMARYTAB,OnPrimaryTab_GetOnlyList);
-	  PluginLink.CallService(AQQ_CONTACTS_BUDDY_FETCHALLTABS,0,0);
-	  PluginLink.UnhookEvent(OnPrimaryTab_GetOnlyList);
-	  PluginLink.UnhookEvent(OnFetchAllTabs_GetOnlyList);
+	  //Przebudowa kolejnosci zakladek w pliku sesji
+	  RebuilSessionTabsList();
+	  //Przebudowanie listy przypietych zakladek
+	  RebuildClipTabsEx();
+	  //Zmiana miejsca aktywnej przypietej zakladki
+	  if(ClipTabsList->IndexOf(ActiveTabJID)!=-1)
+	   ChangeClipTabPos(ActiveTabJID,ActiveTabJIDEx);
 	}
 	//Sprawdzanie pozycji myszki
 	else if(wParam==TIMER_MOUSE_POSITION)
@@ -3537,46 +3633,38 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 					SetTimer(hTimerFrm,TIMER_FRMSEND_PRE_SLIDEIN,FrmSendSlideInDelay,(TIMERPROC)TimerFrmProc);
 				  }
 				}
+				//Kursor znajduje sie w obrebie menu start
+				else if(PreFrmSendSlideIn) StopPreFrmSendSlideIn();
 			  }
 			  //Kursor nie znajduje sie przy krawedzi ekranu z uwglednieniem miejsca schowania okna rozmowy
-			  else if(PreFrmSendSlideIn)
-			  {
-				//Zatrzymanie timera
-				KillTimer(hTimerFrm,TIMER_FRMSEND_PRE_SLIDEIN);
-				//Status pre-wysuwania okna rozmowy zza krawedzi ekranu
-				PreFrmSendSlideIn = false;
-				//Brak tymczasowej blokady po wysunieciu okna
-				FrmSendDontBlockSlide = false;
-			  }
+			  else if(PreFrmSendSlideIn) StopPreFrmSendSlideIn();
 			}
 			//Kursor nie znajduje sie przy krawedzi ekranu za ktora zostalo schowane okno
-			else
-			{
-			  //Zatrzymanie timera
-			  KillTimer(hTimerFrm,TIMER_FRMSEND_PRE_SLIDEIN);
-			  //Status pre-wysuwania okna rozmowy zza krawedzi ekranu
-			  PreFrmSendSlideIn = false;
-			  //Brak tymczasowej blokady po wysunieciu okna
-			  FrmSendDontBlockSlide = false;
-			}
+			else if(PreFrmSendSlideIn) StopPreFrmSendSlideIn();
 		  }
-		  //Tymczasowa blokada wysuwania okna
-		  else if(FrmSendSlideInDelay<1000)
+		  //Wcisniete klawisze Ctrl/LPM/PPM
+		  else
 		  {
-			//Kursor znajduje sie przy krawedzi ekranu za ktora zostalo schowane okno
-			if(((FrmSendSlideEdge==1)&&(Mouse->CursorPos.x==0))
-			||((FrmSendSlideEdge==2)&&(Mouse->CursorPos.x==Screen->Width-1))
-			||((FrmSendSlideEdge==3)&&(Mouse->CursorPos.y==Screen->Height-1))
-			||((FrmSendSlideEdge==4)&&(Mouse->CursorPos.y==0)))
+			//Zatrzymanie procedury wysuwania okna
+			if(PreFrmSendSlideIn) StopPreFrmSendSlideIn();
+			//Tymczasowa blokada wysuwania okna
+			if(FrmSendSlideInDelay<1000)
 			{
-			  //Kursor znajduje sie przy krawedzi ekranu z uwglednieniem miejsca schowania okna rozmowy
-			  if((((FrmSendSlideEdge==1)||(FrmSendSlideEdge==2))&&((FrmSendRect.Top<=Mouse->CursorPos.y)&&(Mouse->CursorPos.y<=FrmSendRect.Bottom)))
-			  ||(((FrmSendSlideEdge==3)||(FrmSendSlideEdge==4))&&((FrmSendRect.Left<=Mouse->CursorPos.x)&&(Mouse->CursorPos.x<=FrmSendRect.Right))))
+			  //Kursor znajduje sie przy krawedzi ekranu za ktora zostalo schowane okno
+			  if(((FrmSendSlideEdge==1)&&(Mouse->CursorPos.x==0))
+			  ||((FrmSendSlideEdge==2)&&(Mouse->CursorPos.x==Screen->Width-1))
+			  ||((FrmSendSlideEdge==3)&&(Mouse->CursorPos.y==Screen->Height-1))
+			  ||((FrmSendSlideEdge==4)&&(Mouse->CursorPos.y==0)))
 			  {
-				//Tymczasowa blokada chowania/pokazywania okna rozmowy
-				FrmSendBlockSlide = true;
-				//Wlaczenie timera wylaczajacego blokade
-				SetTimer(hTimerFrm,TIMER_FRMSEND_UNBLOCK_SLIDE,1000,(TIMERPROC)TimerFrmProc);
+				//Kursor znajduje sie przy krawedzi ekranu z uwglednieniem miejsca schowania okna rozmowy
+				if((((FrmSendSlideEdge==1)||(FrmSendSlideEdge==2))&&((FrmSendRect.Top<=Mouse->CursorPos.y)&&(Mouse->CursorPos.y<=FrmSendRect.Bottom)))
+				||(((FrmSendSlideEdge==3)||(FrmSendSlideEdge==4))&&((FrmSendRect.Left<=Mouse->CursorPos.x)&&(Mouse->CursorPos.x<=FrmSendRect.Right))))
+				{
+				  //Tymczasowa blokada chowania/pokazywania okna rozmowy
+				  FrmSendBlockSlide = true;
+				  //Wlaczenie timera wylaczajacego blokade
+				  SetTimer(hTimerFrm,TIMER_FRMSEND_UNBLOCK_SLIDE,1000,(TIMERPROC)TimerFrmProc);
+				}
 			  }
 			}
 		  }
@@ -3684,49 +3772,41 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 					SetTimer(hTimerFrm,TIMER_FRMMAIN_PRE_SLIDEIN,FrmMainSlideInDelay,(TIMERPROC)TimerFrmProc);
 				  }
 				}
+				//Kursor znajduje sie w obrebie menu start
+				else if(!PreFrmMainSlideIn) StopPreFrmMainSlideIn();
 			  }
 			   //Kursor nie znajduje sie przy krawedzi ekranu z uwglednieniem miejsca schowania okna kontaktow
-			  else if(PreFrmMainSlideIn)
-			  {
-				//Zatrzymanie timera
-				KillTimer(hTimerFrm,TIMER_FRMMAIN_PRE_SLIDEIN);
-				//Status pre-wysuwania okna kontaktow zza krawedzi ekranu
-				PreFrmMainSlideIn = false;
-				//Brak tymczasowej blokady po wysunieciu okna
-				FrmMainDontBlockSlide = false;
-			  }
+			  else if(PreFrmMainSlideIn) StopPreFrmMainSlideIn();
 			}
 			//Kursor nie znajduje sie przy krawedzi ekranu za ktora zostalo schowane okno
-			else
+			else if(PreFrmMainSlideIn) StopPreFrmMainSlideIn();
+		  }
+		  //Wcisniete klawisze Ctrl/LPM/PPM
+		  else
+		  {
+			//Zatrzymanie procedury wysuwania okna
+			if(PreFrmMainSlideIn) StopPreFrmMainSlideIn();
+			//Tymczasowa blokada wysuwania okna
+			else if(FrmMainSlideInDelay<1000)
 			{
-			  //Zatrzymanie timera
-			  KillTimer(hTimerFrm,TIMER_FRMMAIN_PRE_SLIDEIN);
-			  //Status pre-wysuwania okna kontaktow zza krawedzi ekranu
-			  PreFrmMainSlideIn = false;
-			  //Brak tymczasowej blokady po wysunieciu okna
-			  FrmMainDontBlockSlide = false;
+			  //Kursor znajduje sie przy krawedzi ekranu za ktora zostalo schowane okno
+			  if(((FrmMainSlideEdge==1)&&(Mouse->CursorPos.x==0))
+			  ||((FrmMainSlideEdge==2)&&(Mouse->CursorPos.x==Screen->Width-1))
+			  ||((FrmMainSlideEdge==3)&&(Mouse->CursorPos.y==Screen->Height-1))
+			  ||((FrmMainSlideEdge==4)&&(Mouse->CursorPos.y==0)))
+			  {
+				//Kursor znajduje sie przy krawedzi ekranu z uwglednieniem miejsca schowania okna kontaktow
+				if((((FrmMainSlideEdge==1)||(FrmMainSlideEdge==2))&&((FrmMainRect.Top<=Mouse->CursorPos.y)&&(Mouse->CursorPos.y<=FrmMainRect.Bottom)))
+				||(((FrmMainSlideEdge==3)||(FrmMainSlideEdge==4))&&((FrmMainRect.Left<=Mouse->CursorPos.x)&&(Mouse->CursorPos.x<=FrmMainRect.Right))))
+				{
+				  //Tymczasowa blokada chowania/pokazywania okna kontaktow
+				  FrmMainBlockSlide = true;
+				  //Wlaczenie timera wylaczenia tymczasowej blokady chowania/pokazywania okna kontaktow
+				  SetTimer(hTimerFrm,TIMER_FRMMAIN_UNBLOCK_SLIDE,1000,(TIMERPROC)TimerFrmProc);
+				}
+			  }
 			}
 		  }
-		  //Tymczasowa blokada wysuwania okna
-		  else if(FrmMainSlideInDelay<1000)
-		  {
-			//Kursor znajduje sie przy krawedzi ekranu za ktora zostalo schowane okno
-			if(((FrmMainSlideEdge==1)&&(Mouse->CursorPos.x==0))
-			||((FrmMainSlideEdge==2)&&(Mouse->CursorPos.x==Screen->Width-1))
-			||((FrmMainSlideEdge==3)&&(Mouse->CursorPos.y==Screen->Height-1))
-			||((FrmMainSlideEdge==4)&&(Mouse->CursorPos.y==0)))
-			{
-			  //Kursor znajduje sie przy krawedzi ekranu z uwglednieniem miejsca schowania okna kontaktow
-			  if((((FrmMainSlideEdge==1)||(FrmMainSlideEdge==2))&&((FrmMainRect.Top<=Mouse->CursorPos.y)&&(Mouse->CursorPos.y<=FrmMainRect.Bottom)))
-			  ||(((FrmMainSlideEdge==3)||(FrmMainSlideEdge==4))&&((FrmMainRect.Left<=Mouse->CursorPos.x)&&(Mouse->CursorPos.x<=FrmMainRect.Right))))
-			  {
-				//Tymczasowa blokada chowania/pokazywania okna kontaktow
-				FrmMainBlockSlide = true;
-				//Wlaczenie timera wylaczenia tymczasowej blokady chowania/pokazywania okna kontaktow
-				SetTimer(hTimerFrm,TIMER_FRMMAIN_UNBLOCK_SLIDE,1000,(TIMERPROC)TimerFrmProc);
-              }
-            }
-          }
 		}
 		//Chowanie okna kontaktow (gdy kursor opusci okno)
 		if(FrmMainSlideHideMode==3)
@@ -10387,7 +10467,7 @@ void LoadSettings()
 	 ChangedTitlebarList->EraseSection("Titlebar");
   }
   else
-   TweakFrmSendTitlebarMode = Ini->ReadInteger("Titlebar","SendMode",1);  
+   TweakFrmSendTitlebarMode = Ini->ReadInteger("Titlebar","SendMode",1);
   TweakFrmMainTitlebarChk = Ini->ReadBool("Titlebar","TweakMain",false);
   TweakFrmMainTitlebarMode = Ini->ReadInteger("Titlebar","MainMode",1);
   TweakFrmMainTitlebarModeEx = Ini->ReadInteger("Titlebar","MainModeEx",0);
@@ -10717,7 +10797,8 @@ void LoadSettings()
   bool pShortenLinksMode = ShortenLinksMode;
   ShortenLinksMode = Ini->ReadInteger("Other","ShortenLinksMode",1);
   //Odswiezenie listy kontaktow
-  if(((ShortenLinksChk!=pShortenLinksChk)||(ShortenLinksMode!=pShortenLinksMode))&&((ShortenLinksMode==1)||(ShortenLinksMode==3))&&(!LoadExecuted)) PluginLink.CallService(AQQ_SYSTEM_RUNACTION,0,(LPARAM)L"aRefresh");
+  if(((ShortenLinksChk!=pShortenLinksChk)||(ShortenLinksMode!=pShortenLinksMode))&&((ShortenLinksMode==1)||(ShortenLinksMode==3))&&(!LoadExecuted))
+   RefreshList();
   //Wylaczanie funkcji pisaka na pasku tytulu okna rozmowy
   if((InactiveFrmNewMsgChk)||(TweakFrmSendTitlebarChk)||(!TaskbarPenChk))
    PluginLink.CallService(AQQ_SYSTEM_FUNCTION_SETENABLED,SYS_FUNCTION_TASKBARPEN,0);
@@ -10845,9 +10926,9 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Load(PPluginLink Link)
   if(!DirectoryExists(PluginUserDir + "\\\\Shared"))
    CreateDir(PluginUserDir + "\\\\Shared");
   if(!FileExists(PluginUserDir + "\\\\Shared\\\\TabKit.dll.png"))
-   ExtractRes((PluginUserDir + "\\\\Shared\\\\TabKit.dll.png").w_str(),L"PLUGIN_RES",L"DATA");
+   ExtractRes((PluginUserDir + "\\\\Shared\\\\TabKit.dll.png").w_str(),L"SHARED",L"DATA");
   else if(MD5File(PluginUserDir + "\\\\Shared\\\\TabKit.dll.png")!="992F252A9087DBD036BA98B6D5DE2A08")
-   ExtractRes((PluginUserDir + "\\\\Shared\\\\TabKit.dll.png").w_str(),L"PLUGIN_RES",L"DATA");
+   ExtractRes((PluginUserDir + "\\\\Shared\\\\TabKit.dll.png").w_str(),L"SHARED",L"DATA");
   //Wypakiwanie ikonki FastAccess.png
   //1DF8A978FA63D5C1EBEDB23BA94A1C3D
   if(!FileExists(PluginUserDir + "\\\\TabKit\\\\FastAccess.png"))
@@ -11179,7 +11260,8 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Load(PPluginLink Link)
 	  }
 	}
 	//Odswiezenie listy kontaktow - skracanie wyswietlania odnosnikow na liscie kontaktow do wygodniejszej formy
-	if((ShortenLinksChk)&&((ShortenLinksMode==1)||(ShortenLinksMode==3))) PluginLink.CallService(AQQ_SYSTEM_RUNACTION,0,(LPARAM)L"aRefresh");
+	if((ShortenLinksChk)&&((ShortenLinksMode==1)||(ShortenLinksMode==3)))
+	 RefreshList();
   }
   //Rejestowanie klasy okna timera
   WNDCLASSEX wincl;
@@ -11563,7 +11645,7 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Unload()
   }
   //Odswiezenie listy kontaktow - przywrocenie nie skroconych odnosnikow na liscie kontaktow
   if((ShortenLinksChk)&&((ShortenLinksMode==1)||(ShortenLinksMode==3))&&(!ForceUnloadExecuted)&&(!FrmInstallAddonExist))
-   PluginLink.CallService(AQQ_SYSTEM_RUNACTION,0,(LPARAM)L"aRefresh");
+   RefreshList();
   //Info o zakonczeniu procedury wyladowania
   UnloadExecuted = false;
 
@@ -11586,7 +11668,7 @@ extern "C" PPluginInfo __declspec(dllexport) __stdcall AQQPluginInfo(DWORD AQQVe
 {
   PluginInfo.cbSize = sizeof(TPluginInfo);
   PluginInfo.ShortName = L"TabKit";
-  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,9,4,0);
+  PluginInfo.Version = PLUGIN_MAKE_VERSION(1,9,5,0);
   PluginInfo.Description = L"Wtyczka oferuje masê funkcjonalnoœci usprawniaj¹cych korzystanie z komunikatora np. zapamiêtywanie zamkniêtych zak³adek, inteligentne prze³¹czanie, zapamiêtywanie sesji.";
   PluginInfo.Author = L"Krzysztof Grochocki";
   PluginInfo.AuthorMail = L"kontakt@beherit.pl";
@@ -11598,3 +11680,4 @@ extern "C" PPluginInfo __declspec(dllexport) __stdcall AQQPluginInfo(DWORD AQQVe
   return &PluginInfo;
 }
 //---------------------------------------------------------------------------
+

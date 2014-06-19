@@ -56,7 +56,7 @@ __declspec(dllimport)bool ChkThemeAnimateWindows();
 __declspec(dllimport)bool ChkThemeGlowing();
 __declspec(dllimport)int GetHUE();
 __declspec(dllimport)int GetSaturation();
-__declspec(dllimport)bool ChkAvatarsListItem();
+__declspec(dllimport)bool ChkYouTubeListItem();
 __declspec(dllimport)void RefreshList();
 __declspec(dllimport)UnicodeString GetYouTubeTitleListItem();
 __declspec(dllimport)void AddToYouTubeExcludeList(UnicodeString ID);
@@ -1065,7 +1065,7 @@ void __fastcall TSettingsForm::GetYouTubeTitleThreadRun(TIdThreadComponent *Send
 	else AddToYouTubeExcludeList(ID);
   }
   //Brak itemow do przetworzenia
-  if(!ChkAvatarsListItem())
+  if(!ChkYouTubeListItem())
   {
 	//Zatrzymanie watku
 	GetYouTubeTitleThread->Stop();

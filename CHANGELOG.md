@@ -1,36 +1,43 @@
+1.9.5.0
+-----
+* Spore zmiany w mechanizmie ustawiania pozycji przypiÄ™tych zakÅ‚adek.
+* Poprawki w blokowaniu wysuwania okien przy wciÅ›niÄ™tym klawiszu Ctrl/LPM/PPM oraz aktywnym menu start.
+* Inne mniej waÅ¼ne poprawki optymalizacyjne w kodzie.
+* Aktualizacja komponentÃ³w AlphaControls do nowszej wersji (9.03).
+
 1.9.4.0
 -----
-* Zapisywanie informacji o nieotwartych wiadomoœciach przy zamykaniu komunikatora.
-* Zmiany w domyœlnie w³¹czonych/wy³¹czonych opcjach.
+* Zapisywanie informacji o nieotwartych wiadomoÅ›ciach przy zamykaniu komunikatora.
+* Zmiany w domyÅ›lnie wÅ‚Ä…czonych/wyÅ‚Ä…czonych opcjach.
 
 1.9.3.0
 -----
-* Przemianowanie opcji wy³¹czania przypisywania skrótów klawiaturowych dla przypiêtych zak³adek.
-* Zmiany w domyœlnie w³¹czonych/wy³¹czonych opcjach.
+* Przemianowanie opcji wyÅ‚Ä…czania przypisywania skrÃ³tÃ³w klawiaturowych dla przypiÄ™tych zakÅ‚adek.
+* Zmiany w domyÅ›lnie wÅ‚Ä…czonych/wyÅ‚Ä…czonych opcjach.
 
 1.9.2.0
 -----
-* Poprawki w funkcji pomijania przypiêtych zak³adek w skrótach klawiaturowych.
-* Spore zmiany w pobieraniu nazwy kana³u konferencji.
-* Prawid³owe usuwanie tekstowego licznika nieprzeczytanych z zak³adki czatowej.
+* Poprawki w funkcji pomijania przypiÄ™tych zakÅ‚adek w skrÃ³tach klawiaturowych.
+* Spore zmiany w pobieraniu nazwy kanaÅ‚u konferencji.
+* PrawidÅ‚owe usuwanie tekstowego licznika nieprzeczytanych z zakÅ‚adki czatowej.
 
 1.9.1.0
 -----
-* Pozycja przypiêtych zak³adek z widoczn¹ nazw¹ jest ustawiana przed normalnymi zak³adkami.
-* Przypiête zak³adki z widoczn¹ nazw¹ nie s¹ pomijane w skrótach klawiaturowych.
-* Na przypiêtych zak³adkach z widoczn¹ nazw¹ nie s¹ ustawiane mini awatary.
-* Tekstowy licznik nieprzeczytanych wiadomoœci jest zawsze widoczna na przypiêtych zak³adkach z widoczn¹ nazw¹.
-* Brak dublowania tekstowego licznika nieprzeczytanych wiadomoœci na przypiêtych zak³adkach z widoczn¹ nazw¹.
-* Usuniêcie funkcji wy³¹czania modalnoœci okna wycinka.
-* Ma³e kosmetyczne zmiany na formie ustawieñ.
+* Pozycja przypiÄ™tych zakÅ‚adek z widocznÄ… nazwÄ… jest ustawiana przed normalnymi zakÅ‚adkami.
+* PrzypiÄ™te zakÅ‚adki z widocznÄ… nazwÄ… nie sÄ… pomijane w skrÃ³tach klawiaturowych.
+* Na przypiÄ™tych zakÅ‚adkach z widocznÄ… nazwÄ… nie sÄ… ustawiane mini awatary.
+* Tekstowy licznik nieprzeczytanych wiadomoÅ›ci jest zawsze widoczna na przypiÄ™tych zakÅ‚adkach z widocznÄ… nazwÄ….
+* Brak dublowania tekstowego licznika nieprzeczytanych wiadomoÅ›ci na przypiÄ™tych zakÅ‚adkach z widocznÄ… nazwÄ….
+* UsuniÄ™cie funkcji wyÅ‚Ä…czania modalnoÅ›ci okna wycinka.
+* MaÅ‚e kosmetyczne zmiany na formie ustawieÅ„.
 
 1.9.0.0
 -----
-* Rozró¿nianie kontaktów miêdzy kontami.
-* Mo¿liwoœæ pokazania nazwy przypiêtej zak³adki.
-* Poprawki w odblokowywaniu chowania okna kontaktów przy zamykaniu wyszukiwarki.
-* Usuniêcie sprawdzania wersji komunikatora w kodowaniu/dekodowaniu danych Base64.
-* Aktualizacja komponentów AlphaControls do nowszej wersji (8.53).
+* RozrÃ³Å¼nianie kontaktÃ³w miÄ™dzy kontami.
+* MoÅ¼liwoÅ›Ä‡ pokazania nazwy przypiÄ™tej zakÅ‚adki.
+* Poprawki w odblokowywaniu chowania okna kontaktÃ³w przy zamykaniu wyszukiwarki.
+* UsuniÄ™cie sprawdzania wersji komunikatora w kodowaniu/dekodowaniu danych Base64.
+* Aktualizacja komponentÃ³w AlphaControls do nowszej wersji (8.53).
 
 1.8.4.0
 -----
@@ -38,453 +45,453 @@
 
 1.8.3.0
 -----
-* Drobna poprawka przy przywracaniu sesji samych zak³adek czatowych.
-* Blokada rêcznego przywracania zak³adki czatowej przy braku po³¹czenia z sieci¹.
-* Dok³adniejsze sprawdzanie stanu po³¹czenia konta podczas przywracania sesji zak³adki czatowej.
+* Drobna poprawka przy przywracaniu sesji samych zakÅ‚adek czatowych.
+* Blokada rÄ™cznego przywracania zakÅ‚adki czatowej przy braku poÅ‚Ä…czenia z sieciÄ….
+* DokÅ‚adniejsze sprawdzanie stanu poÅ‚Ä…czenia konta podczas przywracania sesji zakÅ‚adki czatowej.
 
 1.8.2.0
 -----
-* Mo¿liwoœæ przywrócenia ostatnio zamkniêtej zak³adki za pomoc¹ 2xLPM.
+* MoÅ¼liwoÅ›Ä‡ przywrÃ³cenia ostatnio zamkniÄ™tej zakÅ‚adki za pomocÄ… 2xLPM.
 
 1.8.1.0
 -----
-* Drobne poprawki w wysuwaniu okien zza krawêdzi ekranu.
-* Ma³e zmiany w usuwaniu notyfikacji pisania wiadomoœci z belki okna rozmowy.
+* Drobne poprawki w wysuwaniu okien zza krawÄ™dzi ekranu.
+* MaÅ‚e zmiany w usuwaniu notyfikacji pisania wiadomoÅ›ci z belki okna rozmowy.
 * Zmiana kompozycji nie usuwa trzymania okna na wierzchu.
-* Dekodowanie Base64 za pomoc¹ SDK.
-* Kodowanie niektórych danych sesji do Base64.
-* Drobne poprawki w zapisywaniu do cache tytu³ów filmów z YouTube.
-* Poprawki w przywracaniu i zapamiêtywaniu sesji.
-* Zapamiêtywanie aktywnej zak³adki sesji.
-* Przebudowa kolejnoœci zak³adek w pliku sesji po zmianie miejsca zak³adki oraz po otwarciu przypiêtej zak³adki.
-* Poprawne usuwanie tekstowego licznika nieprzeczytanych wiadomoœci z przypiêtej zak³adki.
-* Usuniêcie przebudowy kolejnoœci zak³adek w pliku sesji po wciœniêciu przycisku przejœcia do danej zak³adki.
-* Inne mniej wa¿nie zmiany w kodzie.
-* Aktualizacja komponentów AlphaControls do nowszej wersji (8.51).
+* Dekodowanie Base64 za pomocÄ… SDK.
+* Kodowanie niektÃ³rych danych sesji do Base64.
+* Drobne poprawki w zapisywaniu do cache tytuÅ‚Ã³w filmÃ³w z YouTube.
+* Poprawki w przywracaniu i zapamiÄ™tywaniu sesji.
+* ZapamiÄ™tywanie aktywnej zakÅ‚adki sesji.
+* Przebudowa kolejnoÅ›ci zakÅ‚adek w pliku sesji po zmianie miejsca zakÅ‚adki oraz po otwarciu przypiÄ™tej zakÅ‚adki.
+* Poprawne usuwanie tekstowego licznika nieprzeczytanych wiadomoÅ›ci z przypiÄ™tej zakÅ‚adki.
+* UsuniÄ™cie przebudowy kolejnoÅ›ci zakÅ‚adek w pliku sesji po wciÅ›niÄ™ciu przycisku przejÅ›cia do danej zakÅ‚adki.
+* Inne mniej waÅ¼nie zmiany w kodzie.
+* Aktualizacja komponentÃ³w AlphaControls do nowszej wersji (8.51).
 
 1.8.0.0
 -----
-* Mruganie diod¹ LED klawiatury po przyjœciu nowej wiadomoœci (nie dzia³a z klawiaturami USB).
-* Schowane za okno rozmowy pokazuje siê na ekranie, gdy wybierzemy je z miniaturek na pasku zadañ.
-* Nowe regu³y blokowania chowania okien przy chowaniu, gdy aplikacja straci fokus.
-* Poprawne wyœwietlanie licznika nieprzeczytanych wiadomoœci na belce okna rozmowy.
-* Poprawne usuwanie informacji o pisaniu wiadomoœci z belki okna rozmowy.
-* Poprawne tymczasowe blokowanie chowania okna rozmowy po wysuniêciu przy otwarciu nowej zak³adki.
+* Mruganie diodÄ… LED klawiatury po przyjÅ›ciu nowej wiadomoÅ›ci (nie dziaÅ‚a z klawiaturami USB).
+* Schowane za okno rozmowy pokazuje siÄ™ na ekranie, gdy wybierzemy je z miniaturek na pasku zadaÅ„.
+* Nowe reguÅ‚y blokowania chowania okien przy chowaniu, gdy aplikacja straci fokus.
+* Poprawne wyÅ›wietlanie licznika nieprzeczytanych wiadomoÅ›ci na belce okna rozmowy.
+* Poprawne usuwanie informacji o pisaniu wiadomoÅ›ci z belki okna rozmowy.
+* Poprawne tymczasowe blokowanie chowania okna rozmowy po wysuniÄ™ciu przy otwarciu nowej zakÅ‚adki.
 * Dalsze poprawki w aktywacji okien.
 * Okno menu start nie jest przykrywane oknem rozmowy.
-* Okno kontaktów nie znika z pierwszego planu przy dezaktywacji i aktywnej wyszukiwarce.
-* Poprawki w pobieraniu tytu³ów filmów YouTube.
-* Spore zmiany w funkcji skracania odnoœników.
-* Zwijanie przes³anych obrazków do formy za³¹cznika dzia³a znowu poprawnie.
-* Poprawne dzia³anie blokady chowania okna rozmowy przy aktywnym oknie szybkiego wstawiania emotek.
-* Zmiana stanu kontaktu z aktywnej zak³adki nie przywraca domyœlnego tekstu na belce okna rozmowy.
-* Usuniêcie zabezpieczenia przed zamykaniem wielu zak³adek jednoczeœnie.
-* Usuniêcie wsparcia dla bota Blipa (funkcjonalnoœæ zakomentowana i przeznaczona dla bota Blablera).
+* Okno kontaktÃ³w nie znika z pierwszego planu przy dezaktywacji i aktywnej wyszukiwarce.
+* Poprawki w pobieraniu tytuÅ‚Ã³w filmÃ³w YouTube.
+* Spore zmiany w funkcji skracania odnoÅ›nikÃ³w.
+* Zwijanie przesÅ‚anych obrazkÃ³w do formy zaÅ‚Ä…cznika dziaÅ‚a znowu poprawnie.
+* Poprawne dziaÅ‚anie blokady chowania okna rozmowy przy aktywnym oknie szybkiego wstawiania emotek.
+* Zmiana stanu kontaktu z aktywnej zakÅ‚adki nie przywraca domyÅ›lnego tekstu na belce okna rozmowy.
+* UsuniÄ™cie zabezpieczenia przed zamykaniem wielu zakÅ‚adek jednoczeÅ›nie.
+* UsuniÄ™cie wsparcia dla bota Blipa (funkcjonalnoÅ›Ä‡ zakomentowana i przeznaczona dla bota Blablera).
 * Inne zmiany optymalizacyjne w kodzie.
-* Kompilacja pod poprawionymi nag³ówkami dla wersji 64-bitowej.
-* Zmniejszenie rozmiaru wtyczki 64-bitowej poprzez u¿ycie kompresji LZMA.
-* Aktualizacja komponentów AlphaControls do nowszej wersji (8.46).
+* Kompilacja pod poprawionymi nagÅ‚Ã³wkami dla wersji 64-bitowej.
+* Zmniejszenie rozmiaru wtyczki 64-bitowej poprzez uÅ¼ycie kompresji LZMA.
+* Aktualizacja komponentÃ³w AlphaControls do nowszej wersji (8.46).
 
 1.7.7.2
 -----
-* Poprawka w procesie aktywacji pola wiadomoœci okna rozmowy.
+* Poprawka w procesie aktywacji pola wiadomoÅ›ci okna rozmowy.
 
 1.7.7.0
 -----
-* Zmiana sposobu aktywacji pola wiadomoœci okna rozmowy.
-* Poprawki w aktywacji okna kontaktów.
-* Poprawne wyszukiwanie uchwytu do kontrolki IE w oknie kontaktów.
-* Wyszukiwarka kontaktów nie psuje dzia³ania okna listy kontaktów przy aktywnym chowaniu za krawêdŸ ekranu.
-* Drobna zmiana w plikach INI trzymanych w pamiêci.
-* Inne mniej wa¿ne zmiany w kodzie.
-* Aktualizacja komponentów AlphaControls do nowszej wersji (8.45).
+* Zmiana sposobu aktywacji pola wiadomoÅ›ci okna rozmowy.
+* Poprawki w aktywacji okna kontaktÃ³w.
+* Poprawne wyszukiwanie uchwytu do kontrolki IE w oknie kontaktÃ³w.
+* Wyszukiwarka kontaktÃ³w nie psuje dziaÅ‚ania okna listy kontaktÃ³w przy aktywnym chowaniu za krawÄ™dÅº ekranu.
+* Drobna zmiana w plikach INI trzymanych w pamiÄ™ci.
+* Inne mniej waÅ¼ne zmiany w kodzie.
+* Aktualizacja komponentÃ³w AlphaControls do nowszej wersji (8.45).
 
 1.7.6.0
 -----
-* Personalizacja funkcji skracania odnoœników.
+* Personalizacja funkcji skracania odnoÅ›nikÃ³w.
 * Spore zmiany optymalizacyjne w kodzie.
-* Poprawne odœwie¿anie zak³adek podczas rêcznego wy³¹czenia wtyczki.
-* Ma³e zmiany w procesie przypinania/odpinania zak³adek.
-* Hint dla przycisku trzymania okna rozmowy na wierzchu ju¿ nie znika.
+* Poprawne odÅ›wieÅ¼anie zakÅ‚adek podczas rÄ™cznego wyÅ‚Ä…czenia wtyczki.
+* MaÅ‚e zmiany w procesie przypinania/odpinania zakÅ‚adek.
+* Hint dla przycisku trzymania okna rozmowy na wierzchu juÅ¼ nie znika.
 
 1.7.5.0
 -----
-* Przypiêta zak³adka dla bota tweet.IM posiada ikonkê Twittera.
-* Obs³uga kolorystyki stylizacji okien (barwa i nasycenie).
-* Blokada chowania okna rozmowy i okna kontaktów przy wciœniêtym LPM.
-* Funkcja skracania odnoœników pobiera tytu³y filmików z YouTube dla opisów kontaktów.
-* Drobna poprawka w obs³udze nadawania przeŸroczystoœci obramowañ przez wtyczkê AlphaWindows.
-* Pole wiadomoœci okna rozmowy nie dostaje fokusa przy zmianie aktywnego okna.
-* Drobne zmiany przy enumeracji listy kontaktów.
-* Skrót klawiaturowy Ctrl+Shift+F1 jest zawsze aktywny przy w³¹czonej funkcjonalnoœci chowania okna kontaktów.
-* Brak wysuwania okna rozmowy i okna kontaktów na pulpicie przy aktywnej aplikacji Metro UI.
-* Drobna zmiana w pobieraniu aktualnej ikony belki okna rozmowy (funkcjonalnoœæ notyfikacji pisania wiadomoœci).
-* Aktualizacja komponentów AlphaControls do nowszej wersji (8.44).
+* PrzypiÄ™ta zakÅ‚adka dla bota tweet.IM posiada ikonkÄ™ Twittera.
+* ObsÅ‚uga kolorystyki stylizacji okien (barwa i nasycenie).
+* Blokada chowania okna rozmowy i okna kontaktÃ³w przy wciÅ›niÄ™tym LPM.
+* Funkcja skracania odnoÅ›nikÃ³w pobiera tytuÅ‚y filmikÃ³w z YouTube dla opisÃ³w kontaktÃ³w.
+* Drobna poprawka w obsÅ‚udze nadawania przeÅºroczystoÅ›ci obramowaÅ„ przez wtyczkÄ™ AlphaWindows.
+* Pole wiadomoÅ›ci okna rozmowy nie dostaje fokusa przy zmianie aktywnego okna.
+* Drobne zmiany przy enumeracji listy kontaktÃ³w.
+* SkrÃ³t klawiaturowy Ctrl+Shift+F1 jest zawsze aktywny przy wÅ‚Ä…czonej funkcjonalnoÅ›ci chowania okna kontaktÃ³w.
+* Brak wysuwania okna rozmowy i okna kontaktÃ³w na pulpicie przy aktywnej aplikacji Metro UI.
+* Drobna zmiana w pobieraniu aktualnej ikony belki okna rozmowy (funkcjonalnoÅ›Ä‡ notyfikacji pisania wiadomoÅ›ci).
+* Aktualizacja komponentÃ³w AlphaControls do nowszej wersji (8.44).
 
 1.7.4.0
 -----
-* Zmiana w obs³udze nadawania przeŸroczystoœci obramowañ przez wtyczkê AlphaWindows.
-* Blokada wysuwania okna rozmowy po schowaniu okna kontaktów podczas tworzenia wycinka.
-* Drobna poprawka w wy³¹czaniu modalnoœci okna kontaktów w niektórych sytuacjach.
-* Ma³e poprawki w blokadach uruchamianych po po³¹czeniu siê z sieci¹.
-* Poprawa funkcjonalnoœci zmieniania tekstu na pasku tytu³u okna rozmowy.
-* Systemowe wiadomoœci dotycz¹ce transferu pliku s¹ traktowane jako zwyk³e wiadomoœci (dzia³aj¹ce np. inteligentne prze³¹czanie zak³adek).
+* Zmiana w obsÅ‚udze nadawania przeÅºroczystoÅ›ci obramowaÅ„ przez wtyczkÄ™ AlphaWindows.
+* Blokada wysuwania okna rozmowy po schowaniu okna kontaktÃ³w podczas tworzenia wycinka.
+* Drobna poprawka w wyÅ‚Ä…czaniu modalnoÅ›ci okna kontaktÃ³w w niektÃ³rych sytuacjach.
+* MaÅ‚e poprawki w blokadach uruchamianych po poÅ‚Ä…czeniu siÄ™ z sieciÄ….
+* Poprawa funkcjonalnoÅ›ci zmieniania tekstu na pasku tytuÅ‚u okna rozmowy.
+* Systemowe wiadomoÅ›ci dotyczÄ…ce transferu pliku sÄ… traktowane jako zwykÅ‚e wiadomoÅ›ci (dziaÅ‚ajÄ…ce np. inteligentne przeÅ‚Ä…czanie zakÅ‚adek).
 
 1.7.3.0
 -----
-* Zmiana wygl¹du okna ustawieñ.
-* Kolejne poprawki w przywracaniu prawid³owych procedur okien.
-* Drobne zmiany w usuwaniu graficznej informacji o pisaniu nowej wiadomoœci na pasku tytu³u okna rozmowy.
-* Zmniejszenie rozmiaru wtyczki 32-bitowej poprzez u¿ycie kompresji LZMA.
+* Zmiana wyglÄ…du okna ustawieÅ„.
+* Kolejne poprawki w przywracaniu prawidÅ‚owych procedur okien.
+* Drobne zmiany w usuwaniu graficznej informacji o pisaniu nowej wiadomoÅ›ci na pasku tytuÅ‚u okna rozmowy.
+* Zmniejszenie rozmiaru wtyczki 32-bitowej poprzez uÅ¼ycie kompresji LZMA.
 * Brak kompresji wtyczki 64-bitowej.
-* Wsparcie dla wtyczki AlphaWindows (ustawianie przeŸroczystoœci obramowania).
-* Nie wysuwanie okna zza krawêdzi ekranu przy aktywnym menu start z aplikacji Stardock Start8.
-* Aktualizacja komponentów AlphaControls do najnowszej dostêpnej wersji (8.20).
+* Wsparcie dla wtyczki AlphaWindows (ustawianie przeÅºroczystoÅ›ci obramowania).
+* Nie wysuwanie okna zza krawÄ™dzi ekranu przy aktywnym menu start z aplikacji Stardock Start8.
+* Aktualizacja komponentÃ³w AlphaControls do najnowszej dostÄ™pnej wersji (8.20).
 
 1.7.2.0
 -----
-* Poprawki w przywracaniu prawid³owych procedur okien.
-* Drobne zmiany w skórkowaniu formy ustawieñ.
-* Ma³e kosmetyczne poprawki na formie ustawieñ.
-* Okno kontaktów nie jest ju¿ wysuwane przy instalacji dodatków.
-* Aktualizacja komponentów AlphaControls do najnowszej dostêpnej wersji (8.19).
+* Poprawki w przywracaniu prawidÅ‚owych procedur okien.
+* Drobne zmiany w skÃ³rkowaniu formy ustawieÅ„.
+* MaÅ‚e kosmetyczne poprawki na formie ustawieÅ„.
+* Okno kontaktÃ³w nie jest juÅ¼ wysuwane przy instalacji dodatkÃ³w.
+* Aktualizacja komponentÃ³w AlphaControls do najnowszej dostÄ™pnej wersji (8.19).
 
 1.7.1.0
 -----
-* Opcja informowania graficznie na zak³adkach o zamkniêciu okna rozmowy.
-* Mo¿liwoœæ zablokowania wysuwania okien przy danej aplikacji pe³noekranowej (nale¿y podaæ nazwê pliku EXE).
-* Wy³¹czenie modalnoœci okna instalowania dodatków.
-* Usuniêto b³¹d ze znikaj¹cym na drugi plan okna emotek, centrum akcji oraz formy dorêczenia.
+* Opcja informowania graficznie na zakÅ‚adkach o zamkniÄ™ciu okna rozmowy.
+* MoÅ¼liwoÅ›Ä‡ zablokowania wysuwania okien przy danej aplikacji peÅ‚noekranowej (naleÅ¼y podaÄ‡ nazwÄ™ pliku EXE).
+* WyÅ‚Ä…czenie modalnoÅ›ci okna instalowania dodatkÃ³w.
+* UsuniÄ™to bÅ‚Ä…d ze znikajÄ…cym na drugi plan okna emotek, centrum akcji oraz formy dorÄ™czenia.
 * Poprawne tymczasowe blokowanie chowania okna rozmowy przy aktywnym oknie szybkiego wstawania emotek.
-* Poprawki w blokadzie znikania popup menu w oknie kontaktów, gdy ktoœ do nas pisze.
-* Drobne zmiany w informowaniu graficznie na zak³adkach o pisaniu nowej wiadomoœci.
-* Wspó³praca ze wszystkimi wtyczkami restartuj¹cymi komunikator.
-* Brak ikonki ducha po w³¹czeniu komunikatora przy posiadaniu niewys³anych wiadomoœci.
-* Poprawne ustawianie licznika nieprzeczytanych wiadomoœci na belce okna rozmowy przy aktywnej zmianie tekstu belki.
-* Poprawki w obs³udze niektórych notyfikacji.
-* Aktualizacja komponentów AlphaControls do najnowszej dostêpnej wersji (8.18).
+* Poprawki w blokadzie znikania popup menu w oknie kontaktÃ³w, gdy ktoÅ› do nas pisze.
+* Drobne zmiany w informowaniu graficznie na zakÅ‚adkach o pisaniu nowej wiadomoÅ›ci.
+* WspÃ³Å‚praca ze wszystkimi wtyczkami restartujÄ…cymi komunikator.
+* Brak ikonki ducha po wÅ‚Ä…czeniu komunikatora przy posiadaniu niewysÅ‚anych wiadomoÅ›ci.
+* Poprawne ustawianie licznika nieprzeczytanych wiadomoÅ›ci na belce okna rozmowy przy aktywnej zmianie tekstu belki.
+* Poprawki w obsÅ‚udze niektÃ³rych notyfikacji.
+* Aktualizacja komponentÃ³w AlphaControls do najnowszej dostÄ™pnej wersji (8.18).
 
 1.7.0.0
 -----
 * Dodanie 64-bitowej wersji wtyczki.
-* Mo¿liwoœæ usuniêcia ca³kowicie tekstu na pasku tytu³u okna kontaktów (minus w zdefiniowanym w³asnym tekœcie).
-* Usuniêcie wsparcia dla starego systemu skórkowania.
-* Poprawne pobieranie uchwytu do panelu z zak³adkami oraz paska statusu.
-* Nie znikanie licznika nowych wiadomoœci na belce okna rozmowy przy zmianie statusu kontaktu z aktywnej zak³adki.
-* Poprawne nadawanie fokusa pola do wpisywania wiadomoœci po zamkniêciu okna z wyborem emotek.
-* Drobne zmiany w usuwaniu graficznej informacji o pisaniu nowej wiadomoœci na pasku tytu³u okna rozmowy.
-* Odczyt listy dostêpnych pokojów rozmów na osobnym w¹tku.
-* Usuniêto uci¹¿liwy b³¹d ze znikaniem popup menu w oknie kontaktów, gdy ktoœ do nas pisa³.
-* Inne mniej wa¿ne zmiany w kodzie.
-* Aktualizacja komponentów AlphaControls do najnowszej dostêpnej wersji (8.16).
-* Usuniêcie mo¿liwoœci ukrywania paska statusu oraz przycisku z list¹ zak³adek.
+* MoÅ¼liwoÅ›Ä‡ usuniÄ™cia caÅ‚kowicie tekstu na pasku tytuÅ‚u okna kontaktÃ³w (minus w zdefiniowanym wÅ‚asnym tekÅ›cie).
+* UsuniÄ™cie wsparcia dla starego systemu skÃ³rkowania.
+* Poprawne pobieranie uchwytu do panelu z zakÅ‚adkami oraz paska statusu.
+* Nie znikanie licznika nowych wiadomoÅ›ci na belce okna rozmowy przy zmianie statusu kontaktu z aktywnej zakÅ‚adki.
+* Poprawne nadawanie fokusa pola do wpisywania wiadomoÅ›ci po zamkniÄ™ciu okna z wyborem emotek.
+* Drobne zmiany w usuwaniu graficznej informacji o pisaniu nowej wiadomoÅ›ci na pasku tytuÅ‚u okna rozmowy.
+* Odczyt listy dostÄ™pnych pokojÃ³w rozmÃ³w na osobnym wÄ…tku.
+* UsuniÄ™to uciÄ…Å¼liwy bÅ‚Ä…d ze znikaniem popup menu w oknie kontaktÃ³w, gdy ktoÅ› do nas pisaÅ‚.
+* Inne mniej waÅ¼ne zmiany w kodzie.
+* Aktualizacja komponentÃ³w AlphaControls do najnowszej dostÄ™pnej wersji (8.16).
+* UsuniÄ™cie moÅ¼liwoÅ›ci ukrywania paska statusu oraz przycisku z listÄ… zakÅ‚adek.
 
 1.6.1.4
 -----
-* Poprawiono przywracanie okna kontaktów z zasobnika systemowego.
-* Aktualizacja komponentów AlphaControls do najnowszej dostêpnej wersji (8.10).
+* Poprawiono przywracanie okna kontaktÃ³w z zasobnika systemowego.
+* Aktualizacja komponentÃ³w AlphaControls do najnowszej dostÄ™pnej wersji (8.10).
 
 1.6.1.2
 -----
-* Poprawki w zawijaniu przes³anych obrazków do formy za³¹cznika.
+* Poprawki w zawijaniu przesÅ‚anych obrazkÃ³w do formy zaÅ‚Ä…cznika.
 
 1.6.1.0
 -----
-* Opcja nieustanawiania mini awatara na przypiêtych zak³adkach.
-* Zwiêkszenie interwa³u po którym zmieniana jest pozycja nowo otwartych przypiêtych zak³adek czatowych.
-* Prawid³owe przywracanie zak³adek czatowych nie pochodz¹cych z g³ównego konta Jabber.
-* Poprawne usuwanie tekstu na przypiêtej zak³adce czatu.
-* Usuniêto b³¹d z blokowaniem mo¿liwoœci otwarcia wiadomoœci z zasobnika systemowego.
-* Poprawki w aktywacji pola tekstowego okna rozmowy po wysuniêciu okna.
-* Niewywo³ywanie niektórych funkcji przy zamykaniu okna rozmowy.
-* Mini awatar nie jest pokazywany na formie ustawieñ podczas jego generowania.
-* Poprawne ustawianie pozycji okna rozmowy/kontaktów po lewej stronie stronie ekranu przy wy³¹czonym obramowaniu.
-* Drobne zmiany w procesie otwierania przypiêtych zak³adek wraz z otwarciem okna rozmowy.
-* Timer przywracaj¹cy sesjê z czatami dzia³a a¿ zak³adki siê poprawnie otworz¹.
+* Opcja nieustanawiania mini awatara na przypiÄ™tych zakÅ‚adkach.
+* ZwiÄ™kszenie interwaÅ‚u po ktÃ³rym zmieniana jest pozycja nowo otwartych przypiÄ™tych zakÅ‚adek czatowych.
+* PrawidÅ‚owe przywracanie zakÅ‚adek czatowych nie pochodzÄ…cych z gÅ‚Ã³wnego konta Jabber.
+* Poprawne usuwanie tekstu na przypiÄ™tej zakÅ‚adce czatu.
+* UsuniÄ™to bÅ‚Ä…d z blokowaniem moÅ¼liwoÅ›ci otwarcia wiadomoÅ›ci z zasobnika systemowego.
+* Poprawki w aktywacji pola tekstowego okna rozmowy po wysuniÄ™ciu okna.
+* NiewywoÅ‚ywanie niektÃ³rych funkcji przy zamykaniu okna rozmowy.
+* Mini awatar nie jest pokazywany na formie ustawieÅ„ podczas jego generowania.
+* Poprawne ustawianie pozycji okna rozmowy/kontaktÃ³w po lewej stronie stronie ekranu przy wyÅ‚Ä…czonym obramowaniu.
+* Drobne zmiany w procesie otwierania przypiÄ™tych zakÅ‚adek wraz z otwarciem okna rozmowy.
+* Timer przywracajÄ…cy sesjÄ™ z czatami dziaÅ‚a aÅ¼ zakÅ‚adki siÄ™ poprawnie otworzÄ….
 * Poprawki w tymczasowym blokowaniu okna rozmowy.
-* Optymalizacja zmiany ikonek oraz tekstu zak³adek podczas ich przypinania/odpinania.
-* Poprawne pobieranie uchwytu do okna rozmowy podczas ³adowania wtyczki.
-* Poprawki w pobieraniu uchwytu do okna rozmowy/kontaktów.
-* Optymalizacja odœwie¿ania zak³adek podczas ³adowania/wy³adowywania wtyczki.
-* Otwieranie przypiêtych zak³adek wraz z otwarciem okna rozmowy nie powoduje utraty fokusa na zak³adce otwartej pierwotnie.
-* Podczas przywracania sesji zwyk³e zak³adki s¹ otwierane w tle.
+* Optymalizacja zmiany ikonek oraz tekstu zakÅ‚adek podczas ich przypinania/odpinania.
+* Poprawne pobieranie uchwytu do okna rozmowy podczas Å‚adowania wtyczki.
+* Poprawki w pobieraniu uchwytu do okna rozmowy/kontaktÃ³w.
+* Optymalizacja odÅ›wieÅ¼ania zakÅ‚adek podczas Å‚adowania/wyÅ‚adowywania wtyczki.
+* Otwieranie przypiÄ™tych zakÅ‚adek wraz z otwarciem okna rozmowy nie powoduje utraty fokusa na zakÅ‚adce otwartej pierwotnie.
+* Podczas przywracania sesji zwykÅ‚e zakÅ‚adki sÄ… otwierane w tle.
 
 1.6.0.0
 -----
-* Rozró¿nianie kontaktów równie¿ po ich zasobach.
-* Opcja pokazywania zawsze zak³adki z list¹ kontaktów po wysuniêciu okna kontaktów.
+* RozrÃ³Å¼nianie kontaktÃ³w rÃ³wnieÅ¼ po ich zasobach.
+* Opcja pokazywania zawsze zakÅ‚adki z listÄ… kontaktÃ³w po wysuniÄ™ciu okna kontaktÃ³w.
 * Poprawne przywracanie sesji z wieloma czatami.
-* Pole do wpisywania wiadomoœci dostaje fokus po zamkniêciu okna z wyborem emotek.
-* Zapisywanie sesji wpisanego d³ugiego tekstu w oknie rozmowy nie zawiesza ju¿ komunikatora.
-* Poprawne zapisywanie znaków specjalnych w pliku sesji.
-* Optymalizacja funkcji wywo³ywanych podczas prze³¹czania zak³adek.
-* Drobne poprawki w procesie wy³adowania wtyczki.
-* Usuniêcie b³êdu z niepotrzebnym przypisywaniem domyœlnego globalnego skrótu do pokazywania g³ównego okna AQQ.
-* Zmiana niektórych domyœlnie wy³¹czonych opcji na domyœlnie w³¹czone.
-* Zmiana nazwy zak³adki "Side Slide" na "Chowanie okien".
-* Dodanie odnoœnika do pliku wtyczki na forum AQQ.
-* Inne mniej wa¿ne zmiany kosmetyczne na formie ustawieñ.
-* Prawid³owe pobieranie pseudonimów kontaktów (obejœcie b³êdu #4367).
-* Poprawne ustawianie pozycji okna rozmowy po przywróceniu sesji.
-* Poprawne ustawianie pozycji okna rozmowy po zmianie zasobu przez wtyczkê ResourcesChanger.
+* Pole do wpisywania wiadomoÅ›ci dostaje fokus po zamkniÄ™ciu okna z wyborem emotek.
+* Zapisywanie sesji wpisanego dÅ‚ugiego tekstu w oknie rozmowy nie zawiesza juÅ¼ komunikatora.
+* Poprawne zapisywanie znakÃ³w specjalnych w pliku sesji.
+* Optymalizacja funkcji wywoÅ‚ywanych podczas przeÅ‚Ä…czania zakÅ‚adek.
+* Drobne poprawki w procesie wyÅ‚adowania wtyczki.
+* UsuniÄ™cie bÅ‚Ä™du z niepotrzebnym przypisywaniem domyÅ›lnego globalnego skrÃ³tu do pokazywania gÅ‚Ã³wnego okna AQQ.
+* Zmiana niektÃ³rych domyÅ›lnie wyÅ‚Ä…czonych opcji na domyÅ›lnie wÅ‚Ä…czone.
+* Zmiana nazwy zakÅ‚adki "Side Slide" na "Chowanie okien".
+* Dodanie odnoÅ›nika do pliku wtyczki na forum AQQ.
+* Inne mniej waÅ¼ne zmiany kosmetyczne na formie ustawieÅ„.
+* PrawidÅ‚owe pobieranie pseudonimÃ³w kontaktÃ³w (obejÅ›cie bÅ‚Ä™du #4367).
+* Poprawne ustawianie pozycji okna rozmowy po przywrÃ³ceniu sesji.
+* Poprawne ustawianie pozycji okna rozmowy po zmianie zasobu przez wtyczkÄ™ ResourcesChanger.
 
 1.5.0.0
 -----
-* Opcja pokazywania nazwy zasobu kontaktu na pasku tytu³u okna rozmowy.
-* Wymuszona jedno-sekundowa blokada wysuwania okna rozmowy/kontaktów po zablokowaniu wysuwania okna przez wciœniêty klawisz Ctrl oraz lewy/prawy przycisk myszy.
+* Opcja pokazywania nazwy zasobu kontaktu na pasku tytuÅ‚u okna rozmowy.
+* Wymuszona jedno-sekundowa blokada wysuwania okna rozmowy/kontaktÃ³w po zablokowaniu wysuwania okna przez wciÅ›niÄ™ty klawisz Ctrl oraz lewy/prawy przycisk myszy.
 * Przepisanie wtyczki pod kompilator Embarcadero C++ Builder XE3.
-* Optymalizacja zmieniania treœci pasku tytu³u okna rozmowy.
-* Poprawki w aktywacji nowego okna po schowaniu okna kontaktów.
-* Odœwie¿anie listy kontaktów przy wy³adowaniu wtyczki (nie dzia³a przy wy³¹czaniu komunikatora).
-* Podczas zamykania komunikatora nie s¹ wywo³ywane wszystkie rzeczy w funkcji wy³adowania wtyczki.
-* Podczas zamykania komunikatora blokowane s¹ niektóre notyfikacje komunikatora oraz systemowe hooki.
-* Przywracanie domyœlnego tekstu na belce pseudo okna rozmowy podczas zmiany kompozycji.
-* Aktywne zak³adki nie s¹ ju¿ dodawane do listy ostatnio zamkniêtych przy wy³adowaniu wtyczki, gdzie nie nastêpuje zamykanie komunikatora.
-* Poprawne usuwanie znaku nowej linii w ustawianym tekœcie na belce okna rozmowy.
-* Poprawki w tworzeniu elementów menu w interfejsie komunikatora.
-* Poprawne wysuwanie/chowanie okna kontaktów po klikniêciu LPM w ikonê tray.
-* Poprawki w skórkowaniu panelu z przyciskami.
-* Aktualizacja komponentów AlphaControls do najnowszej dostêpnej wersji (7.70).
-* Inne mniej wa¿nie poprawki optymalizacyjne w kodzie.
+* Optymalizacja zmieniania treÅ›ci pasku tytuÅ‚u okna rozmowy.
+* Poprawki w aktywacji nowego okna po schowaniu okna kontaktÃ³w.
+* OdÅ›wieÅ¼anie listy kontaktÃ³w przy wyÅ‚adowaniu wtyczki (nie dziaÅ‚a przy wyÅ‚Ä…czaniu komunikatora).
+* Podczas zamykania komunikatora nie sÄ… wywoÅ‚ywane wszystkie rzeczy w funkcji wyÅ‚adowania wtyczki.
+* Podczas zamykania komunikatora blokowane sÄ… niektÃ³re notyfikacje komunikatora oraz systemowe hooki.
+* Przywracanie domyÅ›lnego tekstu na belce pseudo okna rozmowy podczas zmiany kompozycji.
+* Aktywne zakÅ‚adki nie sÄ… juÅ¼ dodawane do listy ostatnio zamkniÄ™tych przy wyÅ‚adowaniu wtyczki, gdzie nie nastÄ™puje zamykanie komunikatora.
+* Poprawne usuwanie znaku nowej linii w ustawianym tekÅ›cie na belce okna rozmowy.
+* Poprawki w tworzeniu elementÃ³w menu w interfejsie komunikatora.
+* Poprawne wysuwanie/chowanie okna kontaktÃ³w po klikniÄ™ciu LPM w ikonÄ™ tray.
+* Poprawki w skÃ³rkowaniu panelu z przyciskami.
+* Aktualizacja komponentÃ³w AlphaControls do najnowszej dostÄ™pnej wersji (7.70).
+* Inne mniej waÅ¼nie poprawki optymalizacyjne w kodzie.
 
 1.4.4.2
 -----
-* Ca³kowite usuniêcie odœwie¿ania listy kontaktów przy wy³adowaniu wtyczki.
+* CaÅ‚kowite usuniÄ™cie odÅ›wieÅ¼ania listy kontaktÃ³w przy wyÅ‚adowaniu wtyczki.
 
 1.4.4.0
 -----
-* Nieodœwie¿anie listy kontaktów przy zamykaniu komunikatora.
+* NieodÅ›wieÅ¼anie listy kontaktÃ³w przy zamykaniu komunikatora.
 
 1.4.3.0
 -----
-* Odœwie¿anie listy kontaktów po zmianie opcji skracania odnoœników.
-* Optymalizacja algorytmu skracania odnoœników.
-* Inne mniej wa¿ne poprawki w kodzie.
+* OdÅ›wieÅ¼anie listy kontaktÃ³w po zmianie opcji skracania odnoÅ›nikÃ³w.
+* Optymalizacja algorytmu skracania odnoÅ›nikÃ³w.
+* Inne mniej waÅ¼ne poprawki w kodzie.
 
 1.4.2.0
 -----
-* Skracanie wyœwietlania odnoœników w oknie kontaktów do wygodniejszej formy.
-* Pobieranie stanów wszystkich kontaktów podczas ³adowania wtyczki.
-* Drobne zmiany w algorytmie skracania odnoœników.
-* Ustawianie poprawnej pozycji okna rozmowy oraz okna kontaktów, gdy wtyczka ResourcesChanger wyœle informacjê o zmianie zasobu.
+* Skracanie wyÅ›wietlania odnoÅ›nikÃ³w w oknie kontaktÃ³w do wygodniejszej formy.
+* Pobieranie stanÃ³w wszystkich kontaktÃ³w podczas Å‚adowania wtyczki.
+* Drobne zmiany w algorytmie skracania odnoÅ›nikÃ³w.
+* Ustawianie poprawnej pozycji okna rozmowy oraz okna kontaktÃ³w, gdy wtyczka ResourcesChanger wyÅ›le informacjÄ™ o zmianie zasobu.
 
 1.4.1.0
 -----
-* Opcja wy³¹czenia przypiêtych zak³adek z prze³¹czania zak³adek za pomoc¹ skrótu klawiaturowego Ctrl+Tab / Ctrl+Shift+Tab.
-* Opcja wy³¹czenia przypisywania skrótów klawiaturowych dla przypiêtych zak³adek.
-* Grafika ikony w zasobniku systemowym dla niewys³anych wiadomoœci mo¿e byæ pobierana z aktywnej kompozycji.
-* Skracanie wyœwietlania odnoœników w oknie rozmowy do wygodniejszej formy.
-* Poprawki w szukaniu uchwytu do paska informacyjnego oraz paska narzêdzi.
-* Poprawki w pobieraniu treœci wpisanego tekstu w polu tekstowym okna rozmowy.
-* Brak b³êdu z widocznym tylko obramowaniem okna kontaktów/rozmowy po w³¹czeniu komunikatora (tylko dla starego systemu skórkowania).
-* Odœwie¿anie okna rozmowy po ukryciu przycisku z list¹ aktywnych zak³adek.
-* Zmiany w funkcji blokowania wysuwania okien przy wciœniêtym klawiszu Ctrl oraz LPM/PPM - wysuwanie nie jest blokowane przy wciœniêciu jednoczeœnie klawisza Ctrl oraz LPM (niezbêdne przy Drag&Drop).
-* Otwarcie zak³adki z niewys³an¹ wiadomoœci¹ ukrywa ikonkê z zasobnika systemowego (o ile nie ma innych niewys³anych wiadomoœci).
-* Aktualizacja komponentów AlphaControls do najnowszej dostêpnej wersji (7.66).
-* Ma³e poprawki kosmetyczne na formie ustawieñ.
-* Zmiany w domyœlnym w³¹czeniu niektórych funkcji.
-* Inne mniej wa¿ne zmiany w kodzie.
+* Opcja wyÅ‚Ä…czenia przypiÄ™tych zakÅ‚adek z przeÅ‚Ä…czania zakÅ‚adek za pomocÄ… skrÃ³tu klawiaturowego Ctrl+Tab / Ctrl+Shift+Tab.
+* Opcja wyÅ‚Ä…czenia przypisywania skrÃ³tÃ³w klawiaturowych dla przypiÄ™tych zakÅ‚adek.
+* Grafika ikony w zasobniku systemowym dla niewysÅ‚anych wiadomoÅ›ci moÅ¼e byÄ‡ pobierana z aktywnej kompozycji.
+* Skracanie wyÅ›wietlania odnoÅ›nikÃ³w w oknie rozmowy do wygodniejszej formy.
+* Poprawki w szukaniu uchwytu do paska informacyjnego oraz paska narzÄ™dzi.
+* Poprawki w pobieraniu treÅ›ci wpisanego tekstu w polu tekstowym okna rozmowy.
+* Brak bÅ‚Ä™du z widocznym tylko obramowaniem okna kontaktÃ³w/rozmowy po wÅ‚Ä…czeniu komunikatora (tylko dla starego systemu skÃ³rkowania).
+* OdÅ›wieÅ¼anie okna rozmowy po ukryciu przycisku z listÄ… aktywnych zakÅ‚adek.
+* Zmiany w funkcji blokowania wysuwania okien przy wciÅ›niÄ™tym klawiszu Ctrl oraz LPM/PPM - wysuwanie nie jest blokowane przy wciÅ›niÄ™ciu jednoczeÅ›nie klawisza Ctrl oraz LPM (niezbÄ™dne przy Drag&Drop).
+* Otwarcie zakÅ‚adki z niewysÅ‚anÄ… wiadomoÅ›ciÄ… ukrywa ikonkÄ™ z zasobnika systemowego (o ile nie ma innych niewysÅ‚anych wiadomoÅ›ci).
+* Aktualizacja komponentÃ³w AlphaControls do najnowszej dostÄ™pnej wersji (7.66).
+* MaÅ‚e poprawki kosmetyczne na formie ustawieÅ„.
+* Zmiany w domyÅ›lnym wÅ‚Ä…czeniu niektÃ³rych funkcji.
+* Inne mniej waÅ¼ne zmiany w kodzie.
 
 1.4.0.0
 -----
-* Integracja funkcjonalnoœci wtyczki SideSlide
-* Mo¿liwoœæ wy³¹czenia przycisku zamykania zak³adek.
-* Opcja zamykania zak³adek poprzez dwukrotne klikniêcie LPM.
-* Mo¿liwoœæ wy³¹czenia graficznego licznika nieprzeczytanych wiadomoœci na nieaktywnych zak³adkach.
-* Rozszerzono funkcjonalnoœæ zmiany tekstu na pasku tytu³u okna kontaktów o nazwê komputera oraz zasobu g³ównego konta Jabber.
-* Funkcja ustawiania nazwy zasobu na pasku tytu³u okna kontaktów posiada wsparcie dla wtyczki ResourcesChanger.
-* Dodawanie aktywnych zak³adek do listy ostatnio zamkniêtych przy wy³adowywaniu wtyczki.
-* Mo¿liwoœæ wejœcia do ustawieñ wtyczki z poziomu menu szybkiego dostêpu do wtyczek.
-* Ca³kowita przebudowa okna ustawieñ.
-* Wtyczka posiada w³asn¹ ikonê pokazywan¹ w ustawieniach komunikatora na liœcie wtyczek.
-* Opcja ukrywania przycisku z list¹ aktywnych zak³adek z okna rozmowy.
-* Opcja ukrywania strza³ek do przewijania zak³adek w oknie rozmowy.
-* Klikniêcie w chmurkê informuj¹c¹ o niewys³anych wiadomoœciach powoduje otwarcie zak³adek z tymi wiadomoœciami.
-* Opcja otwierania okna rozmowy z now¹ wiadomoœci¹ za pomoc¹ skrótu aktualnie nieprzypisanego do ¿adnej otwartej zak³adki.
-* Wy³¹czanie modalnoœci okna korektora wysy³ania zdjêæ.
-* Uwidoczniona opcja wy³¹czenia wbudowanej w komunikator funkcji pisaka na pasku tytu³u okna rozmowy.
-* Opcja wy³¹czania funkcji szukania na liœcie kontaktów.
-* Zmiany w funkcji informowania o liczbie nieprzeczytanych wiadomoœci na nieaktywnych zak³adkach.
-* Drobne zmiany w przypisywaniu uchwytu do g³ównego okna.
-* Spore zmiany w tworzeniu dynamicznych timerów.
-* Poprawki w trzymaniu okna rozmowy na wierzchu podczas wysy³ania wycinka.
-* Ma³a poprawka w przywracaniu ostatnio zamkniêtej zak³adki za pomoc¹ skrótu Ctrl+LPM.
+* Integracja funkcjonalnoÅ›ci wtyczki SideSlide
+* MoÅ¼liwoÅ›Ä‡ wyÅ‚Ä…czenia przycisku zamykania zakÅ‚adek.
+* Opcja zamykania zakÅ‚adek poprzez dwukrotne klikniÄ™cie LPM.
+* MoÅ¼liwoÅ›Ä‡ wyÅ‚Ä…czenia graficznego licznika nieprzeczytanych wiadomoÅ›ci na nieaktywnych zakÅ‚adkach.
+* Rozszerzono funkcjonalnoÅ›Ä‡ zmiany tekstu na pasku tytuÅ‚u okna kontaktÃ³w o nazwÄ™ komputera oraz zasobu gÅ‚Ã³wnego konta Jabber.
+* Funkcja ustawiania nazwy zasobu na pasku tytuÅ‚u okna kontaktÃ³w posiada wsparcie dla wtyczki ResourcesChanger.
+* Dodawanie aktywnych zakÅ‚adek do listy ostatnio zamkniÄ™tych przy wyÅ‚adowywaniu wtyczki.
+* MoÅ¼liwoÅ›Ä‡ wejÅ›cia do ustawieÅ„ wtyczki z poziomu menu szybkiego dostÄ™pu do wtyczek.
+* CaÅ‚kowita przebudowa okna ustawieÅ„.
+* Wtyczka posiada wÅ‚asnÄ… ikonÄ™ pokazywanÄ… w ustawieniach komunikatora na liÅ›cie wtyczek.
+* Opcja ukrywania przycisku z listÄ… aktywnych zakÅ‚adek z okna rozmowy.
+* Opcja ukrywania strzaÅ‚ek do przewijania zakÅ‚adek w oknie rozmowy.
+* KlikniÄ™cie w chmurkÄ™ informujÄ…cÄ… o niewysÅ‚anych wiadomoÅ›ciach powoduje otwarcie zakÅ‚adek z tymi wiadomoÅ›ciami.
+* Opcja otwierania okna rozmowy z nowÄ… wiadomoÅ›ciÄ… za pomocÄ… skrÃ³tu aktualnie nieprzypisanego do Å¼adnej otwartej zakÅ‚adki.
+* WyÅ‚Ä…czanie modalnoÅ›ci okna korektora wysyÅ‚ania zdjÄ™Ä‡.
+* Uwidoczniona opcja wyÅ‚Ä…czenia wbudowanej w komunikator funkcji pisaka na pasku tytuÅ‚u okna rozmowy.
+* Opcja wyÅ‚Ä…czania funkcji szukania na liÅ›cie kontaktÃ³w.
+* Zmiany w funkcji informowania o liczbie nieprzeczytanych wiadomoÅ›ci na nieaktywnych zakÅ‚adkach.
+* Drobne zmiany w przypisywaniu uchwytu do gÅ‚Ã³wnego okna.
+* Spore zmiany w tworzeniu dynamicznych timerÃ³w.
+* Poprawki w trzymaniu okna rozmowy na wierzchu podczas wysyÅ‚ania wycinka.
+* MaÅ‚a poprawka w przywracaniu ostatnio zamkniÄ™tej zakÅ‚adki za pomocÄ… skrÃ³tu Ctrl+LPM.
 * Zmiany w pobieraniu uchwytu do aktywnego okna.
-* Zmiany optymalizacyjne w procedurze wy³adowania wtyczki.
-* Optymalizacja funkcji odœwie¿ania zak³adek.
-* Poprawne przywracanie ikony zak³adki bota Blip po wy³adowaniu wtyczki.
-* Aktualizacja komponentów AlphaControls do najnowszej dostêpnej wersji (7.65).
-* Funkcja trzymania okna na wierzchu blokuje chowanie okna rozmowy za krawêdŸ ekranu.
-* Ma³e optymalizacje w odczytywaniu i zapisywaniu ustawieñ.
+* Zmiany optymalizacyjne w procedurze wyÅ‚adowania wtyczki.
+* Optymalizacja funkcji odÅ›wieÅ¼ania zakÅ‚adek.
+* Poprawne przywracanie ikony zakÅ‚adki bota Blip po wyÅ‚adowaniu wtyczki.
+* Aktualizacja komponentÃ³w AlphaControls do najnowszej dostÄ™pnej wersji (7.65).
+* Funkcja trzymania okna na wierzchu blokuje chowanie okna rozmowy za krawÄ™dÅº ekranu.
+* MaÅ‚e optymalizacje w odczytywaniu i zapisywaniu ustawieÅ„.
 * Poprawki w zapisywaniu aktywnej sesji do pliku.
-* Rozszerzenie opisu wtyczki wyœwietlaj¹cego siê w ustawieniach komunikatora.
-* Poprawki w obs³udze notyfikacji zmiany aktywnej zak³adki.
-* Zmiana sposobu ustawiania modalnoœci formy wysy³ania wycinka.
-* Drobne zmiany w zabezpieczeniu przed zamykaniem wielu zak³adek jednoczeœnie.
-* Dodanie animacji przy pokazywaniu okna ustawieñ.
-* Uwidocznienie zaawansowanych opcji funkcjonalnoœci zwijania przes³anych obrazków do formy za³¹cznika oraz ustawieñ chmurek informacyjnych.
-* Wbudowana w komunikator funkcja pisaka na pasku tytu³u okna rozmowy jest wy³¹czona tylko gdy, aktywowany jest licznik nieprzeczytanych wiadomoœci lub zmieniany pasek tytu³u okna.
-* Usuniêto opcjê blokowania zmiany rozmiaru okna rozmowy z uwagi na liczne b³êdy w jej dzia³aniu.
-* Poprawne szukanie uchwytu do paska zak³adek przy pierwszym otwieraniu okna rozmowy.
-* Ma³e poprawki w zapisywaniu aktualnego stanu kontaktów.
-* Zmiany w ustalaniu lokalizacji awatarów kontaktów dla przypiêtych zak³adek.
-* Nie usuwanie uchwytów kontrolek okna rozmowy po jego zamkniêciu.
-* Inne mniej wa¿ne poprawki optymalizacyjne w kodzie.
-* Hook lokalny na myszkê nie dzia³a, je¿eli jest aktywne jakieœ popumenu.
-* Otwieranie zawiniêtych obrazków do formy za³¹cznika w domyœlnej przegl¹darce graficznej zamiast w przegl¹darce WWW.
-* Drobne zmiany w emulacji stylu za³¹cznika dla zwiniêtych obrazków.
-* Poprawne przywracanie okna rozmowy przy pomocy zdefiniowanego skrótu klawiszowego.
-* Poprawne zawijanie przes³anych obrazów do formy za³¹czników, gdy w wiadomoœci znajduje siê tekst lub parê obrazków.
-* Chmurka informacyjna zawieraj¹ca treœæ nowej wiadomoœci pokazuje dok³adn¹ iloœæ otrzymanych obrazków.
+* Rozszerzenie opisu wtyczki wyÅ›wietlajÄ…cego siÄ™ w ustawieniach komunikatora.
+* Poprawki w obsÅ‚udze notyfikacji zmiany aktywnej zakÅ‚adki.
+* Zmiana sposobu ustawiania modalnoÅ›ci formy wysyÅ‚ania wycinka.
+* Drobne zmiany w zabezpieczeniu przed zamykaniem wielu zakÅ‚adek jednoczeÅ›nie.
+* Dodanie animacji przy pokazywaniu okna ustawieÅ„.
+* Uwidocznienie zaawansowanych opcji funkcjonalnoÅ›ci zwijania przesÅ‚anych obrazkÃ³w do formy zaÅ‚Ä…cznika oraz ustawieÅ„ chmurek informacyjnych.
+* Wbudowana w komunikator funkcja pisaka na pasku tytuÅ‚u okna rozmowy jest wyÅ‚Ä…czona tylko gdy, aktywowany jest licznik nieprzeczytanych wiadomoÅ›ci lub zmieniany pasek tytuÅ‚u okna.
+* UsuniÄ™to opcjÄ™ blokowania zmiany rozmiaru okna rozmowy z uwagi na liczne bÅ‚Ä™dy w jej dziaÅ‚aniu.
+* Poprawne szukanie uchwytu do paska zakÅ‚adek przy pierwszym otwieraniu okna rozmowy.
+* MaÅ‚e poprawki w zapisywaniu aktualnego stanu kontaktÃ³w.
+* Zmiany w ustalaniu lokalizacji awatarÃ³w kontaktÃ³w dla przypiÄ™tych zakÅ‚adek.
+* Nie usuwanie uchwytÃ³w kontrolek okna rozmowy po jego zamkniÄ™ciu.
+* Inne mniej waÅ¼ne poprawki optymalizacyjne w kodzie.
+* Hook lokalny na myszkÄ™ nie dziaÅ‚a, jeÅ¼eli jest aktywne jakieÅ› popumenu.
+* Otwieranie zawiniÄ™tych obrazkÃ³w do formy zaÅ‚Ä…cznika w domyÅ›lnej przeglÄ…darce graficznej zamiast w przeglÄ…darce WWW.
+* Drobne zmiany w emulacji stylu zaÅ‚Ä…cznika dla zwiniÄ™tych obrazkÃ³w.
+* Poprawne przywracanie okna rozmowy przy pomocy zdefiniowanego skrÃ³tu klawiszowego.
+* Poprawne zawijanie przesÅ‚anych obrazÃ³w do formy zaÅ‚Ä…cznikÃ³w, gdy w wiadomoÅ›ci znajduje siÄ™ tekst lub parÄ™ obrazkÃ³w.
+* Chmurka informacyjna zawierajÄ…ca treÅ›Ä‡ nowej wiadomoÅ›ci pokazuje dokÅ‚adnÄ… iloÅ›Ä‡ otrzymanych obrazkÃ³w.
 
 1.3.0.0
 -----
-* Przywracanie ostatnio zamkniêtej zak³adki za pomoc¹ œrodkowego przycisku myszy oraz przycisku Ctrl wraz lewym przyciskiem myszy.
-* Mo¿liwoœæ zablokowania zmiany rozmiaru okna rozmowy.
-* Dodanie zabezpieczenia przed wy³¹czeniem obs³ugi zak³adek w oknie rozmowy - opcji niezbêdnej do poprawnego dzia³ania wtyczki.
-* Odœwie¿anie okna rozmowy po ukryciu paska informacyjnego.
-* Drobne zmiany w funkcji informowania o pisaniu nowej wiadomoœci na zak³adkach.
-* Poprawne ustalanie ostatnio zamkniêtych zak³adek po przywróceniu sesji.
-* Zablokowanie dzia³ania skrótu przywracaj¹cego okno rozmowy przy zabezpieczonym komunikatorze.
-* Zamykanie okna ustawieñ wtyczki przy zabezpieczonym komunikatorze.
-* Zablokowanie niektórych funkcjonalnoœci wtyczki przy zabezpieczonym komunikatorze.
-* Aktualizacja komponentów AlphaControls do najnowszej dostêpnej wersji (7.60).
-* Inne mniej wa¿ne poprawki w kodzie.
+* Przywracanie ostatnio zamkniÄ™tej zakÅ‚adki za pomocÄ… Å›rodkowego przycisku myszy oraz przycisku Ctrl wraz lewym przyciskiem myszy.
+* MoÅ¼liwoÅ›Ä‡ zablokowania zmiany rozmiaru okna rozmowy.
+* Dodanie zabezpieczenia przed wyÅ‚Ä…czeniem obsÅ‚ugi zakÅ‚adek w oknie rozmowy - opcji niezbÄ™dnej do poprawnego dziaÅ‚ania wtyczki.
+* OdÅ›wieÅ¼anie okna rozmowy po ukryciu paska informacyjnego.
+* Drobne zmiany w funkcji informowania o pisaniu nowej wiadomoÅ›ci na zakÅ‚adkach.
+* Poprawne ustalanie ostatnio zamkniÄ™tych zakÅ‚adek po przywrÃ³ceniu sesji.
+* Zablokowanie dziaÅ‚ania skrÃ³tu przywracajÄ…cego okno rozmowy przy zabezpieczonym komunikatorze.
+* Zamykanie okna ustawieÅ„ wtyczki przy zabezpieczonym komunikatorze.
+* Zablokowanie niektÃ³rych funkcjonalnoÅ›ci wtyczki przy zabezpieczonym komunikatorze.
+* Aktualizacja komponentÃ³w AlphaControls do najnowszej dostÄ™pnej wersji (7.60).
+* Inne mniej waÅ¼ne poprawki w kodzie.
 
 1.2.0.0
 -----
-* Skórkowanie wiêkszoœci elementów okna ustawieñ wtyczki.
-* Mo¿liwoœæ szybkiej minimalizacji/przywrócenia okna rozmowy za pomoc¹ skrótu klawiszowego.
+* SkÃ³rkowanie wiÄ™kszoÅ›ci elementÃ³w okna ustawieÅ„ wtyczki.
+* MoÅ¼liwoÅ›Ä‡ szybkiej minimalizacji/przywrÃ³cenia okna rozmowy za pomocÄ… skrÃ³tu klawiszowego.
 
 1.1.1.0
 -----
-* Poprawne rozpoznawanie nadawcy wiadomoœci w przypadku multilogowania w sieci GG.
-* Poprawki w usuwaniu hooka systemowego zak³adanego na okno rozmowy.
-* Poprawki w usuwaniu elementu menu s³u¿¹cego do przypinania/odpinania zak³adek.
-* Przywracanie za pomoc¹ skrótu klawiaturowego ostatnio zamkniêtej zak³adki, nie wczytywa³o ostatnio przeprowadzonej rozmowy.
-* Ma³e poprawki kosmetyczne formie ustawie.
+* Poprawne rozpoznawanie nadawcy wiadomoÅ›ci w przypadku multilogowania w sieci GG.
+* Poprawki w usuwaniu hooka systemowego zakÅ‚adanego na okno rozmowy.
+* Poprawki w usuwaniu elementu menu sÅ‚uÅ¼Ä…cego do przypinania/odpinania zakÅ‚adek.
+* Przywracanie za pomocÄ… skrÃ³tu klawiaturowego ostatnio zamkniÄ™tej zakÅ‚adki, nie wczytywaÅ‚o ostatnio przeprowadzonej rozmowy.
+* MaÅ‚e poprawki kosmetyczne formie ustawie.
 * Optymalizacja kodu.
 
 1.1.0.8
 -----
-* Poprawki w pobieraniu uchwytu zmienionego komponentu pola wiadomoœci.
+* Poprawki w pobieraniu uchwytu zmienionego komponentu pola wiadomoÅ›ci.
 
 1.1.0.6
 -----
-* Poprawki w parsowaniu pakietu XML zawieraj¹cego listê czatów.
-* Brak "migania zak³adki" przy prze³¹czaniu na nieprzypiêt¹ zak³adkê czatow¹.
-* Licznik znaków nie jest kasowany  przy prze³¹czaniu zak³adek (z wyj¹tkiem zak³adek zawieraj¹cych licznik nieprzeczytanych wiadomoœci).
-* Drobne poprawki w funkcji licznika nieprzeczytanych wiadomoœci na pasku tytu³u okna rozmowy.
-* Poprawki w usuwaniu/dodawaniu informacji graficznej na zak³adkach o pisaniu nowej wiadomoœci.
+* Poprawki w parsowaniu pakietu XML zawierajÄ…cego listÄ™ czatÃ³w.
+* Brak "migania zakÅ‚adki" przy przeÅ‚Ä…czaniu na nieprzypiÄ™tÄ… zakÅ‚adkÄ™ czatowÄ….
+* Licznik znakÃ³w nie jest kasowany  przy przeÅ‚Ä…czaniu zakÅ‚adek (z wyjÄ…tkiem zakÅ‚adek zawierajÄ…cych licznik nieprzeczytanych wiadomoÅ›ci).
+* Drobne poprawki w funkcji licznika nieprzeczytanych wiadomoÅ›ci na pasku tytuÅ‚u okna rozmowy.
+* Poprawki w usuwaniu/dodawaniu informacji graficznej na zakÅ‚adkach o pisaniu nowej wiadomoÅ›ci.
 
 1.1.0.4
 -----
-* Kolejne poprawki w ustawianiu nowej procedury okna rozmowy przy ³adowaniu wtyczki. (#4862)
-* Optymalizacja dzia³ania funkcji automatycznego ukrywania paska narzêdzi. (#4863)
+* Kolejne poprawki w ustawianiu nowej procedury okna rozmowy przy Å‚adowaniu wtyczki. (#4862)
+* Optymalizacja dziaÅ‚ania funkcji automatycznego ukrywania paska narzÄ™dzi. (#4863)
 
 1.1.0.2
 -----
-* Mo¿liwoœæ wyœwietlania licznika znaków na przypiêtych zak³adkach.
-* Mo¿liwoœæ manualnego ustawienia trybu zwijania przes³anych obrazków do formy za³¹cznika (klucz "CollapseImagesMode" w sekcji "Other" - 1 = domyœlnie, 2 = tylko dla wys³anych obrazków, 3 = tylko dla odebranych obrazków).
-* Poprawki w funkcjach ustawiaj¹cych tekst zak³adkach.
-* Poprawki w ustawianiu nowej procedury okna rozmowy przy ³adowaniu wtyczki.
+* MoÅ¼liwoÅ›Ä‡ wyÅ›wietlania licznika znakÃ³w na przypiÄ™tych zakÅ‚adkach.
+* MoÅ¼liwoÅ›Ä‡ manualnego ustawienia trybu zwijania przesÅ‚anych obrazkÃ³w do formy zaÅ‚Ä…cznika (klucz "CollapseImagesMode" w sekcji "Other" - 1 = domyÅ›lnie, 2 = tylko dla wysÅ‚anych obrazkÃ³w, 3 = tylko dla odebranych obrazkÃ³w).
+* Poprawki w funkcjach ustawiajÄ…cych tekst zakÅ‚adkach.
+* Poprawki w ustawianiu nowej procedury okna rozmowy przy Å‚adowaniu wtyczki.
 
 1.1.0.0
 -----
-* Przypinanie zak³adek.
-* Integracja funkcjonalnoœci wtyczki OffAntiSpim.
-* Opcja zapamiêtywania wy³¹cznie zak³adek z kontaktami z którymi przeprowadziliœmy rozmowê.
-* Nowe ikonki dla powiadomienia o pisaniu nowej wiadomoœci na pasku tytu³u okna rozmowy.
-* Graficzne powiadomienie o pisaniu nowej wiadomoœci na zak³adkach.
-* Rozszerzenie funkcjonalnoœci graficznego powiadomienia o pisaniu nowej wiadomoœci - dodano informacjê spauzowaniu pisania.
-* Pamiêtanie maksymalizacji okna rozmowy. (#4017)
-* Mo¿liwoœæ ukrycia dolnego paska informacyjnego.
-* Funkcja automatycznego ukrywania paska narzêdzi.
-* Dodawanie ostatnio informacji o zamkniêtych zak³adkach do listy wbudowanej w komunikator.
-* Prze³¹czanie zak³adek równie¿ dla czatów/konferencji.
-* Mo¿liwoœæ otwierania ponownie ostatnio zamkniêtych zak³adek czatów.
-* Liczba nieprzeczytanych wiadomoœci równie¿ na nieaktywnych zak³adkach czatów/konferencji.
-* Zapamiêtywanie niewys³anych wiadomoœci na czatach/konferencjach.
-* Funkcja zapamiêtywania sesji dzia³a równie¿ dla czatów.
-* Normalizacja nazw czatów na zak³adkach (funkcja zale¿na od ustawienia normalizacji nazw na liœcie czatów).
-* Mo¿liwoœæ ustawienia na pasku tytu³u g³ównego okna samej nazwy komunikatora.
-* Przy zamykaniu komunikatora aktywne zak³adki dodawane s¹ do listy ostatnio zamkniêtych.
-* Skrót do przywracania ostatnio zamkniêtej zak³adki dzia³a równie¿ w g³ównym oknie komunikatora.
-* Pobieranie ikonek interfejsu wtyczki z aktywnej kompozycji (pliki musz¹ byæ umieszczone w folderze TabKit aktywnej kompozycji).
-* Zwijanie przes³anych obrazków do formy za³¹cznika.
-* Mo¿liwoœæ manualnego ustawienia czasu wyœwietlania siê chmurek informacyjnych oraz wy³¹czenia nadpisywania siê ich (klucz "CloudTimeOut" oraz "CloudTickMode" w sekcji "Other").
-* Licznik nieprzeczytanych wiadomoœci na pasku tytu³u nie powiela siê oraz nie znika przy zmianie stanu kontaktu.
-* Usuniêto krytyczny b³¹d z wy³¹czaniem siê komunikatora przy zamykaniu okna rozmowy.
-* Poprawki usuwaniu tworzonych przez wtyczkê popupmenu w interfejsie AQQ.
-* Ma³e poprawki podczas zapisywania zale¿nych miêdzy sob¹ ustawieñ.
-* Inne mniej wa¿ne poprawki w kodzie.
+* Przypinanie zakÅ‚adek.
+* Integracja funkcjonalnoÅ›ci wtyczki OffAntiSpim.
+* Opcja zapamiÄ™tywania wyÅ‚Ä…cznie zakÅ‚adek z kontaktami z ktÃ³rymi przeprowadziliÅ›my rozmowÄ™.
+* Nowe ikonki dla powiadomienia o pisaniu nowej wiadomoÅ›ci na pasku tytuÅ‚u okna rozmowy.
+* Graficzne powiadomienie o pisaniu nowej wiadomoÅ›ci na zakÅ‚adkach.
+* Rozszerzenie funkcjonalnoÅ›ci graficznego powiadomienia o pisaniu nowej wiadomoÅ›ci - dodano informacjÄ™ spauzowaniu pisania.
+* PamiÄ™tanie maksymalizacji okna rozmowy. (#4017)
+* MoÅ¼liwoÅ›Ä‡ ukrycia dolnego paska informacyjnego.
+* Funkcja automatycznego ukrywania paska narzÄ™dzi.
+* Dodawanie ostatnio informacji o zamkniÄ™tych zakÅ‚adkach do listy wbudowanej w komunikator.
+* PrzeÅ‚Ä…czanie zakÅ‚adek rÃ³wnieÅ¼ dla czatÃ³w/konferencji.
+* MoÅ¼liwoÅ›Ä‡ otwierania ponownie ostatnio zamkniÄ™tych zakÅ‚adek czatÃ³w.
+* Liczba nieprzeczytanych wiadomoÅ›ci rÃ³wnieÅ¼ na nieaktywnych zakÅ‚adkach czatÃ³w/konferencji.
+* ZapamiÄ™tywanie niewysÅ‚anych wiadomoÅ›ci na czatach/konferencjach.
+* Funkcja zapamiÄ™tywania sesji dziaÅ‚a rÃ³wnieÅ¼ dla czatÃ³w.
+* Normalizacja nazw czatÃ³w na zakÅ‚adkach (funkcja zaleÅ¼na od ustawienia normalizacji nazw na liÅ›cie czatÃ³w).
+* MoÅ¼liwoÅ›Ä‡ ustawienia na pasku tytuÅ‚u gÅ‚Ã³wnego okna samej nazwy komunikatora.
+* Przy zamykaniu komunikatora aktywne zakÅ‚adki dodawane sÄ… do listy ostatnio zamkniÄ™tych.
+* SkrÃ³t do przywracania ostatnio zamkniÄ™tej zakÅ‚adki dziaÅ‚a rÃ³wnieÅ¼ w gÅ‚Ã³wnym oknie komunikatora.
+* Pobieranie ikonek interfejsu wtyczki z aktywnej kompozycji (pliki muszÄ… byÄ‡ umieszczone w folderze TabKit aktywnej kompozycji).
+* Zwijanie przesÅ‚anych obrazkÃ³w do formy zaÅ‚Ä…cznika.
+* MoÅ¼liwoÅ›Ä‡ manualnego ustawienia czasu wyÅ›wietlania siÄ™ chmurek informacyjnych oraz wyÅ‚Ä…czenia nadpisywania siÄ™ ich (klucz "CloudTimeOut" oraz "CloudTickMode" w sekcji "Other").
+* Licznik nieprzeczytanych wiadomoÅ›ci na pasku tytuÅ‚u nie powiela siÄ™ oraz nie znika przy zmianie stanu kontaktu.
+* UsuniÄ™to krytyczny bÅ‚Ä…d z wyÅ‚Ä…czaniem siÄ™ komunikatora przy zamykaniu okna rozmowy.
+* Poprawki usuwaniu tworzonych przez wtyczkÄ™ popupmenu w interfejsie AQQ.
+* MaÅ‚e poprawki podczas zapisywania zaleÅ¼nych miÄ™dzy sobÄ… ustawieÅ„.
+* Inne mniej waÅ¼ne poprawki w kodzie.
 * Optymalizacja kodu.
 
 1.0.4.0
 -----
-* Notyfikacja pisania nowej wiadomoœci jako zmiana ikony przypisanej do okna rozmowy.
-* Czêœciowa integracja funkcjonalnoœci wtyczki TabFocus.
-* Wy³¹czanie wbudowanej w AQQ notyfikacji o pisaniu nowej wiadomoœci przy zminimalizowanym oknie rozmowy.
-* Zmieniono sposób zak³adania uchwytu na okno rozmowy.
-* Poprawki w przenoszeniu ustawieñ z zintegrowanych wtyczek.
-* Usuniêto b³¹d ze znikaniem licznika wpisywanych znaków podczas prze³¹czania zak³adek.
-* Poprawki w systemie licznika nieprzeczytanych wiadomoœci na pasku tytu³u okna rozmowy.
-* Podczas przywracania sesji domyœlnie wczytywana jest ostatnio przeprowadzona rozmowa z kontaktem.
-* Kosmetyczne poprawki na formie ustawieñ.
+* Notyfikacja pisania nowej wiadomoÅ›ci jako zmiana ikony przypisanej do okna rozmowy.
+* CzÄ™Å›ciowa integracja funkcjonalnoÅ›ci wtyczki TabFocus.
+* WyÅ‚Ä…czanie wbudowanej w AQQ notyfikacji o pisaniu nowej wiadomoÅ›ci przy zminimalizowanym oknie rozmowy.
+* Zmieniono sposÃ³b zakÅ‚adania uchwytu na okno rozmowy.
+* Poprawki w przenoszeniu ustawieÅ„ z zintegrowanych wtyczek.
+* UsuniÄ™to bÅ‚Ä…d ze znikaniem licznika wpisywanych znakÃ³w podczas przeÅ‚Ä…czania zakÅ‚adek.
+* Poprawki w systemie licznika nieprzeczytanych wiadomoÅ›ci na pasku tytuÅ‚u okna rozmowy.
+* Podczas przywracania sesji domyÅ›lnie wczytywana jest ostatnio przeprowadzona rozmowa z kontaktem.
+* Kosmetyczne poprawki na formie ustawieÅ„.
 
 1.0.3.6
 -----
-* Kolejna poprawka w systemie licznika nieprzeczytanych wiadomoœci na nieaktywnych zak³adkach.
+* Kolejna poprawka w systemie licznika nieprzeczytanych wiadomoÅ›ci na nieaktywnych zakÅ‚adkach.
 
 1.0.3.4
 -----
-* Poprawienie systemu licznika nieprzeczytanych wiadomoœci na nieaktywnych zak³adkach.
-* Usuniêcie informacji w menu kontekstowym o skrócie klawiaturowym Ctrl+Q.
-* Poprawiono system blokowania notyfikacji z treœci¹ nowej wiadomoœci po po³¹czeniu siê z sieci¹.
-* Ma³a poprawka w kodzie.
+* Poprawienie systemu licznika nieprzeczytanych wiadomoÅ›ci na nieaktywnych zakÅ‚adkach.
+* UsuniÄ™cie informacji w menu kontekstowym o skrÃ³cie klawiaturowym Ctrl+Q.
+* Poprawiono system blokowania notyfikacji z treÅ›ciÄ… nowej wiadomoÅ›ci po poÅ‚Ä…czeniu siÄ™ z sieciÄ….
+* MaÅ‚a poprawka w kodzie.
 
 1.0.3.0
 -----
-* Przebudowa wizualna okna ustawieñ.
-* Licznik nieprzeczytanych wiadomoœci na zak³adkach.
-* Rzeczywisty stan kontaktów w elementach menu szybkiego dostêp do ostatnio zamkniêtych zak³adek i niewys³anych wiadomoœci.
-* Mo¿liwoœæ w³¹czenia pokazywania daty zamkniêcia zak³adki.
-* Elementy szybkiego czyszczenia listy ostatnio zamkniêtych zak³adek i niewys³anych wiadomoœci.
-* Integracja funkcjonalnoœci wtyczki StayOnTop.
-* Integracja funkcjonalnoœci wtyczki MsgNotifer.
-* Integracja funkcjonalnoœci wtyczki EmuTabsW.
-* Integracja funkcjonalnoœci wtyczki QuickQuote.
-* Dostêpnoœæ niektórych opcji jest zale¿ne od u¿ywanej wersji komunikatora.
-* Wymuszanie w³¹czonej obs³ugi zak³adek w oknie rozmowy.
-* Wczytywanie ostatnio przyprowadzonej rozmowy przy przywracaniu zak³adki jako opcja.
-* Licznik nowych wiadomoœci na pasku tytu³u dzia³a równie¿ dla czatów/konferencji.
-* Poprawki w zapisywaniu sesji wpisanego tekstu w oknie rozmowy oraz zapamiêtywaniu niewys³anych wiadomoœci.
-* Drobne poprawki w tworzeniu elementów w menu niewys³anych wiadomoœci.
+* Przebudowa wizualna okna ustawieÅ„.
+* Licznik nieprzeczytanych wiadomoÅ›ci na zakÅ‚adkach.
+* Rzeczywisty stan kontaktÃ³w w elementach menu szybkiego dostÄ™p do ostatnio zamkniÄ™tych zakÅ‚adek i niewysÅ‚anych wiadomoÅ›ci.
+* MoÅ¼liwoÅ›Ä‡ wÅ‚Ä…czenia pokazywania daty zamkniÄ™cia zakÅ‚adki.
+* Elementy szybkiego czyszczenia listy ostatnio zamkniÄ™tych zakÅ‚adek i niewysÅ‚anych wiadomoÅ›ci.
+* Integracja funkcjonalnoÅ›ci wtyczki StayOnTop.
+* Integracja funkcjonalnoÅ›ci wtyczki MsgNotifer.
+* Integracja funkcjonalnoÅ›ci wtyczki EmuTabsW.
+* Integracja funkcjonalnoÅ›ci wtyczki QuickQuote.
+* DostÄ™pnoÅ›Ä‡ niektÃ³rych opcji jest zaleÅ¼ne od uÅ¼ywanej wersji komunikatora.
+* Wymuszanie wÅ‚Ä…czonej obsÅ‚ugi zakÅ‚adek w oknie rozmowy.
+* Wczytywanie ostatnio przyprowadzonej rozmowy przy przywracaniu zakÅ‚adki jako opcja.
+* Licznik nowych wiadomoÅ›ci na pasku tytuÅ‚u dziaÅ‚a rÃ³wnieÅ¼ dla czatÃ³w/konferencji.
+* Poprawki w zapisywaniu sesji wpisanego tekstu w oknie rozmowy oraz zapamiÄ™tywaniu niewysÅ‚anych wiadomoÅ›ci.
+* Drobne poprawki w tworzeniu elementÃ³w w menu niewysÅ‚anych wiadomoÅ›ci.
 * Optymalizacja kodu.
 
 1.0.2.0
 -----
-* Zapamiêtywanie sesji otwartych zak³adek - ochrona przed niepo¿¹danymi zamkniêciami AQQ np. crash.
-* Mo¿liwoœæ zdefiniowania iloœæ elementów w menu szybkiego dostêpu ostatnio zamkniêtych zak³adek.
-* Mo¿liwoœæ usuwania konkretnych informacji z pliku cache.
-* Integracja funkcjonalnoœci wtyczki TitlebarTweak:
+* ZapamiÄ™tywanie sesji otwartych zakÅ‚adek - ochrona przed niepoÅ¼Ä…danymi zamkniÄ™ciami AQQ np. crash.
+* MoÅ¼liwoÅ›Ä‡ zdefiniowania iloÅ›Ä‡ elementÃ³w w menu szybkiego dostÄ™pu ostatnio zamkniÄ™tych zakÅ‚adek.
+* MoÅ¼liwoÅ›Ä‡ usuwania konkretnych informacji z pliku cache.
+* Integracja funkcjonalnoÅ›ci wtyczki TitlebarTweak:
  -Zmienianie tekstu na belce okna rozmowy np. sam identyfikator kontaktu.
- -Zmienianie tekstu na belce okna kontaktów np. "AQQ [%nazwa profilu%]".
- -Przenoszenie ustawieñ z TitlebarTweak do TAbKit oraz usuwanie starej wersji wtyczki.
-* Informowanie o nowych nieprzeczytanych wiadomoœciach na pasku tytu³u okna rozmowy.
-* Trimowanie niewys³anych wiadomoœci.
-* Statyczne tworzenie serwisów dla elementów w menu szybkiego dostêpu zamkniêtych zak³adek i niewys³anych wiadomoœci.
-* Zmiana ikonki ostatnio zamknietych zak³adek.
-* Poprawne dzia³anie skrótów do konretnych zakladek dla zak³adek otwartych przez AQQ jako nieaktwyne (nowe wiadomoœci).
-* Przy przywracananiu ostatnio zamkniêtej zak³adki wczytywana jest równie¿ ostatnio prowadzona rozmowa z kontaktem.
+ -Zmienianie tekstu na belce okna kontaktÃ³w np. "AQQ [%nazwa profilu%]".
+ -Przenoszenie ustawieÅ„ z TitlebarTweak do TAbKit oraz usuwanie starej wersji wtyczki.
+* Informowanie o nowych nieprzeczytanych wiadomoÅ›ciach na pasku tytuÅ‚u okna rozmowy.
+* Trimowanie niewysÅ‚anych wiadomoÅ›ci.
+* Statyczne tworzenie serwisÃ³w dla elementÃ³w w menu szybkiego dostÄ™pu zamkniÄ™tych zakÅ‚adek i niewysÅ‚anych wiadomoÅ›ci.
+* Zmiana ikonki ostatnio zamknietych zakÅ‚adek.
+* Poprawne dziaÅ‚anie skrÃ³tÃ³w do konretnych zakladek dla zakÅ‚adek otwartych przez AQQ jako nieaktwyne (nowe wiadomoÅ›ci).
+* Przy przywracananiu ostatnio zamkniÄ™tej zakÅ‚adki wczytywana jest rÃ³wnieÅ¼ ostatnio prowadzona rozmowa z kontaktem.
 
 1.0.1.0
 -----
-* Definiowany limit iloœci zapamiêtywanych ostatnio zamkniêtych zak³adek.
-* Poprawne rozpoznawanie nowych wiadomoœci - wykluczenie informacji o zamkniêciu zak³adki, pisaniu oraz innych aktywnoœci kontaktu.
-* Funkcja pobieraj¹ca pseudonim kontaktu dzia³a poprawnie z niewype³nion¹ wizytówk¹.
-* Dla kontaktów z wtyczki GG bez pseudonimu pokazywany jest identyfikator zawieraj¹cy tylko numer.
-* Ma³a zmiana w pliku ustawieñ.
+* Definiowany limit iloÅ›ci zapamiÄ™tywanych ostatnio zamkniÄ™tych zakÅ‚adek.
+* Poprawne rozpoznawanie nowych wiadomoÅ›ci - wykluczenie informacji o zamkniÄ™ciu zakÅ‚adki, pisaniu oraz innych aktywnoÅ›ci kontaktu.
+* Funkcja pobierajÄ…ca pseudonim kontaktu dziaÅ‚a poprawnie z niewypeÅ‚nionÄ… wizytÃ³wkÄ….
+* Dla kontaktÃ³w z wtyczki GG bez pseudonimu pokazywany jest identyfikator zawierajÄ…cy tylko numer.
+* MaÅ‚a zmiana w pliku ustawieÅ„.
 
 1.0.0.0
 -----
