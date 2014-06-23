@@ -162,6 +162,8 @@ int FrmSendRealTopPos;
 //Pozycja okna rozmowy podczas chowania/pokazywania
 int FrmSendSlideLeft;
 int FrmSendSlideTop;
+//Pozycja kursora w oknie rozmowy
+CHARRANGE hRichEditSelPos;
 //Aktualny status okna rozmowy
 bool FrmSendVisible = false;
 bool FrmSendBlockSlide = true;
@@ -340,6 +342,7 @@ int FASTACCESS;
 #define TIMER_REBUILD_TABS_LIST 150
 #define TIMER_MOUSE_POSITION 160
 #define TIMER_UNBLOCK_MOUSE_PROC 170
+#define TIMER_EXSETSEL 380
 #define TIMER_ACTIVE_WINDOW 180
 #define TIMER_FRMSEND_PRE_SLIDEOUT 190
 #define TIMER_FRMSEND_SLIDEOUT 200
@@ -1057,6 +1060,8 @@ void FocusRichEdit()
 {
   //Blokada lokalnego hooka na myszke
   BlockThreadMouseProc = true;
+  //Pobieranie pozycji kursora
+  SendMessage(hRichEdit, EM_EXGETSEL, NULL, (LPARAM)&hRichEditSelPos);
   //Emulacja klikniecia
   TRect RichEditRect;
   GetWindowRect(hRichEdit,&RichEditRect);
@@ -1065,6 +1070,8 @@ void FocusRichEdit()
   SetCursorPos(RichEditRect.Right-5,RichEditRect.Bottom-5);
   mouse_event(MOUSEEVENTF_LEFTDOWN|MOUSEEVENTF_LEFTUP,0,0,0,0);
   SetCursorPos(pCur.x,pCur.y);
+  //Wlaczenie timera ustawiania starej pozycji kursora
+  SetTimer(hTimerFrm,TIMER_EXSETSEL,100,(TIMERPROC)TimerFrmProc);
   //Wlaczenie timera wylaczania blokady lokalnego hooka na myszke
   SetTimer(hTimerFrm,TIMER_UNBLOCK_MOUSE_PROC,100,(TIMERPROC)TimerFrmProc);
 }
@@ -3883,6 +3890,14 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	  KillTimer(hTimerFrm,TIMER_UNBLOCK_MOUSE_PROC);
 	  //Wylaczenie blokady
 	  BlockThreadMouseProc = false;
+	}
+	//Ustawianie starej pozycju kursora
+	else if(wParam==TIMER_EXSETSEL)
+	{
+	  //Zatrzymanie timera
+	  KillTimer(hTimerFrm,TIMER_EXSETSEL);
+	  //Ustawianie starej pozycju kursora
+	  SendMessage(hRichEdit, EM_EXSETSEL, NULL, (LPARAM)&hRichEditSelPos);
 	}
     //Sprawdzanie aktywnego okna
 	else if(wParam==TIMER_ACTIVE_WINDOW)
@@ -11373,7 +11388,7 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Unload()
 	CurrentFrmSeekOnListProc = NULL;
   }
   //Wyladowanie timerow
-  for(int TimerID=10;TimerID<=370;TimerID=TimerID+10) KillTimer(hTimerFrm,TimerID);
+  for(int TimerID=10;TimerID<=380;TimerID=TimerID+10) KillTimer(hTimerFrm,TimerID);
   //Usuwanie okna timera
   DestroyWindow(hTimerFrm);
   //Wyrejestowanie klasy okna timera
