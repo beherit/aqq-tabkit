@@ -217,6 +217,8 @@ bool LBUTTONDOWN_ON_TABSBAR_EXECUTED = false;
 int CursorPosX, CursorPosY;
 //Blokowanie lokalnego hooka na myszke
 bool BlockThreadMouseProc = false;
+//Blokowanie lokalnego hooka na klawiature
+bool BlockThreadKeyboardProc = false;
 //INNE-----------------------------------------------------------------------
 //Aktywna otwarta zakladka
 UnicodeString ActiveTabJID;
@@ -1070,8 +1072,20 @@ void FocusRichEdit()
   SetCursorPos(RichEditRect.Right-5,RichEditRect.Bottom-5);
   mouse_event(MOUSEEVENTF_LEFTDOWN|MOUSEEVENTF_LEFTUP,0,0,0,0);
   SetCursorPos(pCur.x,pCur.y);
-  //Wlaczenie timera ustawiania starej pozycji kursora
-  SetTimer(hTimerFrm,TIMER_EXSETSEL,100,(TIMERPROC)TimerFrmProc);
+  //Pobieranie tekstu z RichEdit
+  int iLength = GetWindowTextLengthW(hRichEdit)+1;
+  wchar_t* pBuff = new wchar_t[iLength];
+  GetWindowTextW(hRichEdit, pBuff, iLength);
+  UnicodeString Text = pBuff;
+  delete pBuff;
+  //Pozycja kursora inna niz na koncu tekstu
+  if(hRichEditSelPos.cpMin!=Text.Length())
+  {
+    //Blokowanie lokalnego hooka na klawiature
+	BlockThreadKeyboardProc = true;
+	//Wlaczenie timera ustawiania starej pozycji kursora
+	SetTimer(hTimerFrm,TIMER_EXSETSEL,100,(TIMERPROC)TimerFrmProc);
+  }
   //Wlaczenie timera wylaczania blokady lokalnego hooka na myszke
   SetTimer(hTimerFrm,TIMER_UNBLOCK_MOUSE_PROC,100,(TIMERPROC)TimerFrmProc);
 }
@@ -3898,6 +3912,8 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	  KillTimer(hTimerFrm,TIMER_EXSETSEL);
 	  //Ustawianie starej pozycju kursora
 	  SendMessage(hRichEdit, EM_EXSETSEL, NULL, (LPARAM)&hRichEditSelPos);
+	  //Wylaczenie blokady lokalnego hooka na klawiature
+	  BlockThreadKeyboardProc = false;
 	}
     //Sprawdzanie aktywnego okna
 	else if(wParam==TIMER_ACTIVE_WINDOW)
@@ -5563,7 +5579,7 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 	   return -1;
 	}
 	//Blokowanie wszystich klawiszy gdy okno rozmowy jest chowane/wysuwane lub jest juz schowane i posiada fokus
-	if((FrmSendSlideChk)&&((FrmSendSlideIn)||(FrmSendSlideOut)||(!FrmSendVisible)))
+	if((FrmSendSlideChk)&&((FrmSendSlideIn)||(FrmSendSlideOut)||(!FrmSendVisible)||(BlockThreadKeyboardProc)))
 	{
 	  //Sprawdzanie aktywnego okna
 	  if(GetForegroundWindow()==hFrmSend)
