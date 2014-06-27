@@ -8,7 +8,7 @@ Znalezione błędy wtyczki należy zgłaszać na [tracekerze](http://forum.aqq.e
 
 Kontakt z autorem
 -------
-Autorem wtyczki TabKit jest Krzysztof Grochocki. Możesz skontaktować się z nim drogą mailową (kontakt@beherit.pl) lub poprzez Jabber (beherit@aqq.eu).
+Autorem wtyczki TabKit jest Krzysztof Grochocki. Możesz skontaktować się z nim drogą mailową (kontakt@beherit.pl) lub poprzez Jabber (im@beherit.pl).
 
 Licencja
 -------
