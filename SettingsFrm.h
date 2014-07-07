@@ -288,6 +288,8 @@ __published:	// IDE-managed Components
 	void __fastcall SideSlideFullScreenModeExceptionsButtonClick(TObject *Sender);
 	void __fastcall GetYouTubeTitleThreadRun(TIdThreadComponent *Sender);
 	void __fastcall RefreshTimerTimer(TObject *Sender);
+	void __fastcall sSkinManagerSysDlgInit(TacSysDlgData DlgData, bool &AllowSkinning);
+
 private:	// User declarations
 public:		// User declarations
 	UnicodeString XML;
