@@ -236,6 +236,10 @@ object SettingsForm: TSettingsForm
       Caption = 'Informacje o wtyczce'
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object PayPalImage: TImage
         Left = 350
         Top = 124
@@ -2952,6 +2956,10 @@ object SettingsForm: TSettingsForm
       ImageIndex = 1
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object ClosedTabGroupBox: TsGroupBox
         Left = 18
         Top = 22
@@ -3103,7 +3111,7 @@ object SettingsForm: TSettingsForm
             TabOrder = 0
             TabStop = True
             OnClick = aClosedTabsChkExecute
-            SkinData.SkinSection = 'RADIOBUTTON'
+            SkinData.SkinSection = 'TRANSPARENT'
           end
           object UnCloseTabHotKeyMode2RadioButton: TsRadioButton
             Left = 10
@@ -3113,7 +3121,7 @@ object SettingsForm: TSettingsForm
             Caption = 'Wybrany skr'#243't'
             TabOrder = 1
             OnClick = aClosedTabsChkExecute
-            SkinData.SkinSection = 'RADIOBUTTON'
+            SkinData.SkinSection = 'TRANSPARENT'
           end
         end
         object FastAccessClosedTabsGroupBox: TsGroupBox
@@ -3268,6 +3276,10 @@ object SettingsForm: TSettingsForm
       ImageIndex = 2
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object RememberUnsentMsgGroupBox: TsGroupBox
         Left = 18
         Top = 22
@@ -3424,6 +3436,10 @@ object SettingsForm: TSettingsForm
       ImageIndex = 3
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object TabsHotKeysGroupBox: TsGroupBox
         Left = 18
         Top = 116
@@ -3439,7 +3455,7 @@ object SettingsForm: TSettingsForm
           Caption = 'Klawisze od F1 do  F12'
           TabOrder = 0
           OnClick = aTabsSwitchingChkExecute
-          SkinData.SkinSection = 'RADIOBUTTON'
+          SkinData.SkinSection = 'TRANSPARENT'
         end
         object TabsHotKeysMode2RadioButton: TsRadioButton
           Left = 10
@@ -3451,7 +3467,7 @@ object SettingsForm: TSettingsForm
           TabOrder = 1
           TabStop = True
           OnClick = aTabsSwitchingChkExecute
-          SkinData.SkinSection = 'RADIOBUTTON'
+          SkinData.SkinSection = 'TRANSPARENT'
         end
         object NewMgsHoyKeyCheckBox: TsCheckBox
           Left = 10
@@ -3489,7 +3505,7 @@ object SettingsForm: TSettingsForm
           TabOrder = 0
           TabStop = True
           OnClick = aTabsSwitchingChkExecute
-          SkinData.SkinSection = 'RADIOBUTTON'
+          SkinData.SkinSection = 'TRANSPARENT'
         end
         object SwitchToNewMsgMode2RadioButton: TsRadioButton
           Left = 10
@@ -3499,7 +3515,7 @@ object SettingsForm: TSettingsForm
           Caption = 'Prze'#322#261'czanie na najnowsz'#261' wiadomo'#347#263
           TabOrder = 1
           OnClick = aTabsSwitchingChkExecute
-          SkinData.SkinSection = 'RADIOBUTTON'
+          SkinData.SkinSection = 'TRANSPARENT'
         end
       end
       object SwitchToNewMsgCheckBox: TsCheckBox
@@ -3540,6 +3556,10 @@ object SettingsForm: TSettingsForm
       ImageIndex = 4
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object RestoreTabsSessionGroupBox: TsGroupBox
         Left = 18
         Top = 22
@@ -3614,6 +3634,10 @@ object SettingsForm: TSettingsForm
       OnShow = NewMsgTabSheetShow
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object ChatStateNotiferNewMsgCheckBox: TsCheckBox
         Left = 12
         Top = 182
@@ -3778,6 +3802,10 @@ object SettingsForm: TSettingsForm
       ImageIndex = 6
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object TweakFrmMainTitlebarGroupBox: TsGroupBox
         Left = 18
         Top = 167
@@ -3802,7 +3830,7 @@ object SettingsForm: TSettingsForm
           TabOrder = 0
           TabStop = True
           OnClick = aTitlebarTweakChkExecute
-          SkinData.SkinSection = 'RADIOBUTTON'
+          SkinData.SkinSection = 'TRANSPARENT'
         end
         object TweakFrmMainTitlebarMode2Edit: TsEdit
           Left = 70
@@ -3831,7 +3859,7 @@ object SettingsForm: TSettingsForm
           Caption = 'AQQ +'
           TabOrder = 2
           OnClick = aTitlebarTweakChkExecute
-          SkinData.SkinSection = 'RADIOBUTTON'
+          SkinData.SkinSection = 'TRANSPARENT'
         end
         object TweakFrmMainTitlebarModeExComboBox: TsComboBox
           Left = 66
@@ -3874,7 +3902,7 @@ object SettingsForm: TSettingsForm
           TabOrder = 0
           TabStop = True
           OnClick = aTitlebarTweakChkExecute
-          SkinData.SkinSection = 'RADIOBUTTON'
+          SkinData.SkinSection = 'TRANSPARENT'
         end
         object TweakFrmSendTitlebarMode2RadioButton: TsRadioButton
           Left = 10
@@ -3884,7 +3912,7 @@ object SettingsForm: TSettingsForm
           Caption = 'Sam pseudonim kontaktu'
           TabOrder = 1
           OnClick = aTitlebarTweakChkExecute
-          SkinData.SkinSection = 'RADIOBUTTON'
+          SkinData.SkinSection = 'TRANSPARENT'
         end
         object TweakFrmSendTitlebarMode3RadioButton: TsRadioButton
           Left = 10
@@ -3894,7 +3922,7 @@ object SettingsForm: TSettingsForm
           Caption = 'Pseudonim i identyfikator kontaktu'
           TabOrder = 2
           OnClick = aTitlebarTweakChkExecute
-          SkinData.SkinSection = 'RADIOBUTTON'
+          SkinData.SkinSection = 'TRANSPARENT'
         end
         object TweakFrmSendTitlebarMode4RadioButton: TsRadioButton
           Left = 10
@@ -3906,7 +3934,7 @@ object SettingsForm: TSettingsForm
           WordWrap = True
           OnClick = aTitlebarTweakChkExecute
           AutoSize = False
-          SkinData.SkinSection = 'RADIOBUTTON'
+          SkinData.SkinSection = 'TRANSPARENT'
         end
       end
       object TweakFrmMainTitlebarCheckBox: TsCheckBox
@@ -3939,6 +3967,10 @@ object SettingsForm: TSettingsForm
       ImageIndex = 7
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object OpenClipTabsCheckBox: TsCheckBox
         Left = 12
         Top = 12
@@ -4057,6 +4089,10 @@ object SettingsForm: TSettingsForm
       ImageIndex = 8
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object SideSlideFullScreenModeExceptionsButton: TsSpeedButton
         Left = 263
         Top = 314
@@ -4129,7 +4165,7 @@ object SettingsForm: TSettingsForm
             Enabled = False
             TabOrder = 0
             OnClick = aSideSlideChkExecute
-            SkinData.SkinSection = 'RADIOBUTTON'
+            SkinData.SkinSection = 'TRANSPARENT'
           end
           object FrmMainEdgeRightRadioButton: TsRadioButton
             Left = 58
@@ -4142,7 +4178,7 @@ object SettingsForm: TSettingsForm
             TabOrder = 1
             TabStop = True
             OnClick = aSideSlideChkExecute
-            SkinData.SkinSection = 'RADIOBUTTON'
+            SkinData.SkinSection = 'TRANSPARENT'
           end
           object FrmMainEdgeBottomRadioButton: TsRadioButton
             Left = 10
@@ -4153,7 +4189,7 @@ object SettingsForm: TSettingsForm
             Enabled = False
             TabOrder = 2
             OnClick = aSideSlideChkExecute
-            SkinData.SkinSection = 'RADIOBUTTON'
+            SkinData.SkinSection = 'TRANSPARENT'
           end
           object FrmMainEdgeTopRadioButton: TsRadioButton
             Left = 58
@@ -4164,7 +4200,7 @@ object SettingsForm: TSettingsForm
             Enabled = False
             TabOrder = 3
             OnClick = aSideSlideChkExecute
-            SkinData.SkinSection = 'RADIOBUTTON'
+            SkinData.SkinSection = 'TRANSPARENT'
           end
         end
         object FrmMainHideGroupBox: TsGroupBox
@@ -4185,7 +4221,7 @@ object SettingsForm: TSettingsForm
             Enabled = False
             TabOrder = 0
             OnClick = aSideSlideChkExecute
-            SkinData.SkinSection = 'RADIOBUTTON'
+            SkinData.SkinSection = 'TRANSPARENT'
           end
           object FrmMainHideAppFocusRadioButton: TsRadioButton
             Left = 10
@@ -4195,7 +4231,7 @@ object SettingsForm: TSettingsForm
             Caption = 'AQQ utraci fokus'
             TabOrder = 1
             OnClick = aSideSlideChkExecute
-            SkinData.SkinSection = 'RADIOBUTTON'
+            SkinData.SkinSection = 'TRANSPARENT'
           end
           object FrmMainHideCursorRadioButton: TsRadioButton
             Left = 10
@@ -4208,7 +4244,7 @@ object SettingsForm: TSettingsForm
             TabOrder = 2
             TabStop = True
             OnClick = aSideSlideChkExecute
-            SkinData.SkinSection = 'RADIOBUTTON'
+            SkinData.SkinSection = 'TRANSPARENT'
           end
         end
         object FrmMainTimeGroupBox: TsGroupBox
@@ -4369,7 +4405,7 @@ object SettingsForm: TSettingsForm
             TabOrder = 0
             TabStop = True
             OnClick = aSideSlideChkExecute
-            SkinData.SkinSection = 'RADIOBUTTON'
+            SkinData.SkinSection = 'TRANSPARENT'
           end
           object FrmSendEdgeRightRadioButton: TsRadioButton
             Left = 58
@@ -4380,7 +4416,7 @@ object SettingsForm: TSettingsForm
             Enabled = False
             TabOrder = 1
             OnClick = aSideSlideChkExecute
-            SkinData.SkinSection = 'RADIOBUTTON'
+            SkinData.SkinSection = 'TRANSPARENT'
           end
           object FrmSendEdgeTopRadioButton: TsRadioButton
             Left = 58
@@ -4391,7 +4427,7 @@ object SettingsForm: TSettingsForm
             Enabled = False
             TabOrder = 3
             OnClick = aSideSlideChkExecute
-            SkinData.SkinSection = 'RADIOBUTTON'
+            SkinData.SkinSection = 'TRANSPARENT'
           end
           object FrmSendEdgeBottomRadioButton: TsRadioButton
             Left = 10
@@ -4402,7 +4438,7 @@ object SettingsForm: TSettingsForm
             Enabled = False
             TabOrder = 2
             OnClick = aSideSlideChkExecute
-            SkinData.SkinSection = 'RADIOBUTTON'
+            SkinData.SkinSection = 'TRANSPARENT'
           end
         end
         object FrmSendHideGroupBox: TsGroupBox
@@ -4423,7 +4459,7 @@ object SettingsForm: TSettingsForm
             Enabled = False
             TabOrder = 0
             OnClick = aSideSlideChkExecute
-            SkinData.SkinSection = 'RADIOBUTTON'
+            SkinData.SkinSection = 'TRANSPARENT'
           end
           object FrmSendHideAppFocusRadioButton: TsRadioButton
             Left = 10
@@ -4433,7 +4469,7 @@ object SettingsForm: TSettingsForm
             Caption = 'AQQ utraci fokus'
             TabOrder = 1
             OnClick = aSideSlideChkExecute
-            SkinData.SkinSection = 'RADIOBUTTON'
+            SkinData.SkinSection = 'TRANSPARENT'
           end
           object FrmSendHideCursorRadioButton: TsRadioButton
             Left = 10
@@ -4446,7 +4482,7 @@ object SettingsForm: TSettingsForm
             TabOrder = 2
             TabStop = True
             OnClick = aSideSlideChkExecute
-            SkinData.SkinSection = 'RADIOBUTTON'
+            SkinData.SkinSection = 'TRANSPARENT'
           end
         end
         object FrmSendTimeGroupBox: TsGroupBox
@@ -4644,6 +4680,10 @@ object SettingsForm: TSettingsForm
       OnShow = OtherTabSheetShow
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object AntiSpimCheckBox: TsCheckBox
         Left = 12
         Top = 68
@@ -5118,6 +5158,7 @@ object SettingsForm: TSettingsForm
     MenuSupport.ExtraLineFont.Height = -11
     MenuSupport.ExtraLineFont.Name = 'Tahoma'
     MenuSupport.ExtraLineFont.Style = []
+    Options.OptimizingPriority = opMemory
     SkinDirectory = 'c:\Skins'
     SkinInfo = 'N/A'
     ThirdParty.ThirdEdits = 'THotKey'#13#10
@@ -5142,6 +5183,8 @@ object SettingsForm: TSettingsForm
     ThirdParty.ThirdUpDown = ' '#13#10
     ThirdParty.ThirdScrollBar = ' '
     ThirdParty.ThirdStaticText = ' '
+    ThirdParty.ThirdNativePaint = ' '
+    OnSysDlgInit = sSkinManagerSysDlgInit
     Left = 64
     Top = 368
   end

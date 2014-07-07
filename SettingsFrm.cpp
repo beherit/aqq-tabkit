@@ -1083,3 +1083,9 @@ void __fastcall TSettingsForm::RefreshTimerTimer(TObject *Sender)
   RefreshList();
 }
 //---------------------------------------------------------------------------
+
+void __fastcall TSettingsForm::sSkinManagerSysDlgInit(TacSysDlgData DlgData, bool &AllowSkinning)
+{
+  AllowSkinning = false;
+}
+//---------------------------------------------------------------------------
