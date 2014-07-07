@@ -1,3 +1,9 @@
+1.9.6.0
+-----
+* Ustawianie prawidłowej pozycji kursora w polu wpisywania wiadomości po wysunięciu okna.
+* Nieskórkowanie systemowych okien dialogowych niepochodzących z wtyczki.
+* Aktualizacja komponentów AlphaControls do nowszej wersji (9.10).
+
 1.9.5.0
 -----
 * Spore zmiany w mechanizmie ustawiania pozycji przypiętych zakładek.
