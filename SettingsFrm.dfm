@@ -2952,6 +2952,10 @@ object SettingsForm: TSettingsForm
       ImageIndex = 1
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object ClosedTabGroupBox: TsGroupBox
         Left = 18
         Top = 22
@@ -3268,6 +3272,10 @@ object SettingsForm: TSettingsForm
       ImageIndex = 2
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object RememberUnsentMsgGroupBox: TsGroupBox
         Left = 18
         Top = 22
@@ -3424,6 +3432,10 @@ object SettingsForm: TSettingsForm
       ImageIndex = 3
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object TabsHotKeysGroupBox: TsGroupBox
         Left = 18
         Top = 116
@@ -3540,6 +3552,10 @@ object SettingsForm: TSettingsForm
       ImageIndex = 4
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object RestoreTabsSessionGroupBox: TsGroupBox
         Left = 18
         Top = 22
@@ -3775,9 +3791,9 @@ object SettingsForm: TSettingsForm
       object ChatGoneCloudNotiferNewMsgCheckBox: TsCheckBox
         Left = 44
         Top = 242
-        Width = 307
+        Width = 267
         Height = 20
-        Caption = 'Wy'#347'wietlaj r'#243'wnie'#380' powiadomienie w chmurce informacyjnej'
+        Caption = 'Wy'#347'wietlaj powiadomienie w chmurce informacyjnej'
         TabOrder = 8
         OnClick = aNewMsgChkExecute
         SkinData.SkinSection = 'CHECKBOX'
@@ -3787,9 +3803,9 @@ object SettingsForm: TSettingsForm
       object ChatGoneSoundNotiferNewMsgCheckBox: TsCheckBox
         Left = 44
         Top = 268
-        Width = 259
+        Width = 178
         Height = 20
-        Caption = 'Odtwarzaj r'#243'wnie'#380' d'#378'wi'#281'k nowego powiadomienia'
+        Caption = 'Odtwarzaj d'#378'wi'#281'k powiadomienia'
         TabOrder = 9
         OnClick = aNewMsgChkExecute
         SkinData.SkinSection = 'CHECKBOX'
@@ -3802,6 +3818,10 @@ object SettingsForm: TSettingsForm
       ImageIndex = 6
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object TweakFrmMainTitlebarGroupBox: TsGroupBox
         Left = 18
         Top = 167
@@ -3963,6 +3983,10 @@ object SettingsForm: TSettingsForm
       ImageIndex = 7
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object OpenClipTabsCheckBox: TsCheckBox
         Left = 12
         Top = 12
@@ -4081,6 +4105,10 @@ object SettingsForm: TSettingsForm
       ImageIndex = 8
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object SideSlideFullScreenModeExceptionsButton: TsSpeedButton
         Left = 263
         Top = 314
@@ -4668,6 +4696,10 @@ object SettingsForm: TSettingsForm
       OnShow = OtherTabSheetShow
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object AntiSpimCheckBox: TsCheckBox
         Left = 12
         Top = 68
