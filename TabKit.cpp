@@ -412,6 +412,7 @@ bool InactiveNotiferNewMsgChk;
 bool ChatStateNotiferNewMsgChk;
 bool ChatGoneNotiferNewMsgChk;
 bool ChatGoneCloudNotiferNewMsgChk;
+bool ChatGoneSoundNotiferNewMsgChk;
 bool TaskbarPenChk;
 //Titlebar
 bool TweakFrmSendTitlebarChk;
@@ -590,6 +591,20 @@ UnicodeString GetContactsUserDir()
 UnicodeString GetPluginDir()
 {
   return StringReplace((wchar_t*)PluginLink.CallService(AQQ_FUNCTION_GETPLUGINDIR,(WPARAM)(HInstance),0), "\\", "\\\\", TReplaceFlags() << rfReplaceAll);
+}
+//---------------------------------------------------------------------------
+
+//Sprawdzanie czy dzwieki w AQQ sa wlaczone
+bool ChkSoundEnabled()
+{
+  TStrings* IniList = new TStringList();
+  IniList->SetText((wchar_t*)PluginLink.CallService(AQQ_FUNCTION_FETCHSETUP,0,0));
+  TMemIniFile *Settings = new TMemIniFile(ChangeFileExt(Application->ExeName, ".INI"));
+  Settings->SetStrings(IniList);
+  delete IniList;
+  UnicodeString SoundOff = Settings->ReadString("Sound","SoundOff","0");
+  delete Settings;
+  return !StrToBool(SoundOff);
 }
 //---------------------------------------------------------------------------
 
@@ -8636,7 +8651,7 @@ INT_PTR __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 		  {
 			//Pobieranie pseudonimu kontaktu
 			UnicodeString Text = GetContactNick(JID+UserIdx);
-			//Ustawianie dalszej tresci na podsawie plci kontaktu
+			//Ustawianie dalszej tresci na podstawie plci kontaktu
 			if(ChkContactGender(JID))
 			 Text = Text + " zamkn¹³ okno rozmowy.";
 			else
@@ -8652,6 +8667,8 @@ INT_PTR __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 			PluginShowInfo.Tick = 0;
 			PluginLink.CallService(AQQ_FUNCTION_SHOWINFO,0,(LPARAM)(&PluginShowInfo));
 		  }
+		  //Odtworzenie dzwieku
+		  if((ChatGoneSoundNotiferNewMsgChk)&&(ChkSoundEnabled())) PluginLink.CallService(AQQ_SYSTEM_PLAYSOUND,SOUND_NEWS,1);
 		}
 		//Inny stan
 		else if(ChatState!=PreMsgStateList->ReadInteger("PreMsgState",JID+Res+UserIdx,0))
@@ -10525,6 +10542,7 @@ void LoadSettings()
   ChatStateNotiferNewMsgChk = Ini->ReadBool("NewMsg","ChatStateNotifer",true);
   ChatGoneNotiferNewMsgChk = Ini->ReadBool("NewMsg","ChatGoneNotifer",true);
   ChatGoneCloudNotiferNewMsgChk = Ini->ReadBool("NewMsg","ChatGoneCloudNotifer",false);
+  ChatGoneSoundNotiferNewMsgChk = Ini->ReadBool("NewMsg","ChatGoneSoundNotifer",false);
   TaskbarPenChk = Ini->ReadBool("NewMsg","TaskbarPen",true);
   //Titlebar
   TweakFrmSendTitlebarChk = Ini->ReadBool("Titlebar","TweakSend",false);
