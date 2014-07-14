@@ -411,6 +411,7 @@ bool InactiveTabsNewMsgChk;
 bool InactiveNotiferNewMsgChk;
 bool ChatStateNotiferNewMsgChk;
 bool ChatGoneNotiferNewMsgChk;
+bool ChatGoneCloudNotiferNewMsgChk;
 bool TaskbarPenChk;
 //Titlebar
 bool TweakFrmSendTitlebarChk;
@@ -1781,6 +1782,22 @@ int GetContactState(UnicodeString JID)
   }
   //Zwrocenie ikonki stanu kontaktu
   return State;
+}
+//---------------------------------------------------------------------------
+
+//Sprawdzanie plci kontaktu na podstawie danych w wizytowce
+bool ChkContactGender(UnicodeString JID)
+{
+  //Otwieranie pliku INI kontatku
+  TIniFile *Ini = new TIniFile(GetContactsUserDir()+JID+".ini");
+  //Pobieranie informacji o plci kontaktu
+  UnicodeString Gender = Ini->ReadString("Buddy","Gender","");
+  //Zamkniecie pliku ini
+  delete Ini;
+  //Kobieta
+  if(Gender=="RkVNQUxF") return false;
+  //Mezczyzna
+  else return true;
 }
 //---------------------------------------------------------------------------
 
@@ -8614,6 +8631,27 @@ INT_PTR __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 		  PreMsgStateList->WriteInteger("PreMsgState",JID+Res+UserIdx,CHAT_GONE);
 		  //Zmiana ikonki na zakladce
 		  PluginLink.CallService(AQQ_CONTACTS_BUDDY_TABIMAGE,(WPARAM)GONE,(LPARAM)&RecvMsgContact);
+		  //Pokazywanie chmurki informacyjnej
+		  if(ChatGoneCloudNotiferNewMsgChk)
+		  {
+			//Pobieranie pseudonimu kontaktu
+			UnicodeString Text = GetContactNick(JID+UserIdx);
+			//Ustawianie dalszej tresci na podsawie plci kontaktu
+			if(ChkContactGender(JID))
+			 Text = Text + " zamkn¹³ okno rozmowy.";
+			else
+			 Text = Text + " zamknê³a okno rozmowy.";
+			//Pokazanie chmurki informacyjnej
+			TPluginShowInfo PluginShowInfo;
+			PluginShowInfo.cbSize = sizeof(TPluginShowInfo);
+			PluginShowInfo.Event = tmeInfo;
+			PluginShowInfo.Text = Text.w_str();
+			PluginShowInfo.ImagePath = (wchar_t*)PluginLink.CallService(AQQ_FUNCTION_GETPNG_FILEPATH,23,0);
+			PluginShowInfo.TimeOut = 1000 * CloudTimeOut;
+			PluginShowInfo.ActionID = L"";
+			PluginShowInfo.Tick = 0;
+			PluginLink.CallService(AQQ_FUNCTION_SHOWINFO,0,(LPARAM)(&PluginShowInfo));
+		  }
 		}
 		//Inny stan
 		else if(ChatState!=PreMsgStateList->ReadInteger("PreMsgState",JID+Res+UserIdx,0))
@@ -10486,6 +10524,7 @@ void LoadSettings()
   InactiveNotiferNewMsgChk = Ini->ReadBool("NewMsg","InactiveNotifer",false);
   ChatStateNotiferNewMsgChk = Ini->ReadBool("NewMsg","ChatStateNotifer",true);
   ChatGoneNotiferNewMsgChk = Ini->ReadBool("NewMsg","ChatGoneNotifer",true);
+  ChatGoneCloudNotiferNewMsgChk = Ini->ReadBool("NewMsg","ChatGoneCloudNotifer",false);
   TaskbarPenChk = Ini->ReadBool("NewMsg","TaskbarPen",true);
   //Titlebar
   TweakFrmSendTitlebarChk = Ini->ReadBool("Titlebar","TweakSend",false);
