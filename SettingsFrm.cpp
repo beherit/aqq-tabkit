@@ -299,6 +299,7 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   InactiveNotiferNewMsgCheckBox->Checked = Ini->ReadBool("NewMsg","InactiveNotifer",false);
   ChatStateNotiferNewMsgCheckBox->Checked = Ini->ReadBool("NewMsg","ChatStateNotifer",true);
   ChatGoneNotiferNewMsgCheckBox->Checked = Ini->ReadBool("NewMsg","ChatGoneNotifer",true);
+  ChatGoneCloudNotiferNewMsgCheckBox->Checked = Ini->ReadBool("NewMsg","ChatGoneCloudNotifer",false);
   TaskbarPenCheckBox->Checked = !Ini->ReadBool("NewMsg","TaskbarPen",true);
   //Titlebar
   TweakFrmSendTitlebarCheckBox->Checked = Ini->ReadBool("Titlebar","TweakSend",false);
@@ -552,6 +553,7 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
   Ini->WriteBool("NewMsg","InactiveNotifer",InactiveNotiferNewMsgCheckBox->Checked);
   Ini->WriteBool("NewMsg","ChatStateNotifer",ChatStateNotiferNewMsgCheckBox->Checked);
   Ini->WriteBool("NewMsg","ChatGoneNotifer",ChatGoneNotiferNewMsgCheckBox->Checked);
+  Ini->WriteBool("NewMsg","ChatGoneCloudNotifer",ChatGoneCloudNotiferNewMsgCheckBox->Checked);
   Ini->WriteBool("NewMsg","TaskbarPen",!TaskbarPenCheckBox->Checked);
   //Titlebar
   Ini->WriteBool("Titlebar","TweakSend",TweakFrmSendTitlebarCheckBox->Checked);
@@ -773,7 +775,8 @@ void __fastcall TSettingsForm::aNewMsgChkExecute(TObject *Sender)
   else
    TaskbarPenCheckBox->Enabled = true;
   ChatGoneNotiferNewMsgCheckBox->Enabled = ChatStateNotiferNewMsgCheckBox->Checked;
-
+  ChatGoneCloudNotiferNewMsgCheckBox->Enabled = ChatGoneNotiferNewMsgCheckBox->Checked;
+  if(!ChatStateNotiferNewMsgCheckBox->Checked) ChatGoneCloudNotiferNewMsgCheckBox->Enabled = false;
   SaveButton->Enabled = true;
 }
 //---------------------------------------------------------------------------

@@ -236,10 +236,6 @@ object SettingsForm: TSettingsForm
       Caption = 'Informacje o wtyczce'
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object PayPalImage: TImage
         Left = 350
         Top = 124
@@ -2956,10 +2952,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 1
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object ClosedTabGroupBox: TsGroupBox
         Left = 18
         Top = 22
@@ -3276,10 +3268,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 2
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object RememberUnsentMsgGroupBox: TsGroupBox
         Left = 18
         Top = 22
@@ -3436,10 +3424,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 3
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object TabsHotKeysGroupBox: TsGroupBox
         Left = 18
         Top = 116
@@ -3556,10 +3540,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 4
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object RestoreTabsSessionGroupBox: TsGroupBox
         Left = 18
         Top = 22
@@ -3634,10 +3614,6 @@ object SettingsForm: TSettingsForm
       OnShow = NewMsgTabSheetShow
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object ChatStateNotiferNewMsgCheckBox: TsCheckBox
         Left = 12
         Top = 182
@@ -3725,7 +3701,7 @@ object SettingsForm: TSettingsForm
       end
       object TaskbarPenCheckBox: TsCheckBox
         Left = 12
-        Top = 242
+        Top = 268
         Width = 253
         Height = 28
         Caption = 
@@ -3796,16 +3772,24 @@ object SettingsForm: TSettingsForm
           'Num Lock'
           'Caps Lock')
       end
+      object ChatGoneCloudNotiferNewMsgCheckBox: TsCheckBox
+        Left = 44
+        Top = 242
+        Width = 307
+        Height = 20
+        Caption = 'Wy'#347'wietlaj r'#243'wnie'#380' powiadomienie w chmurce informacyjnej'
+        TabOrder = 9
+        OnClick = aNewMsgChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
     end
     object TitlebarTabSheet: TsTabSheet
       Caption = 'Pasek tytu'#322'u'
       ImageIndex = 6
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object TweakFrmMainTitlebarGroupBox: TsGroupBox
         Left = 18
         Top = 167
@@ -3967,10 +3951,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 7
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object OpenClipTabsCheckBox: TsCheckBox
         Left = 12
         Top = 12
@@ -4089,10 +4069,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 8
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object SideSlideFullScreenModeExceptionsButton: TsSpeedButton
         Left = 263
         Top = 314
@@ -4680,10 +4656,6 @@ object SettingsForm: TSettingsForm
       OnShow = OtherTabSheetShow
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object AntiSpimCheckBox: TsCheckBox
         Left = 12
         Top = 68
