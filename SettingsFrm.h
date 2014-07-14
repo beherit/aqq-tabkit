@@ -259,6 +259,7 @@ __published:	// IDE-managed Components
 	TsMemo *FileMemo;
 	TsCheckBox *UnCloseTab2xLPMouseCheckBox;
 	TsCheckBox *ChatGoneCloudNotiferNewMsgCheckBox;
+	TsCheckBox *ChatGoneSoundNotiferNewMsgCheckBox;
 	void __fastcall UnsentMsgTrayIconClick(TObject *Sender);
 	void __fastcall aExitExecute(TObject *Sender);
 	void __fastcall aLoadSettingsExecute(TObject *Sender);

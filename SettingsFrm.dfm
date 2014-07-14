@@ -3701,14 +3701,14 @@ object SettingsForm: TSettingsForm
       end
       object TaskbarPenCheckBox: TsCheckBox
         Left = 12
-        Top = 268
+        Top = 294
         Width = 253
         Height = 28
         Caption = 
           'Wy'#322#261'cz wbudowan'#261' w komunikator funkcj'#281' pisaka na pasku tytu'#322'u ok' +
           'na rozmowy'
         AutoSize = False
-        TabOrder = 8
+        TabOrder = 10
         OnClick = aNewMsgChkExecute
         SkinData.SkinSection = 'CHECKBOX'
         ImgChecked = 0
@@ -3778,6 +3778,18 @@ object SettingsForm: TSettingsForm
         Width = 307
         Height = 20
         Caption = 'Wy'#347'wietlaj r'#243'wnie'#380' powiadomienie w chmurce informacyjnej'
+        TabOrder = 8
+        OnClick = aNewMsgChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+      end
+      object ChatGoneSoundNotiferNewMsgCheckBox: TsCheckBox
+        Left = 44
+        Top = 268
+        Width = 259
+        Height = 20
+        Caption = 'Odtwarzaj r'#243'wnie'#380' d'#378'wi'#281'k nowego powiadomienia'
         TabOrder = 9
         OnClick = aNewMsgChkExecute
         SkinData.SkinSection = 'CHECKBOX'
