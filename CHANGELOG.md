@@ -1,3 +1,7 @@
+1.9.7.0
+-----
+* Możliwość informowania o zamknięciu okna rozmowy również poprzez chmurkę informacyjną oraz dźwięk nowego powiadomienia.
+
 1.9.6.0
 -----
 * Ustawianie prawidłowej pozycji kursora w polu wpisywania wiadomości po wysunięciu okna.
