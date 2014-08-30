@@ -236,6 +236,10 @@ object SettingsForm: TSettingsForm
       Caption = 'Informacje o wtyczce'
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object PayPalImage: TImage
         Left = 350
         Top = 124
@@ -3630,6 +3634,10 @@ object SettingsForm: TSettingsForm
       OnShow = NewMsgTabSheetShow
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object ChatStateNotiferNewMsgCheckBox: TsCheckBox
         Left = 12
         Top = 182
