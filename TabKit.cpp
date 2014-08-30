@@ -659,6 +659,11 @@ int GetSaturation()
   return (int)PluginLink.CallService(AQQ_SYSTEM_COLORGETSATURATION,0,0);
 }
 //---------------------------------------------------------------------------
+int GetBrightness()
+{
+  return (int)PluginLink.CallService(AQQ_SYSTEM_COLORGETBRIGHTNESS,0,0);
+}
+//---------------------------------------------------------------------------
 
 //Pobieranie informacji o pliku
 UnicodeString GetFileInfo(wchar_t *ModulePath, String KeyName)
@@ -7181,8 +7186,10 @@ INT_PTR __stdcall OnColorChange(WPARAM wParam, LPARAM lParam)
 	  //Wlaczona zaawansowana stylizacja okien
 	  if(ChkSkinEnabled())
 	  {
-		hSettingsForm->sSkinManager->HueOffset = wParam;
-		hSettingsForm->sSkinManager->Saturation = lParam;
+		TPluginColorChange ColorChange = *(PPluginColorChange)wParam;
+		hSettingsForm->sSkinManager->HueOffset = ColorChange.Hue;
+		hSettingsForm->sSkinManager->Saturation = ColorChange.Saturation;
+		hSettingsForm->sSkinManager->Brightness = ColorChange.Brightness;
 	  }
 	}
   }
@@ -9446,6 +9453,7 @@ INT_PTR __stdcall OnThemeChanged(WPARAM wParam, LPARAM lParam)
 		//Zmiana kolorystyki AlphaControls
 		hSettingsForm->sSkinManager->HueOffset = GetHUE();
 		hSettingsForm->sSkinManager->Saturation = GetSaturation();
+		hSettingsForm->sSkinManager->Brightness = GetBrightness();
 		//Aktywacja skorkowania AlphaControls
 		hSettingsForm->sSkinManager->Active = true;
 	  }
@@ -11165,7 +11173,7 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Load(PPluginLink Link)
   //Hook na zamkniecie okna rozmowy lub zakladki wraz z wiadomoscia
   PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_CLOSETABMESSAGE,OnCloseTabMessage);
   //Hook na zmiane kolorystyki AlphaControls
-  PluginLink.HookEvent(AQQ_SYSTEM_COLORCHANGE,OnColorChange);
+  PluginLink.HookEvent(AQQ_SYSTEM_COLORCHANGEV2,OnColorChange);
   //Hook na zmiane stanu kontaktu
   PluginLink.HookEvent(AQQ_CONTACTS_UPDATE,OnContactsUpdate);
   //Hook na zakonczenie ladowania listy kontaktow przy starcie AQQ
