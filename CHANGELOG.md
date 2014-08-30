@@ -1,3 +1,9 @@
+1.9.8.0
+-----
+* Pełne wsparcie kolorystyki stylizacji okien.
+* Drobna zmiana w funkcji zapamiętywania sesji wpisanego tekstu w oknie rozmowy.
+* Aktualizacja komponentów AlphaControls do nowszej wersji (9.13).
+
 1.9.7.0
 -----
 * Możliwość informowania o zamknięciu okna rozmowy również poprzez chmurkę informacyjną oraz dźwięk nowego powiadomienia.
