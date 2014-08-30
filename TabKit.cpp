@@ -7779,7 +7779,7 @@ INT_PTR __stdcall OnMsgComposing(WPARAM wParam, LPARAM lParam)
 	//Zapamietywanie sesji wpisywanego tekstu
 	if((RestoreTabsSessionChk)&&(RestoreMsgSessionChk))
 	{
-      //Pobieranie danych kontatku
+	  //Pobieranie danych kontatku
 	  TPluginContact MsgComposingContact = *(PPluginContact)wParam;
 	  UnicodeString JID = (wchar_t*)MsgComposingContact.JID;
 	  if(MsgComposingContact.IsChat) JID = "ischat_" + JID;
@@ -7995,7 +7995,7 @@ INT_PTR __stdcall OnPreSendMsg(WPARAM wParam, LPARAM lParam)
   //Dodawanie JID do listy kontaktow z ktorymy przeprowadzono rozmowe / komunikator nie jest zamykany
   if((ClosedTabsChk)&&(!ForceUnloadExecuted))
   {
-    //Pobranie danych kontaktu
+	//Pobranie danych kontaktu
 	TPluginContact PreSendMsgContact = *(PPluginContact)wParam;
 	UnicodeString JID = (wchar_t*)PreSendMsgContact.JID;
 	if(PreSendMsgContact.IsChat) JID = "ischat_" + JID;
@@ -8003,6 +8003,20 @@ INT_PTR __stdcall OnPreSendMsg(WPARAM wParam, LPARAM lParam)
 	//Dodawanie JID do listy
 	if(AcceptClosedTabsList->IndexOf(JID+UserIdx)==-1)
 	 AcceptClosedTabsList->Add(JID+UserIdx);
+  }
+  //Usuwanie zapamietanej sesji wpisanego w oknie rozmowy tekstu
+  if((RestoreTabsSessionChk)&&(RestoreMsgSessionChk))
+  {
+    //Pobranie danych kontaktu
+	TPluginContact PreSendMsgContact = *(PPluginContact)wParam;
+	UnicodeString JID = (wchar_t*)PreSendMsgContact.JID;
+	if(PreSendMsgContact.IsChat) JID = "ischat_" + JID;
+	UnicodeString UserIdx = ":" + IntToStr(PreSendMsgContact.UserIdx);
+	//Usuniecie sesji z pliku
+	TIniFile *Ini = new TIniFile(SessionFileDir);
+	if(Ini->ValueExists("SessionMsg", JID+UserIdx))
+	 Ini->DeleteKey("SessionMsg", JID+UserIdx);
+	delete Ini;
   }
 
   return 0;
