@@ -3495,7 +3495,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	{
 	  //Zatrzymanie timera
 	  KillTimer(hTimerFrm,TIMER_LOADLASTCONV);
-	  //Pobieranie ostatniej wiadomosci
+	  //Wczytywanie ostatnio przeprowadzonej rozmowy
 	  PluginLink.CallService(AQQ_FUNCTION_LOADLASTCONV,(WPARAM)UnCloseTabFromHotKeyJID.w_str(),(LPARAM)UnCloseTabFromHotKeyUserIdx);
 	}
 	//Zmiana pozycji nowo otwartej przypietej zakladki
@@ -6378,7 +6378,7 @@ INT_PTR __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 		  //Wczytanie tresci wiadomosci do pola RichEdit
 		  if(!Body.IsEmpty())
 		  {
-			//Pobieranie ostatniej wiadomosci
+			//Wczytywanie ostatnio przeprowadzonej rozmowy
 			if(!ActiveTabContact.IsChat) PluginLink.CallService(AQQ_FUNCTION_LOADLASTCONV,(WPARAM)JID.w_str(),(LPARAM)ActiveTabContact.UserIdx);
 			//Ustawianie tekstu
 			SetWindowTextW(hRichEdit, Body.w_str());
@@ -6544,9 +6544,6 @@ INT_PTR __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 		 Ini->WriteString("SessionEx","ActiveTab",JID+UserIdx);
 		else
 		 Ini->DeleteKey("SessionEx","ActiveTab");
-		//Wczytywanie ostatnio przeprowadzonej rozmowy
-		if((RestoringSession)&&(!ActiveTabContact.IsChat))
-		 PluginLink.CallService(AQQ_FUNCTION_LOADLASTCONV,(WPARAM)JID.w_str(),(LPARAM)ActiveTabContact.UserIdx);
 		//Odczytywanie sesji wiadomosci
 		if((RestoreMsgSessionChk)&&(RestoringSession))
 		{
@@ -7469,9 +7466,6 @@ INT_PTR __stdcall OnFetchAllTabs(WPARAM wParam, LPARAM lParam)
 		else
 		 Ini->WriteString("Session","Tab"+IntToStr(Count+1),TabsList->Strings[Count]);
 	  }
-	  //Wczytywanie ostatnio przeprowadzonej rozmowy
-	  if((RestoringSession)&&(!FetchAllTabsContact.IsChat))
-	   PluginLink.CallService(AQQ_FUNCTION_LOADLASTCONV,(WPARAM)JID.w_str(),(LPARAM)FetchAllTabsContact.UserIdx);
 	  //Odczytywanie sesji wiadomosci
 	  if((RestoreMsgSessionChk)&&(RestoringSession))
 	  {
@@ -9827,6 +9821,29 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 		  if(TabsListEx->Count) ChangeActiveTab(Ini->ReadString("SessionEx","ActiveTab",TabsList->Strings[0]));
 		  //Kasowanie uchwytu do ostatnio aktywnego okna - anty never endig SlideIn FrmMain
 		  LastActiveWindow = NULL;
+		  //Wczytywanie ostatnio przeprowadzonych rozmow w przywroconych zakladkach
+		  for(int Count=0;Count<TabsList->Count;Count++)
+		  {
+			//Kontakt nie jest czatem
+			if(!TabsList->Strings[Count].Pos("ischat_"))
+			{
+			  //Pobranie JID kontaktu
+			  UnicodeString JID = TabsList->Strings[Count];
+			  //Definicja domyslnego indeksu konta
+			  UnicodeString UserIdx = "0";
+			  //JID zawiera indeks konta
+			  if(JID.Pos(":"))
+			  {
+				//Wyciagniecie indeksu konta
+				UserIdx = JID;
+				UserIdx = UserIdx.Delete(1,UserIdx.Pos(":"));
+				//Usuniecie indeksu konta z JID
+				JID = JID.Delete(JID.Pos(":"),JID.Length());
+			  }
+			  //Wczytywanie ostatnio przeprowadzonej rozmowy
+			  PluginLink.CallService(AQQ_FUNCTION_LOADLASTCONV,(WPARAM)JID.w_str(),(LPARAM)StrToInt(UserIdx));
+			}
+		  }
 		  //Status przywracania sesji
 		  RestoringSession = false;
 		}
