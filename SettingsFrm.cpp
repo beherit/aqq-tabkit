@@ -58,6 +58,7 @@ __declspec(dllimport)int GetHUE();
 __declspec(dllimport)int GetSaturation();
 __declspec(dllimport)int GetBrightness();
 __declspec(dllimport)bool ChkYouTubeListItem();
+__declspec(dllimport)bool RefreshListAllowed();
 __declspec(dllimport)void RefreshList();
 __declspec(dllimport)UnicodeString GetYouTubeTitleListItem();
 __declspec(dllimport)void AddToYouTubeExcludeList(UnicodeString ID);
@@ -1089,10 +1090,14 @@ void __fastcall TSettingsForm::GetYouTubeTitleThreadRun(TIdThreadComponent *Send
 
 void __fastcall TSettingsForm::RefreshTimerTimer(TObject *Sender)
 {
-  //Wylaczenie timera
-  RefreshTimer->Enabled = false;
-  //Odswiezenie listy kontaktow
-  RefreshList();
+  //Odswiezenie listy kontaktow jest dozwolone
+  if(RefreshListAllowed())
+  {
+	//Wylaczenie timera
+	RefreshTimer->Enabled = false;
+	//Odswiezenie listy kontaktow
+	RefreshList();
+  }
 }
 //---------------------------------------------------------------------------
 
