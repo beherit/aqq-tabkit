@@ -1,7 +1,7 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
         <ProjectGuid>{B17C12F4-88EA-489C-8D83-6A6F7124D50B}</ProjectGuid>
-        <ProjectVersion>15.4</ProjectVersion>
+        <ProjectVersion>16.0</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Release</Config>
@@ -146,7 +146,7 @@
         <DynamicRTL>false</DynamicRTL>
         <LinkPackageStatics>rtl.lib;vcl.lib;IndyProtocols.lib;IndyCore.lib;IndySystem.lib;xmlrtl.lib;vclx.lib;acnt_R.lib;vclimg.lib</LinkPackageStatics>
         <VerInfo_MinorVer>9</VerInfo_MinorVer>
-        <ILINK_LibraryPath>C:\Users\Public\Documents\Embarcadero\Studio\14.0\DCP\;$(BDS)\lib\win32\release\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
+        <ILINK_LibraryPath>C:\Users\Public\Documents\Embarcadero\Studio\15.0\DCP\;C:\Users\Public\Documents\Embarcadero\Studio\14.0\DCP\;$(BDS)\lib\win32\release\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
         <VerInfo_Release>8</VerInfo_Release>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
