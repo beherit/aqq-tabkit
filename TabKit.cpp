@@ -239,6 +239,8 @@ TMemIniFile* ContactsNickList = new TMemIniFile(ChangeFileExt(Application->ExeNa
 TStringList *GetYouTubeTitleList = new TStringList;
 //Lista ID filmow YouTube wykluczonych na czas sesji
 TStringList *YouTubeExcludeList = new TStringList;
+//Zezwolenie na odswiezenie listy kontaktow
+bool AllowRefreshList = false;
 //Tablica ID pakietow XML
 TStringList *XMLIDList = new TStringList;
 //Sciezka do pliku sesji
@@ -2149,6 +2151,13 @@ UnicodeString GetYouTubeTitleListItem()
 void AddToYouTubeExcludeList(UnicodeString ID)
 {
   YouTubeExcludeList->Add(ID);
+}
+//---------------------------------------------------------------------------
+
+//Odswiezenie listy kontaktow jest dozwolone
+bool RefreshListAllowed()
+{
+  return AllowRefreshList;
 }
 //---------------------------------------------------------------------------
 
@@ -9900,6 +9909,8 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 		   SetWindowTextW(hFrmMain,L"AQQ");
 		}
 	  }
+	  //Zezwolenie na odswiezenie listy kontaktow
+	  AllowRefreshList = true;
 	}
     //Zamkniecie okna kontatkow
 	if((ClassName=="TfrmMain")&&(Event==WINDOW_EVENT_CLOSE))
@@ -11386,6 +11397,8 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Load(PPluginLink Link)
 		 SetWindowTextW(hFrmMain,L"AQQ");
 	  }
 	}
+	//Zezwolenie na odswiezenie listy kontaktow
+	AllowRefreshList = true;
 	//Odswiezenie listy kontaktow - skracanie wyswietlania odnosnikow na liscie kontaktow do wygodniejszej formy
 	if((ShortenLinksChk)&&((ShortenLinksMode==1)||(ShortenLinksMode==3)))
 	 RefreshList();
