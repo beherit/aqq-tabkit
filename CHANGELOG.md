@@ -1,3 +1,12 @@
+1.9.9.0
+-----
+* Zmiana sposobu przywracania starych procedur okien.
+* Poprawne przywracanie ostatnio przeprowadzonej rozmowy.
+* Zabezpieczenie odświeżania listy kontaktów przed przywróceniem sesji.
+* Mała poprawka tworzenia elementu w menu dla przypiętej zakładki.
+* Inne kosmetyczne zmiany.
+* Aktualizacja komponentów AlphaControls do nowszej wersji (9.15).
+
 1.9.8.0
 -----
 * Pełne wsparcie kolorystyki stylizacji okien.
