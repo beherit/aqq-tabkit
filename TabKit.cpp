@@ -35,8 +35,6 @@
 using namespace boost;
 using namespace std;
 #define RESOURCESCHANGER_SYSTEM_RESOURCECHANGED L"ResourcesChanger/System/ResourceChanged"
-#define ALPHAWINDOWS_OLDPROC L"AlphaWindows/OldProc"
-#define TABKIT_OLDPROC L"TabKit/OldProc"
 #define FLASHER L"TabKitFlasherThread"
 
 int WINAPI DllEntryPoint(HINSTANCE hinst, unsigned long reason, void* lpReserved)
@@ -308,16 +306,10 @@ HHOOK hThreadKeyboard;
 HHOOK hThreadMouse;
 //Stara procka okna rozmowy
 WNDPROC OldFrmSendProc;
-//Aktualna procka okna rozmowy
-WNDPROC CurrentFrmSendProc;
 //Stara procka okna kontaktow
 WNDPROC OldFrmMainProc;
-//Aktualna procka okna kontaktow
-WNDPROC CurrentFrmMainProc;
 //Stara procka okna wyszukiwarki
 WNDPROC OldFrmSeekOnListProc;
-//Aktualna procka wyszukiwarki
-WNDPROC CurrentFrmSeekOnListProc;
 //IKONY-W-INTERFEJSIE--------------------------------------------------------
 int CLOSEDTABS;
 int UNSENTMSG;
@@ -490,7 +482,6 @@ INT_PTR __stdcall OnPreSendMsg(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall OnPrimaryTab(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall OnPrimaryTab_GetOnlyList(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam);
-INT_PTR __stdcall OnRecvOldProc(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall OnReplyList(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall OnSystemRestart(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall OnResourceChanged(WPARAM wParam, LPARAM lParam);
@@ -5144,6 +5135,23 @@ LRESULT CALLBACK FrmMainProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	  else FrmMainBlockSlide = false;
 	}
   }
+  //Przypisanie starej procki do okna kontaktow
+  if(uMsg==WM_CLOSE)
+  {
+	//Procka nie zostala jeszcze przywrocona
+	if(OldFrmMainProc)
+	{
+	  //Przywrocenie wczesniej zapisanej procki
+	  SetWindowLongPtrW(hwnd, GWLP_WNDPROC,(LONG_PTR)OldFrmMainProc);
+	  //Skopiowanie procki do zmiennej tymczasowej
+	  WNDPROC tmpOldFrmMainProc = OldFrmMainProc;
+	  //Skasowanie procki
+	  OldFrmMainProc = NULL;
+	  //Zwrot w funkcji
+	  return CallWindowProc(tmpOldFrmMainProc, hwnd, uMsg, wParam, lParam);
+	}
+  }
+
   return CallWindowProc(OldFrmMainProc, hwnd, uMsg, wParam, lParam);
 }
 //---------------------------------------------------------------------------
@@ -5583,6 +5591,22 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	  else FrmSendBlockSlide = false;
 	}
   }
+  //Przypisanie starej procki do okna rozmowy
+  if(uMsg==WM_CLOSE)
+  {
+	//Procka nie zostala jeszcze przywrocona
+	if(OldFrmSendProc)
+	{
+	  //Przywrocenie wczesniej zapisanej procki
+	  SetWindowLongPtrW(hwnd, GWLP_WNDPROC,(LONG_PTR)OldFrmSendProc);
+	  //Skopiowanie procki do zmiennej tymczasowej
+	  WNDPROC tmpOldFrmSendProc = OldFrmSendProc;
+	  //Skasowanie procki
+	  OldFrmSendProc = NULL;
+	  //Zwrot w funkcji
+	  return CallWindowProc(tmpOldFrmSendProc, hwnd, uMsg, wParam, lParam);
+	}
+  }
 
   return CallWindowProc(OldFrmSendProc, hwnd, uMsg, wParam, lParam);
 }
@@ -5595,12 +5619,28 @@ LRESULT CALLBACK FrmSeekOnListProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM l
   if((!ThemeChanging)&&(!ForceUnloadExecuted))
   {
 	//Okno wyszukiwarki zostalo zdezaktywowane
-	if((uMsg==WM_ACTIVATE)&&(wParam==WA_INACTIVE))
+	if((uMsg==WM_ACTIVATE)&&(wParam==WA_INACTIVE)&&(FrmMainSlideChk))
 	{
 	  //Nonwym aktywnym oknem nie jest okno kontatkow
 	  if((HWND)lParam!=hFrmMain)
 	   //Wlaczenie timera ustawienia okna kontaktow na wierzchu
 	   SetTimer(hTimerFrm,TIMER_FRMMAIN_TOPMOST_EX,10,(TIMERPROC)TimerFrmProc);
+	}
+  }
+  //Przypisanie starej procki do okna wyszukiwarki
+  if(uMsg==WM_CLOSE)
+  {
+	//Procka nie zostala jeszcze przywrocona
+	if(OldFrmSeekOnListProc)
+	{
+	  //Przywrocenie wczesniej zapisanej procki
+	  SetWindowLongPtrW(hwnd, GWLP_WNDPROC,(LONG_PTR)OldFrmSeekOnListProc);
+	  //Skopiowanie procki do zmiennej tymczasowej
+	  WNDPROC tmpOldFrmSeekOnListProc = OldFrmSeekOnListProc;
+	  //Skasowanie procki
+	  OldFrmSeekOnListProc = NULL;
+	  //Zwrot w funkcji
+	  return CallWindowProc(tmpOldFrmSeekOnListProc, hwnd, uMsg, wParam, lParam);
 	}
   }
 
@@ -7368,9 +7408,7 @@ INT_PTR __stdcall OnFetchAllTabs(WPARAM wParam, LPARAM lParam)
 	  if((!hTabsBar)||(!hScrollTabButton[0])||(!hScrollTabButton[1]))
 	   EnumChildWindows(hFrmSend,(WNDENUMPROC)FindTabsBar,0);
 	  //Przypisanie nowej procki dla okna rozmowy
-	  OldFrmSendProc = (WNDPROC)SetWindowLongPtrW(hFrmSend, GWLP_WNDPROC,(LONG_PTR)FrmSendProc);
-	  //Pobieranie aktualnej procki okna rozmowy
-	  CurrentFrmSendProc = (WNDPROC)GetWindowLongPtr(hFrmSend, GWLP_WNDPROC);
+	  if(!OldFrmSendProc) OldFrmSendProc = (WNDPROC)SetWindowLongPtrW(hFrmSend, GWLP_WNDPROC,(LONG_PTR)FrmSendProc);
 	  //Pobranie rozmiaru+pozycji okna rozmowy
 	  GetFrmSendRect();
 	  //Ustawienie poprawnej pozycji okna
@@ -8058,9 +8096,7 @@ INT_PTR __stdcall OnPrimaryTab(WPARAM wParam, LPARAM lParam)
 		if((!hTabsBar)||(!hScrollTabButton[0])||(!hScrollTabButton[1]))
 		 EnumChildWindows(hFrmSend,(WNDENUMPROC)FindTabsBar,0);
 		//Przypisanie nowej procki dla okna rozmowy
-		OldFrmSendProc = (WNDPROC)SetWindowLongPtrW(hFrmSend, GWLP_WNDPROC,(LONG_PTR)FrmSendProc);
-		//Pobieranie aktualnej procki okna rozmowy
-		CurrentFrmSendProc = (WNDPROC)GetWindowLongPtr(hFrmSend, GWLP_WNDPROC);
+		if(!OldFrmSendProc) OldFrmSendProc = (WNDPROC)SetWindowLongPtrW(hFrmSend, GWLP_WNDPROC,(LONG_PTR)FrmSendProc);
 		//Pobranie rozmiaru+pozycji okna rozmowy
 		GetFrmSendRect();
 		//Ustawienie poprawnej pozycji okna
@@ -8805,34 +8841,6 @@ INT_PTR __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 		}
 	  }
 	}
-  }
-
-  return 0;
-}
-//---------------------------------------------------------------------------
-
-//Hook na odbieranie starej procki przekazanej przez wtyczke AlphaWindows
-INT_PTR __stdcall OnRecvOldProc(WPARAM wParam, LPARAM lParam)
-{
-  //Pobieranie przekazanego uchwytu do okna
-  HWND hwnd = (HWND)lParam;
-  //Okno kontaktow
-  if(hwnd==hFrmMain)
-  {
-	if(CurrentFrmMainProc==(WNDPROC)GetWindowLongPtr(hFrmMain, GWLP_WNDPROC))
-	 OldFrmMainProc = (WNDPROC)wParam;
-  }
-  //Okno rozmowy
-  else if(hwnd==hFrmSend)
-  {
-	if(CurrentFrmSendProc==(WNDPROC)GetWindowLongPtr(hFrmSend, GWLP_WNDPROC))
-	 OldFrmSendProc = (WNDPROC)wParam;
-  }
-  //Okno wyszukiwarki na liscie kontatkow
-  else if(hwnd==hFrmSeekOnList)
-  {
-	if(CurrentFrmSeekOnListProc==(WNDPROC)GetWindowLongPtr(hFrmSeekOnList, GWLP_WNDPROC))
-	 OldFrmSeekOnListProc = (WNDPROC)wParam;
   }
 
   return 0;
@@ -9796,9 +9804,7 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  //Tymczasowa blokada chowania/pokazywania okna kontaktow
 	  FrmMainBlockSlide = false;
 	  //Przypisanie nowej procki dla okna kontatkow
-	  OldFrmMainProc = (WNDPROC)SetWindowLongPtrW(hFrmMain, GWLP_WNDPROC,(LONG_PTR)FrmMainProc);
-	  //Pobieranie aktualnej procki okna kontaktow
-	  CurrentFrmMainProc = (WNDPROC)GetWindowLongPtr(hFrmMain, GWLP_WNDPROC);
+	  if(!OldFrmMainProc) OldFrmMainProc = (WNDPROC)SetWindowLongPtrW(hFrmMain, GWLP_WNDPROC,(LONG_PTR)FrmMainProc);
 	  //Odczytywanie sesji
 	  if(RestoreTabsSessionChk)
 	  {
@@ -9912,31 +9918,10 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  //Zezwolenie na odswiezenie listy kontaktow
 	  AllowRefreshList = true;
 	}
-    //Zamkniecie okna kontatkow
+	//Zamkniecie okna kontatkow
 	if((ClassName=="TfrmMain")&&(Event==WINDOW_EVENT_CLOSE))
 	{
-	  //Przypisanie starej procki do okna rozmowy
-	  if(OldFrmMainProc)
-	  {
-		//Przywrocenie wczesniej zapisanej procki
-		if(CurrentFrmMainProc==(WNDPROC)GetWindowLongPtr(hFrmMain, GWLP_WNDPROC))
-		 SetWindowLongPtrW(hFrmMain, GWLP_WNDPROC,(LONG_PTR)OldFrmMainProc);
-		//Samo wyrejestrowanie hooka
-		else
-		{
-		  //Przekazanie starej procki przez API
-		  TPluginHook PluginHook;
-		  PluginHook.HookName = TABKIT_OLDPROC;
-		  PluginHook.wParam = (WPARAM)OldFrmMainProc;
-		  PluginHook.lParam = (LPARAM)hFrmMain;
-		  PluginLink.CallService(AQQ_SYSTEM_SENDHOOK,(WPARAM)(&PluginHook),0);
-		  //Wyrejestrowanie hooka
-		  SetWindowLongPtrW(hFrmMain, GWLP_WNDPROC,(LONG_PTR)(WNDPROC)GetWindowLongPtr(hFrmMain, GWLP_WNDPROC));
-		}
-		//Skasowanie procek
-		OldFrmMainProc = NULL;
-		CurrentFrmMainProc = NULL;
-	  }
+	  //Przypisanie starej procki do okna kontatkow ma miejsce w WM_CLOSE
 	  //Usuniecie uchwytu do okna kontaktow
 	  hFrmMain = NULL;
 	}
@@ -9970,9 +9955,7 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 		//Stan widocznosci okna rozmowy
 		else FrmSendVisible = true;
 		//Przypisanie nowej procki dla okna rozmowy
-		OldFrmSendProc = (WNDPROC)SetWindowLongPtrW(hFrmSend, GWLP_WNDPROC,(LONG_PTR)FrmSendProc);
-		//Pobieranie aktualnej procki okna rozmowy
-		CurrentFrmSendProc = (WNDPROC)GetWindowLongPtr(hFrmSend, GWLP_WNDPROC);
+		if(!OldFrmSendProc)	OldFrmSendProc = (WNDPROC)SetWindowLongPtrW(hFrmSend, GWLP_WNDPROC,(LONG_PTR)FrmSendProc);
 		//Tworzenie interfejsu tworzenia okna rozmowy na wierzchu
 		BuildStayOnTop();
 		//Tworzenie elementu przypinania zakladek
@@ -10001,28 +9984,7 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	//Zamkniecie okna rozmowy
 	if((ClassName=="TfrmSend")&&(Event==WINDOW_EVENT_CLOSE))
 	{
-	  //Przypisanie starej procki do okna rozmowy
-	  if(OldFrmSendProc)
-	  {
-		//Przywrocenie wczesniej zapisanej procki
-		if(CurrentFrmSendProc==(WNDPROC)GetWindowLongPtr(hFrmSend, GWLP_WNDPROC))
-		 SetWindowLongPtrW(hFrmSend, GWLP_WNDPROC,(LONG_PTR)OldFrmSendProc);
-		//Samo wyrejestrowanie hooka
-		else
-		{
-		  //Przekazanie starej procki przez API
-		  TPluginHook PluginHook;
-		  PluginHook.HookName = TABKIT_OLDPROC;
-		  PluginHook.wParam = (WPARAM)OldFrmSendProc;
-		  PluginHook.lParam = (LPARAM)hFrmSend;
-		  PluginLink.CallService(AQQ_SYSTEM_SENDHOOK,(WPARAM)(&PluginHook),0);
-		  //Wyrejestrowanie hooka
-		  SetWindowLongPtrW(hFrmSend, GWLP_WNDPROC,(LONG_PTR)(WNDPROC)GetWindowLongPtr(hFrmSend, GWLP_WNDPROC));
-		}
-		//Skasowanie procek
-		OldFrmSendProc = NULL;
-		CurrentFrmSendProc = NULL;
-	  }
+	  //Przypisanie starej procki do okna rozmowy ma miejsce w WM_CLOSE
 	  //Status pre-wysuwania okna rozmowy zza krawedzi ekranu
 	  PreFrmSendSlideIn = false;
 	  //Status wysuwania okna rozmowy zza krawedzi ekranu
@@ -10296,9 +10258,7 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 		//Ustawienie okna wyszukiwarki na wierzchu
 		SetWindowPos(hFrmSeekOnList,HWND_TOPMOST,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
 		//Przypisanie nowej procki dla okna wyszukiwarki
-		OldFrmSeekOnListProc = (WNDPROC)SetWindowLongPtrW(hFrmSeekOnList, GWLP_WNDPROC,(LONG_PTR)FrmSeekOnListProc);
-		//Pobieranie aktualnej procki okna wyszukiwarki
-		CurrentFrmSeekOnListProc = (WNDPROC)GetWindowLongPtr(hFrmSeekOnList, GWLP_WNDPROC);
+		if(!OldFrmSeekOnListProc) OldFrmSeekOnListProc = (WNDPROC)SetWindowLongPtrW(hFrmSeekOnList, GWLP_WNDPROC,(LONG_PTR)FrmSeekOnListProc);
 	  }
 	}
 	//Zamkniecie okna wyszukiwarki kontaktow
@@ -10309,24 +10269,7 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  //Zabezpieczenie przed chowaniem okna kontaktow
 	  if(FrmMainSlideChk)
 	  {
-		//Przywrocenie wczesniej zapisanej procki
-		if(CurrentFrmSeekOnListProc==(WNDPROC)GetWindowLongPtr(hFrmSeekOnList, GWLP_WNDPROC))
-		 SetWindowLongPtrW(hFrmSeekOnList, GWLP_WNDPROC,(LONG_PTR)OldFrmSeekOnListProc);
-		//Samo wyrejestrowanie hooka
-		else
-		{
-          //Przekazanie starej procki przez API
-		  TPluginHook PluginHook;
-		  PluginHook.HookName = TABKIT_OLDPROC;
-		  PluginHook.wParam = (WPARAM)OldFrmSeekOnListProc;
-		  PluginHook.lParam = (LPARAM)hFrmSeekOnList;
-		  PluginLink.CallService(AQQ_SYSTEM_SENDHOOK,(WPARAM)(&PluginHook),0);
-		  //Wyrejestrowanie hooka
-		  SetWindowLongPtrW(hFrmSeekOnList, GWLP_WNDPROC,(LONG_PTR)(WNDPROC)GetWindowLongPtr(hFrmSeekOnList, GWLP_WNDPROC));
-		}
-		//Skasowanie procek
-		OldFrmSeekOnListProc = NULL;
-		CurrentFrmSeekOnListProc = NULL;
+		//Przypisanie starej procki do okna wyszukiwarki ma miejsce w WM_CLOSE
 		//Zatrzymanie timera
 		KillTimer(hTimerFrm,TIMER_FRMMAIN_TOPMOST_EX);
 		//Usuniecie uchwytu do okna wyszukiwarki
@@ -11234,8 +11177,6 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Load(PPluginLink Link)
   PluginLink.HookEvent(AQQ_CONTACTS_PRESENDMSG,OnPreSendMsg);
   //Hook na odbieranie nowej wiadomosci
   PluginLink.HookEvent(AQQ_CONTACTS_RECVMSG,OnRecvMsg);
-  //Hook na odbieranie starej procki przekazanej przez wtyczke AlphaWindows
-  PluginLink.HookEvent(ALPHAWINDOWS_OLDPROC,OnRecvOldProc);
   //Hook na enumeracje listy kontatkow
   PluginLink.HookEvent(AQQ_CONTACTS_REPLYLIST,OnReplyList);
   //Hook na restart komunikatora
@@ -11331,9 +11272,7 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Load(PPluginLink Link)
 	//Tymczasowa blokada chowania/pokazywania okna kontaktow
 	FrmMainBlockSlide = false;
 	//Przypisanie nowej procki dla okna kontaktow
-	OldFrmMainProc = (WNDPROC)SetWindowLongPtrW(hFrmMain, GWLP_WNDPROC,(LONG_PTR)FrmMainProc);
-	//Pobieranie aktualnej procki okna kontaktow
-	CurrentFrmMainProc = (WNDPROC)GetWindowLongPtr(hFrmMain, GWLP_WNDPROC);
+	if(!OldFrmMainProc) OldFrmMainProc = (WNDPROC)SetWindowLongPtrW(hFrmMain, GWLP_WNDPROC,(LONG_PTR)FrmMainProc);
 	//Pobieranie ostatnio zamknietych zakladek
 	GetClosedTabs();
 	//Hook na pobieranie aktywnych zakladek
@@ -11450,67 +11389,25 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Unload()
   if(OldFrmSendProc)
   {
 	//Przywrocenie wczesniej zapisanej procki
-	if(CurrentFrmSendProc==(WNDPROC)GetWindowLongPtr(hFrmSend, GWLP_WNDPROC))
-	 SetWindowLongPtrW(hFrmSend, GWLP_WNDPROC,(LONG_PTR)OldFrmSendProc);
-	//Samo wyrejestrowanie hooka
-	else
-	{
-      //Przekazanie starej procki przez API
-	  TPluginHook PluginHook;
-	  PluginHook.HookName = TABKIT_OLDPROC;
-	  PluginHook.wParam = (WPARAM)OldFrmSendProc;
-	  PluginHook.lParam = (LPARAM)hFrmSend;
-	  PluginLink.CallService(AQQ_SYSTEM_SENDHOOK,(WPARAM)(&PluginHook),0);
-	  //Wyrejestrowanie hooka
-	  SetWindowLongPtrW(hFrmSend, GWLP_WNDPROC,(LONG_PTR)(WNDPROC)GetWindowLongPtr(hFrmSend, GWLP_WNDPROC));
-	}
-	//Skasowanie procek
+	SetWindowLongPtrW(hFrmSend, GWLP_WNDPROC,(LONG_PTR)OldFrmSendProc);
+	//Skasowanie procki
 	OldFrmSendProc = NULL;
-	CurrentFrmSendProc = NULL;
   }
   //Przypisanie starej procki do okna kontaktow
   if(OldFrmMainProc)
   {
 	//Przywrocenie wczesniej zapisanej procki
-	if(CurrentFrmMainProc==(WNDPROC)GetWindowLongPtr(hFrmMain, GWLP_WNDPROC))
-	 SetWindowLongPtrW(hFrmMain, GWLP_WNDPROC,(LONG_PTR)OldFrmMainProc);
-	//Samo wyrejestrowanie hooka
-	else
-	{
-      //Przekazanie starej procki przez API
-	  TPluginHook PluginHook;
-	  PluginHook.HookName = TABKIT_OLDPROC;
-	  PluginHook.wParam = (WPARAM)OldFrmMainProc;
-	  PluginHook.lParam = (LPARAM)hFrmMain;
-	  PluginLink.CallService(AQQ_SYSTEM_SENDHOOK,(WPARAM)(&PluginHook),0);
-	  //Wyrejestrowanie hooka
-	  SetWindowLongPtrW(hFrmMain, GWLP_WNDPROC,(LONG_PTR)(WNDPROC)GetWindowLongPtr(hFrmMain, GWLP_WNDPROC));
-	}
-	//Skasowanie procek
+	SetWindowLongPtrW(hFrmMain, GWLP_WNDPROC,(LONG_PTR)OldFrmMainProc);
+	//Skasowanie procki
 	OldFrmMainProc = NULL;
-	CurrentFrmMainProc = NULL;
   }
   //Przypisanie starej procki do okna wyszukiwarki
   if(OldFrmSeekOnListProc)
   {
 	//Przywrocenie wczesniej zapisanej procki
-	if(CurrentFrmSeekOnListProc==(WNDPROC)GetWindowLongPtr(hFrmSeekOnList, GWLP_WNDPROC))
-	 SetWindowLongPtrW(hFrmSeekOnList, GWLP_WNDPROC,(LONG_PTR)OldFrmSeekOnListProc);
-	//Samo wyrejestrowanie hooka
-	else
-	{
-      //Przekazanie starej procki przez API
-	  TPluginHook PluginHook;
-	  PluginHook.HookName = TABKIT_OLDPROC;
-	  PluginHook.wParam = (WPARAM)OldFrmSeekOnListProc;
-	  PluginHook.lParam = (LPARAM)hFrmSeekOnList;
-	  PluginLink.CallService(AQQ_SYSTEM_SENDHOOK,(WPARAM)(&PluginHook),0);
-	  //Wyrejestrowanie hooka
-	  SetWindowLongPtrW(hFrmSeekOnList, GWLP_WNDPROC,(LONG_PTR)(WNDPROC)GetWindowLongPtr(hFrmSeekOnList, GWLP_WNDPROC));
-	}
-	//Skasowanie procek
+	SetWindowLongPtrW(hFrmSeekOnList, GWLP_WNDPROC,(LONG_PTR)OldFrmSeekOnListProc);
+	//Skasowanie procki
 	OldFrmSeekOnListProc = NULL;
-	CurrentFrmSeekOnListProc = NULL;
   }
   //Wyladowanie timerow
   for(int TimerID=10;TimerID<=380;TimerID=TimerID+10) KillTimer(hTimerFrm,TimerID);
@@ -11598,7 +11495,6 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Unload()
   PluginLink.UnhookEvent(OnPerformCopyData);
   PluginLink.UnhookEvent(OnPreSendMsg);
   PluginLink.UnhookEvent(OnRecvMsg);
-  PluginLink.UnhookEvent(OnRecvOldProc);
   PluginLink.UnhookEvent(OnReplyList);
   PluginLink.UnhookEvent(OnSystemRestart);
   PluginLink.UnhookEvent(OnResourceChanged);
