@@ -151,6 +151,9 @@ object SettingsForm: TSettingsForm
   Position = poScreenCenter
   OnCreate = FormCreate
   OnShow = FormShow
+  DesignSize = (
+    776
+    404)
   PixelsPerInch = 96
   TextHeight = 13
   object Bevel: TsBevel
@@ -164,10 +167,11 @@ object SettingsForm: TSettingsForm
     ExplicitWidth = 728
   end
   object SaveButton: TsButton
-    Left = 692
+    Left = 693
     Top = 374
     Width = 75
     Height = 25
+    Anchors = [akRight, akBottom]
     Caption = 'Zastosuj'
     Enabled = False
     TabOrder = 1
@@ -175,20 +179,22 @@ object SettingsForm: TSettingsForm
     SkinData.SkinSection = 'BUTTON'
   end
   object CancelButton: TsButton
-    Left = 611
+    Left = 612
     Top = 374
     Width = 75
     Height = 25
+    Anchors = [akRight, akBottom]
     Caption = 'Anuluj'
     TabOrder = 2
     OnClick = aExitExecute
     SkinData.SkinSection = 'BUTTON'
   end
   object OkButton: TsButton
-    Left = 530
+    Left = 531
     Top = 374
     Width = 75
     Height = 25
+    Anchors = [akRight, akBottom]
     Caption = 'OK'
     TabOrder = 3
     OnClick = OkButtonClick
@@ -236,10 +242,6 @@ object SettingsForm: TSettingsForm
       Caption = 'Informacje o wtyczce'
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object PayPalImage: TImage
         Left = 350
         Top = 124
@@ -2868,25 +2870,6 @@ object SettingsForm: TSettingsForm
           'c'#281'?'#13#10'Przeka'#380' dowoln'#261' darowizn'#281' ju'#380' teraz!'
         WordWrap = True
       end
-      object OtherPaymentsWebLabel: TsWebLabel
-        Left = 377
-        Top = 184
-        Width = 142
-        Height = 13
-        Caption = 'Zobacz inne metody p'#322'atno'#347'ci'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        UseSkinColor = False
-        HoverFont.Charset = DEFAULT_CHARSET
-        HoverFont.Color = clWindowText
-        HoverFont.Height = -11
-        HoverFont.Name = 'Tahoma'
-        HoverFont.Style = [fsUnderline]
-        URL = 'http://beherit.pl/wsparcie'
-      end
       object StarImage: TImage
         Left = 32
         Top = 196
@@ -2956,10 +2939,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 1
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object ClosedTabGroupBox: TsGroupBox
         Left = 18
         Top = 22
@@ -3141,12 +3120,9 @@ object SettingsForm: TSettingsForm
           object FastClearClosedTabsCheckBox: TsCheckBox
             Left = 10
             Top = 126
-            Width = 215
-            Height = 28
-            Caption = 
-              'Dodaj element szybkiego czyszczenia listy ostatnio zamkni'#281'tych z' +
-              'ak'#322'adek'
-            AutoSize = False
+            Width = 220
+            Height = 20
+            Caption = 'Dodaj element szybkiego czyszczenia listy'
             Checked = True
             State = cbChecked
             TabOrder = 4
@@ -3243,8 +3219,8 @@ object SettingsForm: TSettingsForm
           Width = 213
           Height = 28
           Caption = 
-            'Wy'#347'wietlaj przycisk szybkiego dost'#281'p do ostatnio zamkni'#281'tych zak' +
-            #322'adek'
+            'Wy'#347'wietlaj przycisk szybkiego dost'#281'pu do ostatnio zamkni'#281'tych za' +
+            'k'#322'adek'
           AutoSize = False
           Checked = True
           State = cbChecked
@@ -3276,10 +3252,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 2
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object RememberUnsentMsgGroupBox: TsGroupBox
         Left = 18
         Top = 22
@@ -3297,11 +3269,9 @@ object SettingsForm: TSettingsForm
           object FastClearUnsentMsgCheckBox: TsCheckBox
             Left = 10
             Top = 68
-            Width = 345
+            Width = 220
             Height = 20
-            Caption = 
-              'Dodaj element szybkiego czyszczenia listy niewys'#322'anych wiadomo'#347'c' +
-              'i'
+            Caption = 'Dodaj element szybkiego czyszczenia listy'
             Checked = True
             State = cbChecked
             TabOrder = 2
@@ -3436,10 +3406,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 3
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object TabsHotKeysGroupBox: TsGroupBox
         Left = 18
         Top = 116
@@ -3472,7 +3438,7 @@ object SettingsForm: TSettingsForm
         object NewMgsHoyKeyCheckBox: TsCheckBox
           Left = 10
           Top = 68
-          Width = 327
+          Width = 322
           Height = 28
           Caption = 
             'Otwieraj okno rozmowy z now'#261' wiadomo'#347'ci'#261' za pomoc'#261' skr'#243'tu aktual' +
@@ -3556,10 +3522,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 4
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object RestoreTabsSessionGroupBox: TsGroupBox
         Left = 18
         Top = 22
@@ -3634,10 +3596,6 @@ object SettingsForm: TSettingsForm
       OnShow = NewMsgTabSheetShow
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object ChatStateNotiferNewMsgCheckBox: TsCheckBox
         Left = 12
         Top = 182
@@ -3826,10 +3784,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 6
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object TweakFrmMainTitlebarGroupBox: TsGroupBox
         Left = 18
         Top = 167
@@ -3991,10 +3945,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 7
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object OpenClipTabsCheckBox: TsCheckBox
         Left = 12
         Top = 12
@@ -4113,10 +4063,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 8
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object SideSlideFullScreenModeExceptionsButton: TsSpeedButton
         Left = 263
         Top = 314
@@ -4704,10 +4650,6 @@ object SettingsForm: TSettingsForm
       OnShow = OtherTabSheetShow
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object AntiSpimCheckBox: TsCheckBox
         Left = 12
         Top = 68

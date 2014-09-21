@@ -227,7 +227,6 @@ __published:	// IDE-managed Components
 	TsSpinEdit *CloudTimeOutSpinEdit;
 	TsGroupBox *CloudSettingsGroupBox;
 	TsComboBox *CloudTickModeComboBox;
-	TsWebLabel *OtherPaymentsWebLabel;
 	TsRadioButton *FrmMainEdgeBottomRadioButton;
 	TsRadioButton *FrmMainEdgeTopRadioButton;
 	TsRadioButton *FrmSendEdgeTopRadioButton;
