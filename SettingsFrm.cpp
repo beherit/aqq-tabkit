@@ -214,8 +214,6 @@ void __fastcall TSettingsForm::FormShow(TObject *Sender)
 	BugWebLabel->HoverFont->Color = sSkinManager->GetGlobalFontColor();
 	StarWebLabel->Font->Color = sSkinManager->GetGlobalFontColor();
 	StarWebLabel->HoverFont->Color = sSkinManager->GetGlobalFontColor();
-	OtherPaymentsWebLabel->Font->Color = sSkinManager->GetGlobalFontColor();
-	OtherPaymentsWebLabel->HoverFont->Color = sSkinManager->GetGlobalFontColor();
   }
   //Nieaktywne skorkowanie AlphaControls
   else
@@ -233,8 +231,6 @@ void __fastcall TSettingsForm::FormShow(TObject *Sender)
 	BugWebLabel->HoverFont->Color = clWindowText;
 	StarWebLabel->Font->Color = clWindowText;
 	StarWebLabel->HoverFont->Color = clWindowText;
-	OtherPaymentsWebLabel->Font->Color = clWindowText;
-	OtherPaymentsWebLabel->HoverFont->Color = clWindowText;
   }
   //Odczyt ustawien
   aLoadSettings->Execute();

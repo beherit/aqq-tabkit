@@ -585,7 +585,7 @@ UnicodeString GetThemeSkinDir()
 //Pobieranie sciezki katalogu zawierajacego informacje o kontaktach
 UnicodeString GetContactsUserDir()
 {
-  return StringReplace((wchar_t *)PluginLink.CallService(AQQ_FUNCTION_GETUSERDIR,0,0), "\\", "\\\\", TReplaceFlags() << rfReplaceAll) + "\\\\Data\\\\Contacts\\\\";
+  return StringReplace((wchar_t*)PluginLink.CallService(AQQ_FUNCTION_GETUSERDIR,0,0), "\\", "\\\\", TReplaceFlags() << rfReplaceAll) + "\\\\Data\\\\Contacts\\\\";
 }
 //---------------------------------------------------------------------------
 
@@ -9498,9 +9498,7 @@ INT_PTR __stdcall OnThemeChanged(WPARAM wParam, LPARAM lParam)
 	  hSettingsForm->BugWebLabel->Font->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
 	  hSettingsForm->BugWebLabel->HoverFont->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
 	  hSettingsForm->StarWebLabel->Font->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
-	  hSettingsForm->StarWebLabel->HoverFont->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
-	  hSettingsForm->OtherPaymentsWebLabel->Font->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
-	  hSettingsForm->OtherPaymentsWebLabel->HoverFont->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
+	  hSettingsForm->StarWebLabel->HoverFont->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();;
 	}
 	//Nieaktywne skorkowanie AlphaControls
 	else
@@ -9518,8 +9516,6 @@ INT_PTR __stdcall OnThemeChanged(WPARAM wParam, LPARAM lParam)
 	  hSettingsForm->BugWebLabel->HoverFont->Color = clWindowText;
 	  hSettingsForm->StarWebLabel->Font->Color = clWindowText;
 	  hSettingsForm->StarWebLabel->HoverFont->Color = clWindowText;
-	  hSettingsForm->OtherPaymentsWebLabel->Font->Color = clWindowText;
-	  hSettingsForm->OtherPaymentsWebLabel->HoverFont->Color = clWindowText;
 	}
   }
   //Aktualizacja ikon z interfejsu
