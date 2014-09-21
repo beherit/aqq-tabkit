@@ -51,11 +51,9 @@ TPluginInfo PluginInfo;
 //ClosedTabs-----------------------------------------------------------------
 //JID ostatnio przywroconej zakladki
 UnicodeString JustUnClosedJID;
-//Zakladka przywrocona ze skrotu klawiaturowego
-bool UnCloseTabFromHotKey = false;
-//Zmienne kontaktu przywracanego przez skrot klawiaturowy
-UnicodeString UnCloseTabFromHotKeyJID;
-int UnCloseTabFromHotKeyUserIdx;
+//Zmienne kontaktu do wczytywanie ostatnio przeprowadzonej rozmowy
+UnicodeString LoadLastConvJID;
+int LoadLastConvUserIdx;
 //Przywracanie zakladki za pomoca myszki
 bool TabWasChanged = false;
 //Lista JID zamknietych zakladek + data zamkniecia + akceptowalne kontakty
@@ -2537,20 +2535,6 @@ void GetClosedTabsItem(int Item)
 }
 //---------------------------------------------------------------------------
 
-//Otwieranie ponownie ostatnio zamknietej zakladki
-void UnCloseTabHotKeyExecute()
-{
-  //Odznaczenie przywrocenia zakladki za pomoca skrotu klawiaturowego
-  UnCloseTabFromHotKey = true;
-  //Pobranie JID zakladki do przywrocenia
-  UnicodeString JID = ClosedTabsList->Strings[0];
-  //Zapisawanie JID aktualnie przywracanej zakladki
-  JustUnClosedJID = JID;
-  //Otwieranie zakladki z podanym kontaktem/czatem
-  OpenNewTab(JID);
-}
-//---------------------------------------------------------------------------
-
 //Serwisy elementow ostatnio zamknietych zakladek
 INT_PTR __stdcall ServiceClosedTabsItemClear(WPARAM wParam, LPARAM lParam)
 {
@@ -3496,7 +3480,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	  //Zatrzymanie timera
 	  KillTimer(hTimerFrm,TIMER_LOADLASTCONV);
 	  //Wczytywanie ostatnio przeprowadzonej rozmowy
-	  PluginLink.CallService(AQQ_FUNCTION_LOADLASTCONV,(WPARAM)UnCloseTabFromHotKeyJID.w_str(),(LPARAM)UnCloseTabFromHotKeyUserIdx);
+	  PluginLink.CallService(AQQ_FUNCTION_LOADLASTCONV,(WPARAM)LoadLastConvJID.w_str(),(LPARAM)LoadLastConvUserIdx);
 	}
 	//Zmiana pozycji nowo otwartej przypietej zakladki
 	else if(wParam==TIMER_CLIPTABS_MOVE)
@@ -3623,7 +3607,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
       //Zatrzymanie timera
 	  KillTimer(hTimerFrm,TIMER_UNCLOSEBY2XLPM);
 	  //Przywrocenie zakladki
-	  if(!TabWasChanged) UnCloseTabHotKeyExecute();
+	  if(!TabWasChanged) GetClosedTabsItem(0);
 	}
 	//Zamykanie zakladki poprzez 2xLPM
 	else if(wParam==TIMER_CLOSEBY2XLPM)
@@ -5970,7 +5954,7 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 		  HWND hActiveFrm = GetForegroundWindow();
 		  if((hActiveFrm==hFrmSend)||(hActiveFrm==hFrmMain))
 		  {
-			UnCloseTabHotKeyExecute();
+			GetClosedTabsItem(0);
 			//Blokada wcisniecia klawiszy
 			return -1;
 		  }
@@ -5994,7 +5978,7 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 			  (GetKeyState(VK_SHIFT)<0)&&
 			  ((int)wParam==Key))
 			{
-			  UnCloseTabHotKeyExecute();
+			  GetClosedTabsItem(0);
 			  //Blokada wcisniecia klawiszy
 			  return -1;
 			}
@@ -6007,7 +5991,7 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 			  (GetKeyState(VK_SHIFT)<0)&&
 			  ((int)wParam==Key))
 			{
-			  UnCloseTabHotKeyExecute();
+			  GetClosedTabsItem(0);
 			  //Blokada wcisniecia klawiszy
 			  return -1;
 			}
@@ -6020,7 +6004,7 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 			  (GetKeyState(VK_SHIFT)>=0)&&
 			  ((int)wParam==Key))
 			{
-			  UnCloseTabHotKeyExecute();
+			  GetClosedTabsItem(0);
 			  //Blokada wcisniecia klawiszy
 			  return -1;
 			}
@@ -6033,7 +6017,7 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 			  (GetKeyState(VK_SHIFT)>=0)&&
 			  ((int)wParam==Key))
 			{
-			  UnCloseTabHotKeyExecute();
+			  GetClosedTabsItem(0);
 			  //Blokada wcisniecia klawiszy
 			  return -1;
 			}
@@ -6046,7 +6030,7 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 			  (GetKeyState(VK_SHIFT)>=0)&&
 			  ((int)wParam==Key))
 			{
-			  UnCloseTabHotKeyExecute();
+			  GetClosedTabsItem(0);
 			  //Blokada wcisniecia klawiszy
 			  return -1;
 			}
@@ -6059,7 +6043,7 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 			  (GetKeyState(VK_SHIFT)<0)&&
 			  ((int)wParam==Key))
 			{
-			  UnCloseTabHotKeyExecute();
+			  GetClosedTabsItem(0);
 			  //Blokada wcisniecia klawiszy
 			  return -1;
 			}
@@ -6154,7 +6138,7 @@ LRESULT CALLBACK ThreadMouseProc(int nCode, WPARAM wParam, LPARAM lParam)
 			//Kusor znajduje sie w obrebie paska zakladek
 			if(WindowFromPoint(Mouse->CursorPos)==hTabsBar)
 			{
-			  if(!TabWasChanged) UnCloseTabHotKeyExecute();
+			  if(!TabWasChanged) GetClosedTabsItem(0);
 			}
 		  }
 		}
@@ -6174,7 +6158,7 @@ LRESULT CALLBACK ThreadMouseProc(int nCode, WPARAM wParam, LPARAM lParam)
 			//Kusor znajduje sie w obrebie paska zakladek
 			if(WindowFromPoint(Mouse->CursorPos)==hTabsBar)
 			{
-			  if(!TabWasChanged) UnCloseTabHotKeyExecute();
+			  if(!TabWasChanged) GetClosedTabsItem(0);
 			}
 		  }
 		}
@@ -6427,8 +6411,15 @@ INT_PTR __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 		  //Wczytanie tresci wiadomosci do pola RichEdit
 		  if(!Body.IsEmpty())
 		  {
-			//Wczytywanie ostatnio przeprowadzonej rozmowy
-			if(!ActiveTabContact.IsChat) PluginLink.CallService(AQQ_FUNCTION_LOADLASTCONV,(WPARAM)JID.w_str(),(LPARAM)ActiveTabContact.UserIdx);
+			//Wczytanie ostatniej wiadomosci do okna rozmowy
+			if(!ActiveTabContact.IsChat)
+			{
+			  //Przekazanie zmiennych kontaktu
+			  LoadLastConvJID = JID;
+			  LoadLastConvUserIdx = ActiveTabContact.UserIdx;
+			  //Wlaczenie timera
+			  SetTimer(hTimerFrm,TIMER_LOADLASTCONV,500,(TIMERPROC)TimerFrmProc);
+			}
 			//Ustawianie tekstu
 			SetWindowTextW(hRichEdit, Body.w_str());
 			//Ustawianie pozycji kursora
@@ -6472,19 +6463,11 @@ INT_PTR __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 			  //Wczytanie ostatniej wiadomosci do okna rozmowy
 			  if(!ActiveTabContact.IsChat)
 			  {
-				//Natychmiastowe wczytanie ostatniej wiadomosci do okna rozmowy
-				if(!UnCloseTabFromHotKey) PluginLink.CallService(AQQ_FUNCTION_LOADLASTCONV,(WPARAM)JID.w_str(),(LPARAM)ActiveTabContact.UserIdx);
-				//Wczytanie ostatniej wiadomosc do okna rozmowy w timerze
-				else
-				{
-				  //Odznaczenie przywrocenia zakladki za pomoca skrotu klawiaturowego
-				  UnCloseTabFromHotKey = false;
-				  //Przekazanie zmiennych kontaktu
-				  UnCloseTabFromHotKeyJID = JID;
-				  UnCloseTabFromHotKeyUserIdx = ActiveTabContact.UserIdx;
-				  //Wlaczenie timera
-				  SetTimer(hTimerFrm,TIMER_LOADLASTCONV,500,(TIMERPROC)TimerFrmProc);
-				}
+				//Przekazanie zmiennych kontaktu
+				LoadLastConvJID = JID;
+				LoadLastConvUserIdx = ActiveTabContact.UserIdx;
+				//Wlaczenie timera
+				SetTimer(hTimerFrm,TIMER_LOADLASTCONV,500,(TIMERPROC)TimerFrmProc);
 			  }
 			  //Skasowanie JID ostatnio przywroconej zakladki
 			  JustUnClosedJID = "";
