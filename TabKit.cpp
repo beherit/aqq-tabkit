@@ -9146,6 +9146,7 @@ INT_PTR __stdcall OnSystemPopUp(WPARAM wParam, LPARAM lParam)
 	  {
 		//Element przypinania zakladki
 		TPluginActionEdit PluginActionEdit;
+		ZeroMemory(&PluginActionEdit,sizeof(TPluginActionEdit));
 		PluginActionEdit.cbSize = sizeof(TPluginActionEdit);
 		PluginActionEdit.pszName = L"TabKitClipTabItem";
 		PluginActionEdit.Caption = L"Przypnij zak³adkê";
@@ -9155,6 +9156,7 @@ INT_PTR __stdcall OnSystemPopUp(WPARAM wParam, LPARAM lParam)
 		PluginActionEdit.Checked = false;
 		PluginLink.CallService(AQQ_CONTROLS_EDITPOPUPMENUITEM,0,(LPARAM)(&PluginActionEdit));
 		//Element ukrywania caption zakladki
+		ZeroMemory(&PluginActionEdit,sizeof(TPluginActionEdit));
 		PluginActionEdit.cbSize = sizeof(TPluginActionEdit);
 		PluginActionEdit.pszName = L"TabKitClipTabCaptionItem";
 		PluginActionEdit.Caption = L"Ukrywaj nazwê zak³adki";
@@ -9169,6 +9171,7 @@ INT_PTR __stdcall OnSystemPopUp(WPARAM wParam, LPARAM lParam)
 	  {
 		//Element przypinania zakladki
 		TPluginActionEdit PluginActionEdit;
+		ZeroMemory(&PluginActionEdit,sizeof(TPluginActionEdit));
 		PluginActionEdit.cbSize = sizeof(TPluginActionEdit);
 		PluginActionEdit.pszName = L"TabKitClipTabItem";
 		PluginActionEdit.Caption = L"Odepnij zak³adkê";
@@ -9178,6 +9181,7 @@ INT_PTR __stdcall OnSystemPopUp(WPARAM wParam, LPARAM lParam)
 		PluginActionEdit.Checked = false;
 		PluginLink.CallService(AQQ_CONTROLS_EDITPOPUPMENUITEM,0,(LPARAM)(&PluginActionEdit));
 		//Element ukrywania nazwy zakladki
+		ZeroMemory(&PluginActionEdit,sizeof(TPluginActionEdit));
 		PluginActionEdit.cbSize = sizeof(TPluginActionEdit);
 		PluginActionEdit.pszName = L"TabKitClipTabCaptionItem";
 		PluginActionEdit.Caption = L"Ukrywaj nazwê zak³adki";
