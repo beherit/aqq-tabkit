@@ -111,9 +111,6 @@ UnicodeString ComputerName;
 //Zasob glownego konta Jabber
 UnicodeString ResourceName;
 //ClipTabs-------------------------------------------------------------------
-//JID kontaktu z menu popTab
-UnicodeString ClipTabPopup;
-UnicodeString ClipTabPopupEx;
 //Lista JID przypietych zakladek
 TStringList *ClipTabsList = new TStringList;
 TMemIniFile* ClipTabsIconList = new TMemIniFile(ChangeFileExt(Application->ExeName, ".INI"));
@@ -121,6 +118,9 @@ TMemIniFile* ClipTabsIconList = new TMemIniFile(ChangeFileExt(Application->ExeNa
 UnicodeString ActiveTabBeforeOpenClipTabs;
 //JID ostatniej otwartej przypietej zakladki czatowej
 UnicodeString LastOpenedChatClipTab;
+//FavouritesTabs------------------------------------------------------------
+ //Lista JID ulubionych zakladek
+TStringList *FavouritesTabsList = new TStringList;
 //SideSlide-----------------------------------------------------------------
 //Oryginalny rozmiar+pozycja okna kontaktow
 TRect FrmMainRect;
@@ -221,6 +221,9 @@ UnicodeString ActiveTabJID;
 UnicodeString ActiveTabJIDEx;
 //Ostatnio aktywna otwarta zakladka
 UnicodeString LastActiveTabJID;
+//JID kontaktu z menu popTab
+UnicodeString PopupTab;
+UnicodeString PopupTabEx;
 //Lista JID z notyfikacjami wiadomosci
 TStringList *PreMsgList = new TStringList;
 TMemIniFile* PreMsgStateList = new TMemIniFile(ChangeFileExt(Application->ExeName, ".INI"));
@@ -513,6 +516,17 @@ INT_PTR __stdcall ServiceUnsentMsgItemClear(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall ServiceUnsentMsgShowAllItem(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall ServiceClipTabItem(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall ServiceClipTabCaptionItem(WPARAM wParam, LPARAM lParam);
+INT_PTR __stdcall ServiceFavouriteTabItem(WPARAM wParam, LPARAM lParam);
+INT_PTR __stdcall ServiceFavouritesTabsItem0(WPARAM wParam, LPARAM lParam);
+INT_PTR __stdcall ServiceFavouritesTabsItem1(WPARAM wParam, LPARAM lParam);
+INT_PTR __stdcall ServiceFavouritesTabsItem2(WPARAM wParam, LPARAM lParam);
+INT_PTR __stdcall ServiceFavouritesTabsItem3(WPARAM wParam, LPARAM lParam);
+INT_PTR __stdcall ServiceFavouritesTabsItem4(WPARAM wParam, LPARAM lParam);
+INT_PTR __stdcall ServiceFavouritesTabsItem5(WPARAM wParam, LPARAM lParam);
+INT_PTR __stdcall ServiceFavouritesTabsItem6(WPARAM wParam, LPARAM lParam);
+INT_PTR __stdcall ServiceFavouritesTabsItem7(WPARAM wParam, LPARAM lParam);
+INT_PTR __stdcall ServiceFavouritesTabsItem8(WPARAM wParam, LPARAM lParam);
+INT_PTR __stdcall ServiceFavouritesTabsItem9(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall ServiceQuickQuoteItem(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall ServiceCollapseImagesItem(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall ServiceStayOnTopItem(WPARAM wParam, LPARAM lParam);
@@ -2989,7 +3003,7 @@ void BuildClipTab()
 	ClipTabItem.pszPopupName = L"popTab";
 	ClipTabItem.Handle = (int)hFrmSend;
 	PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&ClipTabItem));
-    //Element ukrywania caption zakladki
+	//Element ukrywania caption zakladki
 	TPluginAction ClipTabCaptionItem;
 	ZeroMemory(&ClipTabCaptionItem,sizeof(TPluginAction));
 	ClipTabCaptionItem.cbSize = sizeof(TPluginAction);
@@ -3010,7 +3024,7 @@ void BuildClipTab()
 INT_PTR __stdcall ServiceClipTabItem(WPARAM wParam, LPARAM lParam)
 {
   //Pobieranie JID kontaktu z menu popTab
-  UnicodeString ClipTab = ClipTabPopup;
+  UnicodeString ClipTab = PopupTab;
   //Zakladka nie jest przypieta
   if(ClipTabsList->IndexOf(ClipTab)==-1)
   {
@@ -3019,7 +3033,7 @@ INT_PTR __stdcall ServiceClipTabItem(WPARAM wParam, LPARAM lParam)
 	//Przebudowanie listy przypietych zakladek
 	RebuildClipTabs();
 	//Zmiana miejsca zakladki
-	ChangeClipTabPos(ClipTabPopup,ClipTabPopupEx);
+	ChangeClipTabPos(PopupTab,PopupTabEx);
 	//Odswiezenie wszystkich zakladek
 	RefreshTabs();
   }
@@ -3071,7 +3085,7 @@ INT_PTR __stdcall ServiceClipTabItem(WPARAM wParam, LPARAM lParam)
 INT_PTR __stdcall ServiceClipTabCaptionItem(WPARAM wParam, LPARAM lParam)
 {
   //Pobieranie JID kontaktu z menu popTab
-  UnicodeString ClipTab = ClipTabPopup;
+  UnicodeString ClipTab = PopupTab;
   //Odczyt stanu z pliku sesji
   TIniFile *Ini = new TIniFile(SessionFileDir);
   //Nazwa zakladki widoczna
@@ -3091,7 +3105,7 @@ INT_PTR __stdcall ServiceClipTabCaptionItem(WPARAM wParam, LPARAM lParam)
   //Przebudowanie listy przypietych zakladek
   RebuildClipTabs();
   //Zmiana miejsca zakladki
-  ChangeClipTabPos(ClipTabPopup,ClipTabPopupEx);
+  ChangeClipTabPos(PopupTab,PopupTabEx);
   //Odswiezenie wszystkich zakladek
   RefreshTabs();
 
@@ -3160,6 +3174,275 @@ void LoadClipTabs()
 	}
   }
   delete Ini;
+}
+//---------------------------------------------------------------------------
+
+//Usuwanie interfejsu dodwania/usuwania ulubionej zakladki
+void DestroyFavouriteTab()
+{
+  //Element dowania/usuwania ulubionej zakladki
+  TPluginAction FavouriteTabItem;
+  ZeroMemory(&FavouriteTabItem,sizeof(TPluginAction));
+  FavouriteTabItem.cbSize = sizeof(TPluginAction);
+  FavouriteTabItem.pszName = L"TabKitFavouriteTabItem";
+  FavouriteTabItem.Handle = (int)hFrmSend;
+  PluginLink.CallService(AQQ_CONTROLS_DESTROYPOPUPMENUITEM ,0,(LPARAM)(&FavouriteTabItem));
+}
+//---------------------------------------------------------------------------
+
+//Usuwanie interfejsu szybkiego dostepu do ulubionych zakladek
+void DestroyFavouritesTabs()
+{
+  //Pobieranie ilosci ulubionych zakladek
+  int TabsCount = FavouritesTabsList->Count;
+  //Sa jakies ulubione zakladki
+  if(TabsCount>0)
+  {
+	//Usuwanie elementow popupmenu
+	for(int Count=0;Count<TabsCount;Count++)
+	{
+	  TPluginAction DestroyFavouritesTabsItem;
+	  ZeroMemory(&DestroyFavouritesTabsItem,sizeof(TPluginAction));
+	  DestroyFavouritesTabsItem.cbSize = sizeof(TPluginAction);
+	  DestroyFavouritesTabsItem.pszName = ("TabKitFavouritesTabsItem"+IntToStr(Count)).w_str();
+	  PluginLink.CallService(AQQ_CONTROLS_DESTROYPOPUPMENUITEM ,0,(LPARAM)(&DestroyFavouritesTabsItem));
+	}
+	//Usuwanie buttona w oknie rozmowy
+	TPluginAction FrmSendFavouritesTabsButton;
+	ZeroMemory(&FrmSendFavouritesTabsButton,sizeof(TPluginAction));
+	FrmSendFavouritesTabsButton.cbSize = sizeof(TPluginAction);
+	FrmSendFavouritesTabsButton.pszName = L"TabKitFrmSendFavouritesTabsButton";
+	FrmSendFavouritesTabsButton.Handle = (int)hFrmSend;
+	PluginLink.CallService(AQQ_CONTROLS_TOOLBAR "tbMain" AQQ_CONTROLS_DESTROYBUTTON ,0,(LPARAM)(&FrmSendFavouritesTabsButton));
+  }
+}
+//---------------------------------------------------------------------------
+
+//Tworzenie interfejsu odwania/usuwania ulubionej zakladki
+void BuildFavouriteTab()
+{
+  //Okno rozmowy jest otwarte
+  if(hFrmSend)
+  {
+	//Element dowania/usuwania ulubionej zakladki
+	TPluginAction FavouriteTabItem;
+	ZeroMemory(&FavouriteTabItem,sizeof(TPluginAction));
+	FavouriteTabItem.cbSize = sizeof(TPluginAction);
+	FavouriteTabItem.pszName = L"TabKitFavouriteTabItem";
+	FavouriteTabItem.pszCaption = L"Dodaj do ulubionych";
+	FavouriteTabItem.Position = 1;
+	FavouriteTabItem.IconIndex = 125;
+	FavouriteTabItem.pszService = L"sTabKitFavouriteTabItem";
+	FavouriteTabItem.pszPopupName = L"popTab";
+	FavouriteTabItem.Handle = (int)hFrmSend;
+	PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&FavouriteTabItem));
+  }
+}
+//---------------------------------------------------------------------------
+
+//Tworzenie interfejsu szybkiego dostepu do ulubionych zakladek
+void BuildFavouritesTabs()
+{
+  //Pobieranie ilosci ulubionych zakladek
+  int TabsCount = FavouritesTabsList->Count;
+  //Sa jakies ulubione zakladki
+  if(TabsCount>0)
+  {
+	//Tworzenie buttona w oknie rozmowy
+	TPluginAction FrmSendFavouritesTabsButton;
+	ZeroMemory(&FrmSendFavouritesTabsButton,sizeof(TPluginAction));
+	FrmSendFavouritesTabsButton.cbSize = sizeof(TPluginAction);
+	FrmSendFavouritesTabsButton.pszName = L"TabKitFrmSendFavouritesTabsButton";
+	FrmSendFavouritesTabsButton.Hint = L"Ulubione zak³adki";
+	FrmSendFavouritesTabsButton.IconIndex = 125;
+	FrmSendFavouritesTabsButton.pszPopupName = L"TabKitFavouritesTabsPopUp";
+	FrmSendFavouritesTabsButton.Handle = (int)hFrmSend;
+	PluginLink.CallService(AQQ_CONTROLS_TOOLBAR "tbMain" AQQ_CONTROLS_CREATEBUTTON,0,(LPARAM)(&FrmSendFavouritesTabsButton));
+	//Tworzenie elementow popupmenu
+	for(int Count=0;Count<TabsCount;Count++)
+	{
+	  UnicodeString ItemJID = FavouritesTabsList->Strings[Count];
+	  if(!ItemJID.IsEmpty())
+	  {
+		if(!ItemJID.Pos("ischat_"))
+		{
+		  TPluginAction BuildFavouritesTabsItem;
+		  ZeroMemory(&BuildFavouritesTabsItem,sizeof(TPluginAction));
+		  BuildFavouritesTabsItem.cbSize = sizeof(TPluginAction);
+		  BuildFavouritesTabsItem.IconIndex = GetContactState(ItemJID);
+		  UnicodeString pszName = "TabKitFavouritesTabsItem"+IntToStr(Count);
+		  BuildFavouritesTabsItem.pszName = pszName.w_str();
+		  UnicodeString pszService = "sTabKitFavouritesTabsItem"+IntToStr(Count);
+		  BuildFavouritesTabsItem.pszService = pszService.w_str();
+		  BuildFavouritesTabsItem.pszCaption = GetContactNick(ItemJID).w_str();
+		  BuildFavouritesTabsItem.Position = Count;
+		  BuildFavouritesTabsItem.pszPopupName = L"TabKitFavouritesTabsPopUp";
+		  PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildFavouritesTabsItem));
+		}
+		else
+		{
+		  TPluginAction BuildFavouritesTabsItem;
+		  ZeroMemory(&BuildFavouritesTabsItem,sizeof(TPluginAction));
+		  BuildFavouritesTabsItem.cbSize = sizeof(TPluginAction);
+		  BuildFavouritesTabsItem.IconIndex = 79;
+		  UnicodeString pszName = "TabKitFavouritesTabsItem"+IntToStr(Count);
+		  BuildFavouritesTabsItem.pszName = pszName.w_str();
+		  UnicodeString pszService = "sTabKitFavouritesTabsItem"+IntToStr(Count);
+		  BuildFavouritesTabsItem.pszService = pszService.w_str();
+		  BuildFavouritesTabsItem.pszCaption = GetChannelName(ItemJID).w_str();
+		  BuildFavouritesTabsItem.Position = Count;
+		  BuildFavouritesTabsItem.pszPopupName = L"TabKitFavouritesTabsPopUp";
+		  PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildFavouritesTabsItem));
+		}
+	  }
+	}
+  }
+}
+//---------------------------------------------------------------------------
+
+//Odczyt ulubionych zakladek
+void LoadFavouritesTabs()
+{
+  //Wczytanie pliku sesji
+  TIniFile *Ini = new TIniFile(SessionFileDir);
+  TStringList *FavouritesTabs = new TStringList;
+  Ini->ReadSection("FavouritesTabs",FavouritesTabs);
+  int TabsCount = FavouritesTabs->Count;
+  delete FavouritesTabs;
+  //Sa jakies przypiete zakladki
+  if(TabsCount>0)
+  {
+	//Odczyt kolejno wszystkich rekordow
+	for(int Count=0;Count<TabsCount;Count++)
+	{
+	  //Odczytanie JID przypietej zakladki
+	  UnicodeString FavouriteTab = Ini->ReadString("FavouritesTabs", "Tab"+IntToStr(Count+1),"");
+	  //Dodanie zakladki do listy przypietych zakladek
+	  if(!FavouriteTab.IsEmpty()) FavouritesTabsList->Add(FavouriteTab);
+	}
+  }
+  delete Ini;
+}
+//---------------------------------------------------------------------------
+
+//Zapis ulubionych zakladek
+void SaveFavouritesTabs()
+{
+  //Zapisanie ponownie listy ulubionych zakladek w pliku sesji
+  TIniFile *Ini = new TIniFile(SessionFileDir);
+  Ini->EraseSection("FavouritesTabs");
+  if(FavouritesTabsList->Count>0)
+  {
+	for(int Count=0;Count<FavouritesTabsList->Count;Count++)
+	 Ini->WriteString("FavouritesTabs", "Tab"+IntToStr(Count+1), FavouritesTabsList->Strings[Count]);
+  }
+  delete Ini;
+}
+//---------------------------------------------------------------------------
+
+//Serwis dodawania/usuwania ulubionej zakladki
+INT_PTR __stdcall ServiceFavouriteTabItem(WPARAM wParam, LPARAM lParam)
+{
+  //Pobieranie JID kontaktu z menu popTab
+  UnicodeString FavouriteTab = PopupTab;
+  //Zakladka nie jest dodana do ulubionych
+  if(FavouritesTabsList->IndexOf(FavouriteTab)==-1)
+  {
+	//Maksymalnie 10 ulubionych zakladek
+	if(FavouritesTabsList->Count<11)
+	{
+      //Usuwanie elementu z lista ulubionych zakladek
+	  DestroyFavouritesTabs();
+	  //Dodanie nowej zakladki do ulubionych zakladek
+	  FavouritesTabsList->Add(FavouriteTab);
+	  //Zapis ulubionych zakladek
+	  SaveFavouritesTabs();
+	  //Ponowne tworzenie elementu z lista ulubionych zakladek
+	  BuildFavouritesTabs();
+	}
+	//Osiagnieto maksymalna ilosc ulubionych zakladek
+	else
+	{
+      //JAKIS KOMUNIKAT TUTAJ?
+	}
+  }
+  //Zaklada jest dodana do ulubionych
+  else
+  {
+    //Usuwanie elementu z lista ulubionych zakladek
+	DestroyFavouritesTabs();
+	//Usuniecie zakladki z ulubionych zakladek
+	FavouritesTabsList->Delete(FavouritesTabsList->IndexOf(FavouriteTab));
+	//Zapis ulubionych zakladek
+	SaveFavouritesTabs();
+	//Ponowne tworzenie elementu z lista ulubionych zakladek
+	BuildFavouritesTabs();
+  }
+
+  return 0;
+}
+//---------------------------------------------------------------------------
+
+//Otwieranie ulubionej zakladki
+void GetFavouritesTabsItem(int Item)
+{
+  //Pobranie JID zakladki do przywrocenia
+  UnicodeString JID = FavouritesTabsList->Strings[Item];
+  //Otwieranie zakladki z podanym kontaktem/czatem
+  OpenNewTab(JID);
+}
+//---------------------------------------------------------------------------
+
+//Serwisy elementow ostatnio zamknietych zakladek
+INT_PTR __stdcall ServiceFavouritesTabsItem0(WPARAM wParam, LPARAM lParam)
+{
+  GetFavouritesTabsItem(0);
+  return 0;
+}
+INT_PTR __stdcall ServiceFavouritesTabsItem1(WPARAM wParam, LPARAM lParam)
+{
+  GetFavouritesTabsItem(1);
+  return 0;
+}
+INT_PTR __stdcall ServiceFavouritesTabsItem2(WPARAM wParam, LPARAM lParam)
+{
+  GetFavouritesTabsItem(2);
+  return 0;
+}
+INT_PTR __stdcall ServiceFavouritesTabsItem3(WPARAM wParam, LPARAM lParam)
+{
+  GetFavouritesTabsItem(3);
+  return 0;
+}
+INT_PTR __stdcall ServiceFavouritesTabsItem4(WPARAM wParam, LPARAM lParam)
+{
+  GetFavouritesTabsItem(4);
+  return 0;
+}
+INT_PTR __stdcall ServiceFavouritesTabsItem5(WPARAM wParam, LPARAM lParam)
+{
+  GetFavouritesTabsItem(5);
+  return 0;
+}
+INT_PTR __stdcall ServiceFavouritesTabsItem6(WPARAM wParam, LPARAM lParam)
+{
+  GetFavouritesTabsItem(6);
+  return 0;
+}
+INT_PTR __stdcall ServiceFavouritesTabsItem7(WPARAM wParam, LPARAM lParam)
+{
+  GetFavouritesTabsItem(7);
+  return 0;
+}
+INT_PTR __stdcall ServiceFavouritesTabsItem8(WPARAM wParam, LPARAM lParam)
+{
+  GetFavouritesTabsItem(8);
+  return 0;
+}
+INT_PTR __stdcall ServiceFavouritesTabsItem9(WPARAM wParam, LPARAM lParam)
+{
+  GetFavouritesTabsItem(9);
+  return 0;
 }
 //---------------------------------------------------------------------------
 
@@ -7285,6 +7568,14 @@ INT_PTR __stdcall OnContactsUpdate(WPARAM wParam, LPARAM lParam)
 		}
 		delete Messages;
 	  }
+	  //Ustawianie prawidlowej ikonki w popumenu ulubionych zakladek
+	  //Jezeli JID jest na liscie ulubionych zakladek
+	  if(FavouritesTabsList->IndexOf(JID+UserIdx)!=-1)
+	  {
+		//Aktualizacja statusu
+		DestroyFavouritesTabs();
+		BuildFavouritesTabs();
+	  }
 	  //Zmiana caption okna rozmowy
 	  if((TweakFrmSendTitlebarChk)&&(JID+Res+UserIdx==ActiveTabJIDEx))
 	  {
@@ -9130,8 +9421,8 @@ INT_PTR __stdcall OnSystemPopUp(WPARAM wParam, LPARAM lParam)
 	  //Pobieranie indeksu konta kontaktu z zakladki
 	  UnicodeString UserIdx = ":" + IntToStr(SystemPopUContact.UserIdx);
 	  //Zapisanie JID do zmiennej globalnej
-	  ClipTabPopup = JID+UserIdx;
-	  ClipTabPopupEx = JID+Res+UserIdx;
+	  PopupTab = JID+UserIdx;
+	  PopupTabEx = JID+Res+UserIdx;
 	  //Zakladka nie jest przypieta
 	  if(ClipTabsList->IndexOf(JID+UserIdx)==-1)
 	  {
@@ -9185,6 +9476,36 @@ INT_PTR __stdcall OnSystemPopUp(WPARAM wParam, LPARAM lParam)
 		else
 		 PluginActionEdit.Checked = true;
 		delete Ini;
+		PluginLink.CallService(AQQ_CONTROLS_EDITPOPUPMENUITEM,0,(LPARAM)(&PluginActionEdit));
+	  }
+	  //Zakladka nie jest dodana do ulubionych
+	  if(FavouritesTabsList->IndexOf(JID+UserIdx)==-1)
+	  {
+		//Element dodawania zakladki do ulubionych
+		TPluginActionEdit PluginActionEdit;
+		ZeroMemory(&PluginActionEdit,sizeof(TPluginActionEdit));
+		PluginActionEdit.cbSize = sizeof(TPluginActionEdit);
+		PluginActionEdit.pszName = L"TabKitFavouriteTabItem";
+		PluginActionEdit.Caption = L"Dodaj do ulubionych";
+		PluginActionEdit.Enabled = true;
+		PluginActionEdit.Visible = true;
+		PluginActionEdit.IconIndex = 125;
+		PluginActionEdit.Checked = false;
+		PluginLink.CallService(AQQ_CONTROLS_EDITPOPUPMENUITEM,0,(LPARAM)(&PluginActionEdit));
+	  }
+	  //Zaklada jest dodana do ulubionych
+	  else
+	  {
+		//Element usuwania zakladki z ulubionych
+		TPluginActionEdit PluginActionEdit;
+		ZeroMemory(&PluginActionEdit,sizeof(TPluginActionEdit));
+		PluginActionEdit.cbSize = sizeof(TPluginActionEdit);
+		PluginActionEdit.pszName = L"TabKitFavouriteTabItem";
+		PluginActionEdit.Caption = L"Usuñ z ulubionych";
+		PluginActionEdit.Enabled = true;
+		PluginActionEdit.Visible = true;
+		PluginActionEdit.IconIndex = 125;
+		PluginActionEdit.Checked = false;
 		PluginLink.CallService(AQQ_CONTROLS_EDITPOPUPMENUITEM,0,(LPARAM)(&PluginActionEdit));
 	  }
 	}
@@ -9943,6 +10264,11 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 		BuildStayOnTop();
 		//Tworzenie elementu przypinania zakladek
 		BuildClipTab();
+		//Tworzenie elementu dodawania/usuwania ulubionej zakladki
+		BuildFavouriteTab();
+		//Tworzenie elementu z lista ulubionych zakladek
+		BuildFavouritesTabs();
+		//Przywracanie sesji nie jest aktywne
 		if(!RestoringSession)
 		{
 		  //Szybki dostep niewyslanych wiadomosci
@@ -9993,6 +10319,10 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  DestroyStayOnTop();
 	  //Usuwanie elementu przypinania zakladek
 	  DestroyClipTab();
+	  //Usuwanie elementu dodawania/usuwania ulubionej zakladki
+	  DestroyFavouriteTab();
+	  //Usuwanie elementu z lista ulubionych zakladek
+	  DestroyFavouritesTabs();
 	  //Usuniecie uchwytu do okna rozmowy
 	  hFrmSend = NULL;
 	}
@@ -11094,6 +11424,12 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Load(PPluginLink Link)
   UnsentMsgPopUp.cbSize = sizeof(TPluginAction);
   UnsentMsgPopUp.pszName = L"TabKitUnsentMsgPopUp";
   PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENU,0,(LPARAM)(&UnsentMsgPopUp));
+  //Szybki dostep ulubionych zakladek
+  TPluginAction FavouritesTabsPopUp;
+  ZeroMemory(&FavouritesTabsPopUp,sizeof(TPluginAction));
+  FavouritesTabsPopUp.cbSize = sizeof(TPluginAction);
+  FavouritesTabsPopUp.pszName = L"TabKitFavouritesTabsPopUp";
+  PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENU,0,(LPARAM)(&FavouritesTabsPopUp));
   //Tworzenie serwisow
   //Szybki dostep ostatnio zamknietych zakladek
   PluginLink.CreateServiceFunction(L"sTabKitClosedTabsItem0",ServiceClosedTabsItem0);
@@ -11118,6 +11454,18 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Load(PPluginLink Link)
   //Przypinanie zakladek
   PluginLink.CreateServiceFunction(L"sTabKitClipTabItem",ServiceClipTabItem);
   PluginLink.CreateServiceFunction(L"sTabKitClipTabCaptionItem",ServiceClipTabCaptionItem);
+  //Ulubione zakladki
+  PluginLink.CreateServiceFunction(L"sTabKitFavouriteTabItem",ServiceFavouriteTabItem);
+  PluginLink.CreateServiceFunction(L"sTabKitFavouritesTabsItem0",ServiceFavouritesTabsItem0);
+  PluginLink.CreateServiceFunction(L"sTabKitFavouritesTabsItem1",ServiceFavouritesTabsItem1);
+  PluginLink.CreateServiceFunction(L"sTabKitFavouritesTabsItem2",ServiceFavouritesTabsItem2);
+  PluginLink.CreateServiceFunction(L"sTabKitFavouritesTabsItem3",ServiceFavouritesTabsItem3);
+  PluginLink.CreateServiceFunction(L"sTabKitFavouritesTabsItem4",ServiceFavouritesTabsItem4);
+  PluginLink.CreateServiceFunction(L"sTabKitFavouritesTabsItem5",ServiceFavouritesTabsItem5);
+  PluginLink.CreateServiceFunction(L"sTabKitFavouritesTabsItem6",ServiceFavouritesTabsItem6);
+  PluginLink.CreateServiceFunction(L"sTabKitFavouritesTabsItem7",ServiceFavouritesTabsItem7);
+  PluginLink.CreateServiceFunction(L"sTabKitFavouritesTabsItem8",ServiceFavouritesTabsItem8);
+  PluginLink.CreateServiceFunction(L"sTabKitFavouritesTabsItem9",ServiceFavouritesTabsItem9);
   //Wklejanie tekstu ze schowka jako cytat
   PluginLink.CreateServiceFunction(L"sTabKitQuickQuoteItem",ServiceQuickQuoteItem);
   //Otwieranie zawinietego obrazka w programie graficznym
@@ -11202,6 +11550,8 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Load(PPluginLink Link)
   HookGlobalKeyboard();
   //Ladowanie przypietych zakladek
   LoadClipTabs();
+  //Ladowanie ulubionych zakladek
+  LoadFavouritesTabs();
   //Tworzenie interfejsu szybkiego dostepu do ustawien wtyczki
   BuildTabKitFastSettings();
   //Pobranie stylu zalacznika
@@ -11278,6 +11628,10 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Load(PPluginLink Link)
 	BuildFrmUnsentMsg();
 	//Element przypinania zakladek
 	BuildClipTab();
+	//Tworzenie elementu dodawania/usuwania ulubionej zakladki
+	BuildFavouriteTab();
+	//Tworzenie elementu z lista ulubionych zakladek
+	BuildFavouritesTabs();
 	//Brak przycisku zamkniecia i odawiezenie wszystkich zakladek
 	if(HideTabCloseButtonChk) RefreshTabs();
 	//Pobieranie nazwy komputera
@@ -11440,11 +11794,33 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Unload()
 	UnsentMsgPopUp.pszName = L"TabKitUnsentMsgPopUp";
 	PluginLink.CallService(AQQ_CONTROLS_DESTROYPOPUPMENU ,0,(LPARAM)(&UnsentMsgPopUp));
 	//Przypinanie zakladek
-	//Usuwanie imterfejsu
+	//Usuwanie interfejsu
 	DestroyClipTab();
 	//Usuwanie serwisu
 	PluginLink.DestroyServiceFunction(ServiceClipTabItem);
 	PluginLink.DestroyServiceFunction(ServiceClipTabCaptionItem);
+	//Ulubione zakladki
+	//Usuwanie interfejsu
+	DestroyFavouriteTab();
+	DestroyFavouritesTabs();
+	//Usuwanie serwisow
+	PluginLink.DestroyServiceFunction(ServiceFavouriteTabItem);
+	PluginLink.DestroyServiceFunction(ServiceFavouritesTabsItem0);
+	PluginLink.DestroyServiceFunction(ServiceFavouritesTabsItem1);
+	PluginLink.DestroyServiceFunction(ServiceFavouritesTabsItem2);
+	PluginLink.DestroyServiceFunction(ServiceFavouritesTabsItem3);
+	PluginLink.DestroyServiceFunction(ServiceFavouritesTabsItem4);
+	PluginLink.DestroyServiceFunction(ServiceFavouritesTabsItem5);
+	PluginLink.DestroyServiceFunction(ServiceFavouritesTabsItem6);
+	PluginLink.DestroyServiceFunction(ServiceFavouritesTabsItem7);
+	PluginLink.DestroyServiceFunction(ServiceFavouritesTabsItem8);
+	PluginLink.DestroyServiceFunction(ServiceFavouritesTabsItem9);
+	//Usuwanie PopUpMenu
+	TPluginAction FavouritesTabsPopUp;
+	ZeroMemory(&FavouritesTabsPopUp,sizeof(TPluginAction));
+	FavouritesTabsPopUp.cbSize = sizeof(TPluginAction);
+	FavouritesTabsPopUp.pszName = L"TabKitFavouritesTabsPopUp";
+	PluginLink.CallService(AQQ_CONTROLS_DESTROYPOPUPMENU,0,(LPARAM)(&FavouritesTabsPopUp));
 	//Trzymanie okna rozmowy na wierzchu
 	//Usuwanie imterfejsu
 	DestroyStayOnTop();
