@@ -259,6 +259,12 @@ __published:	// IDE-managed Components
 	TsCheckBox *UnCloseTab2xLPMouseCheckBox;
 	TsCheckBox *ChatGoneCloudNotiferNewMsgCheckBox;
 	TsCheckBox *ChatGoneSoundNotiferNewMsgCheckBox;
+	TsTabSheet *FavouritesTabsTabSheet;
+	TsGroupBox *FavouritesTabsHotKeysGroupBox;
+	TsRadioButton *FavouritesTabsHotKeysMode1RadioButton;
+	TsRadioButton *FavouritesTabsHotKeysMode2RadioButton;
+	TsCheckBox *FavouritesTabsHotKeysCheckBox;
+	TAction *aFavouritesTabsChk;
 	void __fastcall UnsentMsgTrayIconClick(TObject *Sender);
 	void __fastcall aExitExecute(TObject *Sender);
 	void __fastcall aLoadSettingsExecute(TObject *Sender);
@@ -290,6 +296,7 @@ __published:	// IDE-managed Components
 	void __fastcall GetYouTubeTitleThreadRun(TIdThreadComponent *Sender);
 	void __fastcall RefreshTimerTimer(TObject *Sender);
 	void __fastcall sSkinManagerSysDlgInit(TacSysDlgData DlgData, bool &AllowSkinning);
+	void __fastcall aFavouritesTabsChkExecute(TObject *Sender);
 
 private:	// User declarations
 public:		// User declarations

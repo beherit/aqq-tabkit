@@ -334,6 +334,12 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   ExcludeClipTabsFromTabsHotKeysCheckBox->Checked = Ini->ReadBool("ClipTabs","ExcludeFromTabsHotKeys",true);
   NoMiniAvatarsClipTabsCheckBox->Checked = !Ini->ReadBool("ClipTabs","MiniAvatars",true);
   pMiniAvatarsClipTabsChk = NoMiniAvatarsClipTabsCheckBox->Checked;
+  //FavouritesTabs
+  FavouritesTabsHotKeysCheckBox->Checked = Ini->ReadBool("FavouritesTabs","HotKeys",false);
+  if(Ini->ReadInteger("FavouritesTabs","HotKeysMode",2)==1)
+   FavouritesTabsHotKeysMode1RadioButton->Checked = true;
+  else
+   FavouritesTabsHotKeysMode2RadioButton->Checked = true;
   //SideSlide
   SlideFrmMainCheckBox->Checked = Ini->ReadBool("SideSlide","SlideFrmMain",false);
   switch(Ini->ReadInteger("SideSlide","FrmMainEdge",2))
@@ -445,6 +451,7 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   aNewMsgChk->Execute();
   aTitlebarTweakChk->Execute();
   aClipTabsChk->Execute();
+  aFavouritesTabsChk->Execute();
   aSideSlideChk->Execute();
   aOtherChk->Execute();
   SaveButton->Enabled = false;
@@ -585,6 +592,12 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
   Ini->WriteBool("ClipTabs","ExcludeFromSwitchToNewMsg",!ExcludeClipTabsFromSwitchToNewMsgCheckBox->Checked);
   Ini->WriteBool("ClipTabs","ExcludeFromTabsHotKeys",ExcludeClipTabsFromTabsHotKeysCheckBox->Checked);
   Ini->WriteBool("ClipTabs","MiniAvatars",!NoMiniAvatarsClipTabsCheckBox->Checked);
+  //FavouritesTabs
+  Ini->WriteBool("FavouritesTabs","HotKeys",FavouritesTabsHotKeysCheckBox->Checked);
+  if(FavouritesTabsHotKeysMode1RadioButton->Checked)
+   Ini->WriteInteger("FavouritesTabs","HotKeysMode",1);
+  else
+   Ini->WriteInteger("FavouritesTabs","HotKeysMode",2);
   //SideSlide
   Ini->WriteBool("SideSlide","SlideFrmMain",SlideFrmMainCheckBox->Checked);
   if(FrmMainEdgeLeftRadioButton->Checked)
@@ -1102,3 +1115,13 @@ void __fastcall TSettingsForm::sSkinManagerSysDlgInit(TacSysDlgData DlgData, boo
   AllowSkinning = false;
 }
 //---------------------------------------------------------------------------
+
+void __fastcall TSettingsForm::aFavouritesTabsChkExecute(TObject *Sender)
+{
+  FavouritesTabsHotKeysMode1RadioButton->Enabled = FavouritesTabsHotKeysCheckBox->Checked;
+  FavouritesTabsHotKeysMode2RadioButton->Enabled = FavouritesTabsHotKeysCheckBox->Checked;
+
+  SaveButton->Enabled = true;
+}
+//---------------------------------------------------------------------------
+
