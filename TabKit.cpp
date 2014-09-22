@@ -6336,7 +6336,33 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 		  }
 		}
 	  }
-    }
+	}
+	//Skroty do ulubionych zakladek
+	if(FavouritesTabsHotKeysChk)
+	{
+      //Wscisniete przyciski Alt + F1-F10 lub Alt + 1-0
+	  if(((GetKeyState(VK_MENU)<0)&&(GetKeyState(VK_CONTROL)>=0)&&(GetKeyState(VK_SHIFT)>=0))&&
+	  (((TabsHotKeysMode==1)&&(((int)wParam>=112)&&((int)wParam<=121)))
+	  ||((TabsHotKeysMode==2)&&(((int)wParam>=49)&&((int)wParam<=58)))))
+	  {
+        //Sprawdzanie aktywnego okna
+		if(GetForegroundWindow()==hFrmSend)
+		{
+          //Identyfikacja klawisza
+		  int Key;
+		  if(TabsHotKeysMode==1) Key = (int)wParam - 111;
+		  else Key = (int)wParam - 48;
+		  //Sprawdzanie czy wywolujemy zakladke "ducha"
+		  if(Key<=FavouritesTabsList->Count)
+		  {
+			//Otwieranie ulubionej zakladki
+			GetFavouritesTabsItem(Key-1);
+			//Blokada wcisniecia klawiszy
+			return -1;
+		  }
+		}
+	  }
+	}
 	//Wklejanie tekstu ze schowka jako cytat
 	if(QuickQuoteChk)
 	{

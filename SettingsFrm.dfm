@@ -220,7 +220,7 @@ object SettingsForm: TSettingsForm
     Margins.Top = 6
     Margins.Right = 6
     Margins.Bottom = 6
-    ActivePage = DefaultTabSheet
+    ActivePage = FavouritesTabsTabSheet
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -4074,9 +4074,9 @@ object SettingsForm: TSettingsForm
         object FavouritesTabsHotKeysMode1RadioButton: TsRadioButton
           Left = 10
           Top = 16
-          Width = 192
+          Width = 189
           Height = 20
-          Caption = 'Klawisz Alt + klawisze od F1 do  F10'
+          Caption = 'Klawisz Alt + klawisze od F1 do F10'
           TabOrder = 0
           OnClick = aFavouritesTabsChkExecute
           SkinData.SkinSection = 'TRANSPARENT'
