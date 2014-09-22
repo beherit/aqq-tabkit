@@ -424,6 +424,9 @@ bool ExClipTabsFromTabSwitchingChk;
 bool ExClipTabsFromSwitchToNewMsgChk;
 bool ExClipTabsFromTabsHotKeysChk;
 bool MiniAvatarsClipTabsChk;
+//FavouritesTabs
+bool FavouritesTabsHotKeysChk;
+int FavouritesTabsHotKeysMode;
 //SideSlide
 bool FrmMainSlideChk = false;
 int FrmMainSlideEdge = 2;
@@ -10874,6 +10877,9 @@ void LoadSettings()
   ExClipTabsFromSwitchToNewMsgChk = !Ini->ReadBool("ClipTabs","ExcludeFromSwitchToNewMsg",false);
   ExClipTabsFromTabsHotKeysChk = Ini->ReadBool("ClipTabs","ExcludeFromTabsHotKeys",true);
   MiniAvatarsClipTabsChk = Ini->ReadBool("ClipTabs","MiniAvatars",true);
+  //FavouritesTabs
+  FavouritesTabsHotKeysChk = Ini->ReadBool("FavouritesTabs","HotKeys",false);
+  FavouritesTabsHotKeysMode = Ini->ReadInteger("FavouritesTabs","HotKeysMode",2);
   //SideSlide
   bool pFrmMainSlideChk = FrmMainSlideChk;
   FrmMainSlideChk = Ini->ReadBool("SideSlide","SlideFrmMain",false);
