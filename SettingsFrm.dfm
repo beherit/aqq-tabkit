@@ -2939,10 +2939,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 1
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object ClosedTabGroupBox: TsGroupBox
         Left = 18
         Top = 22
@@ -3256,10 +3252,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 2
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object RememberUnsentMsgGroupBox: TsGroupBox
         Left = 18
         Top = 22
@@ -3414,10 +3406,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 3
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object TabsHotKeysGroupBox: TsGroupBox
         Left = 18
         Top = 116
@@ -3534,10 +3522,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 4
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object RestoreTabsSessionGroupBox: TsGroupBox
         Left = 18
         Top = 22
@@ -3612,10 +3596,6 @@ object SettingsForm: TSettingsForm
       OnShow = NewMsgTabSheetShow
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object ChatStateNotiferNewMsgCheckBox: TsCheckBox
         Left = 12
         Top = 182
@@ -3804,10 +3784,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 6
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object TweakFrmMainTitlebarGroupBox: TsGroupBox
         Left = 18
         Top = 167
@@ -3969,10 +3945,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 7
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object OpenClipTabsCheckBox: TsCheckBox
         Left = 12
         Top = 12
@@ -4091,47 +4063,21 @@ object SettingsForm: TSettingsForm
       ImageIndex = 8
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      object FavouritesTabsHotKeysGroupBox: TsGroupBox
-        Left = 18
-        Top = 22
-        Width = 335
-        Height = 75
-        TabOrder = 0
-        SkinData.SkinSection = 'GROUPBOX'
-        object FavouritesTabsHotKeysMode1RadioButton: TsRadioButton
-          Left = 10
-          Top = 16
-          Width = 189
-          Height = 20
-          Caption = 'Klawisz Alt + klawisze od F1 do F10'
-          TabOrder = 0
-          OnClick = aFavouritesTabsChkExecute
-          SkinData.SkinSection = 'TRANSPARENT'
-        end
-        object FavouritesTabsHotKeysMode2RadioButton: TsRadioButton
-          Left = 10
-          Top = 42
-          Width = 171
-          Height = 20
-          Caption = 'Klawisz Alt + klawisze od 1 do 0'
-          Checked = True
-          TabOrder = 1
-          TabStop = True
-          OnClick = aFavouritesTabsChkExecute
-          SkinData.SkinSection = 'TRANSPARENT'
-        end
-      end
       object FavouritesTabsHotKeysCheckBox: TsCheckBox
         Left = 12
         Top = 12
-        Width = 272
-        Height = 20
-        Caption = 'Przypisz skr'#243'ty klawiaturowe do ulubionych zak'#322'adek'
-        TabOrder = 1
+        Width = 245
+        Height = 28
+        Caption = 
+          'Otwieraj ulubione zak'#322'adki za pomoc'#261' skr'#243'tu klawiaturowego Alt +' +
+          ' klawisze od 1 do 0'
+        AutoSize = False
+        TabOrder = 0
         OnClick = aFavouritesTabsChkExecute
         SkinData.SkinSection = 'CHECKBOX'
         ImgChecked = 0
         ImgUnchecked = 0
+        WordWrap = True
       end
     end
     object SideSlideTabSheet: TsTabSheet
@@ -4139,10 +4085,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 9
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object SideSlideFullScreenModeExceptionsButton: TsSpeedButton
         Left = 263
         Top = 314
@@ -4730,10 +4672,6 @@ object SettingsForm: TSettingsForm
       OnShow = OtherTabSheetShow
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object AntiSpimCheckBox: TsCheckBox
         Left = 12
         Top = 68

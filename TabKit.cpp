@@ -426,7 +426,6 @@ bool ExClipTabsFromTabsHotKeysChk;
 bool MiniAvatarsClipTabsChk;
 //FavouritesTabs
 bool FavouritesTabsHotKeysChk;
-int FavouritesTabsHotKeysMode;
 //SideSlide
 bool FrmMainSlideChk = false;
 int FrmMainSlideEdge = 2;
@@ -6340,10 +6339,8 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 	//Skroty do ulubionych zakladek
 	if(FavouritesTabsHotKeysChk)
 	{
-      //Wscisniete przyciski Alt + F1-F10 lub Alt + 1-0
-	  if(((GetKeyState(VK_MENU)<0)&&(GetKeyState(VK_CONTROL)>=0)&&(GetKeyState(VK_SHIFT)>=0))&&
-	  (((TabsHotKeysMode==1)&&(((int)wParam>=112)&&((int)wParam<=121)))
-	  ||((TabsHotKeysMode==2)&&(((int)wParam>=49)&&((int)wParam<=58)))))
+	  //Wscisniete przyciski Alt + 1-0
+	  if((GetKeyState(VK_MENU)<0)&&(GetKeyState(VK_CONTROL)>=0)&&(GetKeyState(VK_SHIFT)>=0)&&(((int)wParam>=49)&&((int)wParam<=58)))
 	  {
         //Sprawdzanie aktywnego okna
 		if(GetForegroundWindow()==hFrmSend)
@@ -10905,7 +10902,6 @@ void LoadSettings()
   MiniAvatarsClipTabsChk = Ini->ReadBool("ClipTabs","MiniAvatars",true);
   //FavouritesTabs
   FavouritesTabsHotKeysChk = Ini->ReadBool("FavouritesTabs","HotKeys",false);
-  FavouritesTabsHotKeysMode = Ini->ReadInteger("FavouritesTabs","HotKeysMode",2);
   //SideSlide
   bool pFrmMainSlideChk = FrmMainSlideChk;
   FrmMainSlideChk = Ini->ReadBool("SideSlide","SlideFrmMain",false);

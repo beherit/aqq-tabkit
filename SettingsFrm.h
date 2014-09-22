@@ -260,9 +260,6 @@ __published:	// IDE-managed Components
 	TsCheckBox *ChatGoneCloudNotiferNewMsgCheckBox;
 	TsCheckBox *ChatGoneSoundNotiferNewMsgCheckBox;
 	TsTabSheet *FavouritesTabsTabSheet;
-	TsGroupBox *FavouritesTabsHotKeysGroupBox;
-	TsRadioButton *FavouritesTabsHotKeysMode1RadioButton;
-	TsRadioButton *FavouritesTabsHotKeysMode2RadioButton;
 	TsCheckBox *FavouritesTabsHotKeysCheckBox;
 	TAction *aFavouritesTabsChk;
 	void __fastcall UnsentMsgTrayIconClick(TObject *Sender);
