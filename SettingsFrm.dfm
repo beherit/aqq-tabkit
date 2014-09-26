@@ -4065,13 +4065,63 @@ object SettingsForm: TSettingsForm
       SkinData.CustomFont = False
       object FavouritesTabsHotKeysCheckBox: TsCheckBox
         Left = 12
-        Top = 12
+        Top = 115
         Width = 245
         Height = 28
         Caption = 
           'Otwieraj ulubione zak'#322'adki za pomoc'#261' skr'#243'tu klawiaturowego Alt +' +
           ' klawisze od 1 do 0'
         AutoSize = False
+        TabOrder = 2
+        OnClick = aFavouritesTabsChkExecute
+        SkinData.SkinSection = 'CHECKBOX'
+        ImgChecked = 0
+        ImgUnchecked = 0
+        WordWrap = True
+      end
+      object FastAccessFavouritesTabsGroupBox: TsGroupBox
+        Left = 18
+        Top = 22
+        Width = 271
+        Height = 87
+        TabOrder = 1
+        SkinData.SkinSection = 'GROUPBOX'
+        object FrmMainFastAccessFavouritesTabsCheckBox: TsCheckBox
+          Left = 10
+          Top = 24
+          Width = 133
+          Height = 20
+          Caption = 'W oknie listy kontakt'#243'w'
+          TabOrder = 0
+          OnClick = aFavouritesTabsChkExecute
+          SkinData.SkinSection = 'CHECKBOX'
+          ImgChecked = 0
+          ImgUnchecked = 0
+        end
+        object FrmSendFastAccessFavouritesTabsCheckBox: TsCheckBox
+          Left = 10
+          Top = 50
+          Width = 104
+          Height = 20
+          Caption = 'W oknie rozmowy'
+          Checked = True
+          State = cbChecked
+          TabOrder = 1
+          OnClick = aFavouritesTabsChkExecute
+          SkinData.SkinSection = 'CHECKBOX'
+          ImgChecked = 0
+          ImgUnchecked = 0
+        end
+      end
+      object FastAccessFavouritesTabsCheckBox: TsCheckBox
+        Left = 12
+        Top = 12
+        Width = 213
+        Height = 28
+        Caption = 'Wy'#347'wietlaj przycisk szybkiego dost'#281'pu do ulubionych zak'#322'adek'
+        AutoSize = False
+        Checked = True
+        State = cbChecked
         TabOrder = 0
         OnClick = aFavouritesTabsChkExecute
         SkinData.SkinSection = 'CHECKBOX'
