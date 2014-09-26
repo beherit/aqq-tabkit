@@ -262,6 +262,10 @@ __published:	// IDE-managed Components
 	TsTabSheet *FavouritesTabsTabSheet;
 	TsCheckBox *FavouritesTabsHotKeysCheckBox;
 	TAction *aFavouritesTabsChk;
+	TsGroupBox *FastAccessFavouritesTabsGroupBox;
+	TsCheckBox *FrmMainFastAccessFavouritesTabsCheckBox;
+	TsCheckBox *FrmSendFastAccessFavouritesTabsCheckBox;
+	TsCheckBox *FastAccessFavouritesTabsCheckBox;
 	void __fastcall UnsentMsgTrayIconClick(TObject *Sender);
 	void __fastcall aExitExecute(TObject *Sender);
 	void __fastcall aLoadSettingsExecute(TObject *Sender);

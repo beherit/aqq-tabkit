@@ -86,6 +86,8 @@ __declspec(dllimport)void DestroyStayOnTop();
 __declspec(dllimport)void BuildStayOnTop();
 __declspec(dllimport)void ShowToolBar();
 __declspec(dllimport)void CheckHideScrollTabButtons();
+__declspec(dllimport)void DestroyFavouritesTabs();
+__declspec(dllimport)void BuildFavouritesTabs();
 //---------------------------------------------------------------------------
 bool pHideTabCloseButtonChk;
 bool pMiniAvatarsClipTabsChk;
@@ -335,6 +337,9 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   NoMiniAvatarsClipTabsCheckBox->Checked = !Ini->ReadBool("ClipTabs","MiniAvatars",true);
   pMiniAvatarsClipTabsChk = NoMiniAvatarsClipTabsCheckBox->Checked;
   //FavouritesTabs
+  FastAccessFavouritesTabsCheckBox->Checked = Ini->ReadBool("FavouritesTabs","FastAccess",true);
+  FrmMainFastAccessFavouritesTabsCheckBox->Checked = Ini->ReadBool("FavouritesTabs","FrmMainFastAccess",false);
+  FrmSendFastAccessFavouritesTabsCheckBox->Checked = Ini->ReadBool("FavouritesTabs","FrmSendFastAccess",true);
   FavouritesTabsHotKeysCheckBox->Checked = Ini->ReadBool("FavouritesTabs","HotKeys",false);
   //SideSlide
   SlideFrmMainCheckBox->Checked = Ini->ReadBool("SideSlide","SlideFrmMain",false);
@@ -589,6 +594,9 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
   Ini->WriteBool("ClipTabs","ExcludeFromTabsHotKeys",ExcludeClipTabsFromTabsHotKeysCheckBox->Checked);
   Ini->WriteBool("ClipTabs","MiniAvatars",!NoMiniAvatarsClipTabsCheckBox->Checked);
   //FavouritesTabs
+  Ini->WriteBool("FavouritesTabs","FastAccess",FastAccessFavouritesTabsCheckBox->Checked);
+  Ini->WriteBool("FavouritesTabs","FrmMainFastAccess",FrmMainFastAccessFavouritesTabsCheckBox->Checked);
+  Ini->WriteBool("FavouritesTabs","FrmSendFastAccess",FrmSendFastAccessFavouritesTabsCheckBox->Checked);
   Ini->WriteBool("FavouritesTabs","HotKeys",FavouritesTabsHotKeysCheckBox->Checked);
   //SideSlide
   Ini->WriteBool("SideSlide","SlideFrmMain",SlideFrmMainCheckBox->Checked);
@@ -660,6 +668,7 @@ void __fastcall TSettingsForm::aSaveSettingsWExecute(TObject *Sender)
   //Usuwanie elementow z interfejsu AQQ
   DestroyFrmUnsentMsg();
   DestroyFrmClosedTabs();
+  DestroyFavouritesTabs();
   DestroyStayOnTop();
   //Zapisywanie ustawien
   aSaveSettings->Execute();
@@ -670,6 +679,7 @@ void __fastcall TSettingsForm::aSaveSettingsWExecute(TObject *Sender)
   //Tworzenie elementow w interfejsie AQQ
   BuildFrmClosedTabs();
   BuildFrmUnsentMsg();
+  BuildFavouritesTabs();
   BuildStayOnTop();
   //Zmiana tekstu na pasku tytulowym okna rozmowy
   ChangeFrmSendTitlebar();
@@ -1110,6 +1120,9 @@ void __fastcall TSettingsForm::sSkinManagerSysDlgInit(TacSysDlgData DlgData, boo
 
 void __fastcall TSettingsForm::aFavouritesTabsChkExecute(TObject *Sender)
 {
+  FrmMainFastAccessFavouritesTabsCheckBox->Enabled = FastAccessFavouritesTabsCheckBox->Checked;
+  FrmSendFastAccessFavouritesTabsCheckBox->Enabled = FastAccessFavouritesTabsCheckBox->Checked;
+
   SaveButton->Enabled = true;
 }
 //---------------------------------------------------------------------------
