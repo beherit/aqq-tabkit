@@ -269,7 +269,7 @@ __published:	// IDE-managed Components
 	TsCheckBox *FastAccessFavouritesTabsCheckBox;
 	TsListView *FavouritesTabsListView;
 	TAction *aReloadFavouritesTabs;
-	TsSpeedButton *AddFavouriteTabSpeedButton;
+	TsSpeedButton *AddChatsFavouriteTabSpeedButton;
 	TsSpeedButton *MoveUpFavouriteTabSpeedButton;
 	TsSpeedButton *MoveDownFavouriteTabSpeedButton;
 	TsSpeedButton *RemoveFavouriteTabSpeedButton;
@@ -314,7 +314,7 @@ __published:	// IDE-managed Components
 	void __fastcall RemoveFavouriteTabSpeedButtonClick(TObject *Sender);
 	void __fastcall MoveUpFavouriteTabSpeedButtonClick(TObject *Sender);
 	void __fastcall MoveDownFavouriteTabSpeedButtonClick(TObject *Sender);
-	void __fastcall AddFavouriteTabSpeedButtonClick(TObject *Sender);
+	void __fastcall AddChatsFavouriteTabSpeedButtonClick(TObject *Sender);
 
 
 private:	// User declarations

@@ -220,7 +220,7 @@ object SettingsForm: TSettingsForm
     Margins.Top = 6
     Margins.Right = 6
     Margins.Bottom = 6
-    ActivePage = DefaultTabSheet
+    ActivePage = FavouritesTabsTabSheet
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -4063,50 +4063,53 @@ object SettingsForm: TSettingsForm
       ImageIndex = 8
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      object AddFavouriteTabSpeedButton: TsSpeedButton
+      object AddChatsFavouriteTabSpeedButton: TsSpeedButton
         Left = 295
-        Top = 186
+        Top = 294
         Width = 30
         Height = 30
-        OnClick = AddFavouriteTabSpeedButtonClick
+        Hint = 'Dodaj do listy pokoje oznaczone gwiazdk'#261
+        ParentShowHint = False
+        ShowHint = True
+        OnClick = AddChatsFavouriteTabSpeedButtonClick
         SkinData.SkinSection = 'SPEEDBUTTON'
-        ImageIndex = 0
+        ImageIndex = 3
         Images = FavouritesTabsAlphaImageList
         ShowCaption = False
       end
       object MoveUpFavouriteTabSpeedButton: TsSpeedButton
         Left = 295
-        Top = 222
+        Top = 186
         Width = 30
         Height = 30
         Enabled = False
         OnClick = MoveUpFavouriteTabSpeedButtonClick
         SkinData.SkinSection = 'SPEEDBUTTON'
-        ImageIndex = 1
+        ImageIndex = 0
         Images = FavouritesTabsAlphaImageList
         ShowCaption = False
       end
       object MoveDownFavouriteTabSpeedButton: TsSpeedButton
         Left = 295
-        Top = 258
+        Top = 222
         Width = 30
         Height = 30
         Enabled = False
         OnClick = MoveDownFavouriteTabSpeedButtonClick
         SkinData.SkinSection = 'SPEEDBUTTON'
-        ImageIndex = 2
+        ImageIndex = 1
         Images = FavouritesTabsAlphaImageList
         ShowCaption = False
       end
       object RemoveFavouriteTabSpeedButton: TsSpeedButton
         Left = 295
-        Top = 294
+        Top = 258
         Width = 30
         Height = 30
         Enabled = False
         OnClick = RemoveFavouriteTabSpeedButtonClick
         SkinData.SkinSection = 'SPEEDBUTTON'
-        ImageIndex = 3
+        ImageIndex = 2
         Images = FavouritesTabsAlphaImageList
         ShowCaption = False
       end
