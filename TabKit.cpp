@@ -2264,6 +2264,17 @@ UnicodeString GetChannelName(UnicodeString JID)
   return Channel;
 }
 //---------------------------------------------------------------------------
+UnicodeString GetChannelNameW(UnicodeString JID)
+{
+  //Generowanie unikatowego ID
+  UnicodeString XMLID = (wchar_t*)PluginLink.CallService(AQQ_FUNCTION_GETSTRID,0,0);
+  XMLIDList->Add(XMLID);
+  //Generowane pakietu XML
+  UnicodeString XML = "<iq from=\""+ReceiveAccountName(0)+"\" to=\""+JID+"\" id=\""+XMLID+"\" type=\"get\" xml:lang=\"pl\"><query xmlns=\"http://jabber.org/protocol/disco#info\"/></iq>";
+  //Wyslanie pakietu XML na wskazane konto
+  PluginLink.CallService(AQQ_SYSTEM_SENDXML,(WPARAM)XML.w_str(),0);
+}
+//---------------------------------------------------------------------------
 
 //Usuwanie interfejsu dla ostatio zamknietych zakladek
 void DestroyFrmClosedTabs()
