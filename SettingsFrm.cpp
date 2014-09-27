@@ -919,7 +919,18 @@ void __fastcall TSettingsForm::aSideSlideChkExecute(TObject *Sender)
   FrmMainSlideInTimeSpinEdit->Enabled = SlideFrmMainCheckBox->Checked;
   FrmMainSlideOutTimeSpinEdit->Enabled = SlideFrmMainCheckBox->Checked;
   ChangeTabAfterSlideInCheckBox->Enabled = SlideFrmMainCheckBox->Checked;
-  SideSlideFullScreenModeExceptionsButton->Enabled = SideSlideFullScreenModeCheckBox->Checked;
+  if((!SlideFrmSendCheckBox->Checked)&&(!SlideFrmMainCheckBox->Checked))
+  {
+	SideSlideFullScreenModeCheckBox->Enabled = false;
+	SideSlideFullScreenModeExceptionsButton->Enabled = false;
+	SideSlideCtrlAndMousBlockCheckBox->Enabled = false;
+  }
+  else
+  {
+	SideSlideFullScreenModeCheckBox->Enabled = true;
+	SideSlideFullScreenModeExceptionsButton->Enabled = SideSlideFullScreenModeCheckBox->Checked;
+	SideSlideCtrlAndMousBlockCheckBox->Enabled = true;
+  }
 
   SaveButton->Enabled = true;
 }
