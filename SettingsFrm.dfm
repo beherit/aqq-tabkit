@@ -4221,7 +4221,7 @@ object SettingsForm: TSettingsForm
       SkinData.CustomColor = False
       SkinData.CustomFont = False
       object SideSlideFullScreenModeExceptionsButton: TsSpeedButton
-        Left = 260
+        Left = 252
         Top = 311
         Width = 30
         Height = 30
@@ -4768,8 +4768,8 @@ object SettingsForm: TSettingsForm
         ImgUnchecked = 0
       end
       object SideSlideFullScreenModeCheckBox: TsCheckBox
-        Left = 20
-        Top = 315
+        Left = 12
+        Top = 316
         Width = 234
         Height = 20
         Caption = 'Wysuwaj okna przy aplikacji pe'#322'noekranowej'
@@ -4782,14 +4782,13 @@ object SettingsForm: TSettingsForm
         ImgUnchecked = 0
       end
       object SideSlideCtrlAndMousBlockCheckBox: TsCheckBox
-        Left = 308
-        Top = 311
-        Width = 273
-        Height = 28
+        Left = 12
+        Top = 342
+        Width = 452
+        Height = 20
         Caption = 
           'Blokuj wysuwanie okien przy wci'#347'ni'#281'tym klawiszu Ctrl oraz lewym/' +
           'prawym przycisku myszy'
-        AutoSize = False
         Checked = True
         State = cbChecked
         TabOrder = 5
