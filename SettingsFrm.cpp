@@ -92,6 +92,7 @@ __declspec(dllimport)void CheckHideScrollTabButtons();
 __declspec(dllimport)void DestroyFavouritesTabs();
 __declspec(dllimport)void BuildFavouritesTabs();
 __declspec(dllimport)UnicodeString GetContactNick(UnicodeString JID);
+__declspec(dllimport)UnicodeString GetChannelNameW(UnicodeString JID);
 __declspec(dllimport)UnicodeString FriendlyFormatJID(UnicodeString JID);
 __declspec(dllimport)UnicodeString GetIconPath(int Icon);
 __declspec(dllimport)void ShowFavouritesTabsInfo(UnicodeString Text);
@@ -1243,9 +1244,13 @@ void __fastcall TSettingsForm::AddChatsFavouriteTabSpeedButtonClick(TObject *Sen
 	  for(int Count=0;Count<FileMemo->Lines->Count;Count++)
 	  {
 		//Odczyt JID z pliku
-		UnicodeString JID = "ischat_" + FileMemo->Lines->Strings[Count] + ":0";
-		bool ItemExists = false;
+		UnicodeString JID = FileMemo->Lines->Strings[Count];
+		//Zapobiegawcze pobranie nazwy kanalu
+		GetChannelNameW(JID);
+		//Sformatowanie JID na potrzeby wtyczki
+		JID = "ischat_" + JID + ":0";
 		//Sprawdzenie czy JID znajduje sie juz na liscie
+		bool ItemExists = false;
 		for(int fCount=0;fCount<FavouritesTabsListView->Items->Count;fCount++)
 		{
 		  if(JID==FavouritesTabsListView->Items->Item[fCount]->SubItems->Strings[0])
