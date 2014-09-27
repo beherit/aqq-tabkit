@@ -220,7 +220,7 @@ object SettingsForm: TSettingsForm
     Margins.Top = 6
     Margins.Right = 6
     Margins.Bottom = 6
-    ActivePage = FavouritesTabsTabSheet
+    ActivePage = DefaultTabSheet
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText

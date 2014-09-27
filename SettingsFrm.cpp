@@ -94,6 +94,7 @@ __declspec(dllimport)void BuildFavouritesTabs();
 __declspec(dllimport)UnicodeString GetContactNick(UnicodeString JID);
 __declspec(dllimport)UnicodeString FriendlyFormatJID(UnicodeString JID);
 __declspec(dllimport)UnicodeString GetIconPath(int Icon);
+__declspec(dllimport)void ShowFavouritesTabsInfo(UnicodeString Text);
 //---------------------------------------------------------------------------
 bool pHideTabCloseButtonChk;
 bool pMiniAvatarsClipTabsChk;
@@ -1212,8 +1213,7 @@ void __fastcall TSettingsForm::FavouritesTabsListViewKeyDown(TObject *Sender, WO
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TSettingsForm::FavouritesTabsListViewSelectItem(TObject *Sender, TListItem *Item,
-          bool Selected)
+void __fastcall TSettingsForm::FavouritesTabsListViewSelectItem(TObject *Sender, TListItem *Item, bool Selected)
 {
   if(FavouritesTabsListView->ItemIndex!=-1)
   {
@@ -1237,31 +1237,48 @@ void __fastcall TSettingsForm::AddChatsFavouriteTabSpeedButtonClick(TObject *Sen
   {
 	//Odczyt listy pokojow oznaczonych gwiazdka
 	FileMemo->Lines->LoadFromFile(GetUserDir() + "\\\\FavRooms.cc");
-	for(int Count=0;Count<FileMemo->Lines->Count;Count++)
+	//Plik zawiera liste pokojow
+	if(!FileMemo->Text.IsEmpty())
 	{
-	  //Odczyt JID z pliku
-	  UnicodeString JID = "ischat_" + FileMemo->Lines->Strings[Count] + ":0";
-	  bool ItemExists = false;
-	  //Sprawdzenie czy JID znajduje sie juz na liscie
-	  for(int fCount=0;fCount<FavouritesTabsListView->Items->Count;fCount++)
+	  for(int Count=0;Count<FileMemo->Lines->Count;Count++)
 	  {
-		if(JID==FavouritesTabsListView->Items->Item[fCount]->SubItems->Strings[0])
-		 ItemExists = true;
-	  }
-	  //JID nie znajduje sie na liscie / maks 10 elementow
-	  if((!ItemExists)&&(FavouritesTabsListView->Items->Count<10))
-	  {
-		//Dodanie elementow do listy
-		FavouritesTabsListView->Items->Add();
-		FavouritesTabsListView->Items->Item[FavouritesTabsListView->Items->Count-1]->Caption = GetContactNick(JID) + " (" + FriendlyFormatJID(JID) + ")";
-		FavouritesTabsListView->Items->Item[FavouritesTabsListView->Items->Count-1]->SubItems->Add(JID);
-		//Wlaczenie przycisku zapisu
-		SaveButton->Enabled = true;
+		//Odczyt JID z pliku
+		UnicodeString JID = "ischat_" + FileMemo->Lines->Strings[Count] + ":0";
+		bool ItemExists = false;
+		//Sprawdzenie czy JID znajduje sie juz na liscie
+		for(int fCount=0;fCount<FavouritesTabsListView->Items->Count;fCount++)
+		{
+		  if(JID==FavouritesTabsListView->Items->Item[fCount]->SubItems->Strings[0])
+		   ItemExists = true;
+		}
+		//JID nie znajduje sie na liscie
+		if(!ItemExists)
+		{
+		  //Maksymalnie 10 elementow
+		  if(FavouritesTabsListView->Items->Count<10)
+		  {
+			//Dodanie elementow do listy
+			FavouritesTabsListView->Items->Add();
+			FavouritesTabsListView->Items->Item[FavouritesTabsListView->Items->Count-1]->Caption = GetContactNick(JID) + " (" + FriendlyFormatJID(JID) + ")";
+			FavouritesTabsListView->Items->Item[FavouritesTabsListView->Items->Count-1]->SubItems->Add(JID);
+			//Wlaczenie przycisku zapisu
+			SaveButton->Enabled = true;
+		  }
+		  //Osiagnieto limit
+		  else
+		  {
+			ShowFavouritesTabsInfo("Osi¹gniêto maksymaln¹ iloœæ ulubionych zak³adek.");
+			Count = FileMemo->Lines->Count;
+		  }
+		}
 	  }
 	}
+	else ShowFavouritesTabsInfo("Brak pokojów oznaczonych gwiazdk¹.");
 	//Usuniecie pamieci
     FileMemo->Text = "";
   }
+  //Plik nie istnieje
+  else ShowFavouritesTabsInfo("Brak pokojów oznaczonych gwiazdk¹.");
 }
 //---------------------------------------------------------------------------
 
