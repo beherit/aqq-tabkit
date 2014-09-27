@@ -10784,7 +10784,7 @@ INT_PTR __stdcall OnXMLIDDebug(WPARAM wParam, LPARAM lParam)
 		  //Zamkniecie pliku sesji
 		  delete Ini;
 		  //Odswiezenie nazwy pokoju
-		  OpenNewTab("ischat_"+From+":"+IntToStr(UserIdx));
+		  if(TabsListEx->IndexOf("ischat_"+From+":"+IntToStr(UserIdx))!=-1) OpenNewTab("ischat_"+From+":"+IntToStr(UserIdx));
 		}
 	  }
 	}
