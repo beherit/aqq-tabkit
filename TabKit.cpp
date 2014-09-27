@@ -2887,7 +2887,7 @@ void GetUnsentMsg()
 		//Informacja podstawowa
 		TPluginShowInfo PluginShowInfo;
 		PluginShowInfo.cbSize = sizeof(TPluginShowInfo);
-		PluginShowInfo.Event = tmeInfo;
+		PluginShowInfo.Event = tmePseudoMsgCap;
 		PluginShowInfo.Text = Hint.w_str();
 		PluginShowInfo.ImagePath = (wchar_t*)PluginLink.CallService(AQQ_FUNCTION_GETPNG_FILEPATH,21,0);
 		PluginShowInfo.TimeOut = 1000 * CloudTimeOut;
@@ -3207,7 +3207,7 @@ void ShowFavouritesTabsInfo(UnicodeString Text)
   //Naglowek chmurki
   TPluginShowInfo PluginShowInfo;
   PluginShowInfo.cbSize = sizeof(TPluginShowInfo);
-  PluginShowInfo.Event = tmeInfo;
+  PluginShowInfo.Event = tmeMsgCap;
   PluginShowInfo.Text = L"Ulubione zak³adki";
   PluginShowInfo.ImagePath = (wchar_t*)PluginLink.CallService(AQQ_FUNCTION_GETPNG_FILEPATH,125,0);
   PluginShowInfo.TimeOut = 1000 * CloudTimeOut;
@@ -8946,8 +8946,8 @@ INT_PTR __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 			  //Nick
 			  TPluginShowInfo PluginShowInfo;
 			  PluginShowInfo.cbSize = sizeof(TPluginShowInfo);
-			  if(CloudTickModeChk) PluginShowInfo.Event = tmeMsg;
-			  else PluginShowInfo.Event = tmePseudoMsg;
+			  if(CloudTickModeChk) PluginShowInfo.Event = tmeMsgCap;
+			  else PluginShowInfo.Event = tmePseudoMsgCap;
 			  PluginShowInfo.Text = Nick.w_str();
 			  PluginShowInfo.ImagePath = (wchar_t*)PluginLink.CallService(AQQ_FUNCTION_GETPNG_FILEPATH,8,0);
 			  PluginShowInfo.TimeOut = 1000 * CloudTimeOut;
@@ -8957,8 +8957,7 @@ INT_PTR __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 			  PluginLink.CallService(AQQ_FUNCTION_SHOWINFO,0,(LPARAM)(&PluginShowInfo));
 			  //Body
 			  PluginShowInfo.cbSize = sizeof(TPluginShowInfo);
-			  if(CloudTickModeChk) PluginShowInfo.Event = tmeMsgCap;
-			  else PluginShowInfo.Event = tmePseudoMsgCap;
+			  PluginShowInfo.Event = tmeInfo;
 			  PluginShowInfo.Text = Body.w_str();
 			  PluginShowInfo.ImagePath = L"";
 			  PluginShowInfo.TimeOut = 1000 * CloudTimeOut;
