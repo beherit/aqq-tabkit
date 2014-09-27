@@ -51,6 +51,7 @@ TSettingsForm *SettingsForm;
 //---------------------------------------------------------------------------
 __declspec(dllimport)UnicodeString GetPluginUserDir();
 __declspec(dllimport)UnicodeString GetPluginUserDirW();
+__declspec(dllimport)UnicodeString GetUserDir();
 __declspec(dllimport)UnicodeString GetThemeSkinDir();
 __declspec(dllimport)bool ChkSkinEnabled();
 __declspec(dllimport)bool ChkThemeAnimateWindows();
@@ -242,10 +243,10 @@ void __fastcall TSettingsForm::FormShow(TObject *Sender)
   //Odczyt ikonek
   FavouritesTabsAlphaImageList->AcBeginUpdate();
   FavouritesTabsAlphaImageList->Clear();
-  FavouritesTabsAlphaImageList->LoadFromFile(GetIconPath(14));
   FavouritesTabsAlphaImageList->LoadFromFile(GetIconPath(98));
   FavouritesTabsAlphaImageList->LoadFromFile(GetIconPath(99));
   FavouritesTabsAlphaImageList->LoadFromFile(GetIconPath(15));
+  FavouritesTabsAlphaImageList->LoadFromFile(GetIconPath(79));
   //Odczyt ustawien
   aLoadSettings->Execute();
   //Ustawienie domyslnej zakladki
@@ -1229,9 +1230,38 @@ void __fastcall TSettingsForm::FavouritesTabsListViewSelectItem(TObject *Sender,
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TSettingsForm::AddFavouriteTabSpeedButtonClick(TObject *Sender)
+void __fastcall TSettingsForm::AddChatsFavouriteTabSpeedButtonClick(TObject *Sender)
 {
-  //
+  //Plik z lista pokojow oznaczonych gwiazdka istnieje
+  if(FileExists(GetUserDir() + "\\\\FavRooms.cc"))
+  {
+	//Odczyt listy pokojow oznaczonych gwiazdka
+	FileMemo->Lines->LoadFromFile(GetUserDir() + "\\\\FavRooms.cc");
+	for(int Count=0;Count<FileMemo->Lines->Count;Count++)
+	{
+	  //Odczyt JID z pliku
+	  UnicodeString JID = "ischat_" + FileMemo->Lines->Strings[Count] + ":0";
+	  bool ItemExists = false;
+	  //Sprawdzenie czy JID znajduje sie juz na liscie
+	  for(int fCount=0;fCount<FavouritesTabsListView->Items->Count;fCount++)
+	  {
+		if(JID==FavouritesTabsListView->Items->Item[fCount]->SubItems->Strings[0])
+		 ItemExists = true;
+	  }
+	  //JID nie znajduje sie na liscie / maks 10 elementow
+	  if((!ItemExists)&&(FavouritesTabsListView->Items->Count<10))
+	  {
+		//Dodanie elementow do listy
+		FavouritesTabsListView->Items->Add();
+		FavouritesTabsListView->Items->Item[FavouritesTabsListView->Items->Count-1]->Caption = GetContactNick(JID) + " (" + FriendlyFormatJID(JID) + ")";
+		FavouritesTabsListView->Items->Item[FavouritesTabsListView->Items->Count-1]->SubItems->Add(JID);
+		//Wlaczenie przycisku zapisu
+		SaveButton->Enabled = true;
+	  }
+	}
+	//Usuniecie pamieci
+    FileMemo->Text = "";
+  }
 }
 //---------------------------------------------------------------------------
 
@@ -1275,4 +1305,3 @@ void __fastcall TSettingsForm::RemoveFavouriteTabSpeedButtonClick(TObject *Sende
   SaveButton->Enabled = true;
 }
 //---------------------------------------------------------------------------
-
