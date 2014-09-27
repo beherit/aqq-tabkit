@@ -38,6 +38,7 @@
 #pragma link "sEdit"
 #pragma link "sGroupBox"
 #pragma link "sLabel"
+#pragma link "sListView"
 #pragma link "sMemo"
 #pragma link "sPageControl"
 #pragma link "sRadioButton"
@@ -63,6 +64,7 @@ __declspec(dllimport)void RefreshList();
 __declspec(dllimport)UnicodeString GetYouTubeTitleListItem();
 __declspec(dllimport)void AddToYouTubeExcludeList(UnicodeString ID);
 __declspec(dllimport)void LoadSettings();
+__declspec(dllimport)void LoadFavouritesTabs();
 __declspec(dllimport)UnicodeString ConvertToInt(UnicodeString Text);
 __declspec(dllimport)UnicodeString EncodeBase64(UnicodeString Str);
 //__declspec(dllimport)UnicodeString DecodeBase64(UnicodeString Str)
@@ -88,6 +90,9 @@ __declspec(dllimport)void ShowToolBar();
 __declspec(dllimport)void CheckHideScrollTabButtons();
 __declspec(dllimport)void DestroyFavouritesTabs();
 __declspec(dllimport)void BuildFavouritesTabs();
+__declspec(dllimport)UnicodeString GetContactNick(UnicodeString JID);
+__declspec(dllimport)UnicodeString FriendlyFormatJID(UnicodeString JID);
+__declspec(dllimport)UnicodeString GetIconPath(int Icon);
 //---------------------------------------------------------------------------
 bool pHideTabCloseButtonChk;
 bool pMiniAvatarsClipTabsChk;
@@ -234,6 +239,13 @@ void __fastcall TSettingsForm::FormShow(TObject *Sender)
 	StarWebLabel->Font->Color = clWindowText;
 	StarWebLabel->HoverFont->Color = clWindowText;
   }
+  //Odczyt ikonek
+  FavouritesTabsAlphaImageList->AcBeginUpdate();
+  FavouritesTabsAlphaImageList->Clear();
+  FavouritesTabsAlphaImageList->LoadFromFile(GetIconPath(14));
+  FavouritesTabsAlphaImageList->LoadFromFile(GetIconPath(98));
+  FavouritesTabsAlphaImageList->LoadFromFile(GetIconPath(99));
+  FavouritesTabsAlphaImageList->LoadFromFile(GetIconPath(15));
   //Odczyt ustawien
   aLoadSettings->Execute();
   //Ustawienie domyslnej zakladki
@@ -341,6 +353,26 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   FrmMainFastAccessFavouritesTabsCheckBox->Checked = Ini->ReadBool("FavouritesTabs","FrmMainFastAccess",false);
   FrmSendFastAccessFavouritesTabsCheckBox->Checked = Ini->ReadBool("FavouritesTabs","FrmSendFastAccess",true);
   FavouritesTabsHotKeysCheckBox->Checked = Ini->ReadBool("FavouritesTabs","HotKeys",false);
+  FavouritesTabsListView->Clear();
+  TIniFile *SessionIni = new TIniFile(GetPluginUserDir() + "\\\\TabKit\\\\Session.ini");
+  TStringList *FavouritesTabs = new TStringList;
+  SessionIni->ReadSection("FavouritesTabs",FavouritesTabs);
+  int TabsCount = FavouritesTabs->Count;
+  delete FavouritesTabs;
+  if(TabsCount>0)
+  {
+	for(int Count=0;Count<TabsCount;Count++)
+	{
+	  UnicodeString FavouriteTab = SessionIni->ReadString("FavouritesTabs", "Tab"+IntToStr(Count+1),"");
+	  if(!FavouriteTab.IsEmpty())
+	  {
+		FavouritesTabsListView->Items->Add();
+		FavouritesTabsListView->Items->Item[FavouritesTabsListView->Items->Count-1]->Caption = GetContactNick(FavouriteTab) + " (" + FriendlyFormatJID(FavouriteTab) + ")";
+		FavouritesTabsListView->Items->Item[FavouritesTabsListView->Items->Count-1]->SubItems->Add(FavouriteTab);
+	  }
+	}
+  }
+  delete SessionIni;
   //SideSlide
   SlideFrmMainCheckBox->Checked = Ini->ReadBool("SideSlide","SlideFrmMain",false);
   switch(Ini->ReadInteger("SideSlide","FrmMainEdge",2))
@@ -598,6 +630,14 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
   Ini->WriteBool("FavouritesTabs","FrmMainFastAccess",FrmMainFastAccessFavouritesTabsCheckBox->Checked);
   Ini->WriteBool("FavouritesTabs","FrmSendFastAccess",FrmSendFastAccessFavouritesTabsCheckBox->Checked);
   Ini->WriteBool("FavouritesTabs","HotKeys",FavouritesTabsHotKeysCheckBox->Checked);
+  TIniFile *SessionIni = new TIniFile(GetPluginUserDir() + "\\\\TabKit\\\\Session.ini");
+  SessionIni->EraseSection("FavouritesTabs");
+  if(FavouritesTabsListView->Items->Count)
+  {
+	for(int Count=0;Count<FavouritesTabsListView->Items->Count;Count++)
+	 SessionIni->WriteString("FavouritesTabs","Tab"+IntToStr(Count+1),FavouritesTabsListView->Items->Item[Count]->SubItems->Strings[0]);
+  }
+  delete SessionIni;
   //SideSlide
   Ini->WriteBool("SideSlide","SlideFrmMain",SlideFrmMainCheckBox->Checked);
   if(FrmMainEdgeLeftRadioButton->Checked)
@@ -674,6 +714,7 @@ void __fastcall TSettingsForm::aSaveSettingsWExecute(TObject *Sender)
   aSaveSettings->Execute();
   //Odczytywanie ustawien w rdzeniu wtyczki
   LoadSettings();
+  LoadFavouritesTabs();
   //Przypisywanie globalnego hooka na klawiature
   HookGlobalKeyboard();
   //Tworzenie elementow w interfejsie AQQ
@@ -1123,6 +1164,114 @@ void __fastcall TSettingsForm::aFavouritesTabsChkExecute(TObject *Sender)
   FrmMainFastAccessFavouritesTabsCheckBox->Enabled = FastAccessFavouritesTabsCheckBox->Checked;
   FrmSendFastAccessFavouritesTabsCheckBox->Enabled = FastAccessFavouritesTabsCheckBox->Checked;
 
+  SaveButton->Enabled = true;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TSettingsForm::aReloadFavouritesTabsExecute(TObject *Sender)
+{
+  //Usuwanie listy ulubionych zakladek
+  FavouritesTabsListView->Clear();
+  //Odczyt ulubionych zakladek
+  TIniFile *SessionIni = new TIniFile(GetPluginUserDir() + "\\\\TabKit\\\\Session.ini");
+  TStringList *FavouritesTabs = new TStringList;
+  SessionIni->ReadSection("FavouritesTabs",FavouritesTabs);
+  int TabsCount = FavouritesTabs->Count;
+  delete FavouritesTabs;
+  if(TabsCount>0)
+  {
+	for(int Count=0;Count<TabsCount;Count++)
+	{
+	  UnicodeString FavouriteTab = SessionIni->ReadString("FavouritesTabs", "Tab"+IntToStr(Count+1),"");
+	  if(!FavouriteTab.IsEmpty())
+	  {
+		FavouritesTabsListView->Items->Add();
+		FavouritesTabsListView->Items->Item[FavouritesTabsListView->Items->Count-1]->Caption = GetContactNick(FavouriteTab) + " (" + FriendlyFormatJID(FavouriteTab) + ")";
+		FavouritesTabsListView->Items->Item[FavouritesTabsListView->Items->Count-1]->SubItems->Add(FavouriteTab);
+      }
+    }
+  }
+  delete SessionIni;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TSettingsForm::FavouritesTabsListViewKeyDown(TObject *Sender, WORD &Key,
+          TShiftState Shift)
+{
+  //Wcisniecie przycisku Delete
+  if(Key==46)
+  {
+	//Usuwanie elementu
+	if(FavouritesTabsListView->ItemIndex!=-1)
+	{
+	  FavouritesTabsListView->Items->Item[FavouritesTabsListView->ItemIndex]->Delete();
+	  SaveButton->Enabled = true;
+	}
+  }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TSettingsForm::FavouritesTabsListViewSelectItem(TObject *Sender, TListItem *Item,
+          bool Selected)
+{
+  if(FavouritesTabsListView->ItemIndex!=-1)
+  {
+	if(FavouritesTabsListView->ItemIndex!=0) MoveUpFavouriteTabSpeedButton->Enabled = true;
+	if(FavouritesTabsListView->ItemIndex!=FavouritesTabsListView->Items->Count-1) MoveDownFavouriteTabSpeedButton->Enabled = true;
+	RemoveFavouriteTabSpeedButton->Enabled = true;
+  }
+  else
+  {
+	MoveUpFavouriteTabSpeedButton->Enabled = false;
+	MoveDownFavouriteTabSpeedButton->Enabled = false;
+	RemoveFavouriteTabSpeedButton->Enabled = false;
+  }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TSettingsForm::AddFavouriteTabSpeedButtonClick(TObject *Sender)
+{
+  //
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TSettingsForm::FavouritesTabsListViewExit(TObject *Sender)
+{
+  MoveUpFavouriteTabSpeedButton->Enabled = false;
+  MoveDownFavouriteTabSpeedButton->Enabled = false;
+  RemoveFavouriteTabSpeedButton->Enabled = false;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TSettingsForm::MoveUpFavouriteTabSpeedButtonClick(TObject *Sender)
+{
+  UnicodeString Caption = FavouritesTabsListView->Items->Item[FavouritesTabsListView->ItemIndex]->Caption;
+  UnicodeString SubString = FavouritesTabsListView->Items->Item[FavouritesTabsListView->ItemIndex]->SubItems->Strings[0];
+  FavouritesTabsListView->Items->Item[FavouritesTabsListView->ItemIndex]->Caption = FavouritesTabsListView->Items->Item[FavouritesTabsListView->ItemIndex-1]->Caption;
+  FavouritesTabsListView->Items->Item[FavouritesTabsListView->ItemIndex]->SubItems->Strings[0] = FavouritesTabsListView->Items->Item[FavouritesTabsListView->ItemIndex-1]->SubItems->Strings[0];
+  FavouritesTabsListView->Items->Item[FavouritesTabsListView->ItemIndex-1]->Caption = Caption;
+  FavouritesTabsListView->Items->Item[FavouritesTabsListView->ItemIndex-1]->SubItems->Strings[0] = SubString;
+  FavouritesTabsListView->ItemIndex = FavouritesTabsListView->ItemIndex-1;
+  SaveButton->Enabled = true;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TSettingsForm::MoveDownFavouriteTabSpeedButtonClick(TObject *Sender)
+{
+  UnicodeString Caption = FavouritesTabsListView->Items->Item[FavouritesTabsListView->ItemIndex]->Caption;
+  UnicodeString SubString = FavouritesTabsListView->Items->Item[FavouritesTabsListView->ItemIndex]->SubItems->Strings[0];
+  FavouritesTabsListView->Items->Item[FavouritesTabsListView->ItemIndex]->Caption = FavouritesTabsListView->Items->Item[FavouritesTabsListView->ItemIndex+1]->Caption;
+  FavouritesTabsListView->Items->Item[FavouritesTabsListView->ItemIndex]->SubItems->Strings[0] = FavouritesTabsListView->Items->Item[FavouritesTabsListView->ItemIndex+1]->SubItems->Strings[0];
+  FavouritesTabsListView->Items->Item[FavouritesTabsListView->ItemIndex+1]->Caption = Caption;
+  FavouritesTabsListView->Items->Item[FavouritesTabsListView->ItemIndex+1]->SubItems->Strings[0] = SubString;
+  FavouritesTabsListView->ItemIndex = FavouritesTabsListView->ItemIndex+1;
+  SaveButton->Enabled = true;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TSettingsForm::RemoveFavouriteTabSpeedButtonClick(TObject *Sender)
+{
+  FavouritesTabsListView->Items->Item[FavouritesTabsListView->ItemIndex]->Delete();
   SaveButton->Enabled = true;
 }
 //---------------------------------------------------------------------------

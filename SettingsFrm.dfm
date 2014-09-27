@@ -4063,6 +4063,53 @@ object SettingsForm: TSettingsForm
       ImageIndex = 8
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      object AddFavouriteTabSpeedButton: TsSpeedButton
+        Left = 295
+        Top = 202
+        Width = 22
+        Height = 22
+        OnClick = AddFavouriteTabSpeedButtonClick
+        SkinData.SkinSection = 'SPEEDBUTTON'
+        ImageIndex = 0
+        Images = FavouritesTabsAlphaImageList
+        ShowCaption = False
+      end
+      object MoveUpFavouriteTabSpeedButton: TsSpeedButton
+        Left = 295
+        Top = 230
+        Width = 22
+        Height = 22
+        Enabled = False
+        OnClick = MoveUpFavouriteTabSpeedButtonClick
+        SkinData.SkinSection = 'SPEEDBUTTON'
+        ImageIndex = 1
+        Images = FavouritesTabsAlphaImageList
+        ShowCaption = False
+      end
+      object MoveDownFavouriteTabSpeedButton: TsSpeedButton
+        Left = 295
+        Top = 258
+        Width = 22
+        Height = 22
+        Enabled = False
+        OnClick = MoveDownFavouriteTabSpeedButtonClick
+        SkinData.SkinSection = 'SPEEDBUTTON'
+        ImageIndex = 2
+        Images = FavouritesTabsAlphaImageList
+        ShowCaption = False
+      end
+      object RemoveFavouriteTabSpeedButton: TsSpeedButton
+        Left = 295
+        Top = 286
+        Width = 22
+        Height = 22
+        Enabled = False
+        OnClick = RemoveFavouriteTabSpeedButtonClick
+        SkinData.SkinSection = 'SPEEDBUTTON'
+        ImageIndex = 3
+        Images = FavouritesTabsAlphaImageList
+        ShowCaption = False
+      end
       object FavouritesTabsHotKeysCheckBox: TsCheckBox
         Left = 12
         Top = 115
@@ -4128,6 +4175,41 @@ object SettingsForm: TSettingsForm
         ImgChecked = 0
         ImgUnchecked = 0
         WordWrap = True
+      end
+      object FavouritesTabsListView: TsListView
+        Left = 18
+        Top = 168
+        Width = 271
+        Height = 174
+        BoundLabel.Active = True
+        BoundLabel.Caption = 'Ulubione zak'#322'adki'
+        BoundLabel.Indent = 6
+        BoundLabel.Font.Charset = DEFAULT_CHARSET
+        BoundLabel.Font.Color = clWindowText
+        BoundLabel.Font.Height = -11
+        BoundLabel.Font.Name = 'Tahoma'
+        BoundLabel.Font.Style = []
+        BoundLabel.Layout = sclTopLeft
+        BoundLabel.MaxWidth = 0
+        BoundLabel.UseSkinColor = True
+        SkinData.SkinSection = 'EDIT'
+        Columns = <
+          item
+            MaxWidth = 267
+            MinWidth = 267
+            Width = 267
+          end
+          item
+            Width = 0
+          end>
+        ReadOnly = True
+        RowSelect = True
+        ShowColumnHeaders = False
+        TabOrder = 3
+        ViewStyle = vsReport
+        OnExit = FavouritesTabsListViewExit
+        OnKeyDown = FavouritesTabsListViewKeyDown
+        OnSelectItem = FavouritesTabsListViewSelectItem
       end
     end
     object SideSlideTabSheet: TsTabSheet
@@ -5190,6 +5272,11 @@ object SettingsForm: TSettingsForm
       Caption = 'aOtherChk'
       OnExecute = aOtherChkExecute
     end
+    object aReloadFavouritesTabs: TAction
+      Category = 'Settings'
+      Caption = 'aReloadFavouritesTabs'
+      OnExecute = aReloadFavouritesTabsExecute
+    end
   end
   object sSkinManager: TsSkinManager
     ExtendedBorders = True
@@ -5772,6 +5859,11 @@ object SettingsForm: TSettingsForm
     Interval = 100
     OnTimer = RefreshTimerTimer
     Left = 232
+    Top = 400
+  end
+  object FavouritesTabsAlphaImageList: TsAlphaImageList
+    Items = <>
+    Left = 264
     Top = 400
   end
 end
