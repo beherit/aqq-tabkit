@@ -308,15 +308,12 @@ __published:	// IDE-managed Components
 	void __fastcall aFavouritesTabsChkExecute(TObject *Sender);
 	void __fastcall aReloadFavouritesTabsExecute(TObject *Sender);
 	void __fastcall FavouritesTabsListViewKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
-	void __fastcall FavouritesTabsListViewSelectItem(TObject *Sender, TListItem *Item,
-          bool Selected);
+	void __fastcall FavouritesTabsListViewSelectItem(TObject *Sender, TListItem *Item, bool Selected);
 	void __fastcall FavouritesTabsListViewExit(TObject *Sender);
 	void __fastcall RemoveFavouriteTabSpeedButtonClick(TObject *Sender);
 	void __fastcall MoveUpFavouriteTabSpeedButtonClick(TObject *Sender);
 	void __fastcall MoveDownFavouriteTabSpeedButtonClick(TObject *Sender);
 	void __fastcall AddChatsFavouriteTabSpeedButtonClick(TObject *Sender);
-
-
 private:	// User declarations
 public:		// User declarations
 	UnicodeString XML;

@@ -3188,6 +3188,33 @@ void LoadClipTabs()
 }
 //---------------------------------------------------------------------------
 
+//Chmurka informacyjna dotyczaca ulubionych zakladek
+void ShowFavouritesTabsInfo(UnicodeString Text)
+{
+  //Generowanie ID dla chmurek
+  DWORD TickID = GetTickCount();
+  //Naglowek chmurki
+  TPluginShowInfo PluginShowInfo;
+  PluginShowInfo.cbSize = sizeof(TPluginShowInfo);
+  PluginShowInfo.Event = tmeInfo;
+  PluginShowInfo.Text = L"Ulubione zak³adki";
+  PluginShowInfo.ImagePath = (wchar_t*)PluginLink.CallService(AQQ_FUNCTION_GETPNG_FILEPATH,125,0);
+  PluginShowInfo.TimeOut = 1000 * CloudTimeOut;
+  PluginShowInfo.ActionID = L"";
+  PluginShowInfo.Tick = TickID;
+  PluginLink.CallService(AQQ_FUNCTION_SHOWINFO,0,(LPARAM)(&PluginShowInfo));
+  //Tekst chmurki
+  PluginShowInfo.cbSize = sizeof(TPluginShowInfo);
+  PluginShowInfo.Event = tmeInfo;
+  PluginShowInfo.Text = Text.w_str();
+  PluginShowInfo.ImagePath = L"";
+  PluginShowInfo.TimeOut = 1000 * CloudTimeOut;
+  PluginShowInfo.ActionID = L"";
+  PluginShowInfo.Tick = TickID;
+  PluginLink.CallService(AQQ_FUNCTION_SHOWINFO,0,(LPARAM)(&PluginShowInfo));
+}
+//---------------------------------------------------------------------------
+
 //Usuwanie interfejsu dodwania/usuwania ulubionej zakladki
 void DestroyFavouriteTab()
 {
@@ -3384,11 +3411,7 @@ INT_PTR __stdcall ServiceFavouriteTabItem(WPARAM wParam, LPARAM lParam)
 	  BuildFavouritesTabs();
 	}
 	//Osiagnieto maksymalna ilosc ulubionych zakladek
-	else
-	{
-	  //JAKIS KOMUNIKAT TUTAJ?
-	  //xxx
-	}
+	else ShowFavouritesTabsInfo("Osi¹gniêto maksymaln¹ iloœæ ulubionych zak³adek.");
   }
   //Zaklada jest dodana do ulubionych
   else
