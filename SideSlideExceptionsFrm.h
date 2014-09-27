@@ -24,20 +24,19 @@
 #define SideSlideExceptionsFrmH
 #define WM_ALPHAWINDOWS (WM_USER + 666)
 //---------------------------------------------------------------------------
-#include <System.Classes.hpp>
-#include <Vcl.Controls.hpp>
-#include <Vcl.StdCtrls.hpp>
-#include <Vcl.Forms.hpp>
 #include "sBevel.hpp"
 #include "sButton.hpp"
 #include "sLabel.hpp"
 #include "sListBox.hpp"
+#include "sSkinProvider.hpp"
 #include "sTabControl.hpp"
 #include <System.Actions.hpp>
+#include <System.Classes.hpp>
 #include <Vcl.ActnList.hpp>
 #include <Vcl.ComCtrls.hpp>
+#include <Vcl.Controls.hpp>
 #include <Vcl.ExtCtrls.hpp>
-#include "sSkinProvider.hpp"
+#include <Vcl.StdCtrls.hpp>
 //---------------------------------------------------------------------------
 class TSideSlideExceptionsForm : public TForm
 {

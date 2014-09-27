@@ -31,8 +31,8 @@
 #pragma link "sButton"
 #pragma link "sLabel"
 #pragma link "sListBox"
-#pragma link "sTabControl"
 #pragma link "sSkinProvider"
+#pragma link "sTabControl"
 #pragma resource "*.dfm"
 TSideSlideExceptionsForm *SideSlideExceptionsForm;
 //---------------------------------------------------------------------------
