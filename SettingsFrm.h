@@ -33,6 +33,7 @@
 #include "sEdit.hpp"
 #include "sGroupBox.hpp"
 #include "sLabel.hpp"
+#include "sListView.hpp"
 #include "sMemo.hpp"
 #include "sPageControl.hpp"
 #include "sRadioButton.hpp"
@@ -266,6 +267,13 @@ __published:	// IDE-managed Components
 	TsCheckBox *FrmMainFastAccessFavouritesTabsCheckBox;
 	TsCheckBox *FrmSendFastAccessFavouritesTabsCheckBox;
 	TsCheckBox *FastAccessFavouritesTabsCheckBox;
+	TsListView *FavouritesTabsListView;
+	TAction *aReloadFavouritesTabs;
+	TsSpeedButton *AddFavouriteTabSpeedButton;
+	TsSpeedButton *MoveUpFavouriteTabSpeedButton;
+	TsSpeedButton *MoveDownFavouriteTabSpeedButton;
+	TsSpeedButton *RemoveFavouriteTabSpeedButton;
+	TsAlphaImageList *FavouritesTabsAlphaImageList;
 	void __fastcall UnsentMsgTrayIconClick(TObject *Sender);
 	void __fastcall aExitExecute(TObject *Sender);
 	void __fastcall aLoadSettingsExecute(TObject *Sender);
@@ -298,6 +306,16 @@ __published:	// IDE-managed Components
 	void __fastcall RefreshTimerTimer(TObject *Sender);
 	void __fastcall sSkinManagerSysDlgInit(TacSysDlgData DlgData, bool &AllowSkinning);
 	void __fastcall aFavouritesTabsChkExecute(TObject *Sender);
+	void __fastcall aReloadFavouritesTabsExecute(TObject *Sender);
+	void __fastcall FavouritesTabsListViewKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall FavouritesTabsListViewSelectItem(TObject *Sender, TListItem *Item,
+          bool Selected);
+	void __fastcall FavouritesTabsListViewExit(TObject *Sender);
+	void __fastcall RemoveFavouriteTabSpeedButtonClick(TObject *Sender);
+	void __fastcall MoveUpFavouriteTabSpeedButtonClick(TObject *Sender);
+	void __fastcall MoveDownFavouriteTabSpeedButtonClick(TObject *Sender);
+	void __fastcall AddFavouriteTabSpeedButtonClick(TObject *Sender);
+
 
 private:	// User declarations
 public:		// User declarations

@@ -1,3 +1,4 @@
+
 //---------------------------------------------------------------------------
 // Copyright (C) 2010-2014 Krzysztof Grochocki
 //
@@ -603,6 +604,13 @@ UnicodeString GetPluginDir()
   return StringReplace((wchar_t*)PluginLink.CallService(AQQ_FUNCTION_GETPLUGINDIR,(WPARAM)(HInstance),0), "\\", "\\\\", TReplaceFlags() << rfReplaceAll);
 }
 //---------------------------------------------------------------------------
+
+//Pobieranie sciezki ikony z interfejsu AQQ
+UnicodeString GetIconPath(int Icon)
+{
+  return StringReplace((wchar_t*)PluginLink.CallService(AQQ_FUNCTION_GETPNG_FILEPATH,Icon,0), "\\", "\\\\", TReplaceFlags() << rfReplaceAll);
+}
+//--------------------------------------------------------------------------
 
 //Sprawdzanie czy dzwieki w AQQ sa wlaczone
 bool ChkSoundEnabled()
@@ -1758,60 +1766,100 @@ UnicodeString TrimLinks(UnicodeString Body, bool Status)
 //Pobieranie pseudonimu kontaktu podajac jego JID
 UnicodeString GetContactNick(UnicodeString JID)
 {
-  //Odczyt pseudonimu z pliku INI
-  UnicodeString Nick = ContactsNickList->ReadString("Nick",JID,"");
-  //Pseudonim nie zostal pobrany
-  if(Nick.IsEmpty())
+  //Zwykly kontakt
+  if(!JID.Pos("ischat_"))
   {
-	//Skracanie JID do ladniejszej formy
-	if(JID.Pos("@")) JID.Delete(JID.Pos("@"),JID.Length());
+	//Odczyt pseudonimu z pliku INI
+	UnicodeString Nick = ContactsNickList->ReadString("Nick",JID,"");
+	//Pseudonim nie zostal pobrany
+	if(Nick.IsEmpty())
+	{
+	  //Skracanie JID do ladniejszej formy
+	  if(JID.Pos("@")) JID.Delete(JID.Pos("@"),JID.Length());
+	  return JID;
+	}
+	return Nick;
+  }
+  //Czat
+  return GetChannelName(JID);
+}
+//---------------------------------------------------------------------------
+
+//Przyjazniejsze formatowanie JID
+UnicodeString FriendlyFormatJID(UnicodeString JID)
+{
+  //nk.pl
+  if(JID.Pos("@nktalk.pl")) return "nk.pl";
+  //Facebook
+  if(JID.Pos("@chat.facebook.com")) return "Facebook";
+  //GTalk
+  if(JID.Pos("@public.talk.google.com")) return "GTalk";
+  //Skype
+  if(JID.Pos("@skype.plugin.aqq.eu")) return "Skype";
+  //GG
+  if(JID.Pos("@plugin.gg.aqq.eu")) return "GG";
+  //Inne wtyczki
+  if(JID.Pos("@plugin"))
+  {
+	JID.Delete(JID.Pos("@"),JID.Length());
 	return JID;
   }
-  return Nick;
+  //Usuwanie indeksu konta z JID
+  if(JID.Pos(":")) JID = JID.Delete(JID.Pos(":"),JID.Length());
+  //Ustawianie prawidlowego identyfikatora dla kontaktow czatowych
+  if(JID.Pos("ischat_")) JID = JID.Delete(1,7);
+  //Pozostale kontakty
+  return JID;
 }
 //---------------------------------------------------------------------------
 
 //Pobieranie stanu kontaktu podajac jego JID
 int GetContactState(UnicodeString JID)
 {
-  //Ikona bota Blabler (gdy zakladka jest przypieta)
-  //if(((JID=="blabler.k2t.eu")||(JID.Pos("48263287@plugin.gg")==1))&&(!UnloadExecuted))
-  //{
-  	//Definicja tymczasowego JID
-	//UnicodeString tmpJID = JID;
-	//Usuwanie zasobu z JID
-	//if(tmpJID.Pos("/")) tmpJID = tmpJID.Delete(tmpJID.Pos("/"),tmpJID.Length());
-	//Kontakt jest przypiety
-	//if(ClipTabsList->IndexOf(tmpJID)!=-1) return 131;
-  //}
-  //Ikona bota tweet.IM (gdy zakladka jest przypieta)
-  if((JID.Pos("@twitter.tweet.im"))&&(!UnloadExecuted))
+  //Zwykly kontakt
+  if(!JID.Pos("ischat_"))
   {
-	//Definicja tymczasowego JID
-	UnicodeString tmpJID = JID;
-	//Usuwanie zasobu z JID
-	if(tmpJID.Pos("/")) tmpJID = tmpJID.Delete(tmpJID.Pos("/"),tmpJID.Length());
-	//Kontakt jest przypiety
-	if(ClipTabsList->IndexOf(tmpJID)!=-1) return 131;
+	//Ikona bota Blabler (gdy zakladka jest przypieta)
+	//if(((JID=="blabler.k2t.eu")||(JID.Pos("48263287@plugin.gg")==1))&&(!UnloadExecuted))
+	//{
+	  //Definicja tymczasowego JID
+	  //UnicodeString tmpJID = JID;
+	  //Usuwanie zasobu z JID
+	  //if(tmpJID.Pos("/")) tmpJID = tmpJID.Delete(tmpJID.Pos("/"),tmpJID.Length());
+	  //Kontakt jest przypiety
+	  //if(ClipTabsList->IndexOf(tmpJID)!=-1) return 131;
+	//}
+	//Ikona bota tweet.IM (gdy zakladka jest przypieta)
+	if((JID.Pos("@twitter.tweet.im"))&&(!UnloadExecuted))
+	{
+	  //Definicja tymczasowego JID
+	  UnicodeString tmpJID = JID;
+	  //Usuwanie zasobu z JID
+	  if(tmpJID.Pos("/")) tmpJID = tmpJID.Delete(tmpJID.Pos("/"),tmpJID.Length());
+	  //Kontakt jest przypiety
+	  if(ClipTabsList->IndexOf(tmpJID)!=-1) return 131;
+	}
+	//Pobranie stanu kontatu z listy stanow zbieranej przez wtyczke
+	int State = ContactsStateList->ReadInteger("State",JID,-1);
+	//Jezeli stan kontaktu nie jest zapisany
+	if(State==-1)
+	{
+	  //Usuwanie zasobu z JID
+	  if(JID.Pos("/")) JID = JID.Delete(JID.Pos("/"),JID.Length());
+	  //Usuwanie indeksu konta z JID
+	  if(JID.Pos(":")) JID = JID.Delete(JID.Pos(":"),JID.Length());
+	  //Pobranie domyslnej ikonki dla kontaktu
+	  TPluginContact PluginContact;
+	  ZeroMemory(&PluginContact, sizeof(TPluginContact));
+	  PluginContact.cbSize = sizeof(TPluginContact);
+	  PluginContact.JID = JID.w_str();
+	  State = PluginLink.CallService(AQQ_FUNCTION_GETSTATEPNG_INDEX,0,(LPARAM)(&PluginContact));
+	}
+	//Zwrocenie ikonki stanu kontaktu
+	return State;
   }
-  //Pobranie stanu kontatu z listy stanow zbieranej przez wtyczke
-  int State = ContactsStateList->ReadInteger("State",JID,-1);
-  //Jezeli stan kontaktu nie jest zapisany
-  if(State==-1)
-  {
-	//Usuwanie zasobu z JID
-	if(JID.Pos("/")) JID = JID.Delete(JID.Pos("/"),JID.Length());
-	//Usuwanie indeksu konta z JID
-	if(JID.Pos(":")) JID = JID.Delete(JID.Pos(":"),JID.Length());
-	//Pobranie domyslnej ikonki dla kontaktu
-	TPluginContact PluginContact;
-	ZeroMemory(&PluginContact, sizeof(TPluginContact));
-	PluginContact.cbSize = sizeof(TPluginContact);
-	PluginContact.JID = JID.w_str();
-	State = PluginLink.CallService(AQQ_FUNCTION_GETSTATEPNG_INDEX,0,(LPARAM)(&PluginContact));
-  }
-  //Zwrocenie ikonki stanu kontaktu
-  return State;
+  //Czat
+  return 79;
 }
 //---------------------------------------------------------------------------
 
@@ -2308,42 +2356,21 @@ void BuildFrmClosedTabs()
 		UnicodeString ItemJID = ClosedTabsList->Strings[Count];
 		if(!ItemJID.IsEmpty())
 		{
-		  if(!ItemJID.Pos("ischat_"))
-		  {
-			TPluginAction BuildClosedTabsItem;
-			ZeroMemory(&BuildClosedTabsItem,sizeof(TPluginAction));
-			BuildClosedTabsItem.cbSize = sizeof(TPluginAction);
-			BuildClosedTabsItem.IconIndex = GetContactState(ItemJID);
-			UnicodeString pszName = "TabKitClosedTabsItem"+IntToStr(Count);
-			BuildClosedTabsItem.pszName = pszName.w_str();
-			UnicodeString pszService = "sTabKitClosedTabsItem"+IntToStr(Count);
-			BuildClosedTabsItem.pszService = pszService.w_str();
-			if(ShowTimeClosedTabsChk)
-			 BuildClosedTabsItem.pszCaption = (GetContactNick(ItemJID)+" ("+ClosedTabsTimeList->Strings[Count]+")").w_str();
-			else
-			 BuildClosedTabsItem.pszCaption = GetContactNick(ItemJID).w_str();
-			BuildClosedTabsItem.Position = Count;
-			BuildClosedTabsItem.pszPopupName = L"TabKitClosedTabsPopUp";
-			PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildClosedTabsItem));
-		  }
+		  TPluginAction BuildClosedTabsItem;
+		  ZeroMemory(&BuildClosedTabsItem,sizeof(TPluginAction));
+		  BuildClosedTabsItem.cbSize = sizeof(TPluginAction);
+		  BuildClosedTabsItem.IconIndex = GetContactState(ItemJID);
+		  UnicodeString pszName = "TabKitClosedTabsItem"+IntToStr(Count);
+		  BuildClosedTabsItem.pszName = pszName.w_str();
+		  UnicodeString pszService = "sTabKitClosedTabsItem"+IntToStr(Count);
+		  BuildClosedTabsItem.pszService = pszService.w_str();
+		  if(ShowTimeClosedTabsChk)
+		   BuildClosedTabsItem.pszCaption = (GetContactNick(ItemJID)+" ("+ClosedTabsTimeList->Strings[Count]+")").w_str();
 		  else
-		  {
-			TPluginAction BuildClosedTabsItem;
-			ZeroMemory(&BuildClosedTabsItem,sizeof(TPluginAction));
-			BuildClosedTabsItem.cbSize = sizeof(TPluginAction);
-			BuildClosedTabsItem.IconIndex = 79;
-			UnicodeString pszName = "TabKitClosedTabsItem"+IntToStr(Count);
-			BuildClosedTabsItem.pszName = pszName.w_str();
-			UnicodeString pszService = "sTabKitClosedTabsItem"+IntToStr(Count);
-			BuildClosedTabsItem.pszService = pszService.w_str();
-			if(ShowTimeClosedTabsChk)
-			 BuildClosedTabsItem.pszCaption = (GetChannelName(ItemJID)+" ("+ClosedTabsTimeList->Strings[Count]+")").w_str();
-			else
-			 BuildClosedTabsItem.pszCaption = GetChannelName(ItemJID).w_str();
-			BuildClosedTabsItem.Position = Count;
-			BuildClosedTabsItem.pszPopupName = L"TabKitClosedTabsPopUp";
-			PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildClosedTabsItem));
-          }
+		   BuildClosedTabsItem.pszCaption = GetContactNick(ItemJID).w_str();
+		  BuildClosedTabsItem.Position = Count;
+		  BuildClosedTabsItem.pszPopupName = L"TabKitClosedTabsPopUp";
+		  PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildClosedTabsItem));
 		}
 	  }
 	  //Tworzenie elementow do usuwania ostatnio zamknietych zakladek
@@ -2716,36 +2743,18 @@ void BuildFrmUnsentMsg()
 		UnicodeString ItemJID = Messages->Strings[Count];
 		if(!ItemJID.IsEmpty())
 		{
-		  if(!ItemJID.Pos("ischat_"))
-		  {
-			TPluginAction BuildUnsentMsgItem;
-			ZeroMemory(&BuildUnsentMsgItem,sizeof(TPluginAction));
-			BuildUnsentMsgItem.cbSize = sizeof(TPluginAction);
-			BuildUnsentMsgItem.IconIndex = GetContactState(ItemJID);
-			UnicodeString ItemName = "TabKitUnsentMsgItem"+IntToStr(Count);
-			BuildUnsentMsgItem.pszName = ItemName.w_str();
-			UnicodeString ItemService = "sTabKitUnsentMsgItem"+IntToStr(Count);
-			BuildUnsentMsgItem.pszService = ItemService.w_str();
-			BuildUnsentMsgItem.pszCaption = GetContactNick(ItemJID).w_str();
-			BuildUnsentMsgItem.Position = Count;
-			BuildUnsentMsgItem.pszPopupName = L"TabKitUnsentMsgPopUp";
-			PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildUnsentMsgItem));
-		  }
-		  else
-		  {
-			TPluginAction BuildUnsentMsgItem;
-			ZeroMemory(&BuildUnsentMsgItem,sizeof(TPluginAction));
-			BuildUnsentMsgItem.cbSize = sizeof(TPluginAction);
-			BuildUnsentMsgItem.IconIndex = 79;
-			UnicodeString ItemName = "TabKitUnsentMsgItem"+IntToStr(Count);
-			BuildUnsentMsgItem.pszName = ItemName.w_str();
-			UnicodeString ItemService = "sTabKitUnsentMsgItem"+IntToStr(Count);
-			BuildUnsentMsgItem.pszService = ItemService.w_str();
-			BuildUnsentMsgItem.pszCaption = GetChannelName(ItemJID).w_str();
-			BuildUnsentMsgItem.Position = Count;
-			BuildUnsentMsgItem.pszPopupName = L"TabKitUnsentMsgPopUp";
-			PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildUnsentMsgItem));
-		  }
+		  TPluginAction BuildUnsentMsgItem;
+		  ZeroMemory(&BuildUnsentMsgItem,sizeof(TPluginAction));
+		  BuildUnsentMsgItem.cbSize = sizeof(TPluginAction);
+		  BuildUnsentMsgItem.IconIndex = GetContactState(ItemJID);
+		  UnicodeString ItemName = "TabKitUnsentMsgItem"+IntToStr(Count);
+		  BuildUnsentMsgItem.pszName = ItemName.w_str();
+		  UnicodeString ItemService = "sTabKitUnsentMsgItem"+IntToStr(Count);
+		  BuildUnsentMsgItem.pszService = ItemService.w_str();
+		  BuildUnsentMsgItem.pszCaption = GetContactNick(ItemJID).w_str();
+		  BuildUnsentMsgItem.Position = Count;
+		  BuildUnsentMsgItem.pszPopupName = L"TabKitUnsentMsgPopUp";
+		  PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildUnsentMsgItem));
 		}
 	  }
 	  //Tworzenie elementow do usuwania niewyslanych wiadomosci
@@ -2884,11 +2893,8 @@ void GetUnsentMsg()
 			if(Body.Length()>25) Body = Body.SetLength(25) + "...";
 			PluginShowInfo.cbSize = sizeof(TPluginShowInfo);
 			PluginShowInfo.Event = tmeInfo;
-			if(!JID.Pos("ischat_"))
-			 PluginShowInfo.Text = (GetContactNick(JID) + "\r\n" + Body).w_str();
-			else
-			 PluginShowInfo.Text = (GetChannelName(JID) + "\r\n" + Body).w_str();
-            PluginShowInfo.ImagePath = (wchar_t*)PluginLink.CallService(AQQ_FUNCTION_GETPNG_FILEPATH,8,0);
+			PluginShowInfo.Text = (GetContactNick(JID) + "\r\n" + Body).w_str();
+			PluginShowInfo.ImagePath = (wchar_t*)PluginLink.CallService(AQQ_FUNCTION_GETPNG_FILEPATH,8,0);
 			PluginShowInfo.TimeOut = 1000 * CloudTimeOut;
 			PluginShowInfo.Tick = 0;
 			PluginLink.CallService(AQQ_FUNCTION_SHOWINFO,0,(LPARAM)(&PluginShowInfo));
@@ -3294,36 +3300,18 @@ void BuildFavouritesTabs()
 	    UnicodeString ItemJID = FavouritesTabsList->Strings[Count];
 		if(!ItemJID.IsEmpty())
 		{
-		  if(!ItemJID.Pos("ischat_"))
-		  {
-			TPluginAction BuildFavouritesTabsItem;
-			ZeroMemory(&BuildFavouritesTabsItem,sizeof(TPluginAction));
-			BuildFavouritesTabsItem.cbSize = sizeof(TPluginAction);
-			BuildFavouritesTabsItem.IconIndex = GetContactState(ItemJID);
-			UnicodeString pszName = "TabKitFavouritesTabsItem"+IntToStr(Count);
-			BuildFavouritesTabsItem.pszName = pszName.w_str();
-			UnicodeString pszService = "sTabKitFavouritesTabsItem"+IntToStr(Count);
-			BuildFavouritesTabsItem.pszService = pszService.w_str();
-			BuildFavouritesTabsItem.pszCaption = GetContactNick(ItemJID).w_str();
-			BuildFavouritesTabsItem.Position = Count;
-			BuildFavouritesTabsItem.pszPopupName = L"TabKitFavouritesTabsPopUp";
-			PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildFavouritesTabsItem));
-		  }
-		  else
-		  {
-			TPluginAction BuildFavouritesTabsItem;
-			ZeroMemory(&BuildFavouritesTabsItem,sizeof(TPluginAction));
-			BuildFavouritesTabsItem.cbSize = sizeof(TPluginAction);
-			BuildFavouritesTabsItem.IconIndex = 79;
-			UnicodeString pszName = "TabKitFavouritesTabsItem"+IntToStr(Count);
-			BuildFavouritesTabsItem.pszName = pszName.w_str();
-			UnicodeString pszService = "sTabKitFavouritesTabsItem"+IntToStr(Count);
-			BuildFavouritesTabsItem.pszService = pszService.w_str();
-			BuildFavouritesTabsItem.pszCaption = GetChannelName(ItemJID).w_str();
-			BuildFavouritesTabsItem.Position = Count;
-			BuildFavouritesTabsItem.pszPopupName = L"TabKitFavouritesTabsPopUp";
-			PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildFavouritesTabsItem));
-		  }
+		  TPluginAction BuildFavouritesTabsItem;
+		  ZeroMemory(&BuildFavouritesTabsItem,sizeof(TPluginAction));
+		  BuildFavouritesTabsItem.cbSize = sizeof(TPluginAction);
+		  BuildFavouritesTabsItem.IconIndex = GetContactState(ItemJID);
+		  UnicodeString pszName = "TabKitFavouritesTabsItem"+IntToStr(Count);
+		  BuildFavouritesTabsItem.pszName = pszName.w_str();
+		  UnicodeString pszService = "sTabKitFavouritesTabsItem"+IntToStr(Count);
+		  BuildFavouritesTabsItem.pszService = pszService.w_str();
+		  BuildFavouritesTabsItem.pszCaption = GetContactNick(ItemJID).w_str();
+		  BuildFavouritesTabsItem.Position = Count;
+		  BuildFavouritesTabsItem.pszPopupName = L"TabKitFavouritesTabsPopUp";
+		  PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildFavouritesTabsItem));
 		}
 	  }
 	}
@@ -3336,6 +3324,8 @@ void BuildFavouritesTabs()
 //Odczyt ulubionych zakladek
 void LoadFavouritesTabs()
 {
+  //Usuniecie wlisty ulubionych zakladek
+  FavouritesTabsList->Clear();
   //Wczytanie pliku sesji
   TIniFile *Ini = new TIniFile(SessionFileDir);
   TStringList *FavouritesTabs = new TStringList;
@@ -3396,7 +3386,8 @@ INT_PTR __stdcall ServiceFavouriteTabItem(WPARAM wParam, LPARAM lParam)
 	//Osiagnieto maksymalna ilosc ulubionych zakladek
 	else
 	{
-      //JAKIS KOMUNIKAT TUTAJ?
+	  //JAKIS KOMUNIKAT TUTAJ?
+	  //xxx
 	}
   }
   //Zaklada jest dodana do ulubionych
@@ -3411,6 +3402,8 @@ INT_PTR __stdcall ServiceFavouriteTabItem(WPARAM wParam, LPARAM lParam)
 	//Ponowne tworzenie elementu z lista ulubionych zakladek
 	BuildFavouritesTabs();
   }
+  //Odswiezenie listy ulubionych zakladek w ustawieniach
+  if(hSettingsForm) hSettingsForm->aReloadFavouritesTabs->Execute();
 
   return 0;
 }
@@ -6967,12 +6960,12 @@ INT_PTR __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 		  else if(TweakFrmSendTitlebarMode==3)
 		  {
 			//Przyjazniejszy wyglad identyfikatora
-			UnicodeString FiendlyJID = JID;
+			UnicodeString FriendlyJID = JID;
 			if(ActiveTabContact.FromPlugin)
 			{
-			  if(FiendlyJID.Pos("@")) FiendlyJID.Delete(FiendlyJID.Pos("@"),FiendlyJID.Length());
+			  if(FriendlyJID.Pos("@")) FriendlyJID.Delete(FriendlyJID.Pos("@"),FriendlyJID.Length());
 			}
-			ChangedTitlebar = Nick + " - " + FiendlyJID;
+			ChangedTitlebar = Nick + " - " + FriendlyJID;
 		  }
 		  //Pseudonim i identyfikator kontaktu wraz z zasobem oraz opisem
 		  else if((TweakFrmSendTitlebarMode==4)&&(!ActiveTabContact.FromPlugin))
@@ -6984,16 +6977,16 @@ INT_PTR __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 			  UnicodeString Status = (wchar_t*)ActiveTabContact.Status;
 			  Status = StringReplace(Status, "\r\n", " ", TReplaceFlags() << rfReplaceAll);
 			  //Przyjazniejszy wyglad identyfikatora
-			  UnicodeString FiendlyJID = JID;
+			  UnicodeString FriendlyJID = JID;
 			  if(ActiveTabContact.FromPlugin)
 			  {
-				if(FiendlyJID.Pos("@")) FiendlyJID.Delete(FiendlyJID.Pos("@"),FiendlyJID.Length());
+				if(FriendlyJID.Pos("@")) FriendlyJID.Delete(FriendlyJID.Pos("@"),FriendlyJID.Length());
 			  }
 			  //Jezeli opis nie jest pusty
 			  if(!Status.IsEmpty())
-			   ChangedTitlebar = Nick + " - " + FiendlyJID + Res + " - " + Status;
+			   ChangedTitlebar = Nick + " - " + FriendlyJID + Res + " - " + Status;
 			  else
-			   ChangedTitlebar = Nick + " - " + FiendlyJID + Res;
+			   ChangedTitlebar = Nick + " - " + FriendlyJID + Res;
 			}
 		  }
 		  //Nowy tekst na belce okna nie jest pusty
@@ -7643,17 +7636,17 @@ INT_PTR __stdcall OnContactsUpdate(WPARAM wParam, LPARAM lParam)
 		UnicodeString StatusEx = Status;
 		Status = StringReplace(Status, "\r\n", " ", TReplaceFlags() << rfReplaceAll);
 		//Przyjazniejszy wyglad identyfikatora
-		UnicodeString FiendlyJID = JID;
+		UnicodeString FriendlyJID = JID;
 		if(ContactsUpdateContact.FromPlugin)
 		{
-		  if(FiendlyJID.Pos("@")) FiendlyJID.Delete(FiendlyJID.Pos("@"),FiendlyJID.Length());
+		  if(FriendlyJID.Pos("@")) FriendlyJID.Delete(FriendlyJID.Pos("@"),FriendlyJID.Length());
 		}
 		//Generowani oryginalnego tekstu belki okna
 		UnicodeString Titlebar;
 		if(!Status.IsEmpty())
-		 Titlebar = Nick + " - " + FiendlyJID + " - " + Status;
+		 Titlebar = Nick + " - " + FriendlyJID + " - " + Status;
 		else
-		 Titlebar = Nick + " - " + FiendlyJID;
+		 Titlebar = Nick + " - " + FriendlyJID;
 		//Zmienna zmienionego tekstu na belce
 		UnicodeString ChangedTitlebar;
 		//Pseudonim i opis kontaktu
@@ -7670,7 +7663,7 @@ INT_PTR __stdcall OnContactsUpdate(WPARAM wParam, LPARAM lParam)
 		 ChangedTitlebar = Nick;
 		//Pseudonim i identyfikator kontaktu
 		else if(TweakFrmSendTitlebarMode==3)
-		 ChangedTitlebar = Nick + " - " + FiendlyJID;
+		 ChangedTitlebar = Nick + " - " + FriendlyJID;
 		//Pseudonim i identyfikator kontaktu wraz z zasobem oraz opisem
 		else if((TweakFrmSendTitlebarMode==4)&&(!ContactsUpdateContact.FromPlugin))
 		{
@@ -7681,9 +7674,9 @@ INT_PTR __stdcall OnContactsUpdate(WPARAM wParam, LPARAM lParam)
 		  {
 			//Jezeli opis nie jest pusty
 			if(!Status.IsEmpty())
-			 ChangedTitlebar = Nick + " - " + FiendlyJID + "/" + Res + " - " + Status;
+			 ChangedTitlebar = Nick + " - " + FriendlyJID + "/" + Res + " - " + Status;
 			else
-			 ChangedTitlebar = Nick + " - " + FiendlyJID + "/" + Res;
+			 ChangedTitlebar = Nick + " - " + FriendlyJID + "/" + Res;
 		  }
 		}
 		//Nowy tekst na belce okna nie jest pusty
@@ -8507,10 +8500,10 @@ INT_PTR __stdcall OnPrimaryTab(WPARAM wParam, LPARAM lParam)
 		UnicodeString Nick = (wchar_t*)PrimaryTabContact.Nick;
 		UnicodeString Status = (wchar_t*)PrimaryTabContact.Status;
 		Status = StringReplace(Status, "\r\n", " ", TReplaceFlags() << rfReplaceAll);
-		UnicodeString FiendlyJID = JID;
+		UnicodeString FriendlyJID = JID;
 		if(PrimaryTabContact.FromPlugin)
 		{
-		  if(FiendlyJID.Pos("@")) FiendlyJID.Delete(FiendlyJID.Pos("@"),FiendlyJID.Length());
+		  if(FriendlyJID.Pos("@")) FriendlyJID.Delete(FriendlyJID.Pos("@"),FriendlyJID.Length());
 		}
 		//Jezeli funcjonalnosc jest wlaczona
 		if(TweakFrmSendTitlebarChk)
@@ -8536,7 +8529,7 @@ INT_PTR __stdcall OnPrimaryTab(WPARAM wParam, LPARAM lParam)
 		   ChangedTitlebar = Nick;
 		  //Pseudonim i identyfikator kontaktu
 		  else if(TweakFrmSendTitlebarMode==3)
-		   ChangedTitlebar = Nick + " - " + FiendlyJID;
+		   ChangedTitlebar = Nick + " - " + FriendlyJID;
 		  //Pseudonim i identyfikator kontaktu wraz z zasobem oraz opisem
 		  else if((TweakFrmSendTitlebarMode==4)&&(!PrimaryTabContact.FromPlugin))
 		  {
@@ -8547,9 +8540,9 @@ INT_PTR __stdcall OnPrimaryTab(WPARAM wParam, LPARAM lParam)
 			{
 			  //Jezeli opis nie jest pusty
 			  if(!Status.IsEmpty())
-			   ChangedTitlebar = Nick + " - " + FiendlyJID + "/" + Res + " - " + Status;
+			   ChangedTitlebar = Nick + " - " + FriendlyJID + "/" + Res + " - " + Status;
 			  else
-			   ChangedTitlebar = Nick + " - " + FiendlyJID + "/" + Res;
+			   ChangedTitlebar = Nick + " - " + FriendlyJID + "/" + Res;
 			}
 		  }
 		  //Nowy tekst na belke okna nie jest pusty
@@ -8567,11 +8560,11 @@ INT_PTR __stdcall OnPrimaryTab(WPARAM wParam, LPARAM lParam)
 		  //Jezeli opis nie jest pusty
 		  if(!Status.IsEmpty())
 		   //Ustawianie nowego testku na pasku tytulu okna rozmowy
-		   SetWindowTextW(hFrmSend,(Nick + " - " + FiendlyJID + " - " + Status).w_str());
+		   SetWindowTextW(hFrmSend,(Nick + " - " + FriendlyJID + " - " + Status).w_str());
 		  //Jezeli opis jest pusty
 		  else
 		   //Ustawianie nowego testku na pasku tytulu okna rozmowy
-		   SetWindowTextW(hFrmSend,(Nick + " - " + FiendlyJID).w_str());
+		   SetWindowTextW(hFrmSend,(Nick + " - " + FriendlyJID).w_str());
 		}
 	  }
 	}
@@ -9465,105 +9458,109 @@ INT_PTR __stdcall OnSystemPopUp(WPARAM wParam, LPARAM lParam)
 	{
       //Pobieranie danych kontaktku
 	  TPluginContact SystemPopUContact = *(PPluginContact)wParam;
-	  //Pobieranie JID kontaktu z zakladki
-	  UnicodeString JID = (wchar_t*)SystemPopUContact.JID;
-	  //Pobieranie zasobu kontaktu
-	  UnicodeString Res = (wchar_t*)SystemPopUContact.Resource;
-	  if(!Res.IsEmpty()) Res = "/" + Res;
-	  if(SystemPopUContact.IsChat)
+	  //Niedotyczy czatu z wtyczki
+	  if(!((SystemPopUContact.IsChat)&&(SystemPopUContact.FromPlugin)))
 	  {
-		JID = "ischat_" + JID;
-		Res = "";
-	  }
-	  //Pobieranie indeksu konta kontaktu z zakladki
-	  UnicodeString UserIdx = ":" + IntToStr(SystemPopUContact.UserIdx);
-	  //Zapisanie JID do zmiennej globalnej
-	  PopupTab = JID+UserIdx;
-	  PopupTabEx = JID+Res+UserIdx;
-	  //Zakladka nie jest przypieta
-	  if(ClipTabsList->IndexOf(JID+UserIdx)==-1)
-	  {
-		//Element przypinania zakladki
-		TPluginActionEdit PluginActionEdit;
-		ZeroMemory(&PluginActionEdit,sizeof(TPluginActionEdit));
-		PluginActionEdit.cbSize = sizeof(TPluginActionEdit);
-		PluginActionEdit.pszName = L"TabKitClipTabItem";
-		PluginActionEdit.Caption = L"Przypnij zak³adkê";
-		PluginActionEdit.Enabled = true;
-		PluginActionEdit.Visible = true;
-		PluginActionEdit.IconIndex = -1;
-		PluginActionEdit.Checked = false;
-		PluginLink.CallService(AQQ_CONTROLS_EDITPOPUPMENUITEM,0,(LPARAM)(&PluginActionEdit));
-		//Element ukrywania caption zakladki
-		ZeroMemory(&PluginActionEdit,sizeof(TPluginActionEdit));
-		PluginActionEdit.cbSize = sizeof(TPluginActionEdit);
-		PluginActionEdit.pszName = L"TabKitClipTabCaptionItem";
-		PluginActionEdit.Caption = L"Ukrywaj nazwê zak³adki";
-		PluginActionEdit.Enabled = true;
-		PluginActionEdit.Visible = false;
-		PluginActionEdit.IconIndex = -1;
-		PluginActionEdit.Checked = true;
-		PluginLink.CallService(AQQ_CONTROLS_EDITPOPUPMENUITEM,0,(LPARAM)(&PluginActionEdit));
-	  }
-	  //Zakladka jest juz przypieta
-	  else
-	  {
-		//Element przypinania zakladki
-		TPluginActionEdit PluginActionEdit;
-		ZeroMemory(&PluginActionEdit,sizeof(TPluginActionEdit));
-		PluginActionEdit.cbSize = sizeof(TPluginActionEdit);
-		PluginActionEdit.pszName = L"TabKitClipTabItem";
-		PluginActionEdit.Caption = L"Odepnij zak³adkê";
-		PluginActionEdit.Enabled = true;
-		PluginActionEdit.Visible = true;
-		PluginActionEdit.IconIndex = -1;
-		PluginActionEdit.Checked = false;
-		PluginLink.CallService(AQQ_CONTROLS_EDITPOPUPMENUITEM,0,(LPARAM)(&PluginActionEdit));
-		//Element ukrywania nazwy zakladki
-		ZeroMemory(&PluginActionEdit,sizeof(TPluginActionEdit));
-		PluginActionEdit.cbSize = sizeof(TPluginActionEdit);
-		PluginActionEdit.pszName = L"TabKitClipTabCaptionItem";
-		PluginActionEdit.Caption = L"Ukrywaj nazwê zak³adki";
-		PluginActionEdit.Enabled = true;
-		PluginActionEdit.Visible = true;
-		PluginActionEdit.IconIndex = -1;
-		TIniFile *Ini = new TIniFile(SessionFileDir);
-		if(Ini->ValueExists("ClipTabsEx",JID+UserIdx))
-		 PluginActionEdit.Checked = false;
+		//Pobieranie JID kontaktu z zakladki
+		UnicodeString JID = (wchar_t*)SystemPopUContact.JID;
+		//Pobieranie zasobu kontaktu
+		UnicodeString Res = (wchar_t*)SystemPopUContact.Resource;
+		if(!Res.IsEmpty()) Res = "/" + Res;
+		if(SystemPopUContact.IsChat)
+		{
+		  JID = "ischat_" + JID;
+		  Res = "";
+		}
+		//Pobieranie indeksu konta kontaktu z zakladki
+		UnicodeString UserIdx = ":" + IntToStr(SystemPopUContact.UserIdx);
+		//Zapisanie JID do zmiennej globalnej
+		PopupTab = JID+UserIdx;
+		PopupTabEx = JID+Res+UserIdx;
+		//Zakladka nie jest przypieta
+		if(ClipTabsList->IndexOf(JID+UserIdx)==-1)
+		{
+		  //Element przypinania zakladki
+		  TPluginActionEdit PluginActionEdit;
+		  ZeroMemory(&PluginActionEdit,sizeof(TPluginActionEdit));
+		  PluginActionEdit.cbSize = sizeof(TPluginActionEdit);
+		  PluginActionEdit.pszName = L"TabKitClipTabItem";
+		  PluginActionEdit.Caption = L"Przypnij zak³adkê";
+		  PluginActionEdit.Enabled = true;
+		  PluginActionEdit.Visible = true;
+		  PluginActionEdit.IconIndex = -1;
+		  PluginActionEdit.Checked = false;
+		  PluginLink.CallService(AQQ_CONTROLS_EDITPOPUPMENUITEM,0,(LPARAM)(&PluginActionEdit));
+		  //Element ukrywania caption zakladki
+		  ZeroMemory(&PluginActionEdit,sizeof(TPluginActionEdit));
+		  PluginActionEdit.cbSize = sizeof(TPluginActionEdit);
+		  PluginActionEdit.pszName = L"TabKitClipTabCaptionItem";
+		  PluginActionEdit.Caption = L"Ukrywaj nazwê zak³adki";
+		  PluginActionEdit.Enabled = true;
+		  PluginActionEdit.Visible = false;
+		  PluginActionEdit.IconIndex = -1;
+		  PluginActionEdit.Checked = true;
+		  PluginLink.CallService(AQQ_CONTROLS_EDITPOPUPMENUITEM,0,(LPARAM)(&PluginActionEdit));
+		}
+		//Zakladka jest juz przypieta
 		else
-		 PluginActionEdit.Checked = true;
-		delete Ini;
-		PluginLink.CallService(AQQ_CONTROLS_EDITPOPUPMENUITEM,0,(LPARAM)(&PluginActionEdit));
-	  }
-	  //Zakladka nie jest dodana do ulubionych
-	  if(FavouritesTabsList->IndexOf(JID+UserIdx)==-1)
-	  {
-		//Element dodawania zakladki do ulubionych
-		TPluginActionEdit PluginActionEdit;
-		ZeroMemory(&PluginActionEdit,sizeof(TPluginActionEdit));
-		PluginActionEdit.cbSize = sizeof(TPluginActionEdit);
-		PluginActionEdit.pszName = L"TabKitFavouriteTabItem";
-		PluginActionEdit.Caption = L"Dodaj do ulubionych";
-		PluginActionEdit.Enabled = true;
-		PluginActionEdit.Visible = true;
-		PluginActionEdit.IconIndex = 125;
-		PluginActionEdit.Checked = false;
-		PluginLink.CallService(AQQ_CONTROLS_EDITPOPUPMENUITEM,0,(LPARAM)(&PluginActionEdit));
-	  }
-	  //Zaklada jest dodana do ulubionych
-	  else
-	  {
-		//Element usuwania zakladki z ulubionych
-		TPluginActionEdit PluginActionEdit;
-		ZeroMemory(&PluginActionEdit,sizeof(TPluginActionEdit));
-		PluginActionEdit.cbSize = sizeof(TPluginActionEdit);
-		PluginActionEdit.pszName = L"TabKitFavouriteTabItem";
-		PluginActionEdit.Caption = L"Usuñ z ulubionych";
-		PluginActionEdit.Enabled = true;
-		PluginActionEdit.Visible = true;
-		PluginActionEdit.IconIndex = 125;
-		PluginActionEdit.Checked = false;
-		PluginLink.CallService(AQQ_CONTROLS_EDITPOPUPMENUITEM,0,(LPARAM)(&PluginActionEdit));
+		{
+		  //Element przypinania zakladki
+		  TPluginActionEdit PluginActionEdit;
+		  ZeroMemory(&PluginActionEdit,sizeof(TPluginActionEdit));
+		  PluginActionEdit.cbSize = sizeof(TPluginActionEdit);
+		  PluginActionEdit.pszName = L"TabKitClipTabItem";
+		  PluginActionEdit.Caption = L"Odepnij zak³adkê";
+		  PluginActionEdit.Enabled = true;
+		  PluginActionEdit.Visible = true;
+		  PluginActionEdit.IconIndex = -1;
+		  PluginActionEdit.Checked = false;
+		  PluginLink.CallService(AQQ_CONTROLS_EDITPOPUPMENUITEM,0,(LPARAM)(&PluginActionEdit));
+		  //Element ukrywania nazwy zakladki
+		  ZeroMemory(&PluginActionEdit,sizeof(TPluginActionEdit));
+		  PluginActionEdit.cbSize = sizeof(TPluginActionEdit);
+		  PluginActionEdit.pszName = L"TabKitClipTabCaptionItem";
+		  PluginActionEdit.Caption = L"Ukrywaj nazwê zak³adki";
+		  PluginActionEdit.Enabled = true;
+		  PluginActionEdit.Visible = true;
+		  PluginActionEdit.IconIndex = -1;
+		  TIniFile *Ini = new TIniFile(SessionFileDir);
+		  if(Ini->ValueExists("ClipTabsEx",JID+UserIdx))
+		   PluginActionEdit.Checked = false;
+		  else
+		   PluginActionEdit.Checked = true;
+		  delete Ini;
+		  PluginLink.CallService(AQQ_CONTROLS_EDITPOPUPMENUITEM,0,(LPARAM)(&PluginActionEdit));
+		}
+		//Zakladka nie jest dodana do ulubionych
+		if(FavouritesTabsList->IndexOf(JID+UserIdx)==-1)
+		{
+		  //Element dodawania zakladki do ulubionych
+		  TPluginActionEdit PluginActionEdit;
+		  ZeroMemory(&PluginActionEdit,sizeof(TPluginActionEdit));
+		  PluginActionEdit.cbSize = sizeof(TPluginActionEdit);
+		  PluginActionEdit.pszName = L"TabKitFavouriteTabItem";
+		  PluginActionEdit.Caption = L"Dodaj do ulubionych";
+		  PluginActionEdit.Enabled = true;
+		  PluginActionEdit.Visible = true;
+		  PluginActionEdit.IconIndex = 125;
+		  PluginActionEdit.Checked = false;
+		  PluginLink.CallService(AQQ_CONTROLS_EDITPOPUPMENUITEM,0,(LPARAM)(&PluginActionEdit));
+		}
+		//Zaklada jest dodana do ulubionych
+		else
+		{
+		  //Element usuwania zakladki z ulubionych
+		  TPluginActionEdit PluginActionEdit;
+		  ZeroMemory(&PluginActionEdit,sizeof(TPluginActionEdit));
+		  PluginActionEdit.cbSize = sizeof(TPluginActionEdit);
+		  PluginActionEdit.pszName = L"TabKitFavouriteTabItem";
+		  PluginActionEdit.Caption = L"Usuñ z ulubionych";
+		  PluginActionEdit.Enabled = true;
+		  PluginActionEdit.Visible = true;
+		  PluginActionEdit.IconIndex = 125;
+		  PluginActionEdit.Checked = false;
+		  PluginLink.CallService(AQQ_CONTROLS_EDITPOPUPMENUITEM,0,(LPARAM)(&PluginActionEdit));
+	    }
 	  }
 	}
   }
