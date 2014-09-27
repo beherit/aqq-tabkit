@@ -4065,9 +4065,9 @@ object SettingsForm: TSettingsForm
       SkinData.CustomFont = False
       object AddFavouriteTabSpeedButton: TsSpeedButton
         Left = 295
-        Top = 202
-        Width = 22
-        Height = 22
+        Top = 186
+        Width = 30
+        Height = 30
         OnClick = AddFavouriteTabSpeedButtonClick
         SkinData.SkinSection = 'SPEEDBUTTON'
         ImageIndex = 0
@@ -4076,9 +4076,9 @@ object SettingsForm: TSettingsForm
       end
       object MoveUpFavouriteTabSpeedButton: TsSpeedButton
         Left = 295
-        Top = 230
-        Width = 22
-        Height = 22
+        Top = 222
+        Width = 30
+        Height = 30
         Enabled = False
         OnClick = MoveUpFavouriteTabSpeedButtonClick
         SkinData.SkinSection = 'SPEEDBUTTON'
@@ -4089,8 +4089,8 @@ object SettingsForm: TSettingsForm
       object MoveDownFavouriteTabSpeedButton: TsSpeedButton
         Left = 295
         Top = 258
-        Width = 22
-        Height = 22
+        Width = 30
+        Height = 30
         Enabled = False
         OnClick = MoveDownFavouriteTabSpeedButtonClick
         SkinData.SkinSection = 'SPEEDBUTTON'
@@ -4100,9 +4100,9 @@ object SettingsForm: TSettingsForm
       end
       object RemoveFavouriteTabSpeedButton: TsSpeedButton
         Left = 295
-        Top = 286
-        Width = 22
-        Height = 22
+        Top = 294
+        Width = 30
+        Height = 30
         Enabled = False
         OnClick = RemoveFavouriteTabSpeedButtonClick
         SkinData.SkinSection = 'SPEEDBUTTON'
@@ -4218,12 +4218,11 @@ object SettingsForm: TSettingsForm
       SkinData.CustomColor = False
       SkinData.CustomFont = False
       object SideSlideFullScreenModeExceptionsButton: TsSpeedButton
-        Left = 263
-        Top = 314
-        Width = 23
-        Height = 22
+        Left = 260
+        Top = 311
+        Width = 30
+        Height = 30
         Hint = 'Wyj'#261'tki...'
-        Flat = True
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
           2000000000000004000000000000000000000000000000000000FFFFFF00FFFF
