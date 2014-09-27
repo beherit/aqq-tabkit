@@ -3372,7 +3372,7 @@ INT_PTR __stdcall ServiceFavouriteTabItem(WPARAM wParam, LPARAM lParam)
   if(FavouritesTabsList->IndexOf(FavouriteTab)==-1)
   {
 	//Maksymalnie 10 ulubionych zakladek
-	if(FavouritesTabsList->Count<11)
+	if(FavouritesTabsList->Count<10)
 	{
       //Usuwanie elementu z lista ulubionych zakladek
 	  DestroyFavouritesTabs();
