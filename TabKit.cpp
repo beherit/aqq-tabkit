@@ -1,4 +1,3 @@
-
 //---------------------------------------------------------------------------
 // Copyright (C) 2010-2014 Krzysztof Grochocki
 //
@@ -6431,15 +6430,14 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 	if(FavouritesTabsHotKeysChk)
 	{
 	  //Wscisniete przyciski Alt + 1-0
-	  if((GetKeyState(VK_MENU)<0)&&(GetKeyState(VK_CONTROL)>=0)&&(GetKeyState(VK_SHIFT)>=0)&&(((int)wParam>=49)&&((int)wParam<=58)))
+	  if((((GetKeyState(VK_LMENU)<0)&&(GetKeyState(VK_CONTROL)>=0)&&(GetKeyState(VK_SHIFT)>=0))||((GetKeyState(VK_RMENU)<0)&&(GetKeyState(VK_CONTROL)<0)&&(GetKeyState(VK_SHIFT)>=0)))&&(((int)wParam>=48)&&((int)wParam<=58)))
 	  {
         //Sprawdzanie aktywnego okna
 		if(GetForegroundWindow()==hFrmSend)
 		{
           //Identyfikacja klawisza
-		  int Key;
-		  if(TabsHotKeysMode==1) Key = (int)wParam - 111;
-		  else Key = (int)wParam - 48;
+		  int Key = (int)wParam - 48;
+		  if(Key==0) Key = 10;
 		  //Sprawdzanie czy wywolujemy zakladke "ducha"
 		  if(Key<=FavouritesTabsList->Count)
 		  {
