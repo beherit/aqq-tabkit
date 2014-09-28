@@ -6430,7 +6430,7 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 	if(FavouritesTabsHotKeysChk)
 	{
 	  //Wscisniete przyciski Alt + 1-0
-	  if((((GetKeyState(VK_LMENU)<0)&&(GetKeyState(VK_CONTROL)>=0)&&(GetKeyState(VK_SHIFT)>=0))||((GetKeyState(VK_RMENU)<0)&&(GetKeyState(VK_CONTROL)<0)&&(GetKeyState(VK_SHIFT)>=0)))&&(((int)wParam>=48)&&((int)wParam<=58)))
+	  if((((GetKeyState(VK_LMENU)<0)&&(GetKeyState(VK_CONTROL)>=0)&&(GetKeyState(VK_SHIFT)>=0))||((GetKeyState(VK_RMENU)<0)&&(GetKeyState(VK_CONTROL)<0)&&(GetKeyState(VK_SHIFT)>=0)))&&(((int)wParam>=48)&&((int)wParam<=57)))
 	  {
         //Sprawdzanie aktywnego okna
 		if(GetForegroundWindow()==hFrmSend)
