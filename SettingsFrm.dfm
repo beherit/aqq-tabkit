@@ -3945,113 +3945,135 @@ object SettingsForm: TSettingsForm
       ImageIndex = 7
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      object OpenClipTabsCheckBox: TsCheckBox
+      object ClipTabsGroupBox: TsGroupBox
+        Left = 18
+        Top = 18
+        Width = 351
+        Height = 224
+        TabOrder = 1
+        SkinData.SkinSection = 'GROUPBOX'
+        object OpenClipTabsCheckBox: TsCheckBox
+          Left = 10
+          Top = 16
+          Width = 308
+          Height = 20
+          Caption = 'Otwieraj przypi'#281'te zak'#322'adki wraz z otwarciem okna rozmowy'
+          Checked = True
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          State = cbChecked
+          TabOrder = 0
+          OnClick = aClipTabsChkExecute
+          SkinData.SkinSection = 'CHECKBOX'
+          ImgChecked = 0
+          ImgUnchecked = 0
+          WordWrap = True
+        end
+        object InactiveClipTabsCheckBox: TsCheckBox
+          Left = 10
+          Top = 42
+          Width = 268
+          Height = 20
+          Caption = 'Nie wy'#347'wietlaj licznika nieprzeczytanych wiadomo'#347'ci'
+          TabOrder = 1
+          OnClick = aClipTabsChkExecute
+          SkinData.SkinSection = 'CHECKBOX'
+          ImgChecked = 0
+          ImgUnchecked = 0
+          WordWrap = True
+        end
+        object CounterClipTabsCheckBox: TsCheckBox
+          Left = 10
+          Top = 68
+          Width = 267
+          Height = 20
+          Caption = 'Wy'#347'wietlaj licznik znak'#243'w z powiadomienia o pisaniu'
+          TabOrder = 2
+          OnClick = aClipTabsChkExecute
+          SkinData.SkinSection = 'CHECKBOX'
+          ImgChecked = 0
+          ImgUnchecked = 0
+        end
+        object ExcludeClipTabsFromTabSwitchingCheckBox: TsCheckBox
+          Left = 10
+          Top = 94
+          Width = 319
+          Height = 28
+          Caption = 
+            'Wy'#322#261'cz przypi'#281'te zak'#322'adki z prze'#322#261'czania zak'#322'adek za pomoc'#261' skr'#243 +
+            'tu klawiaturowego Ctrl+Tab / Ctrl+Shift+Tab'
+          AutoSize = False
+          Checked = True
+          State = cbChecked
+          TabOrder = 3
+          OnClick = aClipTabsChkExecute
+          SkinData.SkinSection = 'CHECKBOX'
+          ImgChecked = 0
+          ImgUnchecked = 0
+          WordWrap = True
+        end
+        object ExcludeClipTabsFromSwitchToNewMsgCheckBox: TsCheckBox
+          Left = 26
+          Top = 128
+          Width = 237
+          Height = 28
+          Caption = 
+            'Nieaktywne dla inteligentnego prze'#322#261'czania do nieprzeczytanych w' +
+            'iadomo'#347'ci'
+          AutoSize = False
+          Checked = True
+          State = cbChecked
+          TabOrder = 4
+          OnClick = aClipTabsChkExecute
+          SkinData.SkinSection = 'CHECKBOX'
+          ImgChecked = 0
+          ImgUnchecked = 0
+          WordWrap = True
+        end
+        object ExcludeClipTabsFromTabsHotKeysCheckBox: TsCheckBox
+          Left = 10
+          Top = 162
+          Width = 280
+          Height = 28
+          Caption = 
+            'Wymagaj wci'#347'ni'#281'cia dodatkowo przycisku Shift w skr'#243'tach klawiatu' +
+            'rowych dla przypi'#281'tych zak'#322'adek'
+          AutoSize = False
+          Checked = True
+          State = cbChecked
+          TabOrder = 5
+          OnClick = aClipTabsChkExecute
+          SkinData.SkinSection = 'CHECKBOX'
+          ImgChecked = 0
+          ImgUnchecked = 0
+          WordWrap = True
+        end
+        object NoMiniAvatarsClipTabsCheckBox: TsCheckBox
+          Left = 10
+          Top = 196
+          Width = 280
+          Height = 20
+          Caption = 'Nie ustawiaj mini awatar'#243'w na przypi'#281'tych zak'#322'adkach'
+          TabOrder = 6
+          OnClick = aClipTabsChkExecute
+          SkinData.SkinSection = 'CHECKBOX'
+          ImgChecked = 0
+          ImgUnchecked = 0
+        end
+      end
+      object ClipTabsCheckBox: TsCheckBox
         Left = 12
         Top = 12
-        Width = 308
+        Width = 152
         Height = 20
-        Caption = 'Otwieraj przypi'#281'te zak'#322'adki wraz z otwarciem okna rozmowy'
+        Caption = 'W'#322#261'cz przypinanie zak'#322'adek'
         Checked = True
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
         State = cbChecked
         TabOrder = 0
-        OnClick = aClipTabsChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-        WordWrap = True
-      end
-      object InactiveClipTabsCheckBox: TsCheckBox
-        Left = 12
-        Top = 38
-        Width = 268
-        Height = 20
-        Caption = 'Nie wy'#347'wietlaj licznika nieprzeczytanych wiadomo'#347'ci'
-        TabOrder = 1
-        OnClick = aClipTabsChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-        WordWrap = True
-      end
-      object CounterClipTabsCheckBox: TsCheckBox
-        Left = 12
-        Top = 64
-        Width = 267
-        Height = 20
-        Caption = 'Wy'#347'wietlaj licznik znak'#243'w z powiadomienia o pisaniu'
-        TabOrder = 2
-        OnClick = aClipTabsChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-      end
-      object ExcludeClipTabsFromTabSwitchingCheckBox: TsCheckBox
-        Left = 12
-        Top = 90
-        Width = 333
-        Height = 28
-        Caption = 
-          'Wy'#322#261'cz przypi'#281'te zak'#322'adki z prze'#322#261'czania zak'#322'adek za pomoc'#261' skr'#243 +
-          'tu klawiaturowego Ctrl+Tab / Ctrl+Shift+Tab'
-        AutoSize = False
-        Checked = True
-        State = cbChecked
-        TabOrder = 3
-        OnClick = aClipTabsChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-        WordWrap = True
-      end
-      object ExcludeClipTabsFromSwitchToNewMsgCheckBox: TsCheckBox
-        Left = 28
-        Top = 124
-        Width = 237
-        Height = 28
-        Caption = 
-          'Nieaktywne dla inteligentnego prze'#322#261'czania do nieprzeczytanych w' +
-          'iadomo'#347'ci'
-        AutoSize = False
-        Checked = True
-        State = cbChecked
-        TabOrder = 4
-        OnClick = aClipTabsChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-        WordWrap = True
-      end
-      object ExcludeClipTabsFromTabsHotKeysCheckBox: TsCheckBox
-        Left = 12
-        Top = 158
-        Width = 280
-        Height = 28
-        Caption = 
-          'Wymagaj wci'#347'ni'#281'cia dodatkowo przycisku Shift w skr'#243'tach klawiatu' +
-          'rowych dla przypi'#281'tych zak'#322'adek'
-        AutoSize = False
-        Checked = True
-        State = cbChecked
-        TabOrder = 5
-        OnClick = aClipTabsChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-        WordWrap = True
-      end
-      object NoMiniAvatarsClipTabsCheckBox: TsCheckBox
-        Left = 12
-        Top = 192
-        Width = 280
-        Height = 20
-        Caption = 'Nie ustawiaj mini awatar'#243'w na przypi'#281'tych zak'#322'adkach'
-        TabOrder = 6
         OnClick = aClipTabsChkExecute
         SkinData.SkinSection = 'CHECKBOX'
         ImgChecked = 0
@@ -4063,113 +4085,171 @@ object SettingsForm: TSettingsForm
       ImageIndex = 8
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      object AddChatsFavouriteTabSpeedButton: TsSpeedButton
-        Left = 295
-        Top = 278
-        Width = 30
-        Height = 30
-        Hint = 'Dodaj do listy pokoje oznaczone gwiazdk'#261
-        ParentShowHint = False
-        ShowHint = True
-        OnClick = AddChatsFavouriteTabSpeedButtonClick
-        SkinData.SkinSection = 'SPEEDBUTTON'
-        ImageIndex = 3
-        Images = FavouritesTabsAlphaImageList
-        ShowCaption = False
-      end
-      object MoveUpFavouriteTabSpeedButton: TsSpeedButton
-        Left = 295
-        Top = 170
-        Width = 30
-        Height = 30
-        Enabled = False
-        OnClick = MoveUpFavouriteTabSpeedButtonClick
-        SkinData.SkinSection = 'SPEEDBUTTON'
-        ImageIndex = 0
-        Images = FavouritesTabsAlphaImageList
-        ShowCaption = False
-      end
-      object MoveDownFavouriteTabSpeedButton: TsSpeedButton
-        Left = 295
-        Top = 206
-        Width = 30
-        Height = 30
-        Enabled = False
-        OnClick = MoveDownFavouriteTabSpeedButtonClick
-        SkinData.SkinSection = 'SPEEDBUTTON'
-        ImageIndex = 1
-        Images = FavouritesTabsAlphaImageList
-        ShowCaption = False
-      end
-      object RemoveFavouriteTabSpeedButton: TsSpeedButton
-        Left = 295
-        Top = 242
-        Width = 30
-        Height = 30
-        Enabled = False
-        OnClick = RemoveFavouriteTabSpeedButtonClick
-        SkinData.SkinSection = 'SPEEDBUTTON'
-        ImageIndex = 2
-        Images = FavouritesTabsAlphaImageList
-        ShowCaption = False
-      end
-      object FavouritesTabsHotKeysCheckBox: TsCheckBox
-        Left = 12
-        Top = 99
-        Width = 245
-        Height = 28
-        Caption = 
-          'Otwieraj ulubione zak'#322'adki za pomoc'#261' skr'#243'tu klawiaturowego Alt +' +
-          ' klawisze od 1 do 0'
-        AutoSize = False
-        TabOrder = 2
-        OnClick = aFavouritesTabsChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-        WordWrap = True
-      end
-      object FastAccessFavouritesTabsGroupBox: TsGroupBox
+      object FavouritesTabsGroupBox: TsGroupBox
         Left = 18
         Top = 18
-        Width = 271
-        Height = 75
+        Width = 535
+        Height = 338
         TabOrder = 1
         SkinData.SkinSection = 'GROUPBOX'
-        object FrmMainFastAccessFavouritesTabsCheckBox: TsCheckBox
+        object RemoveFavouriteTabSpeedButton: TsSpeedButton
+          Left = 295
+          Top = 244
+          Width = 30
+          Height = 30
+          Enabled = False
+          OnClick = RemoveFavouriteTabSpeedButtonClick
+          SkinData.SkinSection = 'SPEEDBUTTON'
+          ImageIndex = 2
+          Images = FavouritesTabsAlphaImageList
+          ShowCaption = False
+        end
+        object AddChatsFavouriteTabSpeedButton: TsSpeedButton
+          Left = 295
+          Top = 280
+          Width = 30
+          Height = 30
+          Hint = 'Dodaj do listy pokoje oznaczone gwiazdk'#261
+          ParentShowHint = False
+          ShowHint = True
+          OnClick = AddChatsFavouriteTabSpeedButtonClick
+          SkinData.SkinSection = 'SPEEDBUTTON'
+          ImageIndex = 3
+          Images = FavouritesTabsAlphaImageList
+          ShowCaption = False
+        end
+        object MoveDownFavouriteTabSpeedButton: TsSpeedButton
+          Left = 295
+          Top = 208
+          Width = 30
+          Height = 30
+          Enabled = False
+          OnClick = MoveDownFavouriteTabSpeedButtonClick
+          SkinData.SkinSection = 'SPEEDBUTTON'
+          ImageIndex = 1
+          Images = FavouritesTabsAlphaImageList
+          ShowCaption = False
+        end
+        object MoveUpFavouriteTabSpeedButton: TsSpeedButton
+          Left = 295
+          Top = 172
+          Width = 30
+          Height = 30
+          Enabled = False
+          OnClick = MoveUpFavouriteTabSpeedButtonClick
+          SkinData.SkinSection = 'SPEEDBUTTON'
+          ImageIndex = 0
+          Images = FavouritesTabsAlphaImageList
+          ShowCaption = False
+        end
+        object FastAccessFavouritesTabsGroupBox: TsGroupBox
+          Left = 18
+          Top = 20
+          Width = 271
+          Height = 75
+          TabOrder = 1
+          SkinData.SkinSection = 'GROUPBOX'
+          object FrmMainFastAccessFavouritesTabsCheckBox: TsCheckBox
+            Left = 10
+            Top = 24
+            Width = 133
+            Height = 20
+            Caption = 'W oknie listy kontakt'#243'w'
+            TabOrder = 0
+            OnClick = aFavouritesTabsChkExecute
+            SkinData.SkinSection = 'CHECKBOX'
+            ImgChecked = 0
+            ImgUnchecked = 0
+          end
+          object FrmSendFastAccessFavouritesTabsCheckBox: TsCheckBox
+            Left = 10
+            Top = 50
+            Width = 104
+            Height = 20
+            Caption = 'W oknie rozmowy'
+            Checked = True
+            State = cbChecked
+            TabOrder = 1
+            OnClick = aFavouritesTabsChkExecute
+            SkinData.SkinSection = 'CHECKBOX'
+            ImgChecked = 0
+            ImgUnchecked = 0
+          end
+        end
+        object FavouritesTabsHotKeysCheckBox: TsCheckBox
           Left = 10
-          Top = 24
-          Width = 133
-          Height = 20
-          Caption = 'W oknie listy kontakt'#243'w'
+          Top = 101
+          Width = 245
+          Height = 28
+          Caption = 
+            'Otwieraj ulubione zak'#322'adki za pomoc'#261' skr'#243'tu klawiaturowego Alt +' +
+            ' klawisze od 1 do 0'
+          AutoSize = False
+          TabOrder = 2
+          OnClick = aFavouritesTabsChkExecute
+          SkinData.SkinSection = 'CHECKBOX'
+          ImgChecked = 0
+          ImgUnchecked = 0
+          WordWrap = True
+        end
+        object FavouritesTabsListView: TsListView
+          Left = 18
+          Top = 154
+          Width = 271
+          Height = 174
+          BoundLabel.Active = True
+          BoundLabel.Caption = 'Ulubione zak'#322'adki'
+          BoundLabel.Indent = 6
+          BoundLabel.Font.Charset = DEFAULT_CHARSET
+          BoundLabel.Font.Color = clWindowText
+          BoundLabel.Font.Height = -11
+          BoundLabel.Font.Name = 'Tahoma'
+          BoundLabel.Font.Style = []
+          BoundLabel.Layout = sclTopLeft
+          BoundLabel.MaxWidth = 0
+          BoundLabel.UseSkinColor = True
+          SkinData.SkinSection = 'EDIT'
+          Columns = <
+            item
+              MaxWidth = 267
+              MinWidth = 267
+              Width = 267
+            end
+            item
+              Width = 0
+            end>
+          ReadOnly = True
+          RowSelect = True
+          ShowColumnHeaders = False
+          TabOrder = 3
+          ViewStyle = vsReport
+          OnExit = FavouritesTabsListViewExit
+          OnKeyDown = FavouritesTabsListViewKeyDown
+          OnSelectItem = FavouritesTabsListViewSelectItem
+        end
+        object FastAccessFavouritesTabsCheckBox: TsCheckBox
+          Left = 10
+          Top = 16
+          Width = 213
+          Height = 28
+          Caption = 'Wy'#347'wietlaj przycisk szybkiego dost'#281'pu do ulubionych zak'#322'adek'
+          AutoSize = False
+          Checked = True
+          State = cbChecked
           TabOrder = 0
           OnClick = aFavouritesTabsChkExecute
           SkinData.SkinSection = 'CHECKBOX'
           ImgChecked = 0
           ImgUnchecked = 0
-        end
-        object FrmSendFastAccessFavouritesTabsCheckBox: TsCheckBox
-          Left = 10
-          Top = 50
-          Width = 104
-          Height = 20
-          Caption = 'W oknie rozmowy'
-          Checked = True
-          State = cbChecked
-          TabOrder = 1
-          OnClick = aFavouritesTabsChkExecute
-          SkinData.SkinSection = 'CHECKBOX'
-          ImgChecked = 0
-          ImgUnchecked = 0
+          WordWrap = True
         end
       end
-      object FastAccessFavouritesTabsCheckBox: TsCheckBox
+      object FavouritesTabsCheckBox: TsCheckBox
         Left = 12
         Top = 12
-        Width = 213
-        Height = 28
-        Caption = 'Wy'#347'wietlaj przycisk szybkiego dost'#281'pu do ulubionych zak'#322'adek'
-        AutoSize = False
+        Width = 133
+        Height = 20
+        Caption = 'W'#322#261'cz ulubione zak'#322'adki'
         Checked = True
         State = cbChecked
         TabOrder = 0
@@ -4177,42 +4257,6 @@ object SettingsForm: TSettingsForm
         SkinData.SkinSection = 'CHECKBOX'
         ImgChecked = 0
         ImgUnchecked = 0
-        WordWrap = True
-      end
-      object FavouritesTabsListView: TsListView
-        Left = 18
-        Top = 152
-        Width = 271
-        Height = 174
-        BoundLabel.Active = True
-        BoundLabel.Caption = 'Ulubione zak'#322'adki'
-        BoundLabel.Indent = 6
-        BoundLabel.Font.Charset = DEFAULT_CHARSET
-        BoundLabel.Font.Color = clWindowText
-        BoundLabel.Font.Height = -11
-        BoundLabel.Font.Name = 'Tahoma'
-        BoundLabel.Font.Style = []
-        BoundLabel.Layout = sclTopLeft
-        BoundLabel.MaxWidth = 0
-        BoundLabel.UseSkinColor = True
-        SkinData.SkinSection = 'EDIT'
-        Columns = <
-          item
-            MaxWidth = 267
-            MinWidth = 267
-            Width = 267
-          end
-          item
-            Width = 0
-          end>
-        ReadOnly = True
-        RowSelect = True
-        ShowColumnHeaders = False
-        TabOrder = 3
-        ViewStyle = vsReport
-        OnExit = FavouritesTabsListViewExit
-        OnKeyDown = FavouritesTabsListViewKeyDown
-        OnSelectItem = FavouritesTabsListViewSelectItem
       end
     end
     object SideSlideTabSheet: TsTabSheet
