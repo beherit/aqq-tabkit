@@ -236,8 +236,6 @@ object SettingsForm: TSettingsForm
     RotateCaptions = True
     ShowFocus = False
     SkinData.SkinSection = 'PAGECONTROL'
-    ExplicitLeft = 9
-    ExplicitTop = 3
     object DefaultTabSheet: TsTabSheet
       Caption = 'Informacje o wtyczce'
       SkinData.CustomColor = False
@@ -2939,6 +2937,10 @@ object SettingsForm: TSettingsForm
       ImageIndex = 1
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object ClosedTabGroupBox: TsGroupBox
         Left = 18
         Top = 18
@@ -3252,6 +3254,10 @@ object SettingsForm: TSettingsForm
       ImageIndex = 2
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object RememberUnsentMsgGroupBox: TsGroupBox
         Left = 18
         Top = 18
@@ -3406,10 +3412,14 @@ object SettingsForm: TSettingsForm
       ImageIndex = 3
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object TabsHotKeysGroupBox: TsGroupBox
         Left = 18
         Top = 105
-        Width = 335
+        Width = 343
         Height = 107
         TabOrder = 3
         SkinData.SkinSection = 'GROUPBOX'
@@ -3457,7 +3467,7 @@ object SettingsForm: TSettingsForm
       object SwitchToNewMsgGroupBox: TsGroupBox
         Left = 18
         Top = 18
-        Width = 335
+        Width = 343
         Height = 75
         TabOrder = 1
         SkinData.SkinSection = 'GROUPBOX'
@@ -3487,7 +3497,7 @@ object SettingsForm: TSettingsForm
       object SwitchToNewMsgCheckBox: TsCheckBox
         Left = 12
         Top = 12
-        Width = 301
+        Width = 309
         Height = 28
         Caption = 
           'Inteligentne prze'#322#261'czanie do nieprzeczytanych wiadomo'#347'ci za pomo' +
@@ -3574,7 +3584,7 @@ object SettingsForm: TSettingsForm
       object RestoreTabsSessionCheckBox: TsCheckBox
         Left = 12
         Top = 12
-        Width = 325
+        Width = 301
         Height = 28
         Caption = 
           'Przywracaj wszystkie otwarte zak'#322'adki utracone w wyniku niepo'#380#261'd' +
@@ -3596,6 +3606,10 @@ object SettingsForm: TSettingsForm
       OnShow = NewMsgTabSheetShow
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object ChatStateNotiferNewMsgCheckBox: TsCheckBox
         Left = 12
         Top = 182
@@ -3784,6 +3798,10 @@ object SettingsForm: TSettingsForm
       ImageIndex = 6
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object TweakFrmMainTitlebarGroupBox: TsGroupBox
         Left = 18
         Top = 159
@@ -3945,6 +3963,10 @@ object SettingsForm: TSettingsForm
       ImageIndex = 7
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object ClipTabsGroupBox: TsGroupBox
         Left = 18
         Top = 18
@@ -4085,10 +4107,14 @@ object SettingsForm: TSettingsForm
       ImageIndex = 8
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object FavouritesTabsGroupBox: TsGroupBox
         Left = 18
         Top = 18
-        Width = 535
+        Width = 342
         Height = 338
         TabOrder = 1
         SkinData.SkinSection = 'GROUPBOX'
@@ -4264,6 +4290,10 @@ object SettingsForm: TSettingsForm
       ImageIndex = 9
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object SideSlideFullScreenModeExceptionsButton: TsSpeedButton
         Left = 252
         Top = 309
@@ -4849,6 +4879,10 @@ object SettingsForm: TSettingsForm
       OnShow = OtherTabSheetShow
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object AntiSpimCheckBox: TsCheckBox
         Left = 12
         Top = 68
