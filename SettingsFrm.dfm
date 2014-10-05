@@ -4,7 +4,7 @@ object SettingsForm: TSettingsForm
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'TabKit - ustawienia'
-  ClientHeight = 429
+  ClientHeight = 428
   ClientWidth = 776
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -153,22 +153,20 @@ object SettingsForm: TSettingsForm
   OnShow = FormShow
   DesignSize = (
     776
-    429)
+    428)
   PixelsPerInch = 96
   TextHeight = 13
   object Bevel: TsBevel
     Left = 0
     Top = 391
     Width = 776
-    Height = 38
+    Height = 37
     Align = alBottom
     Shape = bsTopLine
-    ExplicitTop = 472
-    ExplicitWidth = 728
   end
   object SaveButton: TsButton
     Left = 693
-    Top = 399
+    Top = 398
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
@@ -180,7 +178,7 @@ object SettingsForm: TSettingsForm
   end
   object CancelButton: TsButton
     Left = 612
-    Top = 399
+    Top = 398
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
@@ -191,7 +189,7 @@ object SettingsForm: TSettingsForm
   end
   object OkButton: TsButton
     Left = 531
-    Top = 399
+    Top = 398
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
@@ -238,6 +236,8 @@ object SettingsForm: TSettingsForm
     RotateCaptions = True
     ShowFocus = False
     SkinData.SkinSection = 'PAGECONTROL'
+    ExplicitLeft = 9
+    ExplicitTop = 3
     object DefaultTabSheet: TsTabSheet
       Caption = 'Informacje o wtyczce'
       SkinData.CustomColor = False
@@ -2941,16 +2941,16 @@ object SettingsForm: TSettingsForm
       SkinData.CustomFont = False
       object ClosedTabGroupBox: TsGroupBox
         Left = 18
-        Top = 22
+        Top = 18
         Width = 556
-        Height = 306
+        Height = 286
         TabOrder = 1
         SkinData.SkinSection = 'GROUPBOX'
         object OtherClosedTabGroupBox: TsGroupBox
           Left = 266
-          Top = 26
+          Top = 22
           Width = 274
-          Height = 265
+          Height = 242
           TabOrder = 4
           SkinData.SkinSection = 'GROUPBOX'
           object UnCloseMouseLabel: TsLabel
@@ -3064,9 +3064,9 @@ object SettingsForm: TSettingsForm
         end
         object UnCloseTabHotKeyGroupBox: TsGroupBox
           Left = 16
-          Top = 208
+          Top = 185
           Width = 244
-          Height = 83
+          Height = 79
           TabOrder = 3
           SkinData.SkinSection = 'GROUPBOX'
           object UnCloseTabHotKeyInput: THotKey
@@ -3105,9 +3105,9 @@ object SettingsForm: TSettingsForm
         end
         object FastAccessClosedTabsGroupBox: TsGroupBox
           Left = 16
-          Top = 26
+          Top = 22
           Width = 244
-          Height = 166
+          Height = 151
           TabOrder = 1
           SkinData.SkinSection = 'GROUPBOX'
           object ItemsCountClosedTabsLabel: TsLabel
@@ -3197,7 +3197,7 @@ object SettingsForm: TSettingsForm
         end
         object UnCloseTabHotKeyCheckBox: TsCheckBox
           Left = 10
-          Top = 198
+          Top = 179
           Width = 231
           Height = 28
           Caption = 
@@ -3254,16 +3254,16 @@ object SettingsForm: TSettingsForm
       SkinData.CustomFont = False
       object RememberUnsentMsgGroupBox: TsGroupBox
         Left = 18
-        Top = 22
-        Width = 399
-        Height = 259
+        Top = 18
+        Width = 401
+        Height = 248
         TabOrder = 1
         SkinData.SkinSection = 'GROUPBOX'
         object FastAccessUnsentMsgGroupBox: TsGroupBox
           Left = 16
-          Top = 142
+          Top = 130
           Width = 369
-          Height = 100
+          Height = 96
           TabOrder = 3
           SkinData.SkinSection = 'GROUPBOX'
           object FastClearUnsentMsgCheckBox: TsCheckBox
@@ -3311,9 +3311,9 @@ object SettingsForm: TSettingsForm
         end
         object InfoUnsentMsgGroupBox: TsGroupBox
           Left = 16
-          Top = 26
+          Top = 22
           Width = 369
-          Height = 100
+          Height = 96
           TabOrder = 1
           SkinData.SkinSection = 'GROUPBOX'
           object CloudUnsentMsgCheckBox: TsCheckBox
@@ -3359,7 +3359,7 @@ object SettingsForm: TSettingsForm
         end
         object FastAccessUnsentMsgCheckBox: TsCheckBox
           Left = 10
-          Top = 132
+          Top = 124
           Width = 226
           Height = 20
           Caption = 'Szybki dost'#281'p do niewys'#322'anych wiadomo'#347'ci'
@@ -3408,9 +3408,9 @@ object SettingsForm: TSettingsForm
       SkinData.CustomFont = False
       object TabsHotKeysGroupBox: TsGroupBox
         Left = 18
-        Top = 116
+        Top = 105
         Width = 335
-        Height = 110
+        Height = 107
         TabOrder = 3
         SkinData.SkinSection = 'GROUPBOX'
         object TabsHotKeysMode1RadioButton: TsRadioButton
@@ -3456,14 +3456,14 @@ object SettingsForm: TSettingsForm
       end
       object SwitchToNewMsgGroupBox: TsGroupBox
         Left = 18
-        Top = 29
+        Top = 18
         Width = 335
-        Height = 72
+        Height = 75
         TabOrder = 1
         SkinData.SkinSection = 'GROUPBOX'
         object SwitchToNewMsgMode1RadioButton: TsRadioButton
           Left = 10
-          Top = 17
+          Top = 24
           Width = 203
           Height = 20
           Caption = 'Prze'#322#261'czanie na najstarsz'#261' wiadomo'#347#263
@@ -3475,7 +3475,7 @@ object SettingsForm: TSettingsForm
         end
         object SwitchToNewMsgMode2RadioButton: TsRadioButton
           Left = 10
-          Top = 43
+          Top = 50
           Width = 204
           Height = 20
           Caption = 'Prze'#322#261'czanie na najnowsz'#261' wiadomo'#347#263
@@ -3504,7 +3504,7 @@ object SettingsForm: TSettingsForm
       end
       object TabsHotKeysCheckBox: TsCheckBox
         Left = 12
-        Top = 107
+        Top = 99
         Width = 280
         Height = 20
         Caption = 'Przypisz skr'#243'ty klawiaturowe do konkretnych zak'#322'adek'
@@ -3524,9 +3524,9 @@ object SettingsForm: TSettingsForm
       SkinData.CustomFont = False
       object RestoreTabsSessionGroupBox: TsGroupBox
         Left = 18
-        Top = 22
+        Top = 18
         Width = 391
-        Height = 115
+        Height = 111
         TabOrder = 1
         SkinData.SkinSection = 'GROUPBOX'
         object RestoreSessionLabel: TsLabel
@@ -3786,9 +3786,9 @@ object SettingsForm: TSettingsForm
       SkinData.CustomFont = False
       object TweakFrmMainTitlebarGroupBox: TsGroupBox
         Left = 18
-        Top = 167
+        Top = 159
         Width = 271
-        Height = 74
+        Height = 70
         TabOrder = 3
         SkinData.SkinSection = 'GROUPBOX'
         object TweakFrmMainTitlebarModeExLabel: TsLabel
@@ -3865,7 +3865,7 @@ object SettingsForm: TSettingsForm
       end
       object TweakFrmSendTitlebarGroupBox: TsGroupBox
         Left = 18
-        Top = 22
+        Top = 18
         Width = 271
         Height = 129
         TabOrder = 1
@@ -3917,7 +3917,7 @@ object SettingsForm: TSettingsForm
       end
       object TweakFrmMainTitlebarCheckBox: TsCheckBox
         Left = 12
-        Top = 157
+        Top = 153
         Width = 243
         Height = 20
         Caption = 'Zmieniaj tekst na pasku tytu'#322'u okna kontakt'#243'w'
@@ -4065,7 +4065,7 @@ object SettingsForm: TSettingsForm
       SkinData.CustomFont = False
       object AddChatsFavouriteTabSpeedButton: TsSpeedButton
         Left = 295
-        Top = 294
+        Top = 278
         Width = 30
         Height = 30
         Hint = 'Dodaj do listy pokoje oznaczone gwiazdk'#261
@@ -4079,7 +4079,7 @@ object SettingsForm: TSettingsForm
       end
       object MoveUpFavouriteTabSpeedButton: TsSpeedButton
         Left = 295
-        Top = 186
+        Top = 170
         Width = 30
         Height = 30
         Enabled = False
@@ -4091,7 +4091,7 @@ object SettingsForm: TSettingsForm
       end
       object MoveDownFavouriteTabSpeedButton: TsSpeedButton
         Left = 295
-        Top = 222
+        Top = 206
         Width = 30
         Height = 30
         Enabled = False
@@ -4103,7 +4103,7 @@ object SettingsForm: TSettingsForm
       end
       object RemoveFavouriteTabSpeedButton: TsSpeedButton
         Left = 295
-        Top = 258
+        Top = 242
         Width = 30
         Height = 30
         Enabled = False
@@ -4115,7 +4115,7 @@ object SettingsForm: TSettingsForm
       end
       object FavouritesTabsHotKeysCheckBox: TsCheckBox
         Left = 12
-        Top = 115
+        Top = 99
         Width = 245
         Height = 28
         Caption = 
@@ -4131,9 +4131,9 @@ object SettingsForm: TSettingsForm
       end
       object FastAccessFavouritesTabsGroupBox: TsGroupBox
         Left = 18
-        Top = 22
+        Top = 18
         Width = 271
-        Height = 87
+        Height = 75
         TabOrder = 1
         SkinData.SkinSection = 'GROUPBOX'
         object FrmMainFastAccessFavouritesTabsCheckBox: TsCheckBox
@@ -4181,7 +4181,7 @@ object SettingsForm: TSettingsForm
       end
       object FavouritesTabsListView: TsListView
         Left = 18
-        Top = 168
+        Top = 152
         Width = 271
         Height = 174
         BoundLabel.Active = True
@@ -4222,7 +4222,7 @@ object SettingsForm: TSettingsForm
       SkinData.CustomFont = False
       object SideSlideFullScreenModeExceptionsButton: TsSpeedButton
         Left = 252
-        Top = 311
+        Top = 309
         Width = 30
         Height = 30
         Hint = 'Wyj'#261'tki...'
@@ -4268,16 +4268,16 @@ object SettingsForm: TSettingsForm
       end
       object SlideFrmMainGroupBox: TsGroupBox
         Left = 18
-        Top = 21
+        Top = 18
         Width = 275
-        Height = 284
+        Height = 285
         TabOrder = 1
         SkinData.SkinSection = 'GROUPBOX'
         object FrmMainEdgeGroupBox: TsGroupBox
           Left = 12
-          Top = 12
+          Top = 17
           Width = 116
-          Height = 72
+          Height = 67
           Caption = 'Wybrana kraw'#281'd'#378
           Enabled = False
           TabOrder = 0
@@ -4331,9 +4331,9 @@ object SettingsForm: TSettingsForm
         end
         object FrmMainHideGroupBox: TsGroupBox
           Left = 134
-          Top = 12
+          Top = 17
           Width = 128
-          Height = 96
+          Height = 93
           Caption = 'Schowaj gdy'
           Enabled = False
           TabOrder = 1
@@ -4375,9 +4375,9 @@ object SettingsForm: TSettingsForm
         end
         object FrmMainTimeGroupBox: TsGroupBox
           Left = 12
-          Top = 110
+          Top = 116
           Width = 250
-          Height = 129
+          Height = 128
           Caption = 'Ustawienia animacji'
           Enabled = False
           TabOrder = 2
@@ -4488,10 +4488,10 @@ object SettingsForm: TSettingsForm
           end
         end
         object ChangeTabAfterSlideInCheckBox: TsCheckBox
-          Left = 10
-          Top = 245
+          Left = 12
+          Top = 250
           Width = 232
-          Height = 30
+          Height = 28
           Caption = 'Zawsze pokazuj zak'#322'adk'#281' z list'#261' kontakt'#243'w po wysuni'#281'ciu okna'
           AutoSize = False
           Checked = True
@@ -4506,16 +4506,16 @@ object SettingsForm: TSettingsForm
       end
       object SlideFrmSendGroupBox: TsGroupBox
         Left = 306
-        Top = 22
+        Top = 18
         Width = 275
-        Height = 284
+        Height = 285
         TabOrder = 3
         SkinData.SkinSection = 'GROUPBOX'
         object FrmSendEdgeGroupBox: TsGroupBox
           Left = 12
-          Top = 12
+          Top = 17
           Width = 116
-          Height = 71
+          Height = 67
           Caption = 'Wybrana kraw'#281'd'#378
           Enabled = False
           TabOrder = 0
@@ -4569,9 +4569,9 @@ object SettingsForm: TSettingsForm
         end
         object FrmSendHideGroupBox: TsGroupBox
           Left = 134
-          Top = 12
+          Top = 17
           Width = 128
-          Height = 96
+          Height = 93
           Caption = 'Schowaj gdy'
           Enabled = False
           TabOrder = 1
@@ -4613,9 +4613,9 @@ object SettingsForm: TSettingsForm
         end
         object FrmSendTimeGroupBox: TsGroupBox
           Left = 12
-          Top = 110
+          Top = 116
           Width = 250
-          Height = 129
+          Height = 128
           Caption = 'Ustawienia animacji'
           Enabled = False
           TabOrder = 2
@@ -4673,7 +4673,7 @@ object SettingsForm: TSettingsForm
             Value = 500
           end
           object FrmSendSlideInDelaySpinEdit: TsSpinEdit
-            Left = 182
+            Left = 183
             Top = 16
             Width = 48
             Height = 21
@@ -4726,10 +4726,10 @@ object SettingsForm: TSettingsForm
           end
         end
         object SlideInAtNewMsgCheckBox: TsCheckBox
-          Left = 10
-          Top = 245
+          Left = 12
+          Top = 250
           Width = 255
-          Height = 30
+          Height = 28
           Caption = 
             'Wysuwaj okno po przyj'#347'ciu nowej wiadomo'#347'ci (tylko dla otwartych ' +
             'zak'#322'adek)'
@@ -4769,7 +4769,7 @@ object SettingsForm: TSettingsForm
       end
       object SideSlideFullScreenModeCheckBox: TsCheckBox
         Left = 12
-        Top = 316
+        Top = 314
         Width = 234
         Height = 20
         Caption = 'Wysuwaj okna przy aplikacji pe'#322'noekranowej'
@@ -4783,7 +4783,7 @@ object SettingsForm: TSettingsForm
       end
       object SideSlideCtrlAndMousBlockCheckBox: TsCheckBox
         Left = 12
-        Top = 342
+        Top = 340
         Width = 452
         Height = 20
         Caption = 
@@ -4824,7 +4824,7 @@ object SettingsForm: TSettingsForm
         Left = 364
         Top = 12
         Width = 214
-        Height = 153
+        Height = 152
         HelpContext = 1
         BiDiMode = bdLeftToRight
         Caption = 'Wyczy'#347#263' plik cache z informacji na temat'
@@ -5030,9 +5030,9 @@ object SettingsForm: TSettingsForm
       end
       object CloudSettingsGroupBox: TsGroupBox
         Left = 364
-        Top = 171
+        Top = 170
         Width = 214
-        Height = 78
+        Height = 76
         Caption = 'Ustawienia chmurek informacyjnych'
         TabOrder = 15
         CaptionLayout = clTopCenter
@@ -5130,12 +5130,11 @@ object SettingsForm: TSettingsForm
         WordWrap = True
       end
       object TurnOffModalCheckBox: TsCheckBox
-        Left = 372
-        Top = 255
-        Width = 196
-        Height = 28
+        Left = 12
+        Top = 318
+        Width = 246
+        Height = 20
         Caption = 'Wy'#322#261'cz modalno'#347#263' okna instalowania dodatk'#243'w'
-        AutoSize = False
         Checked = True
         Enabled = False
         State = cbChecked
