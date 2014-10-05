@@ -417,6 +417,7 @@ int TweakFrmMainTitlebarMode;
 int TweakFrmMainTitlebarModeEx;
 UnicodeString TweakFrmMainTitlebarText;
 //ClipTabs
+bool ClipTabsChk;
 bool OpenClipTabsChk;
 bool InactiveClipTabsChk;
 bool CounterClipTabsChk;
@@ -425,6 +426,7 @@ bool ExClipTabsFromSwitchToNewMsgChk;
 bool ExClipTabsFromTabsHotKeysChk;
 bool MiniAvatarsClipTabsChk;
 //FavouritesTabs
+bool FavouritesTabsChk;
 bool FastAccessFavouritesTabsChk;
 bool FrmMainFastAccessFavouritesTabsChk;
 bool FrmSendFastAccessFavouritesTabsChk;
@@ -3010,7 +3012,7 @@ void DestroyClipTab()
 void BuildClipTab()
 {
   //Okno rozmowy jest otwarte
-  if(hFrmSend)
+  if((ClipTabsChk)&&(hFrmSend))
   {
 	//Element przypinania zakladki
 	TPluginAction ClipTabItem;
@@ -3286,7 +3288,7 @@ void DestroyFavouritesTabs()
 void BuildFrmSendFavouriteTab()
 {
   //Okno rozmowy jest otwarte
-  if(hFrmSend)
+  if((FavouritesTabsChk)&&(hFrmSend))
   {
 	//Element dowania/usuwania ulubionej zakladki
 	TPluginAction FavouriteTabItem;
@@ -3305,25 +3307,28 @@ void BuildFrmSendFavouriteTab()
 //---------------------------------------------------------------------------
 void BuildFrmMainFavouriteTab()
 {
-  //Ustalanie pozycji elementu "Wizytowka"
-  TPluginItemDescriber PluginItemDescriber;
-  PluginItemDescriber.cbSize = sizeof(TPluginItemDescriber);
-  PluginItemDescriber.FormHandle = 0;
-  PluginItemDescriber.ParentName = L"muItem";
-  PluginItemDescriber.Name = L"muProfile";
-  PPluginAction Action = (PPluginAction)PluginLink.CallService(AQQ_CONTROLS_GETPOPUPMENUITEM,0,(LPARAM)(&PluginItemDescriber));
-  int Position = Action->Position;
-  //Element dowania/usuwania ulubionej zakladki
-  TPluginAction FavouriteTabItem;
-  ZeroMemory(&FavouriteTabItem,sizeof(TPluginAction));
-  FavouriteTabItem.cbSize = sizeof(TPluginAction);
-  FavouriteTabItem.pszName = L"TabKitFrmMainFavouriteTabItem";
-  FavouriteTabItem.pszCaption = L"Dodaj do ulubionych";
-  FavouriteTabItem.Position = Position + 1;
-  FavouriteTabItem.IconIndex = 125;
-  FavouriteTabItem.pszService = L"sTabKitFavouriteTabItem";
-  FavouriteTabItem.pszPopupName = L"muItem";
-  PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&FavouriteTabItem));
+  if(FavouritesTabsChk)
+  {
+	//Ustalanie pozycji elementu "Wizytowka"
+	TPluginItemDescriber PluginItemDescriber;
+	PluginItemDescriber.cbSize = sizeof(TPluginItemDescriber);
+	PluginItemDescriber.FormHandle = 0;
+	PluginItemDescriber.ParentName = L"muItem";
+	PluginItemDescriber.Name = L"muProfile";
+	PPluginAction Action = (PPluginAction)PluginLink.CallService(AQQ_CONTROLS_GETPOPUPMENUITEM,0,(LPARAM)(&PluginItemDescriber));
+	int Position = Action->Position;
+	//Element dowania/usuwania ulubionej zakladki
+	TPluginAction FavouriteTabItem;
+	ZeroMemory(&FavouriteTabItem,sizeof(TPluginAction));
+	FavouriteTabItem.cbSize = sizeof(TPluginAction);
+	FavouriteTabItem.pszName = L"TabKitFrmMainFavouriteTabItem";
+	FavouriteTabItem.pszCaption = L"Dodaj do ulubionych";
+	FavouriteTabItem.Position = Position + 1;
+	FavouriteTabItem.IconIndex = 125;
+	FavouriteTabItem.pszService = L"sTabKitFavouriteTabItem";
+	FavouriteTabItem.pszPopupName = L"muItem";
+	PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&FavouriteTabItem));
+  }
 }
 //---------------------------------------------------------------------------
 
@@ -3331,7 +3336,7 @@ void BuildFrmMainFavouriteTab()
 void BuildFavouritesTabs()
 {
   //Interfejs ma byc stworzony
-  if(FastAccessFavouritesTabsChk)
+  if((FavouritesTabsChk)&&(FastAccessFavouritesTabsChk))
   {
 	//Pobieranie ilosci ulubionych zakladek
 	int TabsCount = FavouritesTabsList->Count;
@@ -6056,7 +6061,7 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 	  }
     }
 	//Pomijanie przypietych zakladek w przelaczaniu
-	if((ExClipTabsFromTabSwitchingChk)&&((!ExClipTabsFromSwitchToNewMsgChk)||((ExClipTabsFromSwitchToNewMsgChk)&&(!MsgList->Count))))
+	if((ClipTabsChk)&&(ExClipTabsFromTabSwitchingChk)&&((!ExClipTabsFromSwitchToNewMsgChk)||((ExClipTabsFromSwitchToNewMsgChk)&&(!MsgList->Count))))
 	{
 	  //Wcisniety Ctrl+Tab lub Ctrl+Shift+Tab
 	  if(((GetKeyState(VK_CONTROL)<0)&&(GetKeyState(VK_LSHIFT)>=0)&&(wParam==VK_TAB))
@@ -6167,7 +6172,7 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 		  if(TabsHotKeysMode==1) Key = (int)wParam - 111;
 		  else Key = (int)wParam - 48;
 		  //Niepomijanie przypietych zakladek
-		  if(!ExClipTabsFromTabsHotKeysChk)
+		  if((!ClipTabsChk)||((ClipTabsChk)&&(!ExClipTabsFromTabsHotKeysChk)))
 		  {
 			//Sprawdzanie czy wywolujemy zakladke "ducha"
 			if(Key<=TabsListEx->Count)
@@ -6427,7 +6432,7 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 	  }
 	}
 	//Skroty do ulubionych zakladek
-	if(FavouritesTabsHotKeysChk)
+	if((FavouritesTabsChk)&&(FavouritesTabsHotKeysChk))
 	{
 	  //Wscisniete przyciski Alt + 1-0
 	  if((((GetKeyState(VK_LMENU)<0)&&(GetKeyState(VK_CONTROL)>=0)&&(GetKeyState(VK_SHIFT)>=0))||((GetKeyState(VK_RMENU)<0)&&(GetKeyState(VK_CONTROL)<0)&&(GetKeyState(VK_SHIFT)>=0)))&&(((int)wParam>=48)&&((int)wParam<=57)))
@@ -7211,7 +7216,7 @@ INT_PTR __stdcall OnAddLine(WPARAM wParam, LPARAM lParam)
 			bool ClipTabsEx = Ini->ValueExists("ClipTabsEx",JID+UserIdx);
 			delete Ini;
 			//Jezeli licznik nie ma byc dodawany na przypietej zakladce
-			if((ClipTabsList->IndexOf(JID+UserIdx)!=-1)&&(InactiveClipTabsChk)&&(!ClipTabsEx))
+			if((ClipTabsChk)&&(InactiveClipTabsChk)&&(ClipTabsList->IndexOf(JID+UserIdx)!=-1)&&(!ClipTabsEx))
 			 goto SkipInactiveTabsNewMsgChk;
 			//Jezeli JID jest rozny od JID z aktywnej zakladki i zakladka jest otwarta
 			if((JID+Res+UserIdx!=ActiveTabJIDEx)&&(TabsListEx->IndexOf(JID+Res+UserIdx)!=-1))
@@ -7921,7 +7926,7 @@ INT_PTR __stdcall OnFetchAllTabs(WPARAM wParam, LPARAM lParam)
 	  delete Ini;
 	}
 	//Zakladka jest przypieta
-	if(ClipTabsList->IndexOf(JID+UserIdx)!=-1)
+	if((ClipTabsChk)&&(ClipTabsList->IndexOf(JID+UserIdx)!=-1))
 	{
 	  //Sprawdzanie stanu pokazywania nazwy przypietej zakladki
 	  TIniFile *Ini = new TIniFile(SessionFileDir);
@@ -8066,7 +8071,7 @@ INT_PTR __stdcall OnFetchAllTabs_RefreshTabs(WPARAM wParam, LPARAM lParam)
 	if(FetchAllTabsContact.IsChat) JID = "ischat_" + JID;
 	UnicodeString UserIdx = ":" + IntToStr(FetchAllTabsContact.UserIdx);
 	//Jezeli zakladka jest przypieta
-	if((ClipTabsList->IndexOf(JID+UserIdx)!=-1)&&(!UnloadExecuted))
+	if((ClipTabsChk)&&(ClipTabsList->IndexOf(JID+UserIdx)!=-1)&&(!UnloadExecuted))
 	{
 	  //Sprawdzanie stanu pokazywania nazwy przypietej zakladki
 	  TIniFile *Ini = new TIniFile(SessionFileDir);
@@ -8847,7 +8852,7 @@ INT_PTR __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 	  bool ClipTabsEx = Ini->ValueExists("ClipTabsEx",JID+UserIdx);
 	  delete Ini;
 	  //Licznik nie ma byc dodawany na przypietej zakladce
-	  if((ClipTabsList->IndexOf(JID+UserIdx)!=-1)&&(InactiveClipTabsChk)&&(!ClipTabsEx))
+	  if((ClipTabsChk)&&(InactiveClipTabsChk)&&(ClipTabsList->IndexOf(JID+UserIdx)!=-1)&&(!ClipTabsEx))
 	   goto SkipInactiveTabsNewMsgChk;
 	  //JID jest rozny od JID z aktywnej zakladki i zakladka jest otwarta
 	  if((JID+Res+UserIdx!=ActiveTabJIDEx)&&(TabsListEx->IndexOf(JID+Res+UserIdx)!=-1))
@@ -9712,7 +9717,7 @@ INT_PTR __stdcall OnTabCaption(WPARAM wParam, LPARAM lParam)
 	bool ClipTabsEx = Ini->ValueExists("ClipTabsEx",JID+UserIdx);
 	delete Ini;
 	//Przypiete zakladki z ukryta nazwa
-	if((ClipTabsList->IndexOf(JID+UserIdx)!=-1)&&(!ClipTabsEx))
+	if((ClipTabsChk)&&(ClipTabsList->IndexOf(JID+UserIdx)!=-1)&&(!ClipTabsEx))
 	{
 	  //Przypiete zakladki bez licznika znakow
 	  if((!CounterClipTabsChk)||(TabCaptionContact.IsChat))
@@ -9830,7 +9835,7 @@ INT_PTR __stdcall OnTabImage(WPARAM wParam, LPARAM lParam)
 	  }
 	}
 	//Przypiete zakladki
-	if(ClipTabsList->Count>0)
+	if((ClipTabsChk)&&(ClipTabsList->Count>0))
 	{
 	  //Pobieranie danych kontaktku
 	  TPluginContact TabImageContact = *(PPluginContact)lParam;
@@ -10461,7 +10466,7 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 		hIconSmall = 0;
 		hIconBig = 0;
 		//Otwieranie przypietych zakladek
-		if((OpenClipTabsChk)&&(!RestoringSession))
+		if((ClipTabsChk)&&(OpenClipTabsChk)&&(!RestoringSession))
 		{
 		  if(ClipTabsList->Count) SetTimer(hTimerFrm,TIMER_CLIPTABS_OPEN,2000,(TIMERPROC)TimerFrmProc);
 		}
@@ -11045,6 +11050,7 @@ void LoadSettings()
   TweakFrmMainTitlebarModeEx = Ini->ReadInteger("Titlebar","MainModeEx",0);
   TweakFrmMainTitlebarText = Ini->ReadString("Titlebar","MainText","");
   //ClipTabs
+  ClipTabsChk = Ini->ReadBool("ClipTabs","Enabled",true);
   OpenClipTabsChk = Ini->ReadBool("ClipTabs","OpenClipTabs",true);
   InactiveClipTabsChk = Ini->ReadBool("ClipTabs","InactiveClipTabs",false);
   CounterClipTabsChk = Ini->ReadBool("ClipTabs","Counter",false);
@@ -11053,6 +11059,7 @@ void LoadSettings()
   ExClipTabsFromTabsHotKeysChk = Ini->ReadBool("ClipTabs","ExcludeFromTabsHotKeys",true);
   MiniAvatarsClipTabsChk = Ini->ReadBool("ClipTabs","MiniAvatars",true);
   //FavouritesTabs
+  FavouritesTabsChk = Ini->ReadBool("FavouritesTabs","Enabled",true);
   FastAccessFavouritesTabsChk = Ini->ReadBool("FavouritesTabs","FastAccess",true);
   FrmMainFastAccessFavouritesTabsChk = Ini->ReadBool("FavouritesTabs","FrmMainFastAccess",false);
   FrmSendFastAccessFavouritesTabsChk = Ini->ReadBool("FavouritesTabs","FrmSendFastAccess",true);

@@ -274,6 +274,10 @@ __published:	// IDE-managed Components
 	TsSpeedButton *MoveDownFavouriteTabSpeedButton;
 	TsSpeedButton *RemoveFavouriteTabSpeedButton;
 	TsAlphaImageList *FavouritesTabsAlphaImageList;
+	TsGroupBox *ClipTabsGroupBox;
+	TsCheckBox *ClipTabsCheckBox;
+	TsGroupBox *FavouritesTabsGroupBox;
+	TsCheckBox *FavouritesTabsCheckBox;
 	void __fastcall UnsentMsgTrayIconClick(TObject *Sender);
 	void __fastcall aExitExecute(TObject *Sender);
 	void __fastcall aLoadSettingsExecute(TObject *Sender);

@@ -79,6 +79,8 @@ __declspec(dllimport)void EraseUnsentMsg();
 __declspec(dllimport)bool ShowUnsentMsg();
 __declspec(dllimport)void ChangeFrmSendTitlebar();
 __declspec(dllimport)void ChangeFrmMainTitlebar();
+__declspec(dllimport)void BuildClipTab();
+__declspec(dllimport)void DestroyClipTab();
 __declspec(dllimport)void EraseClipTabs();
 __declspec(dllimport)void EraseClipTabsIcons();
 __declspec(dllimport)void HookGlobalKeyboard();
@@ -89,7 +91,11 @@ __declspec(dllimport)void DestroyStayOnTop();
 __declspec(dllimport)void BuildStayOnTop();
 __declspec(dllimport)void ShowToolBar();
 __declspec(dllimport)void CheckHideScrollTabButtons();
+__declspec(dllimport)void DestroyFrmSendFavouriteTab();
+__declspec(dllimport)void DestroyFrmMainFavouriteTab();
 __declspec(dllimport)void DestroyFavouritesTabs();
+__declspec(dllimport)void BuildFrmSendFavouriteTab();
+__declspec(dllimport)void BuildFrmMainFavouriteTab();
 __declspec(dllimport)void BuildFavouritesTabs();
 __declspec(dllimport)UnicodeString GetContactNick(UnicodeString JID);
 __declspec(dllimport)UnicodeString GetChannelNameW(UnicodeString JID);
@@ -97,8 +103,7 @@ __declspec(dllimport)UnicodeString FriendlyFormatJID(UnicodeString JID);
 __declspec(dllimport)UnicodeString GetIconPath(int Icon);
 __declspec(dllimport)void ShowFavouritesTabsInfo(UnicodeString Text);
 //---------------------------------------------------------------------------
-bool pHideTabCloseButtonChk;
-bool pMiniAvatarsClipTabsChk;
+
 //---------------------------------------------------------------------------
 __fastcall TSettingsForm::TSettingsForm(TComponent* Owner)
 	: TForm(Owner)
@@ -343,6 +348,7 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   TweakFrmMainTitlebarModeExComboBox->ItemIndex = Ini->ReadInteger("Titlebar","MainModeEx",0);
   TweakFrmMainTitlebarMode2Edit->Text = Ini->ReadString("Titlebar","MainText","");
   //ClipTabs
+  ClipTabsCheckBox->Checked = Ini->ReadBool("ClipTabs","Enabled",true);
   OpenClipTabsCheckBox->Checked = Ini->ReadBool("ClipTabs","OpenClipTabs",true);
   InactiveClipTabsCheckBox->Checked = Ini->ReadBool("ClipTabs","InactiveClipTabs",false);
   CounterClipTabsCheckBox->Checked = Ini->ReadBool("ClipTabs","Counter",false);
@@ -350,8 +356,8 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   ExcludeClipTabsFromSwitchToNewMsgCheckBox->Checked = !Ini->ReadBool("ClipTabs","ExcludeFromSwitchToNewMsg",false);
   ExcludeClipTabsFromTabsHotKeysCheckBox->Checked = Ini->ReadBool("ClipTabs","ExcludeFromTabsHotKeys",true);
   NoMiniAvatarsClipTabsCheckBox->Checked = !Ini->ReadBool("ClipTabs","MiniAvatars",true);
-  pMiniAvatarsClipTabsChk = NoMiniAvatarsClipTabsCheckBox->Checked;
   //FavouritesTabs
+  FavouritesTabsCheckBox->Checked = Ini->ReadBool("FavouritesTabs","Enabled",true);
   FastAccessFavouritesTabsCheckBox->Checked = Ini->ReadBool("FavouritesTabs","FastAccess",true);
   FrmMainFastAccessFavouritesTabsCheckBox->Checked = Ini->ReadBool("FavouritesTabs","FrmMainFastAccess",false);
   FrmSendFastAccessFavouritesTabsCheckBox->Checked = Ini->ReadBool("FavouritesTabs","FrmSendFastAccess",true);
@@ -455,7 +461,6 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
   StayOnTopCheckBox->Checked = Ini->ReadBool("Other","StayOnTop",true);
   HideToolBarCheckBox->Checked = Ini->ReadBool("Other","HideToolBar",false);
   HideTabCloseButtonCheckBox->Checked = Ini->ReadBool("Other","HideTabCloseButton",true);
-  pHideTabCloseButtonChk = HideTabCloseButtonCheckBox->Checked;
   HideScrollTabButtonsCheckBox->Checked = Ini->ReadBool("Other","HideScrollTabButtons",false);
   CloseBy2xLPMCheckBox->Checked = Ini->ReadBool("Other","CloseBy2xLPM",false);
   CloudTimeOutSpinEdit->Value = Ini->ReadInteger("Other","CloudTimeOut",6);
@@ -621,6 +626,7 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
   else
    Ini->WriteString("Titlebar","MainText","");
   //ClipTabs
+  Ini->WriteBool("ClipTabs","Enabled",ClipTabsCheckBox->Checked);
   Ini->WriteBool("ClipTabs","OpenClipTabs",OpenClipTabsCheckBox->Checked);
   Ini->WriteBool("ClipTabs","InactiveClipTabs",InactiveClipTabsCheckBox->Checked);
   Ini->WriteBool("ClipTabs","Counter",CounterClipTabsCheckBox->Checked);
@@ -629,6 +635,7 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
   Ini->WriteBool("ClipTabs","ExcludeFromTabsHotKeys",ExcludeClipTabsFromTabsHotKeysCheckBox->Checked);
   Ini->WriteBool("ClipTabs","MiniAvatars",!NoMiniAvatarsClipTabsCheckBox->Checked);
   //FavouritesTabs
+  Ini->WriteBool("FavouritesTabs","Enabled",FavouritesTabsCheckBox->Checked);
   Ini->WriteBool("FavouritesTabs","FastAccess",FastAccessFavouritesTabsCheckBox->Checked);
   Ini->WriteBool("FavouritesTabs","FrmMainFastAccess",FrmMainFastAccessFavouritesTabsCheckBox->Checked);
   Ini->WriteBool("FavouritesTabs","FrmSendFastAccess",FrmSendFastAccessFavouritesTabsCheckBox->Checked);
@@ -711,6 +718,9 @@ void __fastcall TSettingsForm::aSaveSettingsWExecute(TObject *Sender)
   //Usuwanie elementow z interfejsu AQQ
   DestroyFrmUnsentMsg();
   DestroyFrmClosedTabs();
+  DestroyClipTab();
+  DestroyFrmSendFavouriteTab();
+  DestroyFrmMainFavouriteTab();
   DestroyFavouritesTabs();
   DestroyStayOnTop();
   //Zapisywanie ustawien
@@ -723,6 +733,9 @@ void __fastcall TSettingsForm::aSaveSettingsWExecute(TObject *Sender)
   //Tworzenie elementow w interfejsie AQQ
   BuildFrmClosedTabs();
   BuildFrmUnsentMsg();
+  BuildClipTab();
+  BuildFrmSendFavouriteTab();
+  BuildFrmMainFavouriteTab();
   BuildFavouritesTabs();
   BuildStayOnTop();
   //Zmiana tekstu na pasku tytulowym okna rozmowy
@@ -733,11 +746,7 @@ void __fastcall TSettingsForm::aSaveSettingsWExecute(TObject *Sender)
   ShowToolBar();
   CheckHideScrollTabButtons();
   //Odswiezenie wszystkich zakladek
-  if((pMiniAvatarsClipTabsChk!=NoMiniAvatarsClipTabsCheckBox->Checked)
-  ||(pHideTabCloseButtonChk!=HideTabCloseButtonCheckBox->Checked))
-   RefreshTabs();
-  pMiniAvatarsClipTabsChk = NoMiniAvatarsClipTabsCheckBox->Checked;
-  pHideTabCloseButtonChk = HideTabCloseButtonCheckBox->Checked;
+  RefreshTabs();
 }
 //---------------------------------------------------------------------------
 
@@ -876,7 +885,15 @@ void __fastcall TSettingsForm::aTitlebarTweakChkExecute(TObject *Sender)
 
 void __fastcall TSettingsForm::aClipTabsChkExecute(TObject *Sender)
 {
-  ExcludeClipTabsFromSwitchToNewMsgCheckBox->Enabled = ExcludeClipTabsFromTabSwitchingCheckBox->Checked;
+  OpenClipTabsCheckBox->Enabled = ClipTabsCheckBox->Checked;
+  InactiveClipTabsCheckBox->Enabled = ClipTabsCheckBox->Checked;
+  CounterClipTabsCheckBox->Enabled = ClipTabsCheckBox->Checked;
+  ExcludeClipTabsFromTabSwitchingCheckBox->Enabled = ClipTabsCheckBox->Checked;
+  if(ClipTabsCheckBox->Checked) ExcludeClipTabsFromSwitchToNewMsgCheckBox->Enabled = ExcludeClipTabsFromTabSwitchingCheckBox->Checked;
+  else ExcludeClipTabsFromSwitchToNewMsgCheckBox->Enabled = false;
+  ExcludeClipTabsFromTabsHotKeysCheckBox->Enabled = ClipTabsCheckBox->Checked;
+  NoMiniAvatarsClipTabsCheckBox->Enabled = ClipTabsCheckBox->Checked;
+
   SaveButton->Enabled = true;
 }
 //---------------------------------------------------------------------------
@@ -1175,8 +1192,20 @@ void __fastcall TSettingsForm::sSkinManagerSysDlgInit(TacSysDlgData DlgData, boo
 
 void __fastcall TSettingsForm::aFavouritesTabsChkExecute(TObject *Sender)
 {
-  FrmMainFastAccessFavouritesTabsCheckBox->Enabled = FastAccessFavouritesTabsCheckBox->Checked;
-  FrmSendFastAccessFavouritesTabsCheckBox->Enabled = FastAccessFavouritesTabsCheckBox->Checked;
+  FastAccessFavouritesTabsCheckBox->Enabled = FavouritesTabsCheckBox->Checked;
+  if(FavouritesTabsCheckBox->Checked)
+  {
+	FrmMainFastAccessFavouritesTabsCheckBox->Enabled = FastAccessFavouritesTabsCheckBox->Checked;
+	FrmSendFastAccessFavouritesTabsCheckBox->Enabled = FastAccessFavouritesTabsCheckBox->Checked;
+  }
+  else
+  {
+	FrmMainFastAccessFavouritesTabsCheckBox->Enabled = false;
+	FrmSendFastAccessFavouritesTabsCheckBox->Enabled = false;
+  }
+  FavouritesTabsHotKeysCheckBox->Enabled = FavouritesTabsCheckBox->Checked;
+  FavouritesTabsListView->Enabled = FavouritesTabsCheckBox->Checked;
+  AddChatsFavouriteTabSpeedButton->Enabled = FavouritesTabsCheckBox->Checked;
 
   SaveButton->Enabled = true;
 }
