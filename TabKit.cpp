@@ -548,6 +548,14 @@ void RefreshTabs();
 void CheckHideScrollTabButtons();
 void OpenNewTab(UnicodeString JID);
 UnicodeString GetChannelName(UnicodeString JID);
+void DestroyFrmUnsentMsg();
+void BuildFrmUnsentMsg(bool FixPosition);
+void DestroyFrmClosedTabs();
+void BuildFrmClosedTabs(bool FixPosition);
+void DestroyFavouritesTabs();
+void BuildFavouritesTabs(bool FixPosition);
+void DestroyStayOnTop();
+void BuildStayOnTop();
 //void LoadSettings();
 UnicodeString MD5(UnicodeString Text);
 //---------------------------------------------------------------------------
@@ -2277,6 +2285,28 @@ UnicodeString GetChannelNameW(UnicodeString JID)
 }
 //---------------------------------------------------------------------------
 
+//Aktualizacja pozycji wszystkich przyciskow w oknie rozmowy
+void FixButtonsPosition()
+{
+  //Przywracanie sesji nie jest aktywne
+  if(!RestoringSession)
+  {
+	//Szybki dostep niewyslanych wiadomosci
+	DestroyFrmUnsentMsg();
+	BuildFrmUnsentMsg(false);
+	//Szybki dostep do ostatnio zamknietych zakladek
+	DestroyFrmClosedTabs();
+	BuildFrmClosedTabs(false);
+	//Szybki dostep do ulubionych zakladek
+	DestroyFavouritesTabs();
+	BuildFavouritesTabs(false);
+	//Trzymanie okna rozmowy na wierzchu
+	DestroyStayOnTop();
+	BuildStayOnTop();
+  }
+}
+//---------------------------------------------------------------------------
+
 //Usuwanie interfejsu dla ostatio zamknietych zakladek
 void DestroyFrmClosedTabs()
 {
@@ -2325,7 +2355,7 @@ void DestroyFrmClosedTabs()
 //---------------------------------------------------------------------------
 
 //Tworzenie interfejsu dla ostatnio zamknietych zakladek
-void BuildFrmClosedTabs()
+void BuildFrmClosedTabs(bool FixPosition)
 {
   //Interfejs ma byc stworzony
   if((ClosedTabsChk)&&(FastAccessClosedTabsChk))
@@ -2335,85 +2365,89 @@ void BuildFrmClosedTabs()
 	//Sa jakies ostatnio zamkniete zakladki
 	if(TabsCount>0)
 	{
-	  //Maks X elementow w popupmenu
-	  if(TabsCount>ItemCountUnCloseTabVal) TabsCount = ItemCountUnCloseTabVal;
-	  //Tworzenie buttona w oknie kontaktow
-	  if(FrmMainClosedTabsChk)
+	  //Natychmiastowe tworzenie przyciskow
+	  if((!FixPosition)||((!hFrmSend)&&(FixPosition)))
 	  {
-		TPluginAction FrmMainClosedTabsButton;
-		ZeroMemory(&FrmMainClosedTabsButton,sizeof(TPluginAction));
-		FrmMainClosedTabsButton.cbSize = sizeof(TPluginAction);
-		FrmMainClosedTabsButton.pszName = L"TabKitFrmMainClosedTabsButton";
-		FrmMainClosedTabsButton.Position = 999;
-		FrmMainClosedTabsButton.IconIndex = CLOSEDTABS;
-		FrmMainClosedTabsButton.pszPopupName = L"TabKitClosedTabsPopUp";
-		PluginLink.CallService(AQQ_CONTROLS_TOOLBAR "ToolDown" AQQ_CONTROLS_CREATEBUTTON,0,(LPARAM)(&FrmMainClosedTabsButton));
-	  }
-	  //Tworzenie buttona w oknie rozmowy
-	  if((hFrmSend)&&(FrmSendClosedTabsChk))
-	  {
-		TPluginAction FrmSendClosedTabsButton;
-		ZeroMemory(&FrmSendClosedTabsButton,sizeof(TPluginAction));
-		FrmSendClosedTabsButton.cbSize = sizeof(TPluginAction);
-		FrmSendClosedTabsButton.pszName = L"TabKitFrmSendClosedTabsButton";
-		FrmSendClosedTabsButton.Hint = L"Ostatnio zamkniête zak³adki";
-		FrmSendClosedTabsButton.IconIndex = CLOSEDTABS;
-		FrmSendClosedTabsButton.pszPopupName = L"TabKitClosedTabsPopUp";
-		FrmSendClosedTabsButton.Handle = (int)hFrmSend;
-		PluginLink.CallService(AQQ_CONTROLS_TOOLBAR "tbMain" AQQ_CONTROLS_CREATEBUTTON,0,(LPARAM)(&FrmSendClosedTabsButton));
-	  }
-	  //Tworzenie PopUpMenuItems
-	  for(int Count=0;Count<TabsCount;Count++)
-	  {
-		UnicodeString ItemJID = ClosedTabsList->Strings[Count];
-		if(!ItemJID.IsEmpty())
+		//Maks X elementow w popupmenu
+		if(TabsCount>ItemCountUnCloseTabVal) TabsCount = ItemCountUnCloseTabVal;
+		//Tworzenie buttona w oknie kontaktow
+		if(FrmMainClosedTabsChk)
 		{
+		  TPluginAction FrmMainClosedTabsButton;
+		  ZeroMemory(&FrmMainClosedTabsButton,sizeof(TPluginAction));
+		  FrmMainClosedTabsButton.cbSize = sizeof(TPluginAction);
+		  FrmMainClosedTabsButton.pszName = L"TabKitFrmMainClosedTabsButton";
+		  FrmMainClosedTabsButton.Position = 999;
+		  FrmMainClosedTabsButton.IconIndex = CLOSEDTABS;
+		  FrmMainClosedTabsButton.pszPopupName = L"TabKitClosedTabsPopUp";
+		  PluginLink.CallService(AQQ_CONTROLS_TOOLBAR "ToolDown" AQQ_CONTROLS_CREATEBUTTON,0,(LPARAM)(&FrmMainClosedTabsButton));
+		}
+		//Tworzenie buttona w oknie rozmowy
+		if((hFrmSend)&&(FrmSendClosedTabsChk))
+		{
+		  TPluginAction FrmSendClosedTabsButton;
+		  ZeroMemory(&FrmSendClosedTabsButton,sizeof(TPluginAction));
+		  FrmSendClosedTabsButton.cbSize = sizeof(TPluginAction);
+		  FrmSendClosedTabsButton.pszName = L"TabKitFrmSendClosedTabsButton";
+		  FrmSendClosedTabsButton.Hint = L"Ostatnio zamkniête zak³adki";
+		  FrmSendClosedTabsButton.IconIndex = CLOSEDTABS;
+		  FrmSendClosedTabsButton.pszPopupName = L"TabKitClosedTabsPopUp";
+		  FrmSendClosedTabsButton.Handle = (int)hFrmSend;
+		  PluginLink.CallService(AQQ_CONTROLS_TOOLBAR "tbMain" AQQ_CONTROLS_CREATEBUTTON,0,(LPARAM)(&FrmSendClosedTabsButton));
+		}
+		//Tworzenie PopUpMenuItems
+		for(int Count=0;Count<TabsCount;Count++)
+		{
+		  UnicodeString ItemJID = ClosedTabsList->Strings[Count];
+		  if(!ItemJID.IsEmpty())
+		  {
+			TPluginAction BuildClosedTabsItem;
+			ZeroMemory(&BuildClosedTabsItem,sizeof(TPluginAction));
+			BuildClosedTabsItem.cbSize = sizeof(TPluginAction);
+			BuildClosedTabsItem.IconIndex = GetContactState(ItemJID);
+			UnicodeString pszName = "TabKitClosedTabsItem"+IntToStr(Count);
+			BuildClosedTabsItem.pszName = pszName.w_str();
+			UnicodeString pszService = "sTabKitClosedTabsItem"+IntToStr(Count);
+			BuildClosedTabsItem.pszService = pszService.w_str();
+			if(ShowTimeClosedTabsChk)
+			 BuildClosedTabsItem.pszCaption = (GetContactNick(ItemJID)+" ("+ClosedTabsTimeList->Strings[Count]+")").w_str();
+			else
+			 BuildClosedTabsItem.pszCaption = GetContactNick(ItemJID).w_str();
+			BuildClosedTabsItem.Position = Count;
+			BuildClosedTabsItem.pszPopupName = L"TabKitClosedTabsPopUp";
+			PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildClosedTabsItem));
+		  }
+		}
+		//Tworzenie elementow do usuwania ostatnio zamknietych zakladek
+		if(FastClearClosedTabsChk)
+		{
+		  //Tworzenie separatora
 		  TPluginAction BuildClosedTabsItem;
 		  ZeroMemory(&BuildClosedTabsItem,sizeof(TPluginAction));
 		  BuildClosedTabsItem.cbSize = sizeof(TPluginAction);
-		  BuildClosedTabsItem.IconIndex = GetContactState(ItemJID);
-		  UnicodeString pszName = "TabKitClosedTabsItem"+IntToStr(Count);
-		  BuildClosedTabsItem.pszName = pszName.w_str();
-		  UnicodeString pszService = "sTabKitClosedTabsItem"+IntToStr(Count);
-		  BuildClosedTabsItem.pszService = pszService.w_str();
-		  if(ShowTimeClosedTabsChk)
-		   BuildClosedTabsItem.pszCaption = (GetContactNick(ItemJID)+" ("+ClosedTabsTimeList->Strings[Count]+")").w_str();
-		  else
-		   BuildClosedTabsItem.pszCaption = GetContactNick(ItemJID).w_str();
-		  BuildClosedTabsItem.Position = Count;
+		  BuildClosedTabsItem.IconIndex = -1;
+		  BuildClosedTabsItem.pszName = ("TabKitClosedTabsItem"+IntToStr(TabsCount+1)).w_str();
+		  BuildClosedTabsItem.pszService = L"";
+		  BuildClosedTabsItem.pszCaption = L"-";
+		  BuildClosedTabsItem.Position = TabsCount+1;
 		  BuildClosedTabsItem.pszPopupName = L"TabKitClosedTabsPopUp";
 		  PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildClosedTabsItem));
-		}
+		  //Tworzenie elementu czyszczenia
+		  ZeroMemory(&BuildClosedTabsItem,sizeof(TPluginAction));
+		  BuildClosedTabsItem.cbSize = sizeof(TPluginAction);
+		  BuildClosedTabsItem.IconIndex = -1;
+		  BuildClosedTabsItem.pszName = ("TabKitClosedTabsItem"+IntToStr(TabsCount+2)).w_str();
+		  BuildClosedTabsItem.pszService = L"sTabKitClosedTabsItemClear";
+		  BuildClosedTabsItem.pszCaption = L"Wyczyœæ";
+		  BuildClosedTabsItem.Position = TabsCount+1;
+		  BuildClosedTabsItem.pszPopupName = L"TabKitClosedTabsPopUp";
+		  PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildClosedTabsItem));
+	    }
 	  }
-	  //Tworzenie elementow do usuwania ostatnio zamknietych zakladek
-	  if(FastClearClosedTabsChk)
-	  {
-		//Tworzenie separatora
-		TPluginAction BuildClosedTabsItem;
-		ZeroMemory(&BuildClosedTabsItem,sizeof(TPluginAction));
-		BuildClosedTabsItem.cbSize = sizeof(TPluginAction);
-		BuildClosedTabsItem.IconIndex = -1;
-		BuildClosedTabsItem.pszName = ("TabKitClosedTabsItem"+IntToStr(TabsCount+1)).w_str();
-		BuildClosedTabsItem.pszService = L"";
-		BuildClosedTabsItem.pszCaption = L"-";
-		BuildClosedTabsItem.Position = TabsCount+1;
-		BuildClosedTabsItem.pszPopupName = L"TabKitClosedTabsPopUp";
-		PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildClosedTabsItem));
-		//Tworzenie elementu czyszczenia
-		ZeroMemory(&BuildClosedTabsItem,sizeof(TPluginAction));
-		BuildClosedTabsItem.cbSize = sizeof(TPluginAction);
-		BuildClosedTabsItem.IconIndex = -1;
-		BuildClosedTabsItem.pszName = ("TabKitClosedTabsItem"+IntToStr(TabsCount+2)).w_str();
-		BuildClosedTabsItem.pszService = L"sTabKitClosedTabsItemClear";
-		BuildClosedTabsItem.pszCaption = L"Wyczyœæ";
-		BuildClosedTabsItem.Position = TabsCount+1;
-		BuildClosedTabsItem.pszPopupName = L"TabKitClosedTabsPopUp";
-		PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildClosedTabsItem));
-	  }
+	  //Aktualizacja pozycji wszystkich przyciskow w oknie rozmowy
+	  else FixButtonsPosition();
 	}
   }
-  //Usuwanie interfejsu dla ostatio zamknietych zakladek
-  else DestroyFrmClosedTabs();
 }
 //---------------------------------------------------------------------------
 
@@ -2707,7 +2741,7 @@ void DestroyFrmUnsentMsg()
 //---------------------------------------------------------------------------
 
 //Tworzenie szybkiego dostepu do niewyslanych wiadomosci
-void BuildFrmUnsentMsg()
+void BuildFrmUnsentMsg(bool FixPosition)
 {
   //Jezeli interfejs ma byc w ogole tworzony
   if((UnsentMsgChk)&&(FastAccessUnsentMsgChk))
@@ -2722,83 +2756,87 @@ void BuildFrmUnsentMsg()
 	//Sa jakies zakladki z niewyslanymi wiadomosciami
 	if(MsgCount>0)
 	{
-	  //Maks 5 elementow w popupmenu
-	  if(MsgCount>5) MsgCount = 5;
-	  //Tworzenie buttona w oknie kontatkow
-	  if(FrmMainUnsentMsgChk)
+	  //Natychmiastowe tworzenie przyciskow
+	  if((!FixPosition)||((!hFrmSend)&&(FixPosition)))
 	  {
-		TPluginAction FrmMainUnsentMsgButton;
-		ZeroMemory(&FrmMainUnsentMsgButton,sizeof(TPluginAction));
-		FrmMainUnsentMsgButton.cbSize = sizeof(TPluginAction);
-		FrmMainUnsentMsgButton.pszName = L"TabKitFrmMainUnsentMsgButton";
-		FrmMainUnsentMsgButton.Position = 999;
-		FrmMainUnsentMsgButton.IconIndex = UNSENTMSG;
-		FrmMainUnsentMsgButton.pszPopupName = L"TabKitUnsentMsgPopUp";
-		PluginLink.CallService(AQQ_CONTROLS_TOOLBAR "ToolDown" AQQ_CONTROLS_CREATEBUTTON,0,(LPARAM)(&FrmMainUnsentMsgButton));
-	  }
-	  //Tworzenie buttona w oknie rozmowy
-	  if((hFrmSend)&&(FrmSendUnsentMsgChk))
-	  {
-		TPluginAction FrmSendUnsentMsgButton;
-		ZeroMemory(&FrmSendUnsentMsgButton,sizeof(TPluginAction));
-		FrmSendUnsentMsgButton.cbSize = sizeof(TPluginAction);
-		FrmSendUnsentMsgButton.pszName = L"TabKitFrmSendUnsentMsgButton";
-		FrmSendUnsentMsgButton.Hint = L"Niewys³ane wiadomoœci";
-		FrmSendUnsentMsgButton.IconIndex = UNSENTMSG;
-		FrmSendUnsentMsgButton.pszPopupName = L"TabKitUnsentMsgPopUp";
-		FrmSendUnsentMsgButton.Handle = (int)hFrmSend;
-		PluginLink.CallService(AQQ_CONTROLS_TOOLBAR "tbMain" AQQ_CONTROLS_CREATEBUTTON,0,(LPARAM)(&FrmSendUnsentMsgButton));
-	  }
-	  //Tworzenie PopUpMenuItems
-	  for(int Count=0;Count<MsgCount;Count++)
-	  {
-		UnicodeString ItemJID = Messages->Strings[Count];
-		if(!ItemJID.IsEmpty())
+		//Maks 5 elementow w popupmenu
+		if(MsgCount>5) MsgCount = 5;
+		//Tworzenie buttona w oknie kontatkow
+		if(FrmMainUnsentMsgChk)
 		{
+		  TPluginAction FrmMainUnsentMsgButton;
+		  ZeroMemory(&FrmMainUnsentMsgButton,sizeof(TPluginAction));
+		  FrmMainUnsentMsgButton.cbSize = sizeof(TPluginAction);
+		  FrmMainUnsentMsgButton.pszName = L"TabKitFrmMainUnsentMsgButton";
+		  FrmMainUnsentMsgButton.Position = 999;
+		  FrmMainUnsentMsgButton.IconIndex = UNSENTMSG;
+		  FrmMainUnsentMsgButton.pszPopupName = L"TabKitUnsentMsgPopUp";
+		  PluginLink.CallService(AQQ_CONTROLS_TOOLBAR "ToolDown" AQQ_CONTROLS_CREATEBUTTON,0,(LPARAM)(&FrmMainUnsentMsgButton));
+		}
+		//Tworzenie buttona w oknie rozmowy
+		if((hFrmSend)&&(FrmSendUnsentMsgChk))
+		{
+		  TPluginAction FrmSendUnsentMsgButton;
+		  ZeroMemory(&FrmSendUnsentMsgButton,sizeof(TPluginAction));
+		  FrmSendUnsentMsgButton.cbSize = sizeof(TPluginAction);
+		  FrmSendUnsentMsgButton.pszName = L"TabKitFrmSendUnsentMsgButton";
+		  FrmSendUnsentMsgButton.Hint = L"Niewys³ane wiadomoœci";
+		  FrmSendUnsentMsgButton.IconIndex = UNSENTMSG;
+		  FrmSendUnsentMsgButton.pszPopupName = L"TabKitUnsentMsgPopUp";
+		  FrmSendUnsentMsgButton.Handle = (int)hFrmSend;
+		  PluginLink.CallService(AQQ_CONTROLS_TOOLBAR "tbMain" AQQ_CONTROLS_CREATEBUTTON,0,(LPARAM)(&FrmSendUnsentMsgButton));
+		}
+		//Tworzenie PopUpMenuItems
+		for(int Count=0;Count<MsgCount;Count++)
+		{
+		  UnicodeString ItemJID = Messages->Strings[Count];
+		  if(!ItemJID.IsEmpty())
+		  {
+			TPluginAction BuildUnsentMsgItem;
+			ZeroMemory(&BuildUnsentMsgItem,sizeof(TPluginAction));
+			BuildUnsentMsgItem.cbSize = sizeof(TPluginAction);
+			BuildUnsentMsgItem.IconIndex = GetContactState(ItemJID);
+			UnicodeString ItemName = "TabKitUnsentMsgItem"+IntToStr(Count);
+		    BuildUnsentMsgItem.pszName = ItemName.w_str();
+			UnicodeString ItemService = "sTabKitUnsentMsgItem"+IntToStr(Count);
+			BuildUnsentMsgItem.pszService = ItemService.w_str();
+			BuildUnsentMsgItem.pszCaption = GetContactNick(ItemJID).w_str();
+			BuildUnsentMsgItem.Position = Count;
+			BuildUnsentMsgItem.pszPopupName = L"TabKitUnsentMsgPopUp";
+			PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildUnsentMsgItem));
+		  }
+		}
+		//Tworzenie elementow do usuwania niewyslanych wiadomosci
+		if(FastClearUnsentMsgChk)
+		{
+		  //Tworzenie separatora
 		  TPluginAction BuildUnsentMsgItem;
 		  ZeroMemory(&BuildUnsentMsgItem,sizeof(TPluginAction));
 		  BuildUnsentMsgItem.cbSize = sizeof(TPluginAction);
-		  BuildUnsentMsgItem.IconIndex = GetContactState(ItemJID);
-		  UnicodeString ItemName = "TabKitUnsentMsgItem"+IntToStr(Count);
-		  BuildUnsentMsgItem.pszName = ItemName.w_str();
-		  UnicodeString ItemService = "sTabKitUnsentMsgItem"+IntToStr(Count);
-		  BuildUnsentMsgItem.pszService = ItemService.w_str();
-		  BuildUnsentMsgItem.pszCaption = GetContactNick(ItemJID).w_str();
-		  BuildUnsentMsgItem.Position = Count;
+		  BuildUnsentMsgItem.IconIndex = -1;
+		  BuildUnsentMsgItem.pszName = ("TabKitUnsentMsgItem"+IntToStr(MsgCount+1)).w_str();
+		  BuildUnsentMsgItem.pszService = L"";
+		  BuildUnsentMsgItem.pszCaption = L"-";
+		  BuildUnsentMsgItem.Position = MsgCount+1;
 		  BuildUnsentMsgItem.pszPopupName = L"TabKitUnsentMsgPopUp";
 		  PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildUnsentMsgItem));
-		}
+		  //Tworzenie elementu czyszczenia
+		  ZeroMemory(&BuildUnsentMsgItem,sizeof(TPluginAction));
+		  BuildUnsentMsgItem.cbSize = sizeof(TPluginAction);
+		  BuildUnsentMsgItem.IconIndex = -1;
+		  BuildUnsentMsgItem.pszName = ("TabKitUnsentMsgItem"+IntToStr(MsgCount+2)).w_str();
+		  BuildUnsentMsgItem.pszService = L"sTabKitUnsentMsgItemClear";
+		  BuildUnsentMsgItem.pszCaption = L"Wyczyœæ";
+		  BuildUnsentMsgItem.Position = MsgCount+1;
+		  BuildUnsentMsgItem.pszPopupName = L"TabKitUnsentMsgPopUp";
+		  PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildUnsentMsgItem));
+	    }
 	  }
-	  //Tworzenie elementow do usuwania niewyslanych wiadomosci
-	  if(FastClearUnsentMsgChk)
-	  {
-		//Tworzenie separatora
-		TPluginAction BuildUnsentMsgItem;
-		ZeroMemory(&BuildUnsentMsgItem,sizeof(TPluginAction));
-		BuildUnsentMsgItem.cbSize = sizeof(TPluginAction);
-		BuildUnsentMsgItem.IconIndex = -1;
-		BuildUnsentMsgItem.pszName = ("TabKitUnsentMsgItem"+IntToStr(MsgCount+1)).w_str();
-		BuildUnsentMsgItem.pszService = L"";
-		BuildUnsentMsgItem.pszCaption = L"-";
-		BuildUnsentMsgItem.Position = MsgCount+1;
-		BuildUnsentMsgItem.pszPopupName = L"TabKitUnsentMsgPopUp";
-		PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildUnsentMsgItem));
-		//Tworzenie elementu czyszczenia
-		ZeroMemory(&BuildUnsentMsgItem,sizeof(TPluginAction));
-		BuildUnsentMsgItem.cbSize = sizeof(TPluginAction);
-		BuildUnsentMsgItem.IconIndex = -1;
-		BuildUnsentMsgItem.pszName = ("TabKitUnsentMsgItem"+IntToStr(MsgCount+2)).w_str();
-		BuildUnsentMsgItem.pszService = L"sTabKitUnsentMsgItemClear";
-		BuildUnsentMsgItem.pszCaption = L"Wyczyœæ";
-		BuildUnsentMsgItem.Position = MsgCount+1;
-		BuildUnsentMsgItem.pszPopupName = L"TabKitUnsentMsgPopUp";
-		PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildUnsentMsgItem));
-	  }
+	  //Aktualizacja pozycji wszystkich przyciskow w oknie rozmowy
+	  else FixButtonsPosition();
 	}
 	delete Messages;
   }
-  //Usuwanie szybkiego dostepu do niewyslanych wiadomosci
-  else DestroyFrmUnsentMsg();
 }
 //---------------------------------------------------------------------------
 
@@ -3008,7 +3046,7 @@ void DestroyClipTab()
 }
 //---------------------------------------------------------------------------
 
-//Tworzenie elementu do przypinania/odpiniania zakladek oraz pokazywania/ukrywania caption zakladki
+//Tworzenie elementu przypinania/odpiniania zakladek oraz pokazywania/ukrywania caption zakladki
 void BuildClipTab()
 {
   //Okno rozmowy jest otwarte
@@ -3333,7 +3371,7 @@ void BuildFrmMainFavouriteTab()
 //---------------------------------------------------------------------------
 
 //Tworzenie interfejsu szybkiego dostepu do ulubionych zakladek
-void BuildFavouritesTabs()
+void BuildFavouritesTabs(bool FixPosition)
 {
   //Interfejs ma byc stworzony
   if((FavouritesTabsChk)&&(FastAccessFavouritesTabsChk))
@@ -3343,56 +3381,60 @@ void BuildFavouritesTabs()
 	//Sa jakies ulubione zakladki
 	if(TabsCount>0)
 	{
-	  //Tworzenie buttona w oknie kontaktow
-	  if(FrmMainFastAccessFavouritesTabsChk)
+	  //Natychmiastowe tworzenie przyciskow
+	  if((!FixPosition)||((!hFrmSend)&&(FixPosition)))
 	  {
-        TPluginAction FrmMainFavouritesTabsButton;
-		ZeroMemory(&FrmMainFavouritesTabsButton,sizeof(TPluginAction));
-		FrmMainFavouritesTabsButton.cbSize = sizeof(TPluginAction);
-		FrmMainFavouritesTabsButton.pszName = L"TabKitFrmMainFavouritesTabsButton";
-		FrmMainFavouritesTabsButton.Position = 999;
-		FrmMainFavouritesTabsButton.IconIndex = 125;
-		FrmMainFavouritesTabsButton.pszPopupName = L"TabKitFavouritesTabsPopUp";
-		PluginLink.CallService(AQQ_CONTROLS_TOOLBAR "ToolDown" AQQ_CONTROLS_CREATEBUTTON,0,(LPARAM)(&FrmMainFavouritesTabsButton));
-	  }
-	  //Tworzenie buttona w oknie rozmowy
-	  if((hFrmSend)&&(FrmSendFastAccessFavouritesTabsChk))
-	  {
-		//Tworzenie buttona w oknie rozmowy
-		TPluginAction FrmSendFavouritesTabsButton;
-		ZeroMemory(&FrmSendFavouritesTabsButton,sizeof(TPluginAction));
-		FrmSendFavouritesTabsButton.cbSize = sizeof(TPluginAction);
-		FrmSendFavouritesTabsButton.pszName = L"TabKitFrmSendFavouritesTabsButton";
-		FrmSendFavouritesTabsButton.Hint = L"Ulubione zak³adki";
-		FrmSendFavouritesTabsButton.IconIndex = 125;
-		FrmSendFavouritesTabsButton.pszPopupName = L"TabKitFavouritesTabsPopUp";
-		FrmSendFavouritesTabsButton.Handle = (int)hFrmSend;
-		PluginLink.CallService(AQQ_CONTROLS_TOOLBAR "tbMain" AQQ_CONTROLS_CREATEBUTTON,0,(LPARAM)(&FrmSendFavouritesTabsButton));
-	  }
-	  //Tworzenie elementow popupmenu
-	  for(int Count=0;Count<TabsCount;Count++)
-	  {
-	    UnicodeString ItemJID = FavouritesTabsList->Strings[Count];
-		if(!ItemJID.IsEmpty())
+		//Tworzenie buttona w oknie kontaktow
+		if(FrmMainFastAccessFavouritesTabsChk)
 		{
-		  TPluginAction BuildFavouritesTabsItem;
-		  ZeroMemory(&BuildFavouritesTabsItem,sizeof(TPluginAction));
-		  BuildFavouritesTabsItem.cbSize = sizeof(TPluginAction);
-		  BuildFavouritesTabsItem.IconIndex = GetContactState(ItemJID);
-		  UnicodeString pszName = "TabKitFavouritesTabsItem"+IntToStr(Count);
-		  BuildFavouritesTabsItem.pszName = pszName.w_str();
-		  UnicodeString pszService = "sTabKitFavouritesTabsItem"+IntToStr(Count);
-		  BuildFavouritesTabsItem.pszService = pszService.w_str();
-		  BuildFavouritesTabsItem.pszCaption = GetContactNick(ItemJID).w_str();
-		  BuildFavouritesTabsItem.Position = Count;
-		  BuildFavouritesTabsItem.pszPopupName = L"TabKitFavouritesTabsPopUp";
-		  PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildFavouritesTabsItem));
+		  TPluginAction FrmMainFavouritesTabsButton;
+		  ZeroMemory(&FrmMainFavouritesTabsButton,sizeof(TPluginAction));
+		  FrmMainFavouritesTabsButton.cbSize = sizeof(TPluginAction);
+		  FrmMainFavouritesTabsButton.pszName = L"TabKitFrmMainFavouritesTabsButton";
+		  FrmMainFavouritesTabsButton.Position = 999;
+		  FrmMainFavouritesTabsButton.IconIndex = 125;
+		  FrmMainFavouritesTabsButton.pszPopupName = L"TabKitFavouritesTabsPopUp";
+		  PluginLink.CallService(AQQ_CONTROLS_TOOLBAR "ToolDown" AQQ_CONTROLS_CREATEBUTTON,0,(LPARAM)(&FrmMainFavouritesTabsButton));
+		}
+		//Tworzenie buttona w oknie rozmowy
+		if((hFrmSend)&&(FrmSendFastAccessFavouritesTabsChk))
+		{
+		  //Tworzenie buttona w oknie rozmowy
+		  TPluginAction FrmSendFavouritesTabsButton;
+		  ZeroMemory(&FrmSendFavouritesTabsButton,sizeof(TPluginAction));
+		  FrmSendFavouritesTabsButton.cbSize = sizeof(TPluginAction);
+		  FrmSendFavouritesTabsButton.pszName = L"TabKitFrmSendFavouritesTabsButton";
+		  FrmSendFavouritesTabsButton.Hint = L"Ulubione zak³adki";
+		  FrmSendFavouritesTabsButton.IconIndex = 125;
+		  FrmSendFavouritesTabsButton.pszPopupName = L"TabKitFavouritesTabsPopUp";
+		  FrmSendFavouritesTabsButton.Handle = (int)hFrmSend;
+		  PluginLink.CallService(AQQ_CONTROLS_TOOLBAR "tbMain" AQQ_CONTROLS_CREATEBUTTON,0,(LPARAM)(&FrmSendFavouritesTabsButton));
+		}
+		//Tworzenie elementow popupmenu
+		for(int Count=0;Count<TabsCount;Count++)
+		{
+		  UnicodeString ItemJID = FavouritesTabsList->Strings[Count];
+		  if(!ItemJID.IsEmpty())
+		  {
+			TPluginAction BuildFavouritesTabsItem;
+			ZeroMemory(&BuildFavouritesTabsItem,sizeof(TPluginAction));
+			BuildFavouritesTabsItem.cbSize = sizeof(TPluginAction);
+			BuildFavouritesTabsItem.IconIndex = GetContactState(ItemJID);
+			UnicodeString pszName = "TabKitFavouritesTabsItem"+IntToStr(Count);
+			BuildFavouritesTabsItem.pszName = pszName.w_str();
+			UnicodeString pszService = "sTabKitFavouritesTabsItem"+IntToStr(Count);
+			BuildFavouritesTabsItem.pszService = pszService.w_str();
+			BuildFavouritesTabsItem.pszCaption = GetContactNick(ItemJID).w_str();
+			BuildFavouritesTabsItem.Position = Count;
+			BuildFavouritesTabsItem.pszPopupName = L"TabKitFavouritesTabsPopUp";
+			PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildFavouritesTabsItem));
+		  }
 		}
 	  }
+	  //Aktualizacja pozycji wszystkich przyciskow w oknie rozmowy
+	  else FixButtonsPosition();
 	}
   }
-  //Usuwanie interfejsu ulubionych zakladek
-  else DestroyFavouritesTabs();
 }
 //---------------------------------------------------------------------------
 
@@ -3456,7 +3498,7 @@ INT_PTR __stdcall ServiceFavouriteTabItem(WPARAM wParam, LPARAM lParam)
 	  //Zapis ulubionych zakladek
 	  SaveFavouritesTabs();
 	  //Ponowne tworzenie elementu z lista ulubionych zakladek
-	  BuildFavouritesTabs();
+	  BuildFavouritesTabs(true);
 	}
 	//Osiagnieto maksymalna ilosc ulubionych zakladek
 	else ShowFavouritesTabsInfo("Osi¹gniêto maksymaln¹ iloœæ ulubionych zak³adek.");
@@ -3471,7 +3513,7 @@ INT_PTR __stdcall ServiceFavouriteTabItem(WPARAM wParam, LPARAM lParam)
 	//Zapis ulubionych zakladek
 	SaveFavouritesTabs();
 	//Ponowne tworzenie elementu z lista ulubionych zakladek
-	BuildFavouritesTabs();
+	BuildFavouritesTabs(true);
   }
   //Odswiezenie listy ulubionych zakladek w ustawieniach
   if(hSettingsForm) hSettingsForm->aReloadFavouritesTabs->Execute();
@@ -6836,7 +6878,7 @@ INT_PTR __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 			Ini->DeleteKey("Messages", JID+UserIdx);
 			//Szybki dostep niewyslanych wiadomosci
 			DestroyFrmUnsentMsg();
-			BuildFrmUnsentMsg();
+			BuildFrmUnsentMsg(true);
 			//Ukrywanie ikonki z zasobnika systemowego
 			if(hSettingsForm->UnsentMsgTrayIcon->Visible)
 			{
@@ -6892,7 +6934,7 @@ INT_PTR __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 			//Zapisywanie ostatnio zamknietych zakladek do pliku
 			SaveClosedTabs();
 			//Tworzenie interfejsu
-			BuildFrmClosedTabs();
+			BuildFrmClosedTabs(true);
 		  }
 		}
 		//Pobieranie aktualnej nazwy kanalu zakladki czatowej
@@ -7565,7 +7607,7 @@ INT_PTR __stdcall OnCloseTab(WPARAM wParam, LPARAM lParam)
 		}
 		SaveClosedTabs();
 		//Tworzenie interfejsu
-		BuildFrmClosedTabs();
+		BuildFrmClosedTabs(true);
 	  }
 	  SkipClosedTabsChk: { /* Skip */ }
 	}
@@ -7598,7 +7640,7 @@ INT_PTR __stdcall OnCloseTabMessage(WPARAM wParam, LPARAM lParam)
 	  Ini->WriteString("Messages", JID+UserIdx, EncodeBase64(Body));
 	  delete Ini;
 	  //Szybki dostep niewyslanych wiadomosci
-	  if(!ForceUnloadExecuted) BuildFrmUnsentMsg();
+	  if(!ForceUnloadExecuted) BuildFrmUnsentMsg(true);
 	}
   }
 
@@ -7652,49 +7694,53 @@ INT_PTR __stdcall OnContactsUpdate(WPARAM wParam, LPARAM lParam)
 	  //Pobieranie i zapisywanie nicku kontaktu
 	  UnicodeString Nick = (wchar_t*)ContactsUpdateContact.Nick;
 	  ContactsNickList->WriteString("Nick",JID+UserIdx,Nick);
-	  //Ustawianie prawidlowej ikonki w popumenu ostatnio zamknietych zakladek
-	  if((ClosedTabsChk)&&(FastAccessClosedTabsChk))
+	  //Przywracanie sesji nie jest aktywne
+	  if(!RestoringSession)
 	  {
-		//Jezeli JID jest w ostatnio zamknietych zakladkach
-		if(ClosedTabsList->IndexOf(JID+UserIdx)!=-1)
+		//Ustawianie prawidlowej ikonki w popumenu ostatnio zamknietych zakladek
+		if((ClosedTabsChk)&&(FastAccessClosedTabsChk))
 		{
-		  //Jezeli JID jest elementem popupmenu
-		  if(ClosedTabsList->IndexOf(JID+UserIdx)<=ItemCountUnCloseTabVal)
+		  //Jezeli JID jest w ostatnio zamknietych zakladkach
+		  if(ClosedTabsList->IndexOf(JID+UserIdx)!=-1)
 		  {
-			//Aktualizacja statusu
-			DestroyFrmClosedTabs();
-			BuildFrmClosedTabs();
+			//Jezeli JID jest elementem popupmenu
+			if(ClosedTabsList->IndexOf(JID+UserIdx)<=ItemCountUnCloseTabVal)
+			{
+			  //Aktualizacja statusu
+			  DestroyFrmClosedTabs();
+			  BuildFrmClosedTabs(true);
+			}
 		  }
 		}
-	  }
-	  //Ustawianie prawidlowej ikonki w popumenu niewyslanych wiadomosci
-	  if((UnsentMsgChk)&&(FastAccessUnsentMsgChk))
-	  {
-		TIniFile *Ini = new TIniFile(SessionFileDir);
-		TStringList *Messages = new TStringList;
-		Ini->ReadSection("Messages",Messages);
-		delete Ini;
-		int MsgCount = Messages->Count;
-		//Jezeli sa jakies niewyslane wiadomosci
-		if(MsgCount>0)
+		//Ustawianie prawidlowej ikonki w popumenu niewyslanych wiadomosci
+		if((UnsentMsgChk)&&(FastAccessUnsentMsgChk))
 		{
-		  //Jezeli JID jest w niewyslanych wiadomosciach
-		  if(Messages->IndexOf(JID+UserIdx)!=-1)
+		  TIniFile *Ini = new TIniFile(SessionFileDir);
+		  TStringList *Messages = new TStringList;
+		  Ini->ReadSection("Messages",Messages);
+		  delete Ini;
+		  int MsgCount = Messages->Count;
+		  //Jezeli sa jakies niewyslane wiadomosci
+		  if(MsgCount>0)
 		  {
-			//Aktualizacja statusu
-			DestroyFrmUnsentMsg();
-			BuildFrmUnsentMsg();
+			//Jezeli JID jest w niewyslanych wiadomosciach
+			if(Messages->IndexOf(JID+UserIdx)!=-1)
+			{
+			  //Aktualizacja statusu
+			  DestroyFrmUnsentMsg();
+			  BuildFrmUnsentMsg(true);
+			}
 		  }
+		  delete Messages;
 		}
-		delete Messages;
-	  }
-	  //Ustawianie prawidlowej ikonki w popumenu ulubionych zakladek
-	  //Jezeli JID jest na liscie ulubionych zakladek
-	  if(FavouritesTabsList->IndexOf(JID+UserIdx)!=-1)
-	  {
-		//Aktualizacja statusu
-		DestroyFavouritesTabs();
-		BuildFavouritesTabs();
+		//Ustawianie prawidlowej ikonki w popumenu ulubionych zakladek
+		//Jezeli JID jest na liscie ulubionych zakladek
+		if(FavouritesTabsList->IndexOf(JID+UserIdx)!=-1)
+		{
+		  //Aktualizacja statusu
+		  DestroyFavouritesTabs();
+		  BuildFavouritesTabs(true);
+		}
 	  }
 	  //Zmiana caption okna rozmowy
 	  if((TweakFrmSendTitlebarChk)&&(JID+Res+UserIdx==ActiveTabJIDEx))
@@ -10007,6 +10053,12 @@ INT_PTR __stdcall OnThemeChanged(WPARAM wParam, LPARAM lParam)
 	  hSettingsForm->StarWebLabel->Font->Color = clWindowText;
 	  hSettingsForm->StarWebLabel->HoverFont->Color = clWindowText;
 	}
+	/*//Aktualizacja ikonek na formie
+	hSettingsForm->FavouritesTabsAlphaImageList->Clear();
+	hSettingsForm->FavouritesTabsAlphaImageList->LoadFromFile(GetIconPath(98));
+	hSettingsForm->FavouritesTabsAlphaImageList->LoadFromFile(GetIconPath(99));
+	hSettingsForm->FavouritesTabsAlphaImageList->LoadFromFile(GetIconPath(15));
+	hSettingsForm->FavouritesTabsAlphaImageList->LoadFromFile(GetIconPath(79));*/
   }
   //Aktualizacja ikon z interfejsu
   //CLOSEDTABS
@@ -10287,6 +10339,16 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  FrmMainBlockSlide = false;
 	  //Przypisanie nowej procki dla okna kontatkow
 	  if(!OldFrmMainProc) OldFrmMainProc = (WNDPROC)SetWindowLongPtrW(hFrmMain, GWLP_WNDPROC,(LONG_PTR)FrmMainProc);
+	  //Szybki dostep niewyslanych wiadomosci
+	  GetUnsentMsg();
+	  BuildFrmUnsentMsg(false);
+	  //Szybki dostep do ostatnio zamknietych zakladek
+	  GetClosedTabs();
+	  BuildFrmClosedTabs(false);
+	  //Tworzenie interfesju w AQQ dla ostatnio zamknietych zakladek
+	  BuildAQQClosedTabs();
+	  //Szybki dostep do ulubionych zakladek
+	  BuildFavouritesTabs(false);
 	  //Odczytywanie sesji
 	  if(RestoreTabsSessionChk)
 	  {
@@ -10347,20 +10409,6 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 		delete Session;
 		delete Ini;
 	  }
-	  //Pobieranie ostatnio zamknietych zakladek
-	  GetClosedTabs();
-	  //Tworzenie interfesju dla ostatnio zamknietych zakladek
-	  BuildFrmClosedTabs();
-	  //Tworzenie interfesju w AQQ dla ostatnio zamknietych zakladek
-	  BuildAQQClosedTabs();
-	  //Sprawdzanie niewyslanych wiadomosci
-	  GetUnsentMsg();
-	  //Szybki dostep niewyslanych wiadomosci
-	  DestroyFrmUnsentMsg();
-	  BuildFrmUnsentMsg();
-	  //Szybki dostep do ulubionych zakladek
-	  DestroyFavouritesTabs();
-	  BuildFavouritesTabs();
 	  //Pobieranie nazwy komputera
 	  wchar_t compName[256];
 	  DWORD len = sizeof(compName);
@@ -10441,25 +10489,21 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 		else FrmSendVisible = true;
 		//Przypisanie nowej procki dla okna rozmowy
 		if(!OldFrmSendProc)	OldFrmSendProc = (WNDPROC)SetWindowLongPtrW(hFrmSend, GWLP_WNDPROC,(LONG_PTR)FrmSendProc);
-		//Tworzenie interfejsu tworzenia okna rozmowy na wierzchu
+		//Szybki dostep niewyslanych wiadomosci
+		DestroyFrmUnsentMsg();
+		BuildFrmUnsentMsg(false);
+		//Szybki dostep do ostatnio zamknietych zakladek
+		DestroyFrmClosedTabs();
+		BuildFrmClosedTabs(false);
+		//Szybki dostep do ulubionych zakladek
+		DestroyFavouritesTabs();
+		BuildFavouritesTabs(false);
+		//Tworzenie interfejsu trzymania okna rozmowy na wierzchu
 		BuildStayOnTop();
-		//Tworzenie elementu przypinania zakladek
+		//Tworzenie elementu przypinania/odpiniania zakladek oraz pokazywania/ukrywania caption zakladki
 		BuildClipTab();
 		//Tworzenie elementu dodawania/usuwania ulubionej zakladki
 		BuildFrmSendFavouriteTab();
-		//Szybki dostep do ulubionych zakladek
-		DestroyFavouritesTabs();
-		BuildFavouritesTabs();
-		//Przywracanie sesji nie jest aktywne
-		if(!RestoringSession)
-		{
-		  //Szybki dostep niewyslanych wiadomosci
-		  DestroyFrmUnsentMsg();
-		  BuildFrmUnsentMsg();
-		  //Szybki dostep do ostatnio zamknietych zakladek
-		  DestroyFrmClosedTabs();
-		  BuildFrmClosedTabs();
-		}
 		//Resetowanie poprzedniego stanu pisania wiadomosci
 		LastChatState = 0;
 		//Usuniecie uchwytow do ikonek okna rozmowy
@@ -10493,11 +10537,11 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  ActiveTabJIDEx = "";
 	  //Szybki dostep niewyslanych wiadomosci
 	  DestroyFrmUnsentMsg();
-	  BuildFrmUnsentMsg();
+	  BuildFrmUnsentMsg(false);
 	  //Szybki dostep do ostatnio zamknietych zakladek
 	  DestroyFrmClosedTabs();
-	  BuildFrmClosedTabs();
-	  //Usuwanie interfejsu tworzenia okna rozmowy na wierzchu
+	  BuildFrmClosedTabs(false);
+	  //Usuwanie interfejsu trzymania okna rozmowy na wierzchu
 	  DestroyStayOnTop();
 	  //Usuwanie elementu przypinania zakladek
 	  DestroyClipTab();
@@ -10505,7 +10549,7 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  DestroyFrmSendFavouriteTab();
 	  //Szybki dostep do ulubionych zakladek
 	  DestroyFavouritesTabs();
-	  BuildFavouritesTabs();
+	  BuildFavouritesTabs(false);
 	  //Usuniecie uchwytu do okna rozmowy
 	  hFrmSend = NULL;
 	}
@@ -11808,22 +11852,22 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Load(PPluginLink Link)
 	//Usuniecie hooka na pobieranie aktywnych zakladek
 	PluginLink.UnhookEvent(OnPrimaryTab);
 	PluginLink.UnhookEvent(OnFetchAllTabs);
-	//Tworzenie interfejsu tworzenia okna rozmowy na wierzchu
-	BuildStayOnTop();
-	//Tworzenie interfesju dla ostatnio zamknietych zakladek
-	BuildFrmClosedTabs();
-	//Tworzenie interfesju w AQQ dla ostatnio zamknietych zakladek
-	BuildAQQClosedTabs();
 	//Sprawdzanie niewyslanych wiadomosci
 	GetUnsentMsg();
 	//Szybki dostep niewyslanych wiadomosci
-	BuildFrmUnsentMsg();
-	//Element przypinania zakladek
+	BuildFrmUnsentMsg(false);
+	//Tworzenie interfesju dla ostatnio zamknietych zakladek
+	BuildFrmClosedTabs(false);
+	//Szybki dostep do ulubionych zakladek
+	BuildFavouritesTabs(false);
+	//Tworzenie interfejsu trzymania okna rozmowy na wierzchu
+	BuildStayOnTop();
+	//Tworzenie elementu do przypinania/odpiniania zakladek oraz pokazywania/ukrywania caption zakladki
 	BuildClipTab();
 	//Tworzenie elementu dodawania/usuwania ulubionej zakladki
 	BuildFrmSendFavouriteTab();
-	//Szybki dostep do ulubionych zakladek
-	BuildFavouritesTabs();
+	//Tworzenie interfesju w AQQ dla ostatnio zamknietych zakladek
+	BuildAQQClosedTabs();
 	//Brak przycisku zamkniecia i odawiezenie wszystkich zakladek
 	if(HideTabCloseButtonChk) RefreshTabs();
 	//Pobieranie nazwy komputera
@@ -12015,7 +12059,7 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Unload()
 	FavouritesTabsPopUp.pszName = L"TabKitFavouritesTabsPopUp";
 	PluginLink.CallService(AQQ_CONTROLS_DESTROYPOPUPMENU,0,(LPARAM)(&FavouritesTabsPopUp));
 	//Trzymanie okna rozmowy na wierzchu
-	//Usuwanie imterfejsu
+	//Usuwanie interfejsu
 	DestroyStayOnTop();
 	//Usuwanie serwisu
 	PluginLink.DestroyServiceFunction(ServiceStayOnTopItem);

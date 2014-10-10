@@ -71,10 +71,10 @@ __declspec(dllimport)UnicodeString EncodeBase64(UnicodeString Str);
 //__declspec(dllimport)UnicodeString DecodeBase64(UnicodeString Str)
 __declspec(dllimport)void RefreshTabs();
 __declspec(dllimport)void DestroyFrmClosedTabs();
-__declspec(dllimport)void BuildFrmClosedTabs();
+__declspec(dllimport)void BuildFrmClosedTabs(bool FixPosition);
 __declspec(dllimport)void EraseClosedTabs();
 __declspec(dllimport)void DestroyFrmUnsentMsg();
-__declspec(dllimport)void BuildFrmUnsentMsg();
+__declspec(dllimport)void BuildFrmUnsentMsg(bool FixPosition);
 __declspec(dllimport)void EraseUnsentMsg();
 __declspec(dllimport)bool ShowUnsentMsg();
 __declspec(dllimport)void ChangeFrmSendTitlebar();
@@ -96,7 +96,7 @@ __declspec(dllimport)void DestroyFrmMainFavouriteTab();
 __declspec(dllimport)void DestroyFavouritesTabs();
 __declspec(dllimport)void BuildFrmSendFavouriteTab();
 __declspec(dllimport)void BuildFrmMainFavouriteTab();
-__declspec(dllimport)void BuildFavouritesTabs();
+__declspec(dllimport)void BuildFavouritesTabs(bool FixPosition);
 __declspec(dllimport)UnicodeString GetContactNick(UnicodeString JID);
 __declspec(dllimport)UnicodeString GetChannelNameW(UnicodeString JID);
 __declspec(dllimport)UnicodeString FriendlyFormatJID(UnicodeString JID);
@@ -248,8 +248,7 @@ void __fastcall TSettingsForm::FormShow(TObject *Sender)
 	StarWebLabel->HoverFont->Color = clWindowText;
   }
   //Odczyt ikonek
-  FavouritesTabsAlphaImageList->AcBeginUpdate();
-  FavouritesTabsAlphaImageList->Clear();
+  FavouritesTabsAlphaImageList->Items->Clear();
   FavouritesTabsAlphaImageList->LoadFromFile(GetIconPath(98));
   FavouritesTabsAlphaImageList->LoadFromFile(GetIconPath(99));
   FavouritesTabsAlphaImageList->LoadFromFile(GetIconPath(15));
@@ -718,11 +717,11 @@ void __fastcall TSettingsForm::aSaveSettingsWExecute(TObject *Sender)
   //Usuwanie elementow z interfejsu AQQ
   DestroyFrmUnsentMsg();
   DestroyFrmClosedTabs();
+  DestroyFavouritesTabs();
+  DestroyStayOnTop();
   DestroyClipTab();
   DestroyFrmSendFavouriteTab();
   DestroyFrmMainFavouriteTab();
-  DestroyFavouritesTabs();
-  DestroyStayOnTop();
   //Zapisywanie ustawien
   aSaveSettings->Execute();
   //Odczytywanie ustawien w rdzeniu wtyczki
@@ -731,13 +730,13 @@ void __fastcall TSettingsForm::aSaveSettingsWExecute(TObject *Sender)
   //Przypisywanie globalnego hooka na klawiature
   HookGlobalKeyboard();
   //Tworzenie elementow w interfejsie AQQ
-  BuildFrmClosedTabs();
-  BuildFrmUnsentMsg();
+  BuildFrmUnsentMsg(false);
+  BuildFrmClosedTabs(false);
+  BuildFavouritesTabs(false);
+  BuildStayOnTop();
   BuildClipTab();
   BuildFrmSendFavouriteTab();
   BuildFrmMainFavouriteTab();
-  BuildFavouritesTabs();
-  BuildStayOnTop();
   //Zmiana tekstu na pasku tytulowym okna rozmowy
   ChangeFrmSendTitlebar();
   //Zmiana tekstu na pasku tytulowym okna kontaktow
