@@ -1783,7 +1783,8 @@ UnicodeString GetContactNick(UnicodeString JID)
 	if(Nick.IsEmpty())
 	{
 	  //Skracanie JID do ladniejszej formy
-	  if(JID.Pos("@")) JID.Delete(JID.Pos("@"),JID.Length());
+	  if(JID.Pos("@")) JID = JID.Delete(JID.Pos("@"),JID.Length());
+	  if(JID.Pos(":")) JID = JID.Delete(JID.Pos(":"),JID.Length());
 	  return JID;
 	}
 	return Nick;
