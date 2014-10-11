@@ -2291,15 +2291,15 @@ void FixButtonsPosition()
   //Przywracanie sesji nie jest aktywne
   if(!RestoringSession)
   {
+	//Szybki dostep do ulubionych zakladek
+	DestroyFavouritesTabs();
+	BuildFavouritesTabs(false);
 	//Szybki dostep niewyslanych wiadomosci
 	DestroyFrmUnsentMsg();
 	BuildFrmUnsentMsg(false);
 	//Szybki dostep do ostatnio zamknietych zakladek
 	DestroyFrmClosedTabs();
 	BuildFrmClosedTabs(false);
-	//Szybki dostep do ulubionych zakladek
-	DestroyFavouritesTabs();
-	BuildFavouritesTabs(false);
 	//Trzymanie okna rozmowy na wierzchu
 	DestroyStayOnTop();
 	BuildStayOnTop();
@@ -10339,6 +10339,8 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  FrmMainBlockSlide = false;
 	  //Przypisanie nowej procki dla okna kontatkow
 	  if(!OldFrmMainProc) OldFrmMainProc = (WNDPROC)SetWindowLongPtrW(hFrmMain, GWLP_WNDPROC,(LONG_PTR)FrmMainProc);
+	  //Szybki dostep do ulubionych zakladek
+	  BuildFavouritesTabs(false);
 	  //Szybki dostep niewyslanych wiadomosci
 	  GetUnsentMsg();
 	  BuildFrmUnsentMsg(false);
@@ -10347,8 +10349,6 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 	  BuildFrmClosedTabs(false);
 	  //Tworzenie interfesju w AQQ dla ostatnio zamknietych zakladek
 	  BuildAQQClosedTabs();
-	  //Szybki dostep do ulubionych zakladek
-	  BuildFavouritesTabs(false);
 	  //Odczytywanie sesji
 	  if(RestoreTabsSessionChk)
 	  {
@@ -10489,15 +10489,15 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 		else FrmSendVisible = true;
 		//Przypisanie nowej procki dla okna rozmowy
 		if(!OldFrmSendProc)	OldFrmSendProc = (WNDPROC)SetWindowLongPtrW(hFrmSend, GWLP_WNDPROC,(LONG_PTR)FrmSendProc);
+		//Szybki dostep do ulubionych zakladek
+		DestroyFavouritesTabs();
+		BuildFavouritesTabs(false);
 		//Szybki dostep niewyslanych wiadomosci
 		DestroyFrmUnsentMsg();
 		BuildFrmUnsentMsg(false);
 		//Szybki dostep do ostatnio zamknietych zakladek
 		DestroyFrmClosedTabs();
 		BuildFrmClosedTabs(false);
-		//Szybki dostep do ulubionych zakladek
-		DestroyFavouritesTabs();
-		BuildFavouritesTabs(false);
 		//Tworzenie interfejsu trzymania okna rozmowy na wierzchu
 		BuildStayOnTop();
 		//Tworzenie elementu przypinania/odpiniania zakladek oraz pokazywania/ukrywania caption zakladki
@@ -11852,14 +11852,14 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Load(PPluginLink Link)
 	//Usuniecie hooka na pobieranie aktywnych zakladek
 	PluginLink.UnhookEvent(OnPrimaryTab);
 	PluginLink.UnhookEvent(OnFetchAllTabs);
+	//Szybki dostep do ulubionych zakladek
+	BuildFavouritesTabs(false);
 	//Sprawdzanie niewyslanych wiadomosci
 	GetUnsentMsg();
 	//Szybki dostep niewyslanych wiadomosci
 	BuildFrmUnsentMsg(false);
 	//Tworzenie interfesju dla ostatnio zamknietych zakladek
 	BuildFrmClosedTabs(false);
-	//Szybki dostep do ulubionych zakladek
-	BuildFavouritesTabs(false);
 	//Tworzenie interfejsu trzymania okna rozmowy na wierzchu
 	BuildStayOnTop();
 	//Tworzenie elementu do przypinania/odpiniania zakladek oraz pokazywania/ukrywania caption zakladki
