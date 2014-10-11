@@ -1783,8 +1783,8 @@ UnicodeString GetContactNick(UnicodeString JID)
 	if(Nick.IsEmpty())
 	{
 	  //Skracanie JID do ladniejszej formy
-	  if(JID.Pos("@")) JID = JID.Delete(JID.Pos("@"),JID.Length());
-	  if(JID.Pos(":")) JID = JID.Delete(JID.Pos(":"),JID.Length());
+	  if(JID.Pos("@")) JID.Delete(JID.Pos("@"),JID.Length());
+	  if(JID.Pos(":")) JID.Delete(JID.Pos(":"),JID.Length());
 	  return JID;
 	}
 	return Nick;
@@ -1814,9 +1814,9 @@ UnicodeString FriendlyFormatJID(UnicodeString JID)
 	return JID;
   }
   //Usuwanie indeksu konta z JID
-  if(JID.Pos(":")) JID = JID.Delete(JID.Pos(":"),JID.Length());
+  if(JID.Pos(":")) JID.Delete(JID.Pos(":"),JID.Length());
   //Ustawianie prawidlowego identyfikatora dla kontaktow czatowych
-  if(JID.Pos("ischat_")) JID = JID.Delete(1,7);
+  if(JID.Pos("ischat_")) JID.Delete(1,7);
   //Pozostale kontakty
   return JID;
 }
@@ -1834,7 +1834,7 @@ int GetContactState(UnicodeString JID)
 	  //Definicja tymczasowego JID
 	  //UnicodeString tmpJID = JID;
 	  //Usuwanie zasobu z JID
-	  //if(tmpJID.Pos("/")) tmpJID = tmpJID.Delete(tmpJID.Pos("/"),tmpJID.Length());
+	  //if(tmpJID.Pos("/")) tmpJID.Delete(tmpJID.Pos("/"),tmpJID.Length());
 	  //Kontakt jest przypiety
 	  //if(ClipTabsList->IndexOf(tmpJID)!=-1) return 131;
 	//}
@@ -1844,7 +1844,7 @@ int GetContactState(UnicodeString JID)
 	  //Definicja tymczasowego JID
 	  UnicodeString tmpJID = JID;
 	  //Usuwanie zasobu z JID
-	  if(tmpJID.Pos("/")) tmpJID = tmpJID.Delete(tmpJID.Pos("/"),tmpJID.Length());
+	  if(tmpJID.Pos("/")) tmpJID.Delete(tmpJID.Pos("/"),tmpJID.Length());
 	  //Kontakt jest przypiety
 	  if(ClipTabsList->IndexOf(tmpJID)!=-1) return 131;
 	}
@@ -1854,9 +1854,9 @@ int GetContactState(UnicodeString JID)
 	if(State==-1)
 	{
 	  //Usuwanie zasobu z JID
-	  if(JID.Pos("/")) JID = JID.Delete(JID.Pos("/"),JID.Length());
+	  if(JID.Pos("/")) JID.Delete(JID.Pos("/"),JID.Length());
 	  //Usuwanie indeksu konta z JID
-	  if(JID.Pos(":")) JID = JID.Delete(JID.Pos(":"),JID.Length());
+	  if(JID.Pos(":")) JID.Delete(JID.Pos(":"),JID.Length());
 	  //Pobranie domyslnej ikonki dla kontaktu
 	  TPluginContact PluginContact;
 	  ZeroMemory(&PluginContact, sizeof(TPluginContact));
@@ -1916,9 +1916,9 @@ void OpenNewTab(UnicodeString JID)
 	{
 	  //Wyciagniecie indeksu konta
 	  UserIdx = JID;
-	  UserIdx = UserIdx.Delete(1,UserIdx.Pos(":"));
+	  UserIdx.Delete(1,UserIdx.Pos(":"));
 	  //Usuniecie indeksu konta z JID
-	  JID = JID.Delete(JID.Pos(":"),JID.Length());
+	  JID.Delete(JID.Pos(":"),JID.Length());
 	}
 	//Wypelenie struktury do zmiany aktywnej zakladki
 	TPluginExecMsg PluginExecMsg;
@@ -1943,9 +1943,9 @@ void OpenNewTab(UnicodeString JID)
 	{
 	  //Wyciagniecie indeksu konta
 	  UserIdx = JID;
-	  UserIdx = UserIdx.Delete(1,UserIdx.Pos(":"));
+	  UserIdx.Delete(1,UserIdx.Pos(":"));
 	  //Usuniecie indeksu konta z JID
-	  JID = JID.Delete(JID.Pos(":"),JID.Length());
+	  JID.Delete(JID.Pos(":"),JID.Length());
 	}
 	//Sprawdzenie stanu konta przypisanego do czatu
 	TPluginStateChange PluginStateChange;
@@ -1954,7 +1954,7 @@ void OpenNewTab(UnicodeString JID)
 	if(PluginStateChange.NewState!=0)
 	{
 	  //Ustawianie prawidlowego identyfikatora
-	  JID = JID.Delete(1,7);
+	  JID.Delete(1,7);
 	  //Wypenianie struktury czatu
 	  TPluginChatPrep PluginChatPrep;
 	  PluginChatPrep.cbSize = sizeof(TPluginChatPrep);
@@ -1980,12 +1980,12 @@ void ChangeActiveTab(UnicodeString JID)
   {
 	//Wyciagniecie indeksu konta
 	UserIdx = JID;
-	UserIdx = UserIdx.Delete(1,UserIdx.Pos(":"));
+	UserIdx.Delete(1,UserIdx.Pos(":"));
 	//Usuniecie indeksu konta z JID
-	JID = JID.Delete(JID.Pos(":"),JID.Length());
+	JID.Delete(JID.Pos(":"),JID.Length());
   }
   //Ustawianie prawidlowego identyfikatora dla kontaktow czatowych
-  if(JID.Pos("ischat_")) JID = JID.Delete(1,7);
+  if(JID.Pos("ischat_")) JID.Delete(1,7);
   //Wypelenie struktury do zmiany aktywnej zakladki
   TPluginExecMsg PluginExecMsg;
   PluginExecMsg.JID = JID.w_str();
@@ -2011,12 +2011,12 @@ int GetTabIndex(UnicodeString JID)
   {
 	//Wyciagniecie indeksu konta
 	UserIdx = JID;
-	UserIdx = UserIdx.Delete(1,UserIdx.Pos(":"));
+	UserIdx.Delete(1,UserIdx.Pos(":"));
 	//Usuniecie indeksu konta z JID
-	JID = JID.Delete(JID.Pos(":"),JID.Length());
+	JID.Delete(JID.Pos(":"),JID.Length());
   }
   //Ustawianie prawidlowego identyfikatora dla kontaktow czatowych
-  if(JID.Pos("ischat_")) JID = JID.Delete(1,7);
+  if(JID.Pos("ischat_")) JID.Delete(1,7);
   //Wypelenie struktury do pobierania aktualnej pozycji zakladki
   TPluginExecMsg PluginExecMsg;
   PluginExecMsg.JID = JID.w_str();
@@ -2255,11 +2255,11 @@ UnicodeString NormalizeChannel(UnicodeString Channel)
 UnicodeString GetChannelName(UnicodeString JID)
 {
   //Ustawianie prawidlowego identyfikatora
-  if(JID.Pos("ischat_")) JID = JID.Delete(1,7);
+  if(JID.Pos("ischat_")) JID.Delete(1,7);
   //Usuwanie zasobu z JID
-  if(JID.Pos("/")) JID = JID.Delete(JID.Pos("/"),JID.Length());
+  if(JID.Pos("/")) JID.Delete(JID.Pos("/"),JID.Length());
   //Usuwanie indeksu konta z JID
-  if(JID.Pos(":")) JID = JID.Delete(JID.Pos(":"),JID.Length());
+  if(JID.Pos(":")) JID.Delete(JID.Pos(":"),JID.Length());
   //Pobieranie nazwy kanalu
   TIniFile *Ini = new TIniFile(SessionFileDir);
   UnicodeString Channel = DecodeBase64(Ini->ReadString("Channels",JID,""));
@@ -2267,7 +2267,7 @@ UnicodeString GetChannelName(UnicodeString JID)
   if(Channel.IsEmpty())
   {
 	Channel = JID;
-	Channel = Channel.Delete(Channel.Pos("@"),Channel.Length());
+	Channel.Delete(Channel.Pos("@"),Channel.Length());
   }
   //Zwrocenie nazwy kanalu
   return Channel;
@@ -2510,9 +2510,9 @@ void BuildAQQClosedTabs()
 		  {
 			//Wyciagniecie indeksu konta
 			UserIdx = JID;
-			UserIdx = UserIdx.Delete(1,UserIdx.Pos(":"));
+			UserIdx.Delete(1,UserIdx.Pos(":"));
 			//Usuniecie indeksu konta z JID
-			JID = JID.Delete(JID.Pos(":"),JID.Length());
+			JID.Delete(JID.Pos(":"),JID.Length());
 		  }
 		  //Wypelenie struktury do zmiany aktywnej zakladki
 		  TPluginExecMsg PluginExecMsg;
@@ -3708,7 +3708,7 @@ INT_PTR __stdcall ServiceQuickQuoteItem(WPARAM wParam, LPARAM lParam)
 	  CHARRANGE SelPos;
 	  SendMessage(hRichEdit, EM_EXGETSEL, NULL, (LPARAM)&SelPos);
 	  if(SelPos.cpMin!=SelPos.cpMax)
-	   Text = Text.Delete(SelPos.cpMin+1,SelPos.cpMax-SelPos.cpMin);
+	   Text.Delete(SelPos.cpMin+1,SelPos.cpMax-SelPos.cpMin);
 	  //Wklejanie cytatu do tekstu
 	  Text = Text.Insert(ClipboardText,SelPos.cpMin+1);
 	  //Nadpisywanie tekstu w RichEdit
@@ -3954,9 +3954,9 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			{
 			  //Wyciagniecie indeksu konta
 			  UserIdx = JID;
-			  UserIdx = UserIdx.Delete(1,UserIdx.Pos(":"));
+			  UserIdx.Delete(1,UserIdx.Pos(":"));
 			  //Usuniecie indeksu konta z JID
-			  JID = JID.Delete(JID.Pos(":"),JID.Length());
+			  JID.Delete(JID.Pos(":"),JID.Length());
 			}
 			//Sprawdzenie stanu konta przypisanego do czatu
 			TPluginStateChange PluginStateChange;
@@ -3965,7 +3965,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			if(PluginStateChange.NewState!=0)
 			{
 			  //Ustawianie prawidlowego identyfikatora
-			  JID = JID.Delete(1,7);
+			  JID.Delete(1,7);
 			  //Wypenianie struktury czatu
 			  TPluginChatPrep PluginChatPrep;
 			  PluginChatPrep.cbSize = sizeof(TPluginChatPrep);
@@ -6237,8 +6237,8 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 			if(JID.Pos("/"))
 			{
 			  UnicodeString UserIdx = JID;
-			  while(UserIdx.Pos(":")) UserIdx = UserIdx.Delete(1,UserIdx.Pos(":"));
-			  JID = JID.Delete(JID.Pos("/"),JID.Length());
+			  while(UserIdx.Pos(":")) UserIdx.Delete(1,UserIdx.Pos(":"));
+			  JID.Delete(JID.Pos("/"),JID.Length());
 			  JID = JID + ":" + UserIdx;
 			}
 			//Sprawdzanie stanu pokazywania nazwy przypietej zakladki
@@ -6356,8 +6356,8 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 			  if(JID.Pos("/"))
 			  {
 				UnicodeString UserIdx = JID;
-				while(UserIdx.Pos(":")) UserIdx = UserIdx.Delete(1,UserIdx.Pos(":"));
-				JID = JID.Delete(JID.Pos("/"),JID.Length());
+				while(UserIdx.Pos(":")) UserIdx.Delete(1,UserIdx.Pos(":"));
+				JID.Delete(JID.Pos("/"),JID.Length());
 				JID = JID + ":" + UserIdx;
 			  }
 			  //Sprawdzanie stanu pokazywania nazwy przypietej zakladki
@@ -6426,8 +6426,8 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 			if(JID.Pos("/"))
 			{
 			  UnicodeString UserIdx = JID;
-			  while(UserIdx.Pos(":")) UserIdx = UserIdx.Delete(1,UserIdx.Pos(":"));
-			  JID = JID.Delete(JID.Pos("/"),JID.Length());
+			  while(UserIdx.Pos(":")) UserIdx.Delete(1,UserIdx.Pos(":"));
+			  JID.Delete(JID.Pos("/"),JID.Length());
 			  JID = JID + ":" + UserIdx;
 			}
 			//Sprawdzanie stanu pokazywania nazwy przypietej zakladki
@@ -6627,7 +6627,7 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 			  CHARRANGE SelPos;
 			  SendMessage(hRichEdit, EM_EXGETSEL, NULL, (LPARAM)&SelPos);
 			  if(SelPos.cpMin!=SelPos.cpMax)
-			   Text = Text.Delete(SelPos.cpMin+1,SelPos.cpMax-SelPos.cpMin);
+			   Text.Delete(SelPos.cpMin+1,SelPos.cpMax-SelPos.cpMin);
 			  //Wklejanie cytatu do tekstu
 			  Text = Text.Insert(ClipboardText,SelPos.cpMin+1);
 			  //Nadpisywanie tekstu w RichEdit
@@ -7497,8 +7497,8 @@ INT_PTR __stdcall OnAddLine(WPARAM wParam, LPARAM lParam)
 		  ItemsCount++;
 		  //Tymczasowe usuwanie obrazka z wiadomosci
 		  UnicodeString BodyTmp = Body;
-		  BodyTmp = BodyTmp.Delete(1,BodyTmp.Pos("<A HREF")-1);
-		  BodyTmp = BodyTmp.Delete(BodyTmp.Pos("</A>")+4,BodyTmp.Length());
+		  BodyTmp.Delete(1,BodyTmp.Pos("<A HREF")-1);
+		  BodyTmp.Delete(BodyTmp.Pos("</A>")+4,BodyTmp.Length());
 		  Body = StringReplace(Body, BodyTmp, "[AQQCACHEITEM"+IntToStr(ItemsCount)+"]", TReplaceFlags());
 		  //Stylu formy zalacznika
 		  UnicodeString BodyStyle = AttachmentStyle;
@@ -7506,20 +7506,20 @@ INT_PTR __stdcall OnAddLine(WPARAM wParam, LPARAM lParam)
 		  UnicodeString Session = (wchar_t*)PluginLink.CallService(AQQ_FUNCTION_GETSTRID,0,0);
 		  //Pobranie adresu URL obrazka
 		  UnicodeString PhotoFileURL = BodyTmp;
-		  PhotoFileURL = PhotoFileURL.Delete(1,PhotoFileURL.Pos("HREF=\"")+5);
-		  PhotoFileURL = PhotoFileURL.Delete(PhotoFileURL.Pos("\">"),PhotoFileURL.Length());
+		  PhotoFileURL.Delete(1,PhotoFileURL.Pos("HREF=\"")+5);
+		  PhotoFileURL.Delete(PhotoFileURL.Pos("\">"),PhotoFileURL.Length());
 		  if(CollapseImagesList->IndexOf(PhotoFileURL)==-1)
 		   CollapseImagesList->Add(PhotoFileURL);
 		  //Pobranie nazwy obrazka
 		  UnicodeString PhotoFileName = BodyTmp;
-		  PhotoFileName = PhotoFileName.Delete(1,PhotoFileName.Pos("TITLE=\"")+6);
-		  PhotoFileName = PhotoFileName.Delete(PhotoFileName.Pos("\""),PhotoFileName.Length());
+		  PhotoFileName.Delete(1,PhotoFileName.Pos("TITLE=\"")+6);
+		  PhotoFileName.Delete(PhotoFileName.Pos("\""),PhotoFileName.Length());
 		  //Pobieranie sciezki URL do grafiki zalacznika
 		  UnicodeString ThemePNGPath = (wchar_t*)PluginLink.CallService(AQQ_FUNCTION_GETPNG_FILEPATH,40,0);
 		  //Modyfikacja oryginalnego wygladu obrazka
 		  BodyTmp = StringReplace(BodyTmp, "\\", "/", TReplaceFlags() << rfReplaceAll);
 		  BodyTmp = StringReplace(BodyTmp, "A HREF=\"", "A HREF=\"image:" + Session + ":file:///", TReplaceFlags());
-		  BodyTmp = BodyTmp.Delete(BodyTmp.Pos("<IMG"),BodyTmp.Length());
+		  BodyTmp.Delete(BodyTmp.Pos("<IMG"),BodyTmp.Length());
 		  BodyTmp = BodyTmp + PhotoFileName + "</A>";
 		  //Generowanie nowego wygladu obrazka juz w formie zalacznika
 		  BodyStyle = StringReplace(BodyStyle, "CC_ATTACH_ICON", "<IMG src=\"" + ThemePNGPath + "\" border=\"0\">", TReplaceFlags());
@@ -9090,8 +9090,8 @@ INT_PTR __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 				  ItemsCount++;
 				  //Tymczasowe usuwanie obrazka z wiadomosci
 				  UnicodeString ImgBodyTmp = BodyTmp;
-				  ImgBodyTmp = ImgBodyTmp.Delete(1,ImgBodyTmp.Pos("<AQQ_CACHE_ITEM")-1);
-				  ImgBodyTmp = ImgBodyTmp.Delete(ImgBodyTmp.Pos(">")+1,ImgBodyTmp.Length());
+				  ImgBodyTmp.Delete(1,ImgBodyTmp.Pos("<AQQ_CACHE_ITEM")-1);
+				  ImgBodyTmp.Delete(ImgBodyTmp.Pos(">")+1,ImgBodyTmp.Length());
 				  BodyTmp = StringReplace(BodyTmp, ImgBodyTmp, "", TReplaceFlags());
 				}
 				//Usuwanie bialych znakow
@@ -9117,8 +9117,8 @@ INT_PTR __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 				  {
 					//Tymczasowe usuwanie obrazka z wiadomosci
 					UnicodeString ImgBodyTmp = BodyTmp;
-					ImgBodyTmp = ImgBodyTmp.Delete(1,ImgBodyTmp.Pos("<AQQ_CACHE_ITEM")-1);
-					ImgBodyTmp = ImgBodyTmp.Delete(ImgBodyTmp.Pos(">")+1,ImgBodyTmp.Length());
+					ImgBodyTmp.Delete(1,ImgBodyTmp.Pos("<AQQ_CACHE_ITEM")-1);
+					ImgBodyTmp.Delete(ImgBodyTmp.Pos(">")+1,ImgBodyTmp.Length());
 					Body = StringReplace(Body, ImgBodyTmp, "[Obrazek]", TReplaceFlags());
 				  }
 				}
@@ -9900,7 +9900,7 @@ INT_PTR __stdcall OnTabCaption(WPARAM wParam, LPARAM lParam)
 		//Normalizacja nazwy kanalu
 		if(!TabCaptionContact.FromPlugin) TabCaption = NormalizeChannel(TabCaption);
 		//Ustawianie prawidlowego identyfikatora
-		JID = JID.Delete(1,7);
+		JID.Delete(1,7);
 		//Zapisywanie nazwy kanalu
 		TIniFile *Ini = new TIniFile(SessionFileDir);
 		Ini->WriteString("Channels",JID,EncodeBase64(TabCaption));
@@ -9915,7 +9915,7 @@ INT_PTR __stdcall OnTabCaption(WPARAM wParam, LPARAM lParam)
 		UnicodeString NormChannel = OrgChannel;
 		if(!TabCaptionContact.FromPlugin) NormChannel = NormalizeChannel(NormChannel);
 		//Ustawianie prawidlowego identyfikatora
-		JID = JID.Delete(1,7);
+		JID.Delete(1,7);
 		//Zapisywanie nazwy kanalu
 		TIniFile *Ini = new TIniFile(SessionFileDir);
 		Ini->WriteString("Channels",JID,EncodeBase64(NormChannel));
@@ -10495,9 +10495,9 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 			  {
 				//Wyciagniecie indeksu konta
 				UserIdx = JID;
-				UserIdx = UserIdx.Delete(1,UserIdx.Pos(":"));
+				UserIdx.Delete(1,UserIdx.Pos(":"));
 				//Usuniecie indeksu konta z JID
-				JID = JID.Delete(JID.Pos(":"),JID.Length());
+				JID.Delete(JID.Pos(":"),JID.Length());
 			  }
 			  //Wczytywanie ostatnio przeprowadzonej rozmowy
 			  PluginLink.CallService(AQQ_FUNCTION_LOADLASTCONV,(WPARAM)JID.w_str(),(LPARAM)StrToInt(UserIdx));
