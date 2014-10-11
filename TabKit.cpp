@@ -2394,7 +2394,7 @@ void BuildFrmClosedTabs(bool FixPosition)
 		  FrmSendClosedTabsButton.Handle = (int)hFrmSend;
 		  PluginLink.CallService(AQQ_CONTROLS_TOOLBAR "tbMain" AQQ_CONTROLS_CREATEBUTTON,0,(LPARAM)(&FrmSendClosedTabsButton));
 		}
-		//Tworzenie PopUpMenuItems
+		//Tworzenie elementow popupmenu
 		for(int Count=0;Count<TabsCount;Count++)
 		{
 		  UnicodeString ItemJID = ClosedTabsList->Strings[Count];
@@ -2438,13 +2438,46 @@ void BuildFrmClosedTabs(bool FixPosition)
 		  BuildClosedTabsItem.pszName = ("TabKitClosedTabsItem"+IntToStr(TabsCount+2)).w_str();
 		  BuildClosedTabsItem.pszService = L"sTabKitClosedTabsItemClear";
 		  BuildClosedTabsItem.pszCaption = L"Wyczyœæ";
-		  BuildClosedTabsItem.Position = TabsCount+1;
+		  BuildClosedTabsItem.Position = TabsCount+2;
 		  BuildClosedTabsItem.pszPopupName = L"TabKitClosedTabsPopUp";
 		  PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildClosedTabsItem));
 	    }
 	  }
 	  //Aktualizacja pozycji wszystkich przyciskow w oknie rozmowy
 	  else FixButtonsPosition();
+	}
+  }
+}
+//---------------------------------------------------------------------------
+
+//Aktualizacja popupmenu ostatnio zamknietych zakladek
+void RebuildFrmClosedTabsPopupmenu()
+{
+  //Pobieranie ilosci zamknietych zakladek
+  int TabsCount = ClosedTabsList->Count;
+  //Sa jakies ostatnio zamkniete zakladki
+  if(TabsCount>0)
+  {
+	//Maks X elementow w popupmenu
+	if(TabsCount>ItemCountUnCloseTabVal) TabsCount = ItemCountUnCloseTabVal;
+	//Aktualizacja elementow popupmenu
+	for(int Count=0;Count<TabsCount;Count++)
+	{
+	  UnicodeString ItemJID = ClosedTabsList->Strings[Count];
+	  TPluginActionEdit RebuildClosedTabsItem;
+	  ZeroMemory(&RebuildClosedTabsItem,sizeof(TPluginActionEdit));
+	  RebuildClosedTabsItem.cbSize = sizeof(TPluginActionEdit);
+	  RebuildClosedTabsItem.IconIndex = GetContactState(ItemJID);
+	  UnicodeString ItemName = "TabKitClosedTabsItem"+IntToStr(Count);
+	  RebuildClosedTabsItem.pszName = ItemName.w_str();
+	  if(ShowTimeClosedTabsChk)
+	   RebuildClosedTabsItem.Caption = (GetContactNick(ItemJID)+" ("+ClosedTabsTimeList->Strings[Count]+")").w_str();
+	  else
+	   RebuildClosedTabsItem.Caption = GetContactNick(ItemJID).w_str();
+	  RebuildClosedTabsItem.Enabled = true;
+	  RebuildClosedTabsItem.Visible = true;
+	  RebuildClosedTabsItem.Checked = false;
+	  PluginLink.CallService(AQQ_CONTROLS_EDITPOPUPMENUITEM,0,(LPARAM)(&RebuildClosedTabsItem));
 	}
   }
 }
@@ -2699,7 +2732,7 @@ void DestroyFrmUnsentMsg()
   if(MsgCount>0)
   {
 	//Maks 5 elementow w popupmenu
-    if(MsgCount>5) MsgCount = 5;
+	if(MsgCount>5) MsgCount = 5;
 	//Usuwanie elementow popupmenu
 	for(int Count=0;Count<MsgCount;Count++)
 	{
@@ -2785,7 +2818,7 @@ void BuildFrmUnsentMsg(bool FixPosition)
 		  FrmSendUnsentMsgButton.Handle = (int)hFrmSend;
 		  PluginLink.CallService(AQQ_CONTROLS_TOOLBAR "tbMain" AQQ_CONTROLS_CREATEBUTTON,0,(LPARAM)(&FrmSendUnsentMsgButton));
 		}
-		//Tworzenie PopUpMenuItems
+		//Tworzenie elementow popupmenu
 		for(int Count=0;Count<MsgCount;Count++)
 		{
 		  UnicodeString ItemJID = Messages->Strings[Count];
@@ -2796,7 +2829,7 @@ void BuildFrmUnsentMsg(bool FixPosition)
 			BuildUnsentMsgItem.cbSize = sizeof(TPluginAction);
 			BuildUnsentMsgItem.IconIndex = GetContactState(ItemJID);
 			UnicodeString ItemName = "TabKitUnsentMsgItem"+IntToStr(Count);
-		    BuildUnsentMsgItem.pszName = ItemName.w_str();
+			BuildUnsentMsgItem.pszName = ItemName.w_str();
 			UnicodeString ItemService = "sTabKitUnsentMsgItem"+IntToStr(Count);
 			BuildUnsentMsgItem.pszService = ItemService.w_str();
 			BuildUnsentMsgItem.pszCaption = GetContactNick(ItemJID).w_str();
@@ -2826,7 +2859,7 @@ void BuildFrmUnsentMsg(bool FixPosition)
 		  BuildUnsentMsgItem.pszName = ("TabKitUnsentMsgItem"+IntToStr(MsgCount+2)).w_str();
 		  BuildUnsentMsgItem.pszService = L"sTabKitUnsentMsgItemClear";
 		  BuildUnsentMsgItem.pszCaption = L"Wyczyœæ";
-		  BuildUnsentMsgItem.Position = MsgCount+1;
+		  BuildUnsentMsgItem.Position = MsgCount+2;
 		  BuildUnsentMsgItem.pszPopupName = L"TabKitUnsentMsgPopUp";
 		  PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildUnsentMsgItem));
 	    }
@@ -2836,6 +2869,42 @@ void BuildFrmUnsentMsg(bool FixPosition)
 	}
 	delete Messages;
   }
+}
+//---------------------------------------------------------------------------
+
+//Aktualizacja popupmenu niewyslanych wiadomosci
+void RebuildFrmUnsentMsgPopupmenu()
+{
+  //Pobieranie ilosci zamknietych zakladek
+  TIniFile *Ini = new TIniFile(SessionFileDir);
+  TStringList *Messages = new TStringList;
+  Ini->ReadSection("Messages",Messages);
+  delete Ini;
+  //Pobieranie ilosci niewyslanych wiadomosci
+  int MsgCount = Messages->Count;
+  //Sa jakies zakladki z niewyslanymi wiadomosciami
+  if(MsgCount>0)
+  {
+	//Maks 5 elementow w popupmenu
+	if(MsgCount>5) MsgCount = 5;
+	//Aktualizacja elementow popupmenu
+	for(int Count=0;Count<MsgCount;Count++)
+	{
+	  UnicodeString ItemJID = Messages->Strings[Count];
+	  TPluginActionEdit RebuildUnsentMsgItem;
+	  ZeroMemory(&RebuildUnsentMsgItem,sizeof(TPluginActionEdit));
+	  RebuildUnsentMsgItem.cbSize = sizeof(TPluginActionEdit);
+	  RebuildUnsentMsgItem.IconIndex = GetContactState(ItemJID);
+	  UnicodeString ItemName = "TabKitUnsentMsgItem"+IntToStr(Count);
+	  RebuildUnsentMsgItem.pszName = ItemName.w_str();
+	  RebuildUnsentMsgItem.Caption = GetContactNick(ItemJID).w_str();
+	  RebuildUnsentMsgItem.Enabled = true;
+	  RebuildUnsentMsgItem.Visible = true;
+	  RebuildUnsentMsgItem.Checked = false;
+	  PluginLink.CallService(AQQ_CONTROLS_EDITPOPUPMENUITEM,0,(LPARAM)(&RebuildUnsentMsgItem));
+	}
+  }
+  delete Messages;
 }
 //---------------------------------------------------------------------------
 
@@ -3321,7 +3390,7 @@ void DestroyFavouritesTabs()
 }
 //---------------------------------------------------------------------------
 
-//Tworzenie interfejsu odwania/usuwania ulubionej zakladki
+//Tworzenie interfejsu dodawania/usuwania ulubionej zakladki
 void BuildFrmSendFavouriteTab()
 {
   //Okno rozmowy jest otwarte
@@ -3432,6 +3501,34 @@ void BuildFavouritesTabs(bool FixPosition)
 	  }
 	  //Aktualizacja pozycji wszystkich przyciskow w oknie rozmowy
 	  else FixButtonsPosition();
+	}
+  }
+}
+//---------------------------------------------------------------------------
+
+//Aktualizacja popupmenu ulubionych zakladek
+void RebuildFavouritesTabsPopupmenu()
+{
+  //Pobieranie ilosci ulubionych zakladek
+  int TabsCount = FavouritesTabsList->Count;
+  //Sa jakies ulubione zakladki
+  if(TabsCount>0)
+  {
+	//Aktualizacja elementow popupmenu
+	for(int Count=0;Count<TabsCount;Count++)
+	{
+	  UnicodeString ItemJID = FavouritesTabsList->Strings[Count];
+	  TPluginActionEdit RebuildFavouritesTabsItem;
+	  ZeroMemory(&RebuildFavouritesTabsItem,sizeof(TPluginActionEdit));
+	  RebuildFavouritesTabsItem.cbSize = sizeof(TPluginActionEdit);
+	  RebuildFavouritesTabsItem.IconIndex = GetContactState(ItemJID);
+	  UnicodeString ItemName = "TabKitFavouritesTabsItem"+IntToStr(Count);
+	  RebuildFavouritesTabsItem.pszName = ItemName.w_str();
+	  RebuildFavouritesTabsItem.Caption = GetContactNick(ItemJID).w_str();
+	  RebuildFavouritesTabsItem.Enabled = true;
+	  RebuildFavouritesTabsItem.Visible = true;
+	  RebuildFavouritesTabsItem.Checked = false;
+	  PluginLink.CallService(AQQ_CONTROLS_EDITPOPUPMENUITEM,0,(LPARAM)(&RebuildFavouritesTabsItem));
 	}
   }
 }
@@ -7696,24 +7793,24 @@ INT_PTR __stdcall OnContactsUpdate(WPARAM wParam, LPARAM lParam)
 	  //Przywracanie sesji nie jest aktywne
 	  if(!RestoringSession)
 	  {
-		//Ustawianie prawidlowej ikonki w popumenu ostatnio zamknietych zakladek
+		//Ustawianie prawidlowej ikonki w popupmenu ostatnio zamknietych zakladek
 		if((ClosedTabsChk)&&(FastAccessClosedTabsChk))
 		{
 		  //Jezeli JID jest w ostatnio zamknietych zakladkach
 		  if(ClosedTabsList->IndexOf(JID+UserIdx)!=-1)
 		  {
 			//Jezeli JID jest elementem popupmenu
-			if(ClosedTabsList->IndexOf(JID+UserIdx)<=ItemCountUnCloseTabVal)
+			if(ClosedTabsList->IndexOf(JID+UserIdx)<ItemCountUnCloseTabVal)
 			{
-			  //Aktualizacja statusu
-			  DestroyFrmClosedTabs();
-			  BuildFrmClosedTabs(true);
+			  //Aktualizacja popupmenu
+			  RebuildFrmClosedTabsPopupmenu();
 			}
 		  }
 		}
-		//Ustawianie prawidlowej ikonki w popumenu niewyslanych wiadomosci
+		//Ustawianie prawidlowej ikonki w popupmenu niewyslanych wiadomosci
 		if((UnsentMsgChk)&&(FastAccessUnsentMsgChk))
 		{
+		  //Pobieranie ilosci zamknietych zakladek
 		  TIniFile *Ini = new TIniFile(SessionFileDir);
 		  TStringList *Messages = new TStringList;
 		  Ini->ReadSection("Messages",Messages);
@@ -7725,20 +7822,23 @@ INT_PTR __stdcall OnContactsUpdate(WPARAM wParam, LPARAM lParam)
 			//Jezeli JID jest w niewyslanych wiadomosciach
 			if(Messages->IndexOf(JID+UserIdx)!=-1)
 			{
-			  //Aktualizacja statusu
-			  DestroyFrmUnsentMsg();
-			  BuildFrmUnsentMsg(true);
+			  //Jezeli JID jest elementem popupmenu
+			  if(Messages->IndexOf(JID+UserIdx)<5)
+			  {
+				//Aktualizacja popupmenu
+				RebuildFrmUnsentMsgPopupmenu();
+			  }
 			}
 		  }
 		  delete Messages;
 		}
-		//Ustawianie prawidlowej ikonki w popumenu ulubionych zakladek
-		//Jezeli JID jest na liscie ulubionych zakladek
-		if(FavouritesTabsList->IndexOf(JID+UserIdx)!=-1)
+		//Ustawianie prawidlowej ikonki w popupmenu ulubionych zakladek
+		if((FavouritesTabsChk)&&(FastAccessFavouritesTabsChk))
 		{
-		  //Aktualizacja statusu
-		  DestroyFavouritesTabs();
-		  BuildFavouritesTabs(true);
+		  //Jezeli JID jest na liscie ulubionych zakladek
+		  if(FavouritesTabsList->IndexOf(JID+UserIdx)!=-1)
+		   //Aktualizacja popupmenu
+		   RebuildFavouritesTabsPopupmenu();
 		}
 	  }
 	  //Zmiana caption okna rozmowy
@@ -9557,7 +9657,7 @@ INT_PTR __stdcall OnStateChange(WPARAM wParam, LPARAM lParam)
 }
 //---------------------------------------------------------------------------
 
-//Hook na pokazywanie popumenu
+//Hook na pokazywanie popupmenu
 INT_PTR __stdcall OnSystemPopUp(WPARAM wParam, LPARAM lParam)
 {
   //Komunikator nie jest zamykany
@@ -11753,7 +11853,7 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Load(PPluginLink Link)
   PluginLink.HookEvent(AQQ_SYSTEM_SETLASTSTATE,OnSetLastState);
   //Hook dla zmiany stanu
   PluginLink.HookEvent(AQQ_SYSTEM_STATECHANGE,OnStateChange);
-  //Hook na pokazywanie popumenu
+  //Hook na pokazywanie popupmenu
   PluginLink.HookEvent(AQQ_SYSTEM_POPUP,OnSystemPopUp);
   //Hook na zmiane tekstu na zakladce
   PluginLink.HookEvent(AQQ_CONTACTS_BUDDY_TABCAPTION,OnTabCaption);
