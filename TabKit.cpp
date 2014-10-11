@@ -544,7 +544,6 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 LRESULT CALLBACK FrmMainProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 //FORWARD-OTHER-FUNCTION-----------------------------------------------------
-void RefreshTabs();
 void CheckHideScrollTabButtons();
 void OpenNewTab(UnicodeString JID);
 UnicodeString GetChannelName(UnicodeString JID);
@@ -556,8 +555,8 @@ void DestroyFavouritesTabs();
 void BuildFavouritesTabs(bool FixPosition);
 void DestroyStayOnTop();
 void BuildStayOnTop();
-//void LoadSettings();
 UnicodeString MD5(UnicodeString Text);
+void RefreshTabs();
 //---------------------------------------------------------------------------
 
 //Pobieranie sciezki katalogu prywatnego wtyczek
