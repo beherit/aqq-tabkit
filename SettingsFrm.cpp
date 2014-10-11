@@ -715,9 +715,9 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
 void __fastcall TSettingsForm::aSaveSettingsWExecute(TObject *Sender)
 {
   //Usuwanie elementow z interfejsu AQQ
+  DestroyFavouritesTabs();
   DestroyFrmUnsentMsg();
   DestroyFrmClosedTabs();
-  DestroyFavouritesTabs();
   DestroyStayOnTop();
   DestroyClipTab();
   DestroyFrmSendFavouriteTab();
@@ -730,9 +730,9 @@ void __fastcall TSettingsForm::aSaveSettingsWExecute(TObject *Sender)
   //Przypisywanie globalnego hooka na klawiature
   HookGlobalKeyboard();
   //Tworzenie elementow w interfejsie AQQ
+  BuildFavouritesTabs(false);
   BuildFrmUnsentMsg(false);
   BuildFrmClosedTabs(false);
-  BuildFavouritesTabs(false);
   BuildStayOnTop();
   BuildClipTab();
   BuildFrmSendFavouriteTab();
