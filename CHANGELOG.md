@@ -1,3 +1,16 @@
+1.10.0.0
+-----
+* Możliwość definicji ulubionych zakładek dostępnych z menu w oknie rozmowy lub liście kontaktów oraz poprzez skróty klawiaturowe.
+* Wyłączenie funkcjonalności przypiętych zakładek dla czatów z wtyczek.
+* Integracja funkcji pobierania pseudonimu oraz stanu kontaktu z funkcjami pobierania informacji nt. czatów.
+* Poprawki w stylu wyświetlanych chmurek informacyjnych przez wtyczkę.
+* Możliwość całkowitego wyłączenia funkcjonalności przypiętych zakładek.
+* Trzymanie zawsze prawidłowej pozycji przycisków w oknie rozmowy.
+* Wydajniejsza aktualizacja elementów popupmenu po zmianie stanu kontaktu.
+* Poprawki kosmetyczne formy ustawień.
+* Inne małe poprawki w kodzie.
+* Aktualizacja komponentów AlphaControls do nowszej wersji (9.16).
+
 1.9.9.0
 -----
 * Zmiana sposobu przywracania starych procedur okien.
