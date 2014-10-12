@@ -10153,12 +10153,12 @@ INT_PTR __stdcall OnThemeChanged(WPARAM wParam, LPARAM lParam)
 	  hSettingsForm->StarWebLabel->Font->Color = clWindowText;
 	  hSettingsForm->StarWebLabel->HoverFont->Color = clWindowText;
 	}
-	/*//Aktualizacja ikonek na formie
+	//Aktualizacja ikonek na formie
 	hSettingsForm->FavouritesTabsAlphaImageList->Clear();
 	hSettingsForm->FavouritesTabsAlphaImageList->LoadFromFile(GetIconPath(98));
 	hSettingsForm->FavouritesTabsAlphaImageList->LoadFromFile(GetIconPath(99));
 	hSettingsForm->FavouritesTabsAlphaImageList->LoadFromFile(GetIconPath(15));
-	hSettingsForm->FavouritesTabsAlphaImageList->LoadFromFile(GetIconPath(79));*/
+	hSettingsForm->FavouritesTabsAlphaImageList->LoadFromFile(GetIconPath(79));
   }
   //Aktualizacja ikon z interfejsu
   //CLOSEDTABS
