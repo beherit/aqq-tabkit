@@ -1,3 +1,7 @@
+1.10.0.2
+-----
+* Powrót do starszej wersji komponentów AlphaControls (błąd z ładowaniem wtyczki 64-bitowej).
+
 1.10.0.0
 -----
 * Możliwość definicji ulubionych zakładek dostępnych z menu w oknie rozmowy lub liście kontaktów oraz poprzez skróty klawiaturowe.
