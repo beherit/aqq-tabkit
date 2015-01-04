@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------------
-// Copyright (C) 2010-2014 Krzysztof Grochocki
+// Copyright (C) 2010-2015 Krzysztof Grochocki
 //
 // This file is part of TabKit
 //
@@ -1736,12 +1736,7 @@ UnicodeString TrimLinks(UnicodeString Body, bool Status)
 	  NormalTrim: { /* Only Jump */ }
 	  //Wycinanie domeny z adresu URL
 	  UnicodeString Domain = Text;
-	  if(Domain.LowerCase().Pos("www."))
-	  {
-		Domain.Delete(1,Domain.LowerCase().Pos("www.")+3);
-		if(Domain.Pos("/")) Domain.Delete(Domain.Pos("/"),Domain.Length());
-	  }
-	  else if(Domain.LowerCase().Pos("http://"))
+	  if(Domain.LowerCase().Pos("http://"))
 	  {
 		Domain.Delete(1,Domain.LowerCase().Pos("http://")+6);
 		if(Domain.Pos("/")) Domain.Delete(Domain.Pos("/"),Domain.Length());
@@ -1749,6 +1744,11 @@ UnicodeString TrimLinks(UnicodeString Body, bool Status)
 	  else if(Domain.LowerCase().Pos("https://"))
 	  {
 		Domain.Delete(1,Domain.LowerCase().Pos("https://")+7);
+		if(Domain.Pos("/")) Domain.Delete(Domain.Pos("/"),Domain.Length());
+	  }
+	  else if(Domain.LowerCase().Pos("www."))
+	  {
+		Domain.Delete(1,Domain.LowerCase().Pos("www.")+3);
 		if(Domain.Pos("/")) Domain.Delete(Domain.Pos("/"),Domain.Length());
 	  }
 	  else Domain = "";
