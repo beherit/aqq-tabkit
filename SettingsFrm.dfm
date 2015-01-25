@@ -240,10 +240,6 @@ object SettingsForm: TSettingsForm
       Caption = 'Informacje o wtyczce'
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object PayPalImage: TImage
         Left = 350
         Top = 124
@@ -2668,6 +2664,7 @@ object SettingsForm: TSettingsForm
         Width = 92
         Height = 13
         Caption = 'kontakt@beherit.pl'
+        ParentFont = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
@@ -2687,6 +2684,7 @@ object SettingsForm: TSettingsForm
         Width = 66
         Height = 13
         Caption = 'im@beherit.pl'
+        ParentFont = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
@@ -2706,6 +2704,7 @@ object SettingsForm: TSettingsForm
         Width = 46
         Height = 13
         Caption = 'beherit.pl'
+        ParentFont = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
@@ -2813,6 +2812,7 @@ object SettingsForm: TSettingsForm
         Width = 182
         Height = 13
         Caption = 'Odwied'#378' temat wtyczki na forum AQQ'
+        ParentFont = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
@@ -2832,6 +2832,7 @@ object SettingsForm: TSettingsForm
         Width = 176
         Height = 13
         Caption = 'Znalaz'#322'e'#347' b'#322#261'd? Zg'#322'o'#347' go na bugli'#347'cie'
+        ParentFont = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
@@ -2922,6 +2923,7 @@ object SettingsForm: TSettingsForm
         Width = 139
         Height = 13
         Caption = 'Oce'#324' dodatek na forum AQQ'
+        ParentFont = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11

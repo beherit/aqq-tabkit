@@ -21,17 +21,16 @@
 
 #include <vcl.h>
 #include <windows.h>
-#pragma hdrstop
-#pragma argsused
-#include <PluginAPI.h>
-#include "SettingsFrm.h"
-#include "KeyboardLights.h"
 #include <inifiles.hpp>
 #include <process.h>
 #include <tlhelp32.h>
 #include <XMLDoc.hpp>
 #include <IdHashMessageDigest.hpp>
 #include <boost/regex.hpp>
+#pragma hdrstop
+#include <PluginAPI.h>
+#include "SettingsFrm.h"
+#include "KeyboardLights.h"
 using namespace boost;
 using namespace std;
 #define RESOURCESCHANGER_SYSTEM_RESOURCECHANGED L"ResourcesChanger/System/ResourceChanged"
