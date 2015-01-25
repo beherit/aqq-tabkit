@@ -21,6 +21,7 @@
 
 #include <windows.h>
 #include <winioctl.h>
+#pragma hdrstop
 #include "KeyboardLights.h"
 
 //Miganie diodami LED

@@ -21,12 +21,12 @@
 
 //---------------------------------------------------------------------------
 #include <vcl.h>
+#include <inifiles.hpp>
+#include <XMLDoc.hpp>
+#include <gdiplus.h>
 #pragma hdrstop
 #include "SettingsFrm.h"
 #include "SideSlideExceptionsFrm.h"
-#include <gdiplus.h>
-#include <inifiles.hpp>
-#include <XMLDoc.hpp>
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "acAlphaImageList"
