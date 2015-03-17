@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------------
-// Copyright (C) 2010-2014 Krzysztof Grochocki
+// Copyright (C) 2010-2015 Krzysztof Grochocki
 //
 // This file is part of TabKit
 //
@@ -76,7 +76,7 @@ __declspec(dllimport)UnicodeString GetYouTubeTitleListItem();
 __declspec(dllimport)void AddToYouTubeExcludeList(UnicodeString ID);
 __declspec(dllimport)bool RefreshListAllowed();
 __declspec(dllimport)void RefreshList();
-__declspec(dllimport)UnicodeString GetChannelNameW(UnicodeString JID);
+__declspec(dllimport)void GetChannelNameW(UnicodeString JID);
 __declspec(dllimport)void DestroyFrmClosedTabs();
 __declspec(dllimport)void BuildFrmClosedTabs(bool FixPosition);
 __declspec(dllimport)void EraseClosedTabs();
