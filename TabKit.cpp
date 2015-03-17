@@ -2270,7 +2270,7 @@ UnicodeString GetChannelName(UnicodeString JID)
 	return Channel;
 }
 //---------------------------------------------------------------------------
-UnicodeString GetChannelNameW(UnicodeString JID)
+void GetChannelNameW(UnicodeString JID)
 {
 	//Generowanie unikatowego ID
 	UnicodeString XMLID = (wchar_t*)PluginLink.CallService(AQQ_FUNCTION_GETSTRID,0,0);
