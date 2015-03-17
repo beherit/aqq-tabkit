@@ -27,8 +27,9 @@
 #include <XMLDoc.hpp>
 #include <IdHashMessageDigest.hpp>
 #include <boost/regex.hpp>
-#pragma hdrstop
 #include <PluginAPI.h>
+#include <LangAPI.hpp>
+#pragma hdrstop
 #include "SettingsFrm.h"
 #include "KeyboardLights.h"
 using namespace boost;
@@ -479,6 +480,7 @@ INT_PTR __stdcall OnContactsUpdate(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall OnFetchAllTabs(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall OnFetchAllTabs_GetOnlyList(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall OnFetchAllTabs_RefreshTabs(WPARAM wParam, LPARAM lParam);
+INT_PTR __stdcall OnLangCodeChanged(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall OnListReady(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall OnMsgComposing(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall OnMsgContextClose(WPARAM wParam, LPARAM lParam);
@@ -1715,10 +1717,10 @@ UnicodeString TrimLinks(UnicodeString Body, bool Status)
 					if(!hSettingsForm->GetYouTubeTitleThread->Active) hSettingsForm->GetYouTubeTitleThread->Start();
 					//Odnosnik z parametrem title
 					if(URL.Pos("title="))
-						Body = StringReplace(Body, "\">" + Text, "\">[Pobieranie tytu³u...]", TReplaceFlags());
+						Body = StringReplace(Body, "\">" + Text, "\">["+GetLangStr("YouTubeTemp")+"...]", TReplaceFlags());
 					//Odnosnik bez parametru title
 					else
-						Body = StringReplace(Body, "\">" + Text, "\" title=\"" + Text + "\">[Pobieranie tytu³u...]", TReplaceFlags());
+						Body = StringReplace(Body, "\">" + Text, "\" title=\"" + Text + "\">["+GetLangStr("YouTubeTemp")+"...]", TReplaceFlags());
 				}
 			}
 			//Przejscie do normalnego skracana linkow
@@ -2328,10 +2330,10 @@ void DestroyFrmClosedTabs()
 		{
 			TPluginAction DestroyClosedTabsItem;
 			ZeroMemory(&DestroyClosedTabsItem,sizeof(TPluginAction));
-			DestroyClosedTabsItem.pszName = ("TabKitClosedTabsItem"+IntToStr(TabsCount+1)).w_str();
+			DestroyClosedTabsItem.pszName = ("TabKitClosedTabsItem"+IntToStr(TabsCount)).w_str();
 			PluginLink.CallService(AQQ_CONTROLS_DESTROYPOPUPMENUITEM ,0,(LPARAM)(&DestroyClosedTabsItem));
 			ZeroMemory(&DestroyClosedTabsItem,sizeof(TPluginAction));
-			DestroyClosedTabsItem.pszName = ("TabKitClosedTabsItem"+IntToStr(TabsCount+2)).w_str();
+			DestroyClosedTabsItem.pszName = ("TabKitClosedTabsItem"+IntToStr(TabsCount+1)).w_str();
 			PluginLink.CallService(AQQ_CONTROLS_DESTROYPOPUPMENUITEM ,0,(LPARAM)(&DestroyClosedTabsItem));
 		}
 		//Usuwanie buttona w oknie kontaktow
@@ -2386,7 +2388,7 @@ void BuildFrmClosedTabs(bool FixPosition)
 					ZeroMemory(&FrmSendClosedTabsButton,sizeof(TPluginAction));
 					FrmSendClosedTabsButton.cbSize = sizeof(TPluginAction);
 					FrmSendClosedTabsButton.pszName = L"TabKitFrmSendClosedTabsButton";
-					FrmSendClosedTabsButton.Hint = L"Ostatnio zamkniête zak³adki";
+					FrmSendClosedTabsButton.Hint = GetLangStr("ClosedTabsButton").w_str();
 					FrmSendClosedTabsButton.IconIndex = CLOSEDTABS;
 					FrmSendClosedTabsButton.pszPopupName = L"TabKitClosedTabsPopUp";
 					FrmSendClosedTabsButton.Handle = (int)hFrmSend;
@@ -2423,20 +2425,22 @@ void BuildFrmClosedTabs(bool FixPosition)
 					ZeroMemory(&BuildClosedTabsItem,sizeof(TPluginAction));
 					BuildClosedTabsItem.cbSize = sizeof(TPluginAction);
 					BuildClosedTabsItem.IconIndex = -1;
-					BuildClosedTabsItem.pszName = ("TabKitClosedTabsItem"+IntToStr(TabsCount+1)).w_str();
+					UnicodeString pszName = "TabKitClosedTabsItem"+IntToStr(TabsCount);
+					BuildClosedTabsItem.pszName = pszName.w_str();
 					BuildClosedTabsItem.pszService = L"";
 					BuildClosedTabsItem.pszCaption = L"-";
-					BuildClosedTabsItem.Position = TabsCount+1;
+					BuildClosedTabsItem.Position = TabsCount;
 					BuildClosedTabsItem.pszPopupName = L"TabKitClosedTabsPopUp";
 					PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildClosedTabsItem));
 					//Tworzenie elementu czyszczenia
 					ZeroMemory(&BuildClosedTabsItem,sizeof(TPluginAction));
 					BuildClosedTabsItem.cbSize = sizeof(TPluginAction);
 					BuildClosedTabsItem.IconIndex = -1;
-					BuildClosedTabsItem.pszName = ("TabKitClosedTabsItem"+IntToStr(TabsCount+2)).w_str();
+					pszName = "TabKitClosedTabsItem"+IntToStr(TabsCount+1);
+					BuildClosedTabsItem.pszName = pszName.w_str();
 					BuildClosedTabsItem.pszService = L"sTabKitClosedTabsItemClear";
-					BuildClosedTabsItem.pszCaption = L"Wyczyœæ";
-					BuildClosedTabsItem.Position = TabsCount+2;
+					BuildClosedTabsItem.pszCaption = GetLangStr("Clear").w_str();
+					BuildClosedTabsItem.Position = TabsCount+1;
 					BuildClosedTabsItem.pszPopupName = L"TabKitClosedTabsPopUp";
 					PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildClosedTabsItem));
 				}
@@ -2563,7 +2567,7 @@ void GetClosedTabs()
 					if(TabsList->IndexOf(JID)==-1)
 					{
 						ClosedTabsList->Add(JID);
-						UnicodeString ClosedTime = Ini->ReadString("ClosedTabs","Tab"+IntToStr(Count+1)+"Time","b/d");
+						UnicodeString ClosedTime = Ini->ReadString("ClosedTabs","Tab"+IntToStr(Count+1)+"Time",GetLangStr("NoData"));
 						ClosedTabsTimeList->Add(ClosedTime);
 					}
 					//Usuwanie zakladki z pliku INI
@@ -2617,7 +2621,7 @@ void SaveClosedTabs()
 					//Zapis danych do pliku sesji
 					Ini->WriteString("ClosedTabs","Tab"+IntToStr(Count+1),ClosedTabsList->Strings[Count]);
 					//Pole z data zamkniecia jest puste
-					if(ClosedTabsTimeList->Strings[Count].IsEmpty()) ClosedTabsTimeList->Strings[Count] = "b/d";
+					if(ClosedTabsTimeList->Strings[Count].IsEmpty()) ClosedTabsTimeList->Strings[Count] = GetLangStr("NoData");
 					//Zapis danych do pliku sesji
 					Ini->WriteString("ClosedTabs","Tab"+IntToStr(Count+1)+"Time",ClosedTabsTimeList->Strings[Count]);
 				}
@@ -2746,11 +2750,11 @@ void DestroyFrmUnsentMsg()
 			TPluginAction DestroyUnsentMsgItem;
 			ZeroMemory(&DestroyUnsentMsgItem,sizeof(TPluginAction));
 			DestroyUnsentMsgItem.cbSize = sizeof(TPluginAction);
-			DestroyUnsentMsgItem.pszName = ("TabKitUnsentMsgItem"+IntToStr(MsgCount+1)).w_str();
+			DestroyUnsentMsgItem.pszName = ("TabKitUnsentMsgItem"+IntToStr(MsgCount)).w_str();
 			PluginLink.CallService(AQQ_CONTROLS_DESTROYPOPUPMENUITEM ,0,(LPARAM)(&DestroyUnsentMsgItem));
 			ZeroMemory(&DestroyUnsentMsgItem,sizeof(TPluginAction));
 			DestroyUnsentMsgItem.cbSize = sizeof(TPluginAction);
-			DestroyUnsentMsgItem.pszName = ("TabKitUnsentMsgItem"+IntToStr(MsgCount+2)).w_str();
+			DestroyUnsentMsgItem.pszName = ("TabKitUnsentMsgItem"+IntToStr(MsgCount+1)).w_str();
 			PluginLink.CallService(AQQ_CONTROLS_DESTROYPOPUPMENUITEM ,0,(LPARAM)(&DestroyUnsentMsgItem));
 		}
 		//Usuwanie buttona w oknie kontatkow
@@ -2810,7 +2814,7 @@ void BuildFrmUnsentMsg(bool FixPosition)
 					ZeroMemory(&FrmSendUnsentMsgButton,sizeof(TPluginAction));
 					FrmSendUnsentMsgButton.cbSize = sizeof(TPluginAction);
 					FrmSendUnsentMsgButton.pszName = L"TabKitFrmSendUnsentMsgButton";
-					FrmSendUnsentMsgButton.Hint = L"Niewys³ane wiadomoœci";
+					FrmSendUnsentMsgButton.Hint = GetLangStr("UnsentMsg").w_str();
 					FrmSendUnsentMsgButton.IconIndex = UNSENTMSG;
 					FrmSendUnsentMsgButton.pszPopupName = L"TabKitUnsentMsgPopUp";
 					FrmSendUnsentMsgButton.Handle = (int)hFrmSend;
@@ -2844,20 +2848,22 @@ void BuildFrmUnsentMsg(bool FixPosition)
 					ZeroMemory(&BuildUnsentMsgItem,sizeof(TPluginAction));
 					BuildUnsentMsgItem.cbSize = sizeof(TPluginAction);
 					BuildUnsentMsgItem.IconIndex = -1;
-					BuildUnsentMsgItem.pszName = ("TabKitUnsentMsgItem"+IntToStr(MsgCount+1)).w_str();
+					UnicodeString pszName = "TabKitUnsentMsgItem"+IntToStr(MsgCount);
+					BuildUnsentMsgItem.pszName = pszName.w_str();
 					BuildUnsentMsgItem.pszService = L"";
 					BuildUnsentMsgItem.pszCaption = L"-";
-					BuildUnsentMsgItem.Position = MsgCount+1;
+					BuildUnsentMsgItem.Position = MsgCount;
 					BuildUnsentMsgItem.pszPopupName = L"TabKitUnsentMsgPopUp";
 					PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildUnsentMsgItem));
 					//Tworzenie elementu czyszczenia
 					ZeroMemory(&BuildUnsentMsgItem,sizeof(TPluginAction));
 					BuildUnsentMsgItem.cbSize = sizeof(TPluginAction);
 					BuildUnsentMsgItem.IconIndex = -1;
-					BuildUnsentMsgItem.pszName = ("TabKitUnsentMsgItem"+IntToStr(MsgCount+2)).w_str();
+					pszName = "TabKitUnsentMsgItem"+IntToStr(MsgCount+1);
+					BuildUnsentMsgItem.pszName = pszName.w_str();
 					BuildUnsentMsgItem.pszService = L"sTabKitUnsentMsgItemClear";
-					BuildUnsentMsgItem.pszCaption = L"Wyczyœæ";
-					BuildUnsentMsgItem.Position = MsgCount+2;
+					BuildUnsentMsgItem.pszCaption = GetLangStr("Clear").w_str();
+					BuildUnsentMsgItem.Position = MsgCount+1;
 					BuildUnsentMsgItem.pszPopupName = L"TabKitUnsentMsgPopUp";
 					PluginLink.CallService(AQQ_CONTROLS_CREATEPOPUPMENUITEM,0,(LPARAM)(&BuildUnsentMsgItem));
 				}
@@ -2983,9 +2989,10 @@ void GetUnsentMsg()
 		{
 			//Informacja o ilosci niewyslanych wiadomosci
 			UnicodeString Hint;
-			if(MsgCount==1) Hint = "Masz 1 niewys³an¹ wiadomoœæ!";
-			else if((MsgCount>1)&&(MsgCount<5)) Hint = "Masz " + IntToStr(MsgCount) + " niewys³ane wiadomoœci!";
-			else Hint = "Masz " + IntToStr(MsgCount) + " niewys³anych wiadomoœci!";
+			if(MsgCount==1) Hint = GetLangStr("UnsentMsgHint1");
+			else if((MsgCount>1)&&(MsgCount<5)) Hint = GetLangStr("UnsentMsgHint2");
+			else Hint = GetLangStr("UnsentMsgHint3");
+			Hint = StringReplace(Hint, "CC_COUNT", IntToStr(MsgCount), TReplaceFlags());
 			//Informacja w chmurce
 			if(CloudUnsentMsgChk)
 			{
@@ -3123,7 +3130,7 @@ void BuildClipTab()
 		ZeroMemory(&ClipTabItem,sizeof(TPluginAction));
 		ClipTabItem.cbSize = sizeof(TPluginAction);
 		ClipTabItem.pszName = L"TabKitClipTabItem";
-		ClipTabItem.pszCaption = L"Przypnij/odepnij zak³adkê";
+		ClipTabItem.pszCaption = GetLangStr("ClipTab").w_str();
 		ClipTabItem.Position = 1;
 		ClipTabItem.IconIndex = -1;
 		ClipTabItem.pszService = L"sTabKitClipTabItem";
@@ -3135,7 +3142,7 @@ void BuildClipTab()
 		ZeroMemory(&ClipTabCaptionItem,sizeof(TPluginAction));
 		ClipTabCaptionItem.cbSize = sizeof(TPluginAction);
 		ClipTabCaptionItem.pszName = L"TabKitClipTabCaptionItem";
-		ClipTabCaptionItem.pszCaption = L"Ukrywaj nazwê zak³adki";
+		ClipTabCaptionItem.pszCaption = GetLangStr("HideCaption").w_str();
 		ClipTabCaptionItem.Position = 2;
 		ClipTabCaptionItem.IconIndex = -1;
 		ClipTabCaptionItem.pszService = L"sTabKitClipTabCaptionItem";
@@ -3313,7 +3320,7 @@ void ShowFavouritesTabsInfo(UnicodeString Text)
 	TPluginShowInfo PluginShowInfo;
 	PluginShowInfo.cbSize = sizeof(TPluginShowInfo);
 	PluginShowInfo.Event = tmeMsgCap;
-	PluginShowInfo.Text = L"Ulubione zak³adki";
+	PluginShowInfo.Text = GetLangStr("FavTabs").w_str();
 	PluginShowInfo.ImagePath = (wchar_t*)PluginLink.CallService(AQQ_FUNCTION_GETPNG_FILEPATH,125,0);
 	PluginShowInfo.TimeOut = 1000 * CloudTimeOut;
 	PluginShowInfo.ActionID = L"";
@@ -3399,7 +3406,7 @@ void BuildFrmSendFavouriteTab()
 		ZeroMemory(&FavouriteTabItem,sizeof(TPluginAction));
 		FavouriteTabItem.cbSize = sizeof(TPluginAction);
 		FavouriteTabItem.pszName = L"TabKitFrmSendFavouriteTabItem";
-		FavouriteTabItem.pszCaption = L"Dodaj do ulubionych";
+		FavouriteTabItem.pszCaption = GetLangStr("AddToFav").w_str();
 		FavouriteTabItem.Position = 1;
 		FavouriteTabItem.IconIndex = 125;
 		FavouriteTabItem.pszService = L"sTabKitFavouriteTabItem";
@@ -3426,7 +3433,7 @@ void BuildFrmMainFavouriteTab()
 		ZeroMemory(&FavouriteTabItem,sizeof(TPluginAction));
 		FavouriteTabItem.cbSize = sizeof(TPluginAction);
 		FavouriteTabItem.pszName = L"TabKitFrmMainFavouriteTabItem";
-		FavouriteTabItem.pszCaption = L"Dodaj do ulubionych";
+		FavouriteTabItem.pszCaption = GetLangStr("AddToFav").w_str();
 		FavouriteTabItem.Position = Position + 1;
 		FavouriteTabItem.IconIndex = 125;
 		FavouriteTabItem.pszService = L"sTabKitFavouriteTabItem";
@@ -3470,7 +3477,7 @@ void BuildFavouritesTabs(bool FixPosition)
 					ZeroMemory(&FrmSendFavouritesTabsButton,sizeof(TPluginAction));
 					FrmSendFavouritesTabsButton.cbSize = sizeof(TPluginAction);
 					FrmSendFavouritesTabsButton.pszName = L"TabKitFrmSendFavouritesTabsButton";
-					FrmSendFavouritesTabsButton.Hint = L"Ulubione zak³adki";
+					FrmSendFavouritesTabsButton.Hint = GetLangStr("FavTabs").w_str();
 					FrmSendFavouritesTabsButton.IconIndex = 125;
 					FrmSendFavouritesTabsButton.pszPopupName = L"TabKitFavouritesTabsPopUp";
 					FrmSendFavouritesTabsButton.Handle = (int)hFrmSend;
@@ -3595,7 +3602,7 @@ INT_PTR __stdcall ServiceFavouriteTabItem(WPARAM wParam, LPARAM lParam)
 			BuildFavouritesTabs(true);
 		}
 		//Osiagnieto maksymalna ilosc ulubionych zakladek
-		else ShowFavouritesTabsInfo("Osi¹gniêto maksymaln¹ iloœæ ulubionych zak³adek.");
+		else ShowFavouritesTabsInfo(GetLangStr("MaxFavTabs"));
 	}
 	//Zaklada jest dodana do ulubionych
 	else
@@ -3762,8 +3769,8 @@ void BuildStayOnTop()
 		ZeroMemory(&StayOnTopItem,sizeof(TPluginAction));
 		StayOnTopItem.cbSize = sizeof(TPluginAction);
 		StayOnTopItem.pszName = L"TabKitStayOnTopItem";
-		StayOnTopItem.pszCaption = L"Trzymaj okno na wierzchu";
-		StayOnTopItem.Hint = L"Trzymaj okno na wierzchu";
+		StayOnTopItem.pszCaption = GetLangStr("HoldOnTop").w_str();
+		StayOnTopItem.Hint = GetLangStr("HoldOnTop").w_str();
 		//Okno ustawione na wierzchu
 		if(StayOnTopStatus)
 		{
@@ -3790,8 +3797,8 @@ INT_PTR __stdcall ServiceStayOnTopItem(WPARAM wParam, LPARAM lParam)
 	ZeroMemory(&StayOnTopItem,sizeof(TPluginAction));
 	StayOnTopItem.cbSize = sizeof(TPluginAction);
 	StayOnTopItem.pszName = L"TabKitStayOnTopItem";
-	StayOnTopItem.pszCaption = L"Trzymaj okno na wierzchu";
-	StayOnTopItem.Hint = L"Trzymaj okno na wierzchu";
+	StayOnTopItem.pszCaption = GetLangStr("HoldOnTop").w_str();
+	StayOnTopItem.Hint = GetLangStr("HoldOnTop").w_str();
 	if(StayOnTopStatus) StayOnTopItem.IconIndex = STAYONTOP_ON;
 	else StayOnTopItem.IconIndex = STAYONTOP_OFF;
 	StayOnTopItem.Handle = (int)hFrmSend;
@@ -4093,11 +4100,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				//Odswiezenie ustawien
 				PluginLink.CallService(AQQ_FUNCTION_REFRESHSETUP,0,0);
 				//Komunikat informacyjny
-				MessageBox(Application->Handle,
-				L"Wtyczka TabKit do prawid³owego dzia³ania wymaga w³¹czenia obs³ugi zak³adek w oknie rozmowy!\n"
-				L"Obs³uga zak³adek w oknie rozmowy zosta³a automatycznie w³¹czona.",
-				L"TabKit - obs³uga zak³adek",
-				MB_OK | MB_ICONINFORMATION);
+				MessageBox(Application->Handle,	GetLangStr("TabsWarning").w_str(), GetLangStr("TabsWarningTitle").w_str(), MB_OK | MB_ICONINFORMATION);
 			}
 			//Sprawdzenie czy zostal zmieniony zasob glownego konta Jabber
 			TPluginStateChange PluginStateChange;
@@ -5961,8 +5964,8 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 						ZeroMemory(&StayOnTopItem,sizeof(TPluginAction));
 						StayOnTopItem.cbSize = sizeof(TPluginAction);
 						StayOnTopItem.pszName = L"TabKitStayOnTopItem";
-						StayOnTopItem.pszCaption = L"Trzymaj okno na wierzchu";
-						StayOnTopItem.Hint = L"Trzymaj okno na wierzchu";
+						StayOnTopItem.pszCaption = GetLangStr("HoldOnTop").w_str();
+						StayOnTopItem.Hint = GetLangStr("HoldOnTop").w_str();
 						StayOnTopItem.IconIndex = STAYONTOP_OFF;
 						StayOnTopItem.Handle = (int)hFrmSend;
 						PluginLink.CallService(AQQ_CONTROLS_TOOLBAR "tbMain" AQQ_CONTROLS_UPDATEBUTTON,0,(LPARAM)(&StayOnTopItem));
@@ -7520,7 +7523,7 @@ INT_PTR __stdcall OnAddLine(WPARAM wParam, LPARAM lParam)
 					BodyTmp = BodyTmp + PhotoFileName + "</A>";
 					//Generowanie nowego wygladu obrazka juz w formie zalacznika
 					BodyStyle = StringReplace(BodyStyle, "CC_ATTACH_ICON", "<IMG src=\"" + ThemePNGPath + "\" border=\"0\">", TReplaceFlags());
-					BodyStyle = StringReplace(BodyStyle, "CC_ATTACH_CAPTION", "<SPAN id=\"id_cctext\">Obrazek</SPAN>", TReplaceFlags());
+					BodyStyle = StringReplace(BodyStyle, "CC_ATTACH_CAPTION", "<SPAN id=\"id_cctext\">"+GetLangStr("Img")+"</SPAN>", TReplaceFlags());
 					BodyStyle = StringReplace(BodyStyle, "CC_ATTACH_SHORT", "<SPAN id=\"id_cctext\"><SPAN id=\"" + Session + "\">" + BodyTmp + "</SPAN></SPAN>", TReplaceFlags());
 					//Zapisanie nowego wygladu obrazka juz w formie zalacznika do tablicy zmiennych
 					NewBody[ItemsCount] = BodyStyle;
@@ -8336,6 +8339,43 @@ INT_PTR __stdcall OnFetchAllTabs_RefreshTabs(WPARAM wParam, LPARAM lParam)
 }
 //---------------------------------------------------------------------------
 
+//Hook na zmiane lokalizacji
+INT_PTR __stdcall OnLangCodeChanged(WPARAM wParam, LPARAM lParam)
+{
+	//Czyszczenie cache lokalizacji
+	ClearLngCache();
+	//Pobranie sciezki do katalogu prywatnego uzytkownika
+	UnicodeString PluginUserDir = GetPluginUserDir();
+	//Ustawienie sciezki lokalizacji wtyczki
+	UnicodeString LangCode = (wchar_t*)lParam;
+	LangPath = PluginUserDir + "\\\\Languages\\\\TabKit\\\\" + LangCode + "\\\\";
+	if(!DirectoryExists(LangPath))
+	{
+		LangCode = (wchar_t*)PluginLink.CallService(AQQ_FUNCTION_GETDEFLANGCODE,0,0);
+		LangPath = PluginUserDir + "\\\\Languages\\\\TabKit\\\\" + LangCode + "\\\\";
+	}
+	//Aktualizacja lokalizacji form wtyczki
+	for(int i=0;i<Screen->FormCount;i++)
+		LangForm(Screen->Forms[i]);
+	//Poprawka pozycji komponentu
+	if(hSettingsForm)
+	{
+		hSettingsForm->ItemsCountClosedTabsSpinEdit->Left = hSettingsForm->Canvas->TextWidth(hSettingsForm->ItemsCountClosedTabsSpinEdit->BoundLabel->Caption) + 20;
+		hSettingsForm->UnCloseTabHotKeyInput->Left = hSettingsForm->UnCloseTabHotKeyMode2RadioButton->Left + hSettingsForm->Canvas->TextWidth(hSettingsForm->UnCloseTabHotKeyMode2RadioButton->Caption) + 26;
+		hSettingsForm->CountClosedTabsSpinEdit->Left = hSettingsForm->Canvas->TextWidth(hSettingsForm->CountClosedTabsSpinEdit->BoundLabel->Caption) + 20;
+		hSettingsForm->FrmMainEdgeComboBox->Left = hSettingsForm->FrmMainEdgeLabel->Left + hSettingsForm->Canvas->TextWidth(hSettingsForm->FrmMainEdgeLabel->Caption) + 6;
+		hSettingsForm->FrmMainHideModeComboBox->Left = hSettingsForm->FrmMainHideModeLabel->Left + hSettingsForm->Canvas->TextWidth(hSettingsForm->FrmMainHideModeLabel->Caption) + 6;
+		hSettingsForm->FrmSendEdgeComboBox->Left = hSettingsForm->FrmSendEdgeLabel->Left + hSettingsForm->Canvas->TextWidth(hSettingsForm->FrmSendEdgeLabel->Caption) + 6;
+		hSettingsForm->FrmSendHideModeComboBox->Left = hSettingsForm->FrmSendHideModeLabel->Left + hSettingsForm->Canvas->TextWidth(hSettingsForm->FrmSendHideModeLabel->Caption) + 6;
+		hSettingsForm->SideSlideFullScreenModeExceptionsButton->Left = hSettingsForm->SideSlideFullScreenModeCheckBox->Left + hSettingsForm->Canvas->TextWidth(hSettingsForm->SideSlideFullScreenModeCheckBox->Caption) + 26;
+		hSettingsForm->CollapseImagesModeComboBox->Left = hSettingsForm->CollapseImagesCheckBox->Left + hSettingsForm->Canvas->TextWidth(hSettingsForm->CollapseImagesCheckBox->Caption) + 26;
+		hSettingsForm->ShortenLinksModeComboBox->Left = hSettingsForm->ShortenLinksCheckBox->Left + hSettingsForm->Canvas->TextWidth(hSettingsForm->ShortenLinksCheckBox->Caption) + 26;
+	}
+
+	return 0;
+}
+//---------------------------------------------------------------------------
+
 //Hook na zakonczenie ladowania listy kontaktow przy starcie AQQ
 INT_PTR __stdcall OnListReady(WPARAM wParam, LPARAM lParam)
 {
@@ -8477,7 +8517,7 @@ INT_PTR __stdcall OnMsgContextPopup(WPARAM wParam, LPARAM lParam)
 				ZeroMemory(&QuickQuoteItem,sizeof(TPluginAction));
 				QuickQuoteItem.cbSize = sizeof(TPluginAction);
 				QuickQuoteItem.pszName = L"TabKitQuickQuoteItem";
-				QuickQuoteItem.pszCaption = L"Wklej jako cytat";
+				QuickQuoteItem.pszCaption = GetLangStr("PasteAsQuote").w_str();
 				QuickQuoteItem.IconIndex = -1;
 				QuickQuoteItem.pszService = L"sTabKitQuickQuoteItem";
 				QuickQuoteItem.pszPopupName = L"popRich";
@@ -8552,7 +8592,7 @@ INT_PTR __stdcall OnPerformCopyData(WPARAM wParam, LPARAM lParam)
 				ZeroMemory(&CollapseImagesItem,sizeof(TPluginAction));
 				CollapseImagesItem.cbSize = sizeof(TPluginAction);
 				CollapseImagesItem.pszName = L"TabKitCollapseImagesItem";
-				CollapseImagesItem.pszCaption = L"Otwórz";
+				CollapseImagesItem.pszCaption = GetLangStr("Open").w_str();
 				CollapseImagesItem.Position = 0;
 				CollapseImagesItem.IconIndex = 40;
 				CollapseImagesItem.pszService = L"sTabKitCollapseImagesItem";
@@ -9093,18 +9133,24 @@ INT_PTR __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 								}
 								//Usuwanie bialych znakow
 								BodyTmp.Trim();
-								//Sprawdzanie zawartosci wiadomosci
+								//Sam obrazek w tresci wiadomosci
 								if(BodyTmp.IsEmpty())
 								{
-									//1 obrazek
-									if(ItemsCount==1)
-										Body = "[" + Nick + " przesy³a obrazek]";
-									//2-4 obrazki
-									else if((ItemsCount>1)&&(ItemsCount<5))
-										Body = "[" + Nick + " przesy³a "+IntToStr(ItemsCount)+" obrazki]";
-									//5+ obrazkow
+									//Ustawianie tresci na podstawie plci kontaktu
+									if(ChkContactGender(JID))
+									{
+										if(ItemsCount==1) Body = "[" + GetLangStr("SentImg1M") + "]";
+										else if((ItemsCount>1)&&(ItemsCount<5)) Body = "[" + GetLangStr("SentImg2M") + "]";
+										else Body = "[" + GetLangStr("SentImg3M") + "]";
+									}
 									else
-										Body = "[" + Nick + " przesy³a "+IntToStr(ItemsCount)+" obrazków]";
+									{
+										if(ItemsCount==1) Body = "[" + GetLangStr("SentImg1F") + "]";
+										else if((ItemsCount>1)&&(ItemsCount<5)) Body = "[" + GetLangStr("SentImg2F") + "]";
+										else Body = "[" + GetLangStr("SentImg3F") + "]";
+									}
+									Body = StringReplace(Body, "CC_NICK", Nick, TReplaceFlags());
+									Body = StringReplace(Body, "CC_COUNT", IntToStr(ItemsCount), TReplaceFlags());
 								}
 								//Obrazki wraz z tekstem
 								else
@@ -9116,7 +9162,7 @@ INT_PTR __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 										UnicodeString ImgBodyTmp = BodyTmp;
 										ImgBodyTmp.Delete(1,ImgBodyTmp.Pos("<AQQ_CACHE_ITEM")-1);
 										ImgBodyTmp.Delete(ImgBodyTmp.Pos(">")+1,ImgBodyTmp.Length());
-										Body = StringReplace(Body, ImgBodyTmp, "[Obrazek]", TReplaceFlags());
+										Body = StringReplace(Body, ImgBodyTmp, "["+GetLangStr("Img")+"]", TReplaceFlags());
 									}
 								}
 							}
@@ -9245,13 +9291,13 @@ INT_PTR __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 					//Pokazywanie chmurki informacyjnej
 					if(ChatGoneCloudNotiferNewMsgChk)
 					{
-						//Pobieranie pseudonimu kontaktu
-						UnicodeString Text = GetContactNick(JID+UserIdx);
-						//Ustawianie dalszej tresci na podstawie plci kontaktu
-						if(ChkContactGender(JID))
-							Text = Text + " zamkn¹³ okno rozmowy.";
-						else
-							Text = Text + " zamknê³a okno rozmowy.";
+						//Ustawianie tresci powiadomienia na podstawie plci kontaktu
+						UnicodeString Text;
+						if(ChkContactGender(JID)) Text = GetLangStr("ClosedWndM");
+						else Text = GetLangStr("ClosedWndF");
+            //Pobieranie pseudonimu kontaktu
+						UnicodeString Nick = (wchar_t*)RecvMsgContact.Nick;
+						Text = StringReplace(Text, "CC_NICK", Nick, TReplaceFlags());
 						//Pokazanie chmurki informacyjnej
 						TPluginShowInfo PluginShowInfo;
 						PluginShowInfo.cbSize = sizeof(TPluginShowInfo);
@@ -9696,7 +9742,7 @@ INT_PTR __stdcall OnSystemPopUp(WPARAM wParam, LPARAM lParam)
 					ZeroMemory(&PluginActionEdit,sizeof(TPluginActionEdit));
 					PluginActionEdit.cbSize = sizeof(TPluginActionEdit);
 					PluginActionEdit.pszName = L"TabKitClipTabItem";
-					PluginActionEdit.Caption = L"Przypnij zak³adkê";
+					PluginActionEdit.Caption = GetLangStr("ClipTab").w_str();
 					PluginActionEdit.Enabled = true;
 					PluginActionEdit.Visible = true;
 					PluginActionEdit.IconIndex = -1;
@@ -9706,7 +9752,7 @@ INT_PTR __stdcall OnSystemPopUp(WPARAM wParam, LPARAM lParam)
 					ZeroMemory(&PluginActionEdit,sizeof(TPluginActionEdit));
 					PluginActionEdit.cbSize = sizeof(TPluginActionEdit);
 					PluginActionEdit.pszName = L"TabKitClipTabCaptionItem";
-					PluginActionEdit.Caption = L"Ukrywaj nazwê zak³adki";
+					PluginActionEdit.Caption = GetLangStr("HideCaption").w_str();
 					PluginActionEdit.Enabled = true;
 					PluginActionEdit.Visible = false;
 					PluginActionEdit.IconIndex = -1;
@@ -9721,7 +9767,7 @@ INT_PTR __stdcall OnSystemPopUp(WPARAM wParam, LPARAM lParam)
 					ZeroMemory(&PluginActionEdit,sizeof(TPluginActionEdit));
 					PluginActionEdit.cbSize = sizeof(TPluginActionEdit);
 					PluginActionEdit.pszName = L"TabKitClipTabItem";
-					PluginActionEdit.Caption = L"Odepnij zak³adkê";
+					PluginActionEdit.Caption = GetLangStr("UnClipTab").w_str();
 					PluginActionEdit.Enabled = true;
 					PluginActionEdit.Visible = true;
 					PluginActionEdit.IconIndex = -1;
@@ -9731,7 +9777,7 @@ INT_PTR __stdcall OnSystemPopUp(WPARAM wParam, LPARAM lParam)
 					ZeroMemory(&PluginActionEdit,sizeof(TPluginActionEdit));
 					PluginActionEdit.cbSize = sizeof(TPluginActionEdit);
 					PluginActionEdit.pszName = L"TabKitClipTabCaptionItem";
-					PluginActionEdit.Caption = L"Ukrywaj nazwê zak³adki";
+					PluginActionEdit.Caption = GetLangStr("HideCaption").w_str();
 					PluginActionEdit.Enabled = true;
 					PluginActionEdit.Visible = true;
 					PluginActionEdit.IconIndex = -1;
@@ -9751,7 +9797,7 @@ INT_PTR __stdcall OnSystemPopUp(WPARAM wParam, LPARAM lParam)
 					ZeroMemory(&PluginActionEdit,sizeof(TPluginActionEdit));
 					PluginActionEdit.cbSize = sizeof(TPluginActionEdit);
 					PluginActionEdit.pszName = L"TabKitFrmSendFavouriteTabItem";
-					PluginActionEdit.Caption = L"Dodaj do ulubionych";
+					PluginActionEdit.Caption = GetLangStr("AddToFav").w_str();
 					PluginActionEdit.Enabled = true;
 					PluginActionEdit.Visible = true;
 					PluginActionEdit.IconIndex = 125;
@@ -9766,7 +9812,7 @@ INT_PTR __stdcall OnSystemPopUp(WPARAM wParam, LPARAM lParam)
 					ZeroMemory(&PluginActionEdit,sizeof(TPluginActionEdit));
 					PluginActionEdit.cbSize = sizeof(TPluginActionEdit);
 					PluginActionEdit.pszName = L"TabKitFrmSendFavouriteTabItem";
-					PluginActionEdit.Caption = L"Usuñ z ulubionych";
+					PluginActionEdit.Caption = GetLangStr("RemoveFromFav").w_str();
 					PluginActionEdit.Enabled = true;
 					PluginActionEdit.Visible = true;
 					PluginActionEdit.IconIndex = 125;
@@ -9806,7 +9852,7 @@ INT_PTR __stdcall OnSystemPopUp(WPARAM wParam, LPARAM lParam)
 					ZeroMemory(&PluginActionEdit,sizeof(TPluginActionEdit));
 					PluginActionEdit.cbSize = sizeof(TPluginActionEdit);
 					PluginActionEdit.pszName = L"TabKitFrmMainFavouriteTabItem";
-					PluginActionEdit.Caption = L"Dodaj do ulubionych";
+					PluginActionEdit.Caption = GetLangStr("AddToFav").w_str();
 					PluginActionEdit.Enabled = true;
 					PluginActionEdit.Visible = true;
 					PluginActionEdit.IconIndex = 125;
@@ -9821,7 +9867,7 @@ INT_PTR __stdcall OnSystemPopUp(WPARAM wParam, LPARAM lParam)
 					ZeroMemory(&PluginActionEdit,sizeof(TPluginActionEdit));
 					PluginActionEdit.cbSize = sizeof(TPluginActionEdit);
 					PluginActionEdit.pszName = L"TabKitFrmMainFavouriteTabItem";
-					PluginActionEdit.Caption = L"Usuñ z ulubionych";
+					PluginActionEdit.Caption = GetLangStr("RemoveFromFav").w_str();
 					PluginActionEdit.Enabled = true;
 					PluginActionEdit.Visible = true;
 					PluginActionEdit.IconIndex = 125;
@@ -10121,8 +10167,8 @@ INT_PTR __stdcall OnThemeChanged(WPARAM wParam, LPARAM lParam)
 			//Kolor WebLabel'ow
 			hSettingsForm->EmailWebLabel->Font->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
 			hSettingsForm->EmailWebLabel->HoverFont->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
-			hSettingsForm->JabberWebLabel->Font->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
-			hSettingsForm->JabberWebLabel->HoverFont->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
+			hSettingsForm->XMPPWebLabel->Font->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
+			hSettingsForm->XMPPWebLabel->HoverFont->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
 			hSettingsForm->URLWebLabel->Font->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
 			hSettingsForm->URLWebLabel->HoverFont->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
 			hSettingsForm->ForumWebLabel->Font->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
@@ -10138,8 +10184,8 @@ INT_PTR __stdcall OnThemeChanged(WPARAM wParam, LPARAM lParam)
 			//Kolor WebLabel'ow
 			hSettingsForm->EmailWebLabel->Font->Color = clWindowText;
 			hSettingsForm->EmailWebLabel->HoverFont->Color = clWindowText;
-			hSettingsForm->JabberWebLabel->Font->Color = clWindowText;
-			hSettingsForm->JabberWebLabel->HoverFont->Color = clWindowText;
+			hSettingsForm->XMPPWebLabel->Font->Color = clWindowText;
+			hSettingsForm->XMPPWebLabel->HoverFont->Color = clWindowText;
 			hSettingsForm->URLWebLabel->Font->Color = clWindowText;
 			hSettingsForm->URLWebLabel->HoverFont->Color = clWindowText;
 			hSettingsForm->ForumWebLabel->Font->Color = clWindowText;
@@ -10679,11 +10725,7 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 				//Odswiezenie ustawien
 				PluginLink.CallService(AQQ_FUNCTION_REFRESHSETUP,0,0);
 				//Komunikat informacyjny
-				MessageBox(Application->Handle,
-				L"Wtyczka TabKit do prawid³owego dzia³ania wymaga w³¹czenia obs³ugi zak³adek w oknie rozmowy!\n"
-				L"Obs³uga zak³adek w oknie rozmowy zosta³a automatycznie w³¹czona.",
-				L"TabKit - obs³uga zak³adek",
-				MB_OK | MB_ICONINFORMATION);
+				MessageBox(Application->Handle,	GetLangStr("TabsWarning").w_str(), GetLangStr("TabsWarningTitle").w_str(), MB_OK | MB_ICONINFORMATION);
 			}
 			//Sprawdzenie czy zostal zmieniony zasob glownego konta Jabber
 			TPluginStateChange PluginStateChange;
@@ -11566,6 +11608,54 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Load(PPluginLink Link)
 	SettingsFileDir = PluginUserDir + "\\\\TabKit\\\\Settings.ini";
 	//Pobranie sciezki do katalogu ikonek wtyczki w aktywnej kompozycji
 	UnicodeString ThemeDir = GetThemeDir() + "\\\\TabKit\\\\";
+	//Tworzenie katalogow lokalizacji
+	if(!DirectoryExists(PluginUserDir+"\\\\Languages"))
+		CreateDir(PluginUserDir+"\\\\Languages");
+	if(!DirectoryExists(PluginUserDir+"\\\\Languages\\\\TabKit"))
+		CreateDir(PluginUserDir+"\\\\Languages\\\\TabKit");
+	if(!DirectoryExists(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN"))
+		CreateDir(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN");
+	if(!DirectoryExists(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL"))
+		CreateDir(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL");
+  //Wypakowanie plikow lokalizacji
+	//B927FEABC21B213A6F777EF0836B1319
+	if(!FileExists(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\Const.lng"))
+		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\Const.lng").w_str(),L"EN_CONST",L"DATA");
+	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\Const.lng")!="93B75856360BAE46311C260C9AABC8F2")
+		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\Const.lng").w_str(),L"EN_CONST",L"DATA");
+	//12ABC8B5C1DEC54FC82298868FFDB276
+	if(!FileExists(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSettingsForm.lng"))
+		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSettingsForm.lng").w_str(),L"EN_SETTINGSFRM",L"DATA");
+	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSettingsForm.lng")!="12ABC8B5C1DEC54FC82298868FFDB276")
+		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSettingsForm.lng").w_str(),L"EN_SETTINGSFRM",L"DATA");
+	//324061A51B896B06E99EF1B88D062B2F
+	if(!FileExists(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSideSlideExceptionsForm.lng"))
+		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSideSlideExceptionsForm.lng").w_str(),L"EN_SIDESLIDEEXCEPTIONSFRM",L"DATA");
+	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSideSlideExceptionsForm.lng")!="324061A51B896B06E99EF1B88D062B2F")
+		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSideSlideExceptionsForm.lng").w_str(),L"EN_SIDESLIDEEXCEPTIONSFRM",L"DATA");
+	//749D4863979FE6E6C2A6048798D47885
+	if(!FileExists(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\Const.lng"))
+		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\Const.lng").w_str(),L"PL_CONST",L"DATA");
+	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\Const.lng")!="05B502E9D36386D0E8BEFAB6D7F0D144")
+		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\Const.lng").w_str(),L"PL_CONST",L"DATA");
+	//9E6F4DD3BBA8531783510BE938977486
+	if(!FileExists(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSettingsForm.lng"))
+		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSettingsForm.lng").w_str(),L"PL_SETTINGSFRM",L"DATA");
+	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSettingsForm.lng")!="9E6F4DD3BBA8531783510BE938977486")
+		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSettingsForm.lng").w_str(),L"PL_SETTINGSFRM",L"DATA");
+	//589F6BBC7D5CB448CBF9DDD2BC15D54C
+	if(!FileExists(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSideSlideExceptionsForm.lng"))
+		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSideSlideExceptionsForm.lng").w_str(),L"PL_SIDESLIDEEXCEPTIONSFRM",L"DATA");
+	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSideSlideExceptionsForm.lng")!="589F6BBC7D5CB448CBF9DDD2BC15D54C")
+		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSideSlideExceptionsForm.lng").w_str(),L"PL_SIDESLIDEEXCEPTIONSFRM",L"DATA");
+	//Ustawienie sciezki lokalizacji wtyczki
+	UnicodeString LangCode = (wchar_t*)PluginLink.CallService(AQQ_FUNCTION_GETLANGCODE,0,0);
+	LangPath = GetPluginUserDirW() + "\\\\Languages\\\\TabKit\\\\" + LangCode + "\\\\";
+	if(!DirectoryExists(LangPath))
+	{
+		LangCode = (wchar_t*)PluginLink.CallService(AQQ_FUNCTION_GETDEFLANGCODE,0,0);
+		LangPath = GetPluginUserDirW() + "\\\\Languages\\\\TabKit\\\\" + LangCode + "\\\\";
+	}
 	//Folder z ustawieniami wtyczki etc
 	if(!DirectoryExists(PluginUserDir + "\\\\TabKit"))
 		CreateDir(PluginUserDir + "\\\\TabKit");
@@ -11820,6 +11910,8 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Load(PPluginLink Link)
 	PluginLink.HookEvent(AQQ_SYSTEM_COLORCHANGEV2,OnColorChange);
 	//Hook na zmiane stanu kontaktu
 	PluginLink.HookEvent(AQQ_CONTACTS_UPDATE,OnContactsUpdate);
+	//Hook na zmiane lokalizacji
+	PluginLink.HookEvent(AQQ_SYSTEM_LANGCODE_CHANGED,OnLangCodeChanged);
 	//Hook na zakonczenie ladowania listy kontaktow przy starcie AQQ
 	PluginLink.HookEvent(AQQ_CONTACTS_LISTREADY,OnListReady);
 	//Hook na wpisywany tekst w oknie rozmowy
@@ -12177,6 +12269,7 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Unload()
 	PluginLink.UnhookEvent(OnCloseTabMessage);
 	PluginLink.UnhookEvent(OnColorChange);
 	PluginLink.UnhookEvent(OnContactsUpdate);
+	PluginLink.UnhookEvent(OnLangCodeChanged);
 	PluginLink.UnhookEvent(OnListReady);
 	PluginLink.UnhookEvent(OnMsgComposing);
 	PluginLink.UnhookEvent(OnMsgContextPopup);
@@ -12294,7 +12387,7 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Unload()
 				if(!ClosedTabsList->Strings[Count].IsEmpty())
 				{
 					Ini->WriteString("ClosedTabs","Tab"+IntToStr(Count+1),ClosedTabsList->Strings[Count]);
-					if(ClosedTabsTimeList->Strings[Count].IsEmpty()) ClosedTabsTimeList->Strings[Count] = "b/d";
+					if(ClosedTabsTimeList->Strings[Count].IsEmpty()) ClosedTabsTimeList->Strings[Count] = GetLangStr("NoData");
 					Ini->WriteString("ClosedTabs","Tab"+IntToStr(Count+1)+"Time",ClosedTabsTimeList->Strings[Count]);
 				}
 			}

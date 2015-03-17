@@ -44,7 +44,6 @@ __published:	// IDE-managed Components
 	TsBevel *Bevel;
 	TsButton *SaveButton;
 	TsTabControl *TabControl;
-	TsLabel *InfoLabel;
 	TsListBox *ProcessListBox;
 	TsButton *AddButton;
 	TsButton *DeleteButton;
@@ -62,6 +61,7 @@ __published:	// IDE-managed Components
 	void __fastcall DeleteButtonClick(TObject *Sender);
 	void __fastcall aLoadSettingsExecute(TObject *Sender);
 	void __fastcall aSaveSettingsExecute(TObject *Sender);
+	void __fastcall FormCreate(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	__fastcall TSideSlideExceptionsForm(TComponent* Owner);

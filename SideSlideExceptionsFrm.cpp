@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------------
-// Copyright (C) 2010-2014 Krzysztof Grochocki
+// Copyright (C) 2010-2015 Krzysztof Grochocki
 //
 // This file is part of TabKit
 //
@@ -22,6 +22,7 @@
 //---------------------------------------------------------------------------
 #include <vcl.h>
 #include <inifiles.hpp>
+#include <LangAPI.hpp>
 #pragma hdrstop
 #include "SettingsFrm.h"
 #include "SideSlideExceptionsFrm.h"
@@ -79,7 +80,7 @@ void __fastcall TSideSlideExceptionsForm::SaveButtonClick(TObject *Sender)
 void __fastcall TSideSlideExceptionsForm::AddButtonClick(TObject *Sender)
 {
 	UnicodeString Process;
-	if(InputQuery("Nowy wyj¹tek","Nazwa pliku wykonywalnego:",Process))
+	if(InputQuery(GetLangStr("NewException"),GetLangStr("ExeName"),Process))
 	{
 		if(!Process.IsEmpty())
 		{
@@ -140,3 +141,11 @@ void __fastcall TSideSlideExceptionsForm::aSaveSettingsExecute(TObject *Sender)
 	delete Ini;
 }
 //---------------------------------------------------------------------------
+
+void __fastcall TSideSlideExceptionsForm::FormCreate(TObject *Sender)
+{
+  //Lokalizowanie formy
+	LangForm(this);
+}
+//---------------------------------------------------------------------------
+
