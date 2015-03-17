@@ -1,8 +1,9 @@
 object SideSlideExceptionsForm: TSideSlideExceptionsForm
+  Tag = 1
   Left = 0
   Top = 0
   BorderStyle = bsToolWindow
-  Caption = 'TabKit - wyj'#261'tki...'
+  Caption = 'TabKit - wyj'#261'tki'
   ClientHeight = 211
   ClientWidth = 232
   Color = clBtnFace
@@ -13,6 +14,7 @@ object SideSlideExceptionsForm: TSideSlideExceptionsForm
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
+  OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -26,6 +28,7 @@ object SideSlideExceptionsForm: TSideSlideExceptionsForm
     ExplicitTop = 177
   end
   object SaveButton: TsButton
+    Tag = 2
     Left = 153
     Top = 181
     Width = 75
@@ -34,7 +37,7 @@ object SideSlideExceptionsForm: TSideSlideExceptionsForm
     Anchors = [akRight, akBottom]
     Caption = 'Zapisz'
     Enabled = False
-    TabOrder = 0
+    TabOrder = 1
     TabStop = False
     OnClick = SaveButtonClick
     SkinData.SkinSection = 'BUTTON'
@@ -50,16 +53,10 @@ object SideSlideExceptionsForm: TSideSlideExceptionsForm
     Margins.Right = 6
     Margins.Bottom = 6
     Align = alClient
-    TabOrder = 1
+    TabOrder = 0
     SkinData.SkinSection = 'PAGECONTROL'
-    object InfoLabel: TsLabel
-      Left = 19
-      Top = 8
-      Width = 183
-      Height = 13
-      Caption = 'Ignorowane aplikacje pe'#322'noekranowe:'
-    end
     object ProcessListBox: TsListBox
+      Tag = 4
       Left = 8
       Top = 27
       Width = 202
@@ -69,18 +66,21 @@ object SideSlideExceptionsForm: TSideSlideExceptionsForm
       ItemHeight = 13
       TabOrder = 0
       OnClick = ProcessListBoxClick
-      BoundLabel.Indent = 0
+      BoundLabel.Active = True
+      BoundLabel.Caption = 'Ignorowane aplikacje pe'#322'noekranowe:'
+      BoundLabel.Indent = 6
       BoundLabel.Font.Charset = DEFAULT_CHARSET
       BoundLabel.Font.Color = clWindowText
       BoundLabel.Font.Height = -11
       BoundLabel.Font.Name = 'Tahoma'
       BoundLabel.Font.Style = []
-      BoundLabel.Layout = sclLeft
+      BoundLabel.Layout = sclTopCenter
       BoundLabel.MaxWidth = 0
       BoundLabel.UseSkinColor = True
       SkinData.SkinSection = 'EDIT'
     end
     object AddButton: TsButton
+      Tag = 5
       Left = 8
       Top = 129
       Width = 75
@@ -93,6 +93,7 @@ object SideSlideExceptionsForm: TSideSlideExceptionsForm
       SkinData.SkinSection = 'BUTTON'
     end
     object DeleteButton: TsButton
+      Tag = 6
       Left = 135
       Top = 129
       Width = 75
@@ -107,6 +108,7 @@ object SideSlideExceptionsForm: TSideSlideExceptionsForm
     end
   end
   object CancelButton: TsButton
+    Tag = 3
     Left = 72
     Top = 181
     Width = 75

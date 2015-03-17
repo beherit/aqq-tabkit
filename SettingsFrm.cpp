@@ -24,6 +24,7 @@
 #include <inifiles.hpp>
 #include <XMLDoc.hpp>
 #include <gdiplus.h>
+#include <LangAPI.hpp>
 #pragma hdrstop
 #include "SettingsFrm.h"
 #include "SideSlideExceptionsFrm.h"
@@ -181,6 +182,19 @@ UnicodeString __fastcall TSettingsForm::IdHTTPGet(UnicodeString URL)
 
 void __fastcall TSettingsForm::FormCreate(TObject *Sender)
 {
+	//Lokalizowanie formy
+	LangForm(this);
+	//Poprawka pozycji komponentow
+	ItemsCountClosedTabsSpinEdit->Left = Canvas->TextWidth(ItemsCountClosedTabsSpinEdit->BoundLabel->Caption) + 20;
+	UnCloseTabHotKeyInput->Left = UnCloseTabHotKeyMode2RadioButton->Left + Canvas->TextWidth(UnCloseTabHotKeyMode2RadioButton->Caption) + 26;
+	CountClosedTabsSpinEdit->Left = Canvas->TextWidth(CountClosedTabsSpinEdit->BoundLabel->Caption) + 20;
+	FrmMainEdgeComboBox->Left = FrmMainEdgeLabel->Left + Canvas->TextWidth(FrmMainEdgeLabel->Caption) + 6;
+	FrmMainHideModeComboBox->Left = FrmMainHideModeLabel->Left + Canvas->TextWidth(FrmMainHideModeLabel->Caption) + 6;
+	FrmSendEdgeComboBox->Left = FrmSendEdgeLabel->Left + Canvas->TextWidth(FrmSendEdgeLabel->Caption) + 6;
+	FrmSendHideModeComboBox->Left = FrmSendHideModeLabel->Left + Canvas->TextWidth(FrmSendHideModeLabel->Caption) + 6;
+	SideSlideFullScreenModeExceptionsButton->Left = SideSlideFullScreenModeCheckBox->Left + Canvas->TextWidth(SideSlideFullScreenModeCheckBox->Caption) + 26;
+	CollapseImagesModeComboBox->Left = CollapseImagesCheckBox->Left + Canvas->TextWidth(CollapseImagesCheckBox->Caption) + 26;
+	ShortenLinksModeComboBox->Left = ShortenLinksCheckBox->Left + Canvas->TextWidth(ShortenLinksCheckBox->Caption) + 26;
 	//Wlaczona zaawansowana stylizacja okien
 	if(ChkSkinEnabled())
 	{
@@ -219,8 +233,8 @@ void __fastcall TSettingsForm::FormShow(TObject *Sender)
 		//Kolor WebLabel'ow
 		EmailWebLabel->Font->Color = sSkinManager->GetGlobalFontColor();
 		EmailWebLabel->HoverFont->Color = sSkinManager->GetGlobalFontColor();
-		JabberWebLabel->Font->Color = sSkinManager->GetGlobalFontColor();
-		JabberWebLabel->HoverFont->Color = sSkinManager->GetGlobalFontColor();
+		XMPPWebLabel->Font->Color = sSkinManager->GetGlobalFontColor();
+		XMPPWebLabel->HoverFont->Color = sSkinManager->GetGlobalFontColor();
 		URLWebLabel->Font->Color = sSkinManager->GetGlobalFontColor();
 		URLWebLabel->HoverFont->Color = sSkinManager->GetGlobalFontColor();
 		ForumWebLabel->Font->Color = sSkinManager->GetGlobalFontColor();
@@ -236,8 +250,8 @@ void __fastcall TSettingsForm::FormShow(TObject *Sender)
 		//Kolor WebLabel'ow
 		EmailWebLabel->Font->Color = clWindowText;
 		EmailWebLabel->HoverFont->Color = clWindowText;
-		JabberWebLabel->Font->Color = clWindowText;
-		JabberWebLabel->HoverFont->Color = clWindowText;
+		XMPPWebLabel->Font->Color = clWindowText;
+		XMPPWebLabel->HoverFont->Color = clWindowText;
 		URLWebLabel->Font->Color = clWindowText;
 		URLWebLabel->HoverFont->Color = clWindowText;
 		ForumWebLabel->Font->Color = clWindowText;
@@ -383,66 +397,16 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
 	delete SessionIni;
 	//SideSlide
 	SlideFrmMainCheckBox->Checked = Ini->ReadBool("SideSlide","SlideFrmMain",false);
-	switch(Ini->ReadInteger("SideSlide","FrmMainEdge",2))
-	{
-		case 1:
-			FrmMainEdgeLeftRadioButton->Checked = true;
-			break;
-		case 2:
-			FrmMainEdgeRightRadioButton->Checked = true;
-			break;
-		case 3:
-			FrmMainEdgeBottomRadioButton->Checked = true;
-			break;
-		case 4:
-			FrmMainEdgeTopRadioButton->Checked = true;
-			break;
-	}
-	switch(Ini->ReadInteger("SideSlide","FrmMainHideMode",3))
-	{
-		case 1:
-			FrmMainHideFocusRadioButton->Checked = true;
-			break;
-		case 2:
-			FrmMainHideAppFocusRadioButton->Checked = true;
-			break;
-		case 3:
-			FrmMainHideCursorRadioButton->Checked = true;
-			break;
-	}
+	FrmMainEdgeComboBox->ItemIndex = Ini->ReadInteger("SideSlide","FrmMainEdge",2) - 1;
+	FrmMainHideModeComboBox->ItemIndex = Ini->ReadInteger("SideSlide","FrmMainHideMode",3) - 1;
 	FrmMainSlideInDelaySpinEdit->Value = Ini->ReadInteger("SideSlide","FrmMainSlideInDelay",1000);
 	FrmMainSlideOutDelaySpinEdit->Value = Ini->ReadInteger("SideSlide","FrmMainSlideOutDelay",1);
 	FrmMainSlideInTimeSpinEdit->Value = Ini->ReadInteger("SideSlide","FrmMainSlideInTime",300);
 	FrmMainSlideOutTimeSpinEdit->Value = Ini->ReadInteger("SideSlide","FrmMainSlideOutTime",500);
 	ChangeTabAfterSlideInCheckBox->Checked = Ini->ReadBool("SideSlide","ChangeTabAfterSlideIn",true);
 	SlideFrmSendCheckBox->Checked = Ini->ReadBool("SideSlide","SlideFrmSend",false);
-	switch(Ini->ReadInteger("SideSlide","FrmSendEdge",1))
-	{
-		case 1:
-			FrmSendEdgeLeftRadioButton->Checked = true;
-			break;
-		case 2:
-			FrmSendEdgeRightRadioButton->Checked = true;
-			break;
-		case 3:
-			FrmSendEdgeBottomRadioButton->Checked = true;
-			break;
-		case 4:
-			FrmSendEdgeTopRadioButton->Checked = true;
-			break;
-	}
-	switch(Ini->ReadInteger("SideSlide","FrmSendHideMode",3))
-	{
-		case 1:
-			FrmSendHideFocusRadioButton->Checked = true;
-			break;
-		case 2:
-			FrmSendHideAppFocusRadioButton->Checked = true;
-			break;
-		case 3:
-			FrmSendHideCursorRadioButton->Checked = true;
-			break;
-	}
+	FrmSendEdgeComboBox->ItemIndex = Ini->ReadInteger("SideSlide","FrmSendEdge",1) - 1;
+	FrmSendHideModeComboBox->ItemIndex = Ini->ReadInteger("SideSlide","FrmSendHideMode",3) - 1;
 	FrmSendSlideInDelaySpinEdit->Value = Ini->ReadInteger("SideSlide","FrmSendSlideInDelay",1000);
 	FrmSendSlideOutDelaySpinEdit->Value = Ini->ReadInteger("SideSlide","FrmSendSlideOutDelay",1);
 	FrmSendSlideInTimeSpinEdit->Value = Ini->ReadInteger("SideSlide","FrmSendSlideInTime",300);
@@ -620,10 +584,7 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
 		Ini->WriteInteger("Titlebar","MainMode",2);
 	if(TweakFrmMainTitlebarModeExComboBox->ItemIndex!=-1)
 		Ini->WriteInteger("Titlebar","MainModeEx",TweakFrmMainTitlebarModeExComboBox->ItemIndex);
-	if(TweakFrmMainTitlebarMode2Edit->Text!="Wpisz tutaj swój tekst")
-		Ini->WriteString("Titlebar","MainText",TweakFrmMainTitlebarMode2Edit->Text);
-	else
-		Ini->WriteString("Titlebar","MainText","");
+	Ini->WriteString("Titlebar","MainText",TweakFrmMainTitlebarMode2Edit->Text);
 	//ClipTabs
 	Ini->WriteBool("ClipTabs","Enabled",ClipTabsCheckBox->Checked);
 	Ini->WriteBool("ClipTabs","OpenClipTabs",OpenClipTabsCheckBox->Checked);
@@ -649,40 +610,16 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
 	delete SessionIni;
 	//SideSlide
 	Ini->WriteBool("SideSlide","SlideFrmMain",SlideFrmMainCheckBox->Checked);
-	if(FrmMainEdgeLeftRadioButton->Checked)
-		Ini->WriteInteger("SideSlide","FrmMainEdge",1);
-	else if(FrmMainEdgeRightRadioButton->Checked)
-		Ini->WriteInteger("SideSlide","FrmMainEdge",2);
-	else if(FrmMainEdgeBottomRadioButton->Checked)
-		Ini->WriteInteger("SideSlide","FrmMainEdge",3);
-	else
-		Ini->WriteInteger("SideSlide","FrmMainEdge",4);
-	if(FrmMainHideFocusRadioButton->Checked)
-		Ini->WriteInteger("SideSlide","FrmMainHideMode",1);
-	else if(FrmMainHideAppFocusRadioButton->Checked)
-		Ini->WriteInteger("SideSlide","FrmMainHideMode",2);
-	else
-		Ini->WriteInteger("SideSlide","FrmMainHideMode",3);
+	Ini->WriteInteger("SideSlide","FrmMainEdge",FrmMainEdgeComboBox->ItemIndex+1);
+	Ini->WriteInteger("SideSlide","FrmMainHideMode",FrmMainHideModeComboBox->ItemIndex+1);
 	Ini->WriteInteger("SideSlide","FrmMainSlideInDelay",FrmMainSlideInDelaySpinEdit->Value);
 	Ini->WriteInteger("SideSlide","FrmMainSlideOutDelay",FrmMainSlideOutDelaySpinEdit->Value);
 	Ini->WriteInteger("SideSlide","FrmMainSlideInTime",FrmMainSlideInTimeSpinEdit->Value);
 	Ini->WriteInteger("SideSlide","FrmMainSlideOutTime",FrmMainSlideOutTimeSpinEdit->Value);
 	Ini->WriteBool("SideSlide","ChangeTabAfterSlideIn",ChangeTabAfterSlideInCheckBox->Checked);
 	Ini->WriteBool("SideSlide","SlideFrmSend",SlideFrmSendCheckBox->Checked);
-	if(FrmSendEdgeLeftRadioButton->Checked)
-		Ini->WriteInteger("SideSlide","FrmSendEdge",1);
-	else if(FrmSendEdgeRightRadioButton->Checked)
-		Ini->WriteInteger("SideSlide","FrmSendEdge",2);
-	else if(FrmSendEdgeBottomRadioButton->Checked)
-		Ini->WriteInteger("SideSlide","FrmSendEdge",3);
-	else
-		Ini->WriteInteger("SideSlide","FrmSendEdge",4);
-	if(FrmSendHideFocusRadioButton->Checked)
-		Ini->WriteInteger("SideSlide","FrmSendHideMode",1);
-	else if(FrmSendHideAppFocusRadioButton->Checked)
-		Ini->WriteInteger("SideSlide","FrmSendHideMode",2);
-	else
-		Ini->WriteInteger("SideSlide","FrmSendHideMode",3);
+	Ini->WriteInteger("SideSlide","FrmSendEdge",FrmSendEdgeComboBox->ItemIndex+1);
+	Ini->WriteInteger("SideSlide","FrmSendHideMode",FrmSendHideModeComboBox->ItemIndex+1);
 	Ini->WriteInteger("SideSlide","FrmSendSlideInDelay",FrmSendSlideInDelaySpinEdit->Value);
 	Ini->WriteInteger("SideSlide","FrmSendSlideOutDelay",FrmSendSlideOutDelaySpinEdit->Value);
 	Ini->WriteInteger("SideSlide","FrmSendSlideInTime",FrmSendSlideInTimeSpinEdit->Value);
@@ -755,14 +692,12 @@ void __fastcall TSettingsForm::aClosedTabsChkExecute(TObject *Sender)
 	FrmSendClosedTabsCheckBox->Enabled = FastAccessClosedTabsCheckBox->Checked;
 	ShowTimeClosedTabsCheckBox->Enabled = FastAccessClosedTabsCheckBox->Checked;
 	FastClearClosedTabsCheckBox->Enabled = FastAccessClosedTabsCheckBox->Checked;
-	ItemsCountClosedTabsLabel->Enabled = FastAccessClosedTabsCheckBox->Checked;
 	ItemsCountClosedTabsSpinEdit->Enabled = FastAccessClosedTabsCheckBox->Checked;
 	UnCloseTabHotKeyMode1RadioButton->Enabled = UnCloseTabHotKeyCheckBox->Checked;
 	UnCloseTabHotKeyMode2RadioButton->Enabled = UnCloseTabHotKeyCheckBox->Checked;
 	UnCloseTabHotKeyInput->Enabled = UnCloseTabHotKeyMode2RadioButton->Checked;
 	FastAccessClosedTabsCheckBox->Enabled = RememberClosedTabsCheckBox->Checked;
 	UnCloseTabHotKeyCheckBox->Enabled = RememberClosedTabsCheckBox->Checked;
-	CountClosedTabsLabel->Enabled = RememberClosedTabsCheckBox->Checked;
 	CountClosedTabsSpinEdit->Enabled = RememberClosedTabsCheckBox->Checked;
 	RestoreLastMsgClosedTabsCheckBox->Enabled = RememberClosedTabsCheckBox->Checked;
 	OnlyConversationTabsCheckBox->Enabled = RememberClosedTabsCheckBox->Checked;
@@ -776,7 +711,6 @@ void __fastcall TSettingsForm::aClosedTabsChkExecute(TObject *Sender)
 		FrmSendClosedTabsCheckBox->Enabled = false;
 		ShowTimeClosedTabsCheckBox->Enabled = false;
 		FastClearClosedTabsCheckBox->Enabled = false;
-		ItemsCountClosedTabsLabel->Enabled = false;
 		ItemsCountClosedTabsSpinEdit->Enabled = false;
 		UnCloseTabHotKeyMode1RadioButton->Enabled = false;
 		UnCloseTabHotKeyMode2RadioButton->Enabled = false;
@@ -867,16 +801,6 @@ void __fastcall TSettingsForm::aTitlebarTweakChkExecute(TObject *Sender)
 	TweakFrmMainTitlebarMode2RadioButton->Enabled = TweakFrmMainTitlebarCheckBox->Checked;
 	TweakFrmMainTitlebarMode2Edit->Enabled = TweakFrmMainTitlebarCheckBox->Checked;
 	if(TweakFrmMainTitlebarCheckBox->Checked) TweakFrmMainTitlebarMode2Edit->Enabled = TweakFrmMainTitlebarMode2RadioButton->Checked;
-	if(!TweakFrmMainTitlebarMode2Edit->Enabled)
-	{
-		if(TweakFrmMainTitlebarMode2Edit->Text.IsEmpty())
-			TweakFrmMainTitlebarMode2Edit->Text = "Wpisz tutaj swój tekst";
-	}
-	else
-	{
-		if(TweakFrmMainTitlebarMode2Edit->Text=="Wpisz tutaj swój tekst")
-			TweakFrmMainTitlebarMode2Edit->Text = "";
-	}
 
 	SaveButton->Enabled = true;
 }
@@ -899,37 +823,33 @@ void __fastcall TSettingsForm::aClipTabsChkExecute(TObject *Sender)
 
 void __fastcall TSettingsForm::aSideSlideChkExecute(TObject *Sender)
 {
-	FrmSendEdgeGroupBox->Enabled = SlideFrmSendCheckBox->Checked;
-	FrmSendEdgeLeftRadioButton->Enabled = SlideFrmSendCheckBox->Checked;
-	FrmSendEdgeRightRadioButton->Enabled = SlideFrmSendCheckBox->Checked;
-	FrmSendEdgeBottomRadioButton->Enabled = SlideFrmSendCheckBox->Checked;
-	FrmSendEdgeTopRadioButton->Enabled = SlideFrmSendCheckBox->Checked;
-	FrmSendHideGroupBox->Enabled = SlideFrmSendCheckBox->Checked;
-	FrmSendHideFocusRadioButton->Enabled = SlideFrmSendCheckBox->Checked;
-	FrmSendHideAppFocusRadioButton->Enabled = SlideFrmSendCheckBox->Checked;
-	FrmSendHideCursorRadioButton->Enabled = SlideFrmSendCheckBox->Checked;
+	FrmSendEdgeLabel->Enabled = SlideFrmSendCheckBox->Checked;
+	FrmSendEdgeComboBox->Enabled = SlideFrmSendCheckBox->Checked;
+	FrmSendHideModeLabel->Enabled = SlideFrmSendCheckBox->Checked;
+	FrmSendHideModeComboBox->Enabled = SlideFrmSendCheckBox->Checked;
 	FrmSendTimeGroupBox->Enabled = SlideFrmSendCheckBox->Checked;
 	FrmSendSlideInDelaySpinEdit->Enabled = SlideFrmSendCheckBox->Checked;
 	if(SlideFrmSendCheckBox->Checked)
-		FrmSendSlideOutDelaySpinEdit->Enabled = FrmSendHideCursorRadioButton->Checked;
+	{
+		if(FrmSendHideModeComboBox->ItemIndex==2) FrmSendSlideOutDelaySpinEdit->Enabled = true;
+		else FrmSendSlideOutDelaySpinEdit->Enabled = false;
+	}
 	else
 		FrmSendSlideOutDelaySpinEdit->Enabled = false;
 	FrmSendSlideInTimeSpinEdit->Enabled = SlideFrmSendCheckBox->Checked;
 	FrmSendSlideOutTimeSpinEdit->Enabled = SlideFrmSendCheckBox->Checked;
 	SlideInAtNewMsgCheckBox->Enabled = SlideFrmSendCheckBox->Checked;
-	FrmMainEdgeGroupBox->Enabled = SlideFrmMainCheckBox->Checked;
-	FrmMainEdgeLeftRadioButton->Enabled = SlideFrmMainCheckBox->Checked;
-	FrmMainEdgeRightRadioButton->Enabled = SlideFrmMainCheckBox->Checked;
-	FrmMainEdgeBottomRadioButton->Enabled = SlideFrmMainCheckBox->Checked;
-	FrmMainEdgeTopRadioButton->Enabled = SlideFrmMainCheckBox->Checked;
-	FrmMainHideGroupBox->Enabled = SlideFrmMainCheckBox->Checked;
-	FrmMainHideFocusRadioButton->Enabled = SlideFrmMainCheckBox->Checked;
-	FrmMainHideAppFocusRadioButton->Enabled = SlideFrmMainCheckBox->Checked;
-	FrmMainHideCursorRadioButton->Enabled = SlideFrmMainCheckBox->Checked;
+	FrmMainEdgeLabel->Enabled = SlideFrmMainCheckBox->Checked;
+	FrmMainEdgeComboBox->Enabled = SlideFrmMainCheckBox->Checked;
+	FrmMainHideModeLabel->Enabled = SlideFrmMainCheckBox->Checked;
+	FrmMainHideModeComboBox->Enabled = SlideFrmMainCheckBox->Checked;
 	FrmMainTimeGroupBox->Enabled = SlideFrmMainCheckBox->Checked;
 	FrmMainSlideInDelaySpinEdit->Enabled = SlideFrmMainCheckBox->Checked;
 	if(SlideFrmMainCheckBox->Checked)
-		FrmMainSlideOutDelaySpinEdit->Enabled = FrmMainHideCursorRadioButton->Checked;
+	{
+		if(FrmMainHideModeComboBox->ItemIndex==2) FrmMainSlideOutDelaySpinEdit->Enabled = true;
+		else FrmMainSlideOutDelaySpinEdit->Enabled = false;
+	}
 	else
 		FrmMainSlideOutDelaySpinEdit->Enabled = false;
 	FrmMainSlideInTimeSpinEdit->Enabled = SlideFrmMainCheckBox->Checked;
@@ -1309,18 +1229,18 @@ void __fastcall TSettingsForm::AddChatsFavouriteTabSpeedButtonClick(TObject *Sen
 					//Osiagnieto limit
 					else
 					{
-						ShowFavouritesTabsInfo("Osi¹gniêto maksymaln¹ iloœæ ulubionych zak³adek.");
+						ShowFavouritesTabsInfo(GetLangStr("MaxFavTabs"));
 						Count = FileMemo->Lines->Count;
 					}
 				}
 			}
 		}
-		else ShowFavouritesTabsInfo("Brak pokojów oznaczonych gwiazdk¹.");
+		else ShowFavouritesTabsInfo(GetLangStr("NoMarkedRooms"));
 		//Usuniecie pamieci
 		FileMemo->Text = "";
 	}
 	//Plik nie istnieje
-	else ShowFavouritesTabsInfo("Brak pokojów oznaczonych gwiazdk¹.");
+	else ShowFavouritesTabsInfo(GetLangStr("NoMarkedRooms"));
 }
 //---------------------------------------------------------------------------
 
@@ -1364,3 +1284,4 @@ void __fastcall TSettingsForm::RemoveFavouriteTabSpeedButtonClick(TObject *Sende
 	SaveButton->Enabled = true;
 }
 //---------------------------------------------------------------------------
+
