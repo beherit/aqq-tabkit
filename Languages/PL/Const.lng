@@ -30,3 +30,5 @@ ClosedWndM=CC_NICK zamknął okno rozmowy.
 ClosedWndF=CC_NICK zamknęła okno rozmowy.
 NewException=Nowy wyjątek
 ExeName=Nazwa pliku wykonywalnego:
+Today=dzisiaj
+Yesterday=wczoraj

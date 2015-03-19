@@ -30,3 +30,5 @@ ClosedWndM=CC_NICK closed the chat window.
 ClosedWndF=CC_NICK closed the chat window.
 NewException=New exception
 ExeName=The name of the executable file:
+Today=today
+Yesterday=yesterday
