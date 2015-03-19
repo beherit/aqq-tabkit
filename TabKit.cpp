@@ -2322,33 +2322,36 @@ void DestroyFrmClosedTabs()
 			TPluginAction DestroyClosedTabsItem;
 			ZeroMemory(&DestroyClosedTabsItem,sizeof(TPluginAction));
 			DestroyClosedTabsItem.cbSize = sizeof(TPluginAction);
-			DestroyClosedTabsItem.pszName = ("TabKitClosedTabsItem"+IntToStr(Count)).w_str();
-			PluginLink.CallService(AQQ_CONTROLS_DESTROYPOPUPMENUITEM ,0,(LPARAM)(&DestroyClosedTabsItem));
+			UnicodeString ItemName = "TabKitClosedTabsItem"+IntToStr(Count);
+			DestroyClosedTabsItem.pszName = ItemName.w_str();
+			PluginLink.CallService(AQQ_CONTROLS_DESTROYPOPUPMENUITEM,0,(LPARAM)(&DestroyClosedTabsItem));
 		}
 		//Usuwanie elementow do usuwania ostatnio zamknietych zakladek
 		if(FastClearClosedTabsChk)
 		{
 			TPluginAction DestroyClosedTabsItem;
 			ZeroMemory(&DestroyClosedTabsItem,sizeof(TPluginAction));
-			DestroyClosedTabsItem.pszName = ("TabKitClosedTabsItem"+IntToStr(TabsCount)).w_str();
+			UnicodeString ItemName = "TabKitClosedTabsItem"+IntToStr(TabsCount);
+			DestroyClosedTabsItem.pszName = ItemName.w_str();
 			PluginLink.CallService(AQQ_CONTROLS_DESTROYPOPUPMENUITEM ,0,(LPARAM)(&DestroyClosedTabsItem));
 			ZeroMemory(&DestroyClosedTabsItem,sizeof(TPluginAction));
-			DestroyClosedTabsItem.pszName = ("TabKitClosedTabsItem"+IntToStr(TabsCount+1)).w_str();
-			PluginLink.CallService(AQQ_CONTROLS_DESTROYPOPUPMENUITEM ,0,(LPARAM)(&DestroyClosedTabsItem));
+			ItemName = "TabKitClosedTabsItem"+IntToStr(TabsCount+1);
+			DestroyClosedTabsItem.pszName = ItemName.w_str();
+			PluginLink.CallService(AQQ_CONTROLS_DESTROYPOPUPMENUITEM,0,(LPARAM)(&DestroyClosedTabsItem));
 		}
 		//Usuwanie buttona w oknie kontaktow
 		TPluginAction FrmMainClosedTabsButton;
 		ZeroMemory(&FrmMainClosedTabsButton,sizeof(TPluginAction));
 		FrmMainClosedTabsButton.cbSize = sizeof(TPluginAction);
 		FrmMainClosedTabsButton.pszName = L"TabKitFrmMainClosedTabsButton";
-		PluginLink.CallService(AQQ_CONTROLS_TOOLBAR "ToolDown" AQQ_CONTROLS_DESTROYBUTTON ,0,(LPARAM)(&FrmMainClosedTabsButton));
+		PluginLink.CallService(AQQ_CONTROLS_TOOLBAR "ToolDown" AQQ_CONTROLS_DESTROYBUTTON,0,(LPARAM)(&FrmMainClosedTabsButton));
 		//Usuwanie buttona w oknie rozmowy
 		TPluginAction FrmSendClosedTabsButton;
 		ZeroMemory(&FrmSendClosedTabsButton,sizeof(TPluginAction));
 		FrmSendClosedTabsButton.cbSize = sizeof(TPluginAction);
 		FrmSendClosedTabsButton.pszName = L"TabKitFrmSendClosedTabsButton";
 		FrmSendClosedTabsButton.Handle = (int)hFrmSend;
-		PluginLink.CallService(AQQ_CONTROLS_TOOLBAR "tbMain" AQQ_CONTROLS_DESTROYBUTTON ,0,(LPARAM)(&FrmSendClosedTabsButton));
+		PluginLink.CallService(AQQ_CONTROLS_TOOLBAR "tbMain" AQQ_CONTROLS_DESTROYBUTTON,0,(LPARAM)(&FrmSendClosedTabsButton));
 	}
 }
 //---------------------------------------------------------------------------
@@ -2404,10 +2407,10 @@ void BuildFrmClosedTabs(bool FixPosition)
 						ZeroMemory(&BuildClosedTabsItem,sizeof(TPluginAction));
 						BuildClosedTabsItem.cbSize = sizeof(TPluginAction);
 						BuildClosedTabsItem.IconIndex = GetContactState(ItemJID);
-						UnicodeString pszName = "TabKitClosedTabsItem"+IntToStr(Count);
-						BuildClosedTabsItem.pszName = pszName.w_str();
-						UnicodeString pszService = "sTabKitClosedTabsItem"+IntToStr(Count);
-						BuildClosedTabsItem.pszService = pszService.w_str();
+						UnicodeString ItemName = "TabKitClosedTabsItem"+IntToStr(Count);
+						BuildClosedTabsItem.pszName = ItemName.w_str();
+						UnicodeString ServiceName = "sTabKitClosedTabsItem"+IntToStr(Count);
+						BuildClosedTabsItem.pszService = ServiceName.w_str();
 						if(ShowTimeClosedTabsChk)
 							BuildClosedTabsItem.pszCaption = (GetContactNick(ItemJID)+" ("+ClosedTabsTimeList->Strings[Count]+")").w_str();
 						else
@@ -2425,8 +2428,8 @@ void BuildFrmClosedTabs(bool FixPosition)
 					ZeroMemory(&BuildClosedTabsItem,sizeof(TPluginAction));
 					BuildClosedTabsItem.cbSize = sizeof(TPluginAction);
 					BuildClosedTabsItem.IconIndex = -1;
-					UnicodeString pszName = "TabKitClosedTabsItem"+IntToStr(TabsCount);
-					BuildClosedTabsItem.pszName = pszName.w_str();
+					UnicodeString ItemName = "TabKitClosedTabsItem"+IntToStr(TabsCount);
+					BuildClosedTabsItem.pszName = ItemName.w_str();
 					BuildClosedTabsItem.pszService = L"";
 					BuildClosedTabsItem.pszCaption = L"-";
 					BuildClosedTabsItem.Position = TabsCount;
@@ -2436,8 +2439,8 @@ void BuildFrmClosedTabs(bool FixPosition)
 					ZeroMemory(&BuildClosedTabsItem,sizeof(TPluginAction));
 					BuildClosedTabsItem.cbSize = sizeof(TPluginAction);
 					BuildClosedTabsItem.IconIndex = -1;
-					pszName = "TabKitClosedTabsItem"+IntToStr(TabsCount+1);
-					BuildClosedTabsItem.pszName = pszName.w_str();
+					ItemName = "TabKitClosedTabsItem"+IntToStr(TabsCount+1);
+					BuildClosedTabsItem.pszName = ItemName.w_str();
 					BuildClosedTabsItem.pszService = L"sTabKitClosedTabsItemClear";
 					BuildClosedTabsItem.pszCaption = GetLangStr("Clear").w_str();
 					BuildClosedTabsItem.Position = TabsCount+1;
@@ -2741,7 +2744,8 @@ void DestroyFrmUnsentMsg()
 			TPluginAction DestroyUnsentMsgItem;
 			ZeroMemory(&DestroyUnsentMsgItem,sizeof(TPluginAction));
 			DestroyUnsentMsgItem.cbSize = sizeof(TPluginAction);
-			DestroyUnsentMsgItem.pszName = ("TabKitUnsentMsgItem"+IntToStr(Count)).w_str();
+			UnicodeString ItemName = "TabKitUnsentMsgItem"+IntToStr(Count);
+			DestroyUnsentMsgItem.pszName = ItemName.w_str();
 			PluginLink.CallService(AQQ_CONTROLS_DESTROYPOPUPMENUITEM ,0,(LPARAM)(&DestroyUnsentMsgItem));
 		}
 		//Usuwanie elementow do usuwania niewyslanych wiadomosci
@@ -2750,11 +2754,13 @@ void DestroyFrmUnsentMsg()
 			TPluginAction DestroyUnsentMsgItem;
 			ZeroMemory(&DestroyUnsentMsgItem,sizeof(TPluginAction));
 			DestroyUnsentMsgItem.cbSize = sizeof(TPluginAction);
-			DestroyUnsentMsgItem.pszName = ("TabKitUnsentMsgItem"+IntToStr(MsgCount)).w_str();
+			UnicodeString ItemName = "TabKitUnsentMsgItem"+IntToStr(MsgCount);
+			DestroyUnsentMsgItem.pszName = ItemName.w_str();
 			PluginLink.CallService(AQQ_CONTROLS_DESTROYPOPUPMENUITEM ,0,(LPARAM)(&DestroyUnsentMsgItem));
 			ZeroMemory(&DestroyUnsentMsgItem,sizeof(TPluginAction));
 			DestroyUnsentMsgItem.cbSize = sizeof(TPluginAction);
-			DestroyUnsentMsgItem.pszName = ("TabKitUnsentMsgItem"+IntToStr(MsgCount+1)).w_str();
+			ItemName = "TabKitUnsentMsgItem"+IntToStr(MsgCount+1);
+			DestroyUnsentMsgItem.pszName = ItemName.w_str();
 			PluginLink.CallService(AQQ_CONTROLS_DESTROYPOPUPMENUITEM ,0,(LPARAM)(&DestroyUnsentMsgItem));
 		}
 		//Usuwanie buttona w oknie kontatkow
@@ -2832,8 +2838,8 @@ void BuildFrmUnsentMsg(bool FixPosition)
 						BuildUnsentMsgItem.IconIndex = GetContactState(ItemJID);
 						UnicodeString ItemName = "TabKitUnsentMsgItem"+IntToStr(Count);
 						BuildUnsentMsgItem.pszName = ItemName.w_str();
-						UnicodeString ItemService = "sTabKitUnsentMsgItem"+IntToStr(Count);
-						BuildUnsentMsgItem.pszService = ItemService.w_str();
+						UnicodeString ServiceName = "sTabKitUnsentMsgItem"+IntToStr(Count);
+						BuildUnsentMsgItem.pszService = ServiceName.w_str();
 						BuildUnsentMsgItem.pszCaption = GetContactNick(ItemJID).w_str();
 						BuildUnsentMsgItem.Position = Count;
 						BuildUnsentMsgItem.pszPopupName = L"TabKitUnsentMsgPopUp";
@@ -2848,8 +2854,8 @@ void BuildFrmUnsentMsg(bool FixPosition)
 					ZeroMemory(&BuildUnsentMsgItem,sizeof(TPluginAction));
 					BuildUnsentMsgItem.cbSize = sizeof(TPluginAction);
 					BuildUnsentMsgItem.IconIndex = -1;
-					UnicodeString pszName = "TabKitUnsentMsgItem"+IntToStr(MsgCount);
-					BuildUnsentMsgItem.pszName = pszName.w_str();
+					UnicodeString ItemName = "TabKitUnsentMsgItem"+IntToStr(MsgCount);
+					BuildUnsentMsgItem.pszName = ItemName.w_str();
 					BuildUnsentMsgItem.pszService = L"";
 					BuildUnsentMsgItem.pszCaption = L"-";
 					BuildUnsentMsgItem.Position = MsgCount;
@@ -2859,8 +2865,8 @@ void BuildFrmUnsentMsg(bool FixPosition)
 					ZeroMemory(&BuildUnsentMsgItem,sizeof(TPluginAction));
 					BuildUnsentMsgItem.cbSize = sizeof(TPluginAction);
 					BuildUnsentMsgItem.IconIndex = -1;
-					pszName = "TabKitUnsentMsgItem"+IntToStr(MsgCount+1);
-					BuildUnsentMsgItem.pszName = pszName.w_str();
+					ItemName = "TabKitUnsentMsgItem"+IntToStr(MsgCount+1);
+					BuildUnsentMsgItem.pszName = ItemName.w_str();
 					BuildUnsentMsgItem.pszService = L"sTabKitUnsentMsgItemClear";
 					BuildUnsentMsgItem.pszCaption = GetLangStr("Clear").w_str();
 					BuildUnsentMsgItem.Position = MsgCount+1;
@@ -3375,7 +3381,8 @@ void DestroyFavouritesTabs()
 			TPluginAction DestroyFavouritesTabsItem;
 			ZeroMemory(&DestroyFavouritesTabsItem,sizeof(TPluginAction));
 			DestroyFavouritesTabsItem.cbSize = sizeof(TPluginAction);
-			DestroyFavouritesTabsItem.pszName = ("TabKitFavouritesTabsItem"+IntToStr(Count)).w_str();
+			UnicodeString ItemName = "TabKitFavouritesTabsItem"+IntToStr(Count);
+			DestroyFavouritesTabsItem.pszName = ItemName.w_str();
 			PluginLink.CallService(AQQ_CONTROLS_DESTROYPOPUPMENUITEM ,0,(LPARAM)(&DestroyFavouritesTabsItem));
 		}
 		//Usuwanie buttona w oknie kontaktow
@@ -3493,10 +3500,10 @@ void BuildFavouritesTabs(bool FixPosition)
 						ZeroMemory(&BuildFavouritesTabsItem,sizeof(TPluginAction));
 						BuildFavouritesTabsItem.cbSize = sizeof(TPluginAction);
 						BuildFavouritesTabsItem.IconIndex = GetContactState(ItemJID);
-						UnicodeString pszName = "TabKitFavouritesTabsItem"+IntToStr(Count);
-						BuildFavouritesTabsItem.pszName = pszName.w_str();
-						UnicodeString pszService = "sTabKitFavouritesTabsItem"+IntToStr(Count);
-						BuildFavouritesTabsItem.pszService = pszService.w_str();
+						UnicodeString ItemName = "TabKitFavouritesTabsItem"+IntToStr(Count);
+						BuildFavouritesTabsItem.pszName = ItemName.w_str();
+						UnicodeString ServiceName = "sTabKitFavouritesTabsItem"+IntToStr(Count);
+						BuildFavouritesTabsItem.pszService = ServiceName.w_str();
 						BuildFavouritesTabsItem.pszCaption = GetContactNick(ItemJID).w_str();
 						BuildFavouritesTabsItem.Position = Count;
 						BuildFavouritesTabsItem.pszPopupName = L"TabKitFavouritesTabsPopUp";
@@ -4959,11 +4966,13 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			TSaveSetup SaveSetup;
 			SaveSetup.Section = L"Position";
 			SaveSetup.Ident = L"MsgLeft";
-			SaveSetup.Value = IntToStr((int)FrmSendRect.Left).w_str();
+			UnicodeString KeyValue = IntToStr((int)FrmSendRect.Left);
+			SaveSetup.Value = KeyValue.w_str();
 			PluginLink.CallService(AQQ_FUNCTION_SAVESETUP,1,(LPARAM)(&SaveSetup));
 			SaveSetup.Section = L"Position";
 			SaveSetup.Ident = L"MsgTop";
-			SaveSetup.Value = IntToStr((int)FrmSendRect.Top).w_str();
+			KeyValue = IntToStr((int)FrmSendRect.Top);
+			SaveSetup.Value = KeyValue.w_str();
 			PluginLink.CallService(AQQ_FUNCTION_SAVESETUP,1,(LPARAM)(&SaveSetup));
 			//Stan widocznosci okna rozmowy
 			FrmSendVisible = true;
@@ -7980,11 +7989,13 @@ INT_PTR __stdcall OnFetchAllTabs(WPARAM wParam, LPARAM lParam)
 				TSaveSetup SaveSetup;
 				SaveSetup.Section = L"Position";
 				SaveSetup.Ident = L"MsgLeft";
-				SaveSetup.Value = IntToStr((int)FrmSendRect.Left).w_str();
+				UnicodeString KeyValue = IntToStr((int)FrmSendRect.Left);
+				SaveSetup.Value = KeyValue.w_str();
 				PluginLink.CallService(AQQ_FUNCTION_SAVESETUP,1,(LPARAM)(&SaveSetup));
 				SaveSetup.Section = L"Position";
 				SaveSetup.Ident = L"MsgTop";
-				SaveSetup.Value = IntToStr((int)FrmSendRect.Top).w_str();
+				KeyValue = IntToStr((int)FrmSendRect.Top);
+				SaveSetup.Value = KeyValue.w_str();
 				PluginLink.CallService(AQQ_FUNCTION_SAVESETUP,1,(LPARAM)(&SaveSetup));
 				//Stan widocznosci okna rozmowy
 				FrmSendVisible = true;
@@ -8705,11 +8716,13 @@ INT_PTR __stdcall OnPrimaryTab(WPARAM wParam, LPARAM lParam)
 					TSaveSetup SaveSetup;
 					SaveSetup.Section = L"Position";
 					SaveSetup.Ident = L"MsgLeft";
-					SaveSetup.Value = IntToStr((int)FrmSendRect.Left).w_str();
+					UnicodeString KeyValue = IntToStr((int)FrmSendRect.Left);
+					SaveSetup.Value = KeyValue.w_str();
 					PluginLink.CallService(AQQ_FUNCTION_SAVESETUP,1,(LPARAM)(&SaveSetup));
 					SaveSetup.Section = L"Position";
 					SaveSetup.Ident = L"MsgTop";
-					SaveSetup.Value = IntToStr((int)FrmSendRect.Top).w_str();
+					KeyValue = IntToStr((int)FrmSendRect.Top);
+					SaveSetup.Value = KeyValue.w_str();
 					PluginLink.CallService(AQQ_FUNCTION_SAVESETUP,1,(LPARAM)(&SaveSetup));
 					//Stan widocznosci okna rozmowy
 					FrmSendVisible = true;
@@ -9178,7 +9191,8 @@ INT_PTR __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 							PluginShowInfo.TimeOut = 1000 * CloudTimeOut;
 							if(CloudTickModeChk) PluginShowInfo.Tick = TickID;
 							else PluginShowInfo.Tick = 0;
-							PluginShowInfo.ActionID = ("EXEC_MSG:" + IntToStr(UserIdx) + ";" + JID + "/" + Res).w_str();
+							UnicodeString ActionName = "EXEC_MSG:" + IntToStr(UserIdx) + ";" + JID + "/" + Res;
+							PluginShowInfo.ActionID = ActionName.w_str();
 							PluginLink.CallService(AQQ_FUNCTION_SHOWINFO,0,(LPARAM)(&PluginShowInfo));
 							//Body
 							PluginShowInfo.cbSize = sizeof(TPluginShowInfo);
@@ -9188,7 +9202,8 @@ INT_PTR __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 							PluginShowInfo.TimeOut = 1000 * CloudTimeOut;
 							if(CloudTickModeChk) PluginShowInfo.Tick = TickID;
 							else PluginShowInfo.Tick = 0;
-							PluginShowInfo.ActionID = ("EXEC_MSG:" + IntToStr(UserIdx) + ";" + JID + "/" + Res).w_str();
+							ActionName = "EXEC_MSG:" + IntToStr(UserIdx) + ";" + JID + "/" + Res;
+							PluginShowInfo.ActionID = ActionName.w_str();
 							PluginLink.CallService(AQQ_FUNCTION_SHOWINFO,0,(LPARAM)(&PluginShowInfo));
 						}
 					}
@@ -9518,11 +9533,13 @@ INT_PTR __stdcall OnResourceChanged(WPARAM wParam, LPARAM lParam)
 			TSaveSetup SaveSetup;
 			SaveSetup.Section = L"Position";
 			SaveSetup.Ident = L"MainLeft";
-			SaveSetup.Value = IntToStr((int)FrmMainRect.Left).w_str();
+			UnicodeString KeyValue = IntToStr((int)FrmMainRect.Left);
+			SaveSetup.Value = KeyValue.w_str();
 			PluginLink.CallService(AQQ_FUNCTION_SAVESETUP,1,(LPARAM)(&SaveSetup));
 			SaveSetup.Section = L"Position";
 			SaveSetup.Ident = L"MainTop";
-			SaveSetup.Value = IntToStr((int)FrmMainRect.Top).w_str();
+			KeyValue = IntToStr((int)FrmMainRect.Top);
+			SaveSetup.Value = KeyValue.w_str();
 			PluginLink.CallService(AQQ_FUNCTION_SAVESETUP,1,(LPARAM)(&SaveSetup));
 			//Stan widocznosci okna kontaktow
 			FrmMainVisible = true;
@@ -9566,11 +9583,13 @@ INT_PTR __stdcall OnResourceChanged(WPARAM wParam, LPARAM lParam)
 			TSaveSetup SaveSetup;
 			SaveSetup.Section = L"Position";
 			SaveSetup.Ident = L"MsgLeft";
-			SaveSetup.Value = IntToStr((int)FrmSendRect.Left).w_str();
+			UnicodeString KeyValue = IntToStr((int)FrmSendRect.Left);
+			SaveSetup.Value = KeyValue.w_str();
 			PluginLink.CallService(AQQ_FUNCTION_SAVESETUP,1,(LPARAM)(&SaveSetup));
 			SaveSetup.Section = L"Position";
 			SaveSetup.Ident = L"MsgTop";
-			SaveSetup.Value = IntToStr((int)FrmSendRect.Top).w_str();
+			KeyValue = IntToStr((int)FrmSendRect.Top);
+			SaveSetup.Value = KeyValue.w_str();
 			PluginLink.CallService(AQQ_FUNCTION_SAVESETUP,1,(LPARAM)(&SaveSetup));
 			//Stan widocznosci okna rozmowy
 			FrmSendVisible = true;
@@ -10310,11 +10329,13 @@ INT_PTR __stdcall OnThemeChanged(WPARAM wParam, LPARAM lParam)
 		TSaveSetup SaveSetup;
 		SaveSetup.Section = L"Position";
 		SaveSetup.Ident = L"MsgLeft";
-		SaveSetup.Value = IntToStr((int)FrmSendRect.Left).w_str();
+		UnicodeString KeyValue = IntToStr((int)FrmSendRect.Left);
+		SaveSetup.Value = KeyValue.w_str();
 		PluginLink.CallService(AQQ_FUNCTION_SAVESETUP,1,(LPARAM)(&SaveSetup));
 		SaveSetup.Section = L"Position";
 		SaveSetup.Ident = L"MsgTop";
-		SaveSetup.Value = IntToStr((int)FrmSendRect.Top).w_str();
+		KeyValue = IntToStr((int)FrmSendRect.Top);
+		SaveSetup.Value = KeyValue.w_str();
 		PluginLink.CallService(AQQ_FUNCTION_SAVESETUP,1,(LPARAM)(&SaveSetup));
 		//Status pre-wysuwania okna rozmowy zza krawedzi ekranu
 		PreFrmSendSlideIn = false;
@@ -10372,11 +10393,13 @@ INT_PTR __stdcall OnThemeChanged(WPARAM wParam, LPARAM lParam)
 		TSaveSetup SaveSetup;
 		SaveSetup.Section = L"Position";
 		SaveSetup.Ident = L"MainLeft";
-		SaveSetup.Value = IntToStr((int)FrmMainRect.Left).w_str();
+		UnicodeString KeyValue = IntToStr((int)FrmMainRect.Left);
+		SaveSetup.Value = KeyValue.w_str();
 		PluginLink.CallService(AQQ_FUNCTION_SAVESETUP,1,(LPARAM)(&SaveSetup));
 		SaveSetup.Section = L"Position";
 		SaveSetup.Ident = L"MainTop";
-		SaveSetup.Value = IntToStr((int)FrmMainRect.Top).w_str();
+		KeyValue = IntToStr((int)FrmMainRect.Top);
+		SaveSetup.Value = KeyValue.w_str();
 		PluginLink.CallService(AQQ_FUNCTION_SAVESETUP,1,(LPARAM)(&SaveSetup));
 		//Status pre-wysuwania okna kontaktow zza krawedzi ekranu
 		PreFrmMainSlideIn = false;
@@ -10466,11 +10489,13 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 				TSaveSetup SaveSetup;
 				SaveSetup.Section = L"Position";
 				SaveSetup.Ident = L"MainLeft";
-				SaveSetup.Value = IntToStr((int)FrmMainRect.Left).w_str();
+				UnicodeString KeyValue = IntToStr((int)FrmMainRect.Left);
+				SaveSetup.Value = KeyValue.w_str();
 				PluginLink.CallService(AQQ_FUNCTION_SAVESETUP,1,(LPARAM)(&SaveSetup));
 				SaveSetup.Section = L"Position";
 				SaveSetup.Ident = L"MainTop";
-				SaveSetup.Value = IntToStr((int)FrmMainRect.Top).w_str();
+				KeyValue = IntToStr((int)FrmMainRect.Top);
+				SaveSetup.Value = KeyValue.w_str();
 				PluginLink.CallService(AQQ_FUNCTION_SAVESETUP,1,(LPARAM)(&SaveSetup));
 				//Odswiezenie ustawien
 				PluginLink.CallService(AQQ_FUNCTION_REFRESHSETUP,0,0);
@@ -11377,11 +11402,13 @@ void LoadSettings()
 		TSaveSetup SaveSetup;
 		SaveSetup.Section = L"Position";
 		SaveSetup.Ident = L"MainLeft";
-		SaveSetup.Value = IntToStr((int)FrmMainRect.Left).w_str();
+		UnicodeString KeyValue = IntToStr((int)FrmMainRect.Left);
+		SaveSetup.Value = KeyValue.w_str();
 		PluginLink.CallService(AQQ_FUNCTION_SAVESETUP,1,(LPARAM)(&SaveSetup));
 		SaveSetup.Section = L"Position";
 		SaveSetup.Ident = L"MainTop";
-		SaveSetup.Value = IntToStr((int)FrmMainRect.Top).w_str();
+		KeyValue = IntToStr((int)FrmMainRect.Top);
+		SaveSetup.Value = KeyValue.w_str();
 		PluginLink.CallService(AQQ_FUNCTION_SAVESETUP,1,(LPARAM)(&SaveSetup));
 		//Odswiezenie ustawien
 		PluginLink.CallService(AQQ_FUNCTION_REFRESHSETUP,0,0);
@@ -11527,11 +11554,13 @@ void LoadSettings()
 			TSaveSetup SaveSetup;
 			SaveSetup.Section = L"Position";
 			SaveSetup.Ident = L"MsgLeft";
-			SaveSetup.Value = IntToStr((int)FrmSendRect.Left).w_str();
+			UnicodeString KeyValue = IntToStr((int)FrmSendRect.Left);
+			SaveSetup.Value = KeyValue.w_str();
 			PluginLink.CallService(AQQ_FUNCTION_SAVESETUP,1,(LPARAM)(&SaveSetup));
 			SaveSetup.Section = L"Position";
 			SaveSetup.Ident = L"MsgTop";
-			SaveSetup.Value = IntToStr((int)FrmSendRect.Top).w_str();
+			KeyValue = IntToStr((int)FrmSendRect.Top);
+			SaveSetup.Value = KeyValue.w_str();
 			PluginLink.CallService(AQQ_FUNCTION_SAVESETUP,1,(LPARAM)(&SaveSetup));
 			//Odswiezenie ustawien
 			PluginLink.CallService(AQQ_FUNCTION_REFRESHSETUP,0,0);
