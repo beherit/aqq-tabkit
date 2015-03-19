@@ -7725,8 +7725,7 @@ INT_PTR __stdcall OnCloseTab(WPARAM wParam, LPARAM lParam)
 				DestroyFrmClosedTabs();
 				//Dodawanie JID do tablicy
 				ClosedTabsList->Insert(0,JID+UserIdx);
-				TDateTime ClosedTime = TDateTime::CurrentDateTime();
-				int ClosedTimeStr = DateTimeToUnix(ClosedTime, true);
+				int ClosedTimeStr = DateTimeToUnix(TDateTime::CurrentDateTime(), true);
 				ClosedTabsTimeList->Insert(0,IntToStr(ClosedTimeStr));
 				//Maks pamietanych X elementow
 				if(ClosedTabsList->Count>CountUnCloseTabVal)
@@ -12413,8 +12412,7 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Unload()
 			{
 				//Dodawanie JID do tablicy
 				ClosedTabsList->Insert(0,JID);
-				TDateTime ClosedTime = TDateTime::CurrentDateTime();
-				int ClosedTimeStr = DateTimeToUnix(ClosedTime, true);
+				int ClosedTimeStr = DateTimeToUnix(TDateTime::CurrentDateTime(), true);
 				ClosedTabsTimeList->Insert(0,IntToStr(ClosedTimeStr));
 				//Maks pamietanych X elementow
 				if(ClosedTabsList->Count>CountUnCloseTabVal)
