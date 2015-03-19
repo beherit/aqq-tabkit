@@ -3238,9 +3238,11 @@ object SettingsForm: TSettingsForm
             Top = 145
             Width = 121
             Height = 21
+            ParentShowHint = False
+            ShowHint = True
             TabOrder = 4
             Text = 'dddd, h:nn'
-            OnChange = aClosedTabsChkExecute
+            OnChange = DateFormatEditChange
             SkinData.SkinSection = 'EDIT'
             BoundLabel.Active = True
             BoundLabel.Caption = 'Format daty'
