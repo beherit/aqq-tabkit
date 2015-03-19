@@ -308,6 +308,7 @@ __published:	// IDE-managed Components
 	void __fastcall MoveUpFavouriteTabSpeedButtonClick(TObject *Sender);
 	void __fastcall MoveDownFavouriteTabSpeedButtonClick(TObject *Sender);
 	void __fastcall AddChatsFavouriteTabSpeedButtonClick(TObject *Sender);
+	void __fastcall DateFormatEditChange(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	UnicodeString XML;

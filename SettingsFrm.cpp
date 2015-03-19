@@ -269,6 +269,9 @@ void __fastcall TSettingsForm::FormShow(TObject *Sender)
 	FavouritesTabsAlphaImageList->LoadFromFile(GetIconPath(79));
 	//Odczyt ustawien
 	aLoadSettings->Execute();
+	//Ustawienie hintu w kontrolce formatu daty
+	TDateTime DateTime = TDateTime::CurrentDateTime();
+	DateFormatEdit->Hint = DateTime.FormatString(DateFormatEdit->Text);
 	//Ustawienie domyslnej zakladki
 	sPageControl->ActivePage = DefaultTabSheet;
 }
@@ -1285,6 +1288,16 @@ void __fastcall TSettingsForm::MoveDownFavouriteTabSpeedButtonClick(TObject *Sen
 void __fastcall TSettingsForm::RemoveFavouriteTabSpeedButtonClick(TObject *Sender)
 {
 	FavouritesTabsListView->Items->Item[FavouritesTabsListView->ItemIndex]->Delete();
+	SaveButton->Enabled = true;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TSettingsForm::DateFormatEditChange(TObject *Sender)
+{
+	//Ustawienie hintu w kontrolce formatu daty
+	TDateTime DateTime = TDateTime::CurrentDateTime();
+	DateFormatEdit->Hint = DateTime.FormatString(DateFormatEdit->Text);
+
 	SaveButton->Enabled = true;
 }
 //---------------------------------------------------------------------------
