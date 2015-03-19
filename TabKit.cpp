@@ -25,6 +25,7 @@
 #include <process.h>
 #include <tlhelp32.h>
 #include <XMLDoc.hpp>
+#include <DateUtils.hpp>
 #include <IdHashMessageDigest.hpp>
 #include <boost/regex.hpp>
 #include <PluginAPI.h>
@@ -1887,6 +1888,18 @@ bool ChkContactGender(UnicodeString JID)
 }
 //---------------------------------------------------------------------------
 
+//Konwersja Unix'owego formatu czasu na TDateTime
+UnicodeString TimestampToDate(int Timestamp)
+{
+	if(Timestamp)
+	{
+		TDateTime DateTime = UnixToDateTime(StrToInt(Timestamp));
+		return DateTime.FormatString("ddd d mmm, h:nn");
+	}
+	return GetLangStr("NoData");
+}
+//---------------------------------------------------------------------------
+
 //Przebudowa kolejnosci zakladek w pliku sesji
 void RebuilSessionTabsList()
 {
@@ -2412,7 +2425,7 @@ void BuildFrmClosedTabs(bool FixPosition)
 						UnicodeString ServiceName = "sTabKitClosedTabsItem"+IntToStr(Count);
 						BuildClosedTabsItem.pszService = ServiceName.w_str();
 						if(ShowTimeClosedTabsChk)
-							BuildClosedTabsItem.pszCaption = (GetContactNick(ItemJID)+" ("+ClosedTabsTimeList->Strings[Count]+")").w_str();
+							BuildClosedTabsItem.pszCaption = (GetContactNick(ItemJID)+" ("+TimestampToDate(StrToInt(ClosedTabsTimeList->Strings[Count]))+")").w_str();
 						else
 							BuildClosedTabsItem.pszCaption = GetContactNick(ItemJID).w_str();
 						BuildClosedTabsItem.Position = Count;
@@ -2476,7 +2489,7 @@ void RebuildFrmClosedTabsPopupmenu()
 			UnicodeString ItemName = "TabKitClosedTabsItem"+IntToStr(Count);
 			RebuildClosedTabsItem.pszName = ItemName.w_str();
 			if(ShowTimeClosedTabsChk)
-				RebuildClosedTabsItem.Caption = (GetContactNick(ItemJID)+" ("+ClosedTabsTimeList->Strings[Count]+")").w_str();
+				RebuildClosedTabsItem.Caption = (GetContactNick(ItemJID)+" ("+TimestampToDate(StrToInt(ClosedTabsTimeList->Strings[Count]))+")").w_str();
 			else
 				RebuildClosedTabsItem.Caption = GetContactNick(ItemJID).w_str();
 			RebuildClosedTabsItem.Enabled = true;
@@ -2570,21 +2583,21 @@ void GetClosedTabs()
 					if(TabsList->IndexOf(JID)==-1)
 					{
 						ClosedTabsList->Add(JID);
-						UnicodeString ClosedTime = Ini->ReadString("ClosedTabs","Tab"+IntToStr(Count+1)+"Time",GetLangStr("NoData"));
+						int ClosedTime = Ini->ReadInteger("ClosedTabs","Tab"+IntToStr(Count+1)+"Timestamp",0);
 						ClosedTabsTimeList->Add(ClosedTime);
 					}
 					//Usuwanie zakladki z pliku INI
 					else
 					{
 						Ini->DeleteKey("ClosedTabs","Tab"+IntToStr(Count+1));
-						Ini->DeleteKey("ClosedTabs","Tab"+IntToStr(Count+1)+"Time");
+						Ini->DeleteKey("ClosedTabs","Tab"+IntToStr(Count+1)+"Timestamp");
 					}
 				}
 				//Usuwanie pustych danych z pliku INI
 				else
 				{
 					Ini->DeleteKey("ClosedTabs","Tab"+IntToStr(Count+1));
-					Ini->DeleteKey("ClosedTabs","Tab"+IntToStr(Count+1)+"Time");
+					Ini->DeleteKey("ClosedTabs","Tab"+IntToStr(Count+1)+"Timestamp");
 				}
 			}
 		}
@@ -2624,9 +2637,9 @@ void SaveClosedTabs()
 					//Zapis danych do pliku sesji
 					Ini->WriteString("ClosedTabs","Tab"+IntToStr(Count+1),ClosedTabsList->Strings[Count]);
 					//Pole z data zamkniecia jest puste
-					if(ClosedTabsTimeList->Strings[Count].IsEmpty()) ClosedTabsTimeList->Strings[Count] = GetLangStr("NoData");
+					if(ClosedTabsTimeList->Strings[Count].IsEmpty()) ClosedTabsTimeList->Strings[Count] = 0;
 					//Zapis danych do pliku sesji
-					Ini->WriteString("ClosedTabs","Tab"+IntToStr(Count+1)+"Time",ClosedTabsTimeList->Strings[Count]);
+					Ini->WriteInteger("ClosedTabs","Tab"+IntToStr(Count+1)+"Timestamp",StrToInt(ClosedTabsTimeList->Strings[Count]));
 				}
 			}
 		}
@@ -7700,7 +7713,7 @@ INT_PTR __stdcall OnCloseTab(WPARAM wParam, LPARAM lParam)
 				//Dodawanie JID do tablicy
 				ClosedTabsList->Insert(0,JID+UserIdx);
 				TDateTime ClosedTime = TDateTime::CurrentDateTime();
-				UnicodeString ClosedTimeStr = ClosedTime.FormatString("ddd d mmm, h:nn");
+				UnicodeString ClosedTimeStr = IntToStr(DateTimeToUnix(ClosedTime, true));
 				ClosedTabsTimeList->Insert(0,ClosedTimeStr);
 				//Maks pamietanych X elementow
 				if(ClosedTabsList->Count>CountUnCloseTabVal)
@@ -12387,7 +12400,7 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Unload()
 				//Dodawanie JID do tablicy
 				ClosedTabsList->Insert(0,JID);
 				TDateTime ClosedTime = TDateTime::CurrentDateTime();
-				UnicodeString ClosedTimeStr = ClosedTime.FormatString("ddd d mmm, h:nn");
+				UnicodeString ClosedTimeStr = IntToStr(DateTimeToUnix(ClosedTime, true));
 				ClosedTabsTimeList->Insert(0,ClosedTimeStr);
 				//Maks pamietanych X elementow
 				if(ClosedTabsList->Count>CountUnCloseTabVal)
@@ -12415,9 +12428,12 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Unload()
 			{
 				if(!ClosedTabsList->Strings[Count].IsEmpty())
 				{
+					//Zapis danych do pliku sesji
 					Ini->WriteString("ClosedTabs","Tab"+IntToStr(Count+1),ClosedTabsList->Strings[Count]);
-					if(ClosedTabsTimeList->Strings[Count].IsEmpty()) ClosedTabsTimeList->Strings[Count] = GetLangStr("NoData");
-					Ini->WriteString("ClosedTabs","Tab"+IntToStr(Count+1)+"Time",ClosedTabsTimeList->Strings[Count]);
+					//Pole z data zamkniecia jest puste
+					if(ClosedTabsTimeList->Strings[Count].IsEmpty()) ClosedTabsTimeList->Strings[Count] = 0;
+					//Zapis danych do pliku sesji
+					Ini->WriteInteger("ClosedTabs","Tab"+IntToStr(Count+1)+"Timestamp",StrToInt(ClosedTabsTimeList->Strings[Count]));
 				}
 			}
 		}
