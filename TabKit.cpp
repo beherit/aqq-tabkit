@@ -369,6 +369,7 @@ bool FrmMainClosedTabsChk;
 bool FrmSendClosedTabsChk;
 int ItemCountUnCloseTabVal;
 bool ShowTimeClosedTabsChk;
+UnicodeString DateFormatOnClosedTabs;
 bool FastClearClosedTabsChk;
 bool UnCloseTabHotKeyChk;
 int UnCloseTabHotKeyMode;
@@ -1893,8 +1894,20 @@ UnicodeString TimestampToDate(int Timestamp)
 {
 	if(Timestamp)
 	{
+		//Formatowanie daty z timestamp
 		TDateTime DateTime = UnixToDateTime(StrToInt(Timestamp));
-		return DateTime.FormatString("ddd d mmm, h:nn");
+		//Pobranie aktualnego czasu + ustalenie ostatniej polnocy
+		int CurrentTimestamp = DateTimeToUnix(TDateTime::CurrentDateTime(), true);
+		CurrentTimestamp = CurrentTimestamp - (CurrentTimestamp % (24*60*60));
+		//Dzisiaj
+		if(Timestamp >= CurrentTimestamp)
+			return GetLangStr("Today")+", "+DateTime.FormatString("h:nn");
+		//Wczoraj
+		else if(Timestamp >= (CurrentTimestamp - (24*60*60)))
+			return GetLangStr("Yesterday")+", "+DateTime.FormatString("h:nn");
+		//I póŸniej :)
+		else
+			return DateTime.FormatString(DateFormatOnClosedTabs);
 	}
 	return GetLangStr("NoData");
 }
@@ -11207,6 +11220,7 @@ void LoadSettings()
 	FrmSendClosedTabsChk =	Ini->ReadBool("ClosedTabs","FrmSend",true);
 	ItemCountUnCloseTabVal = Ini->ReadInteger("ClosedTabs","ItemsCount",5);
 	ShowTimeClosedTabsChk = Ini->ReadBool("ClosedTabs","ClosedTime",false);
+	DateFormatOnClosedTabs = Ini->ReadString("ClosedTabs", "DateFormat", "dddd, h:nn");
 	FastClearClosedTabsChk = Ini->ReadBool("ClosedTabs","FastClear",true);
 	UnCloseTabHotKeyChk =	Ini->ReadBool("ClosedTabs","HotKey",false);
 	UnCloseTabHotKeyMode = Ini->ReadInteger("ClosedTabs","HotKeyMode",1);
@@ -11660,30 +11674,30 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Load(PPluginLink Link)
 	if(!DirectoryExists(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL"))
 		CreateDir(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL");
   //Wypakowanie plikow lokalizacji
-	//B927FEABC21B213A6F777EF0836B1319
+	//99E2CDBA63BCC0050D32F6FECEBBC171
 	if(!FileExists(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\Const.lng"))
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\Const.lng").w_str(),L"EN_CONST",L"DATA");
-	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\Const.lng")!="93B75856360BAE46311C260C9AABC8F2")
+	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\Const.lng")!="99E2CDBA63BCC0050D32F6FECEBBC171")
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\Const.lng").w_str(),L"EN_CONST",L"DATA");
-	//12ABC8B5C1DEC54FC82298868FFDB276
+	//13FE1206D7F7A1A3874E9405C8913699
 	if(!FileExists(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSettingsForm.lng"))
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSettingsForm.lng").w_str(),L"EN_SETTINGSFRM",L"DATA");
-	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSettingsForm.lng")!="12ABC8B5C1DEC54FC82298868FFDB276")
+	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSettingsForm.lng")!="13FE1206D7F7A1A3874E9405C8913699")
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSettingsForm.lng").w_str(),L"EN_SETTINGSFRM",L"DATA");
 	//324061A51B896B06E99EF1B88D062B2F
 	if(!FileExists(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSideSlideExceptionsForm.lng"))
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSideSlideExceptionsForm.lng").w_str(),L"EN_SIDESLIDEEXCEPTIONSFRM",L"DATA");
 	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSideSlideExceptionsForm.lng")!="324061A51B896B06E99EF1B88D062B2F")
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSideSlideExceptionsForm.lng").w_str(),L"EN_SIDESLIDEEXCEPTIONSFRM",L"DATA");
-	//749D4863979FE6E6C2A6048798D47885
+	//EBB83209A29FEB1D8A412FA57E6BBA48
 	if(!FileExists(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\Const.lng"))
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\Const.lng").w_str(),L"PL_CONST",L"DATA");
-	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\Const.lng")!="05B502E9D36386D0E8BEFAB6D7F0D144")
+	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\Const.lng")!="EBB83209A29FEB1D8A412FA57E6BBA48")
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\Const.lng").w_str(),L"PL_CONST",L"DATA");
-	//9E6F4DD3BBA8531783510BE938977486
+	//39ACDD1BC30A337CEAFC572A15C131F0
 	if(!FileExists(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSettingsForm.lng"))
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSettingsForm.lng").w_str(),L"PL_SETTINGSFRM",L"DATA");
-	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSettingsForm.lng")!="9E6F4DD3BBA8531783510BE938977486")
+	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSettingsForm.lng")!="39ACDD1BC30A337CEAFC572A15C131F0")
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSettingsForm.lng").w_str(),L"PL_SETTINGSFRM",L"DATA");
 	//589F6BBC7D5CB448CBF9DDD2BC15D54C
 	if(!FileExists(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSideSlideExceptionsForm.lng"))

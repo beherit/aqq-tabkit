@@ -267,6 +267,7 @@ __published:	// IDE-managed Components
 	TsComboBox *FrmSendHideModeComboBox;
 	TsLabel *FrmSendHideModeLabel;
 	TsLabel *CloudTickModeLabel;
+	TsEdit *DateFormatEdit;
 	void __fastcall UnsentMsgTrayIconClick(TObject *Sender);
 	void __fastcall aExitExecute(TObject *Sender);
 	void __fastcall aLoadSettingsExecute(TObject *Sender);

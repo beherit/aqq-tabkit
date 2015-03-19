@@ -285,6 +285,7 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
 	FrmSendClosedTabsCheckBox->Checked =	Ini->ReadBool("ClosedTabs","FrmSend",true);
 	ItemsCountClosedTabsSpinEdit->Value = Ini->ReadInteger("ClosedTabs","ItemsCount",5);
 	ShowTimeClosedTabsCheckBox->Checked = Ini->ReadBool("ClosedTabs","ClosedTime",false);
+	DateFormatEdit->Text = Ini->ReadString("ClosedTabs", "DateFormat", "dddd, h:nn");
 	FastClearClosedTabsCheckBox->Checked = Ini->ReadBool("ClosedTabs","FastClear",true);
 	UnCloseTabHotKeyCheckBox->Checked =	Ini->ReadBool("ClosedTabs","HotKey",false);
 	if(Ini->ReadInteger("ClosedTabs","HotKeyMode",1)==1)
@@ -505,6 +506,7 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
 	Ini->WriteBool("ClosedTabs","FrmSend",FrmSendClosedTabsCheckBox->Checked);
 	Ini->WriteInteger("ClosedTabs","ItemsCount",ItemsCountClosedTabsSpinEdit->Value);
 	Ini->WriteBool("ClosedTabs","ClosedTime",ShowTimeClosedTabsCheckBox->Checked);
+	Ini->WriteString("ClosedTabs", "DateFormat", DateFormatEdit->Text);
 	Ini->WriteBool("ClosedTabs","FastClear",FastClearClosedTabsCheckBox->Checked);
 	Ini->WriteBool("ClosedTabs","HotKey",UnCloseTabHotKeyCheckBox->Checked);
 	if(UnCloseTabHotKeyMode1RadioButton->Checked)
@@ -691,6 +693,7 @@ void __fastcall TSettingsForm::aClosedTabsChkExecute(TObject *Sender)
 	FrmMainClosedTabsCheckBox->Enabled = FastAccessClosedTabsCheckBox->Checked;
 	FrmSendClosedTabsCheckBox->Enabled = FastAccessClosedTabsCheckBox->Checked;
 	ShowTimeClosedTabsCheckBox->Enabled = FastAccessClosedTabsCheckBox->Checked;
+	DateFormatEdit->Enabled = ShowTimeClosedTabsCheckBox->Checked;
 	FastClearClosedTabsCheckBox->Enabled = FastAccessClosedTabsCheckBox->Checked;
 	ItemsCountClosedTabsSpinEdit->Enabled = FastAccessClosedTabsCheckBox->Checked;
 	UnCloseTabHotKeyMode1RadioButton->Enabled = UnCloseTabHotKeyCheckBox->Checked;
@@ -710,6 +713,7 @@ void __fastcall TSettingsForm::aClosedTabsChkExecute(TObject *Sender)
 		FrmMainClosedTabsCheckBox->Enabled = false;
 		FrmSendClosedTabsCheckBox->Enabled = false;
 		ShowTimeClosedTabsCheckBox->Enabled = false;
+		DateFormatEdit->Enabled = false;
 		FastClearClosedTabsCheckBox->Enabled = false;
 		ItemsCountClosedTabsSpinEdit->Enabled = false;
 		UnCloseTabHotKeyMode1RadioButton->Enabled = false;

@@ -247,10 +247,6 @@ object SettingsForm: TSettingsForm
       Caption = 'Informacje o wtyczce'
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object PayPalImage: TImage
         Left = 360
         Top = 124
@@ -2973,22 +2969,18 @@ object SettingsForm: TSettingsForm
       ImageIndex = 1
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object ClosedTabGroupBox: TsGroupBox
         Left = 18
         Top = 18
         Width = 567
-        Height = 286
+        Height = 336
         TabOrder = 1
         SkinData.SkinSection = 'GROUPBOX'
         object OtherClosedTabGroupBox: TsGroupBox
           Left = 267
           Top = 22
           Width = 284
-          Height = 242
+          Height = 292
           TabOrder = 4
           SkinData.SkinSection = 'GROUPBOX'
           object UnCloseMouseLabel: TsLabel
@@ -3106,7 +3098,7 @@ object SettingsForm: TSettingsForm
         end
         object UnCloseTabHotKeyGroupBox: TsGroupBox
           Left = 16
-          Top = 185
+          Top = 235
           Width = 245
           Height = 79
           TabOrder = 3
@@ -3151,19 +3143,19 @@ object SettingsForm: TSettingsForm
           Left = 16
           Top = 22
           Width = 245
-          Height = 151
+          Height = 201
           TabOrder = 1
           SkinData.SkinSection = 'GROUPBOX'
           object FastClearClosedTabsCheckBox: TsCheckBox
             Tag = 31
             Left = 10
-            Top = 126
+            Top = 172
             Width = 220
             Height = 20
             Caption = 'Dodaj element szybkiego czyszczenia listy'
             Checked = True
             State = cbChecked
-            TabOrder = 4
+            TabOrder = 5
             OnClick = aClosedTabsChkExecute
             SkinData.SkinSection = 'CHECKBOX'
             ImgChecked = 0
@@ -3240,11 +3232,33 @@ object SettingsForm: TSettingsForm
             ImgChecked = 0
             ImgUnchecked = 0
           end
+          object DateFormatEdit: TsEdit
+            Tag = 143
+            Left = 26
+            Top = 145
+            Width = 121
+            Height = 21
+            TabOrder = 4
+            Text = 'dddd, h:nn'
+            OnChange = aClosedTabsChkExecute
+            SkinData.SkinSection = 'EDIT'
+            BoundLabel.Active = True
+            BoundLabel.Caption = 'Format daty'
+            BoundLabel.Indent = 6
+            BoundLabel.Font.Charset = DEFAULT_CHARSET
+            BoundLabel.Font.Color = clWindowText
+            BoundLabel.Font.Height = -11
+            BoundLabel.Font.Name = 'Tahoma'
+            BoundLabel.Font.Style = []
+            BoundLabel.Layout = sclTopLeft
+            BoundLabel.MaxWidth = 0
+            BoundLabel.UseSkinColor = True
+          end
         end
         object UnCloseTabHotKeyCheckBox: TsCheckBox
           Tag = 32
           Left = 10
-          Top = 179
+          Top = 229
           Width = 231
           Height = 28
           Caption = 
@@ -3302,10 +3316,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 2
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object RememberUnsentMsgGroupBox: TsGroupBox
         Left = 18
         Top = 18
@@ -3470,10 +3480,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 3
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object TabsHotKeysGroupBox: TsGroupBox
         Left = 18
         Top = 105
@@ -3598,10 +3604,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 4
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object RestoreTabsSessionGroupBox: TsGroupBox
         Left = 18
         Top = 18
@@ -3682,10 +3684,6 @@ object SettingsForm: TSettingsForm
       OnShow = NewMsgTabSheetShow
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object ChatStateNotiferNewMsgCheckBox: TsCheckBox
         Tag = 67
         Left = 12
@@ -3885,10 +3883,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 6
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object TweakFrmMainTitlebarGroupBox: TsGroupBox
         Left = 18
         Top = 159
@@ -4058,10 +4052,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 7
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object ClipTabsGroupBox: TsGroupBox
         Left = 18
         Top = 18
@@ -4211,10 +4201,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 8
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object FavouritesTabsGroupBox: TsGroupBox
         Left = 18
         Top = 18
@@ -4402,10 +4388,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 9
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object SideSlideFullScreenModeExceptionsButton: TsSpeedButton
         Tag = 117
         Left = 299
@@ -4955,10 +4937,6 @@ object SettingsForm: TSettingsForm
       OnShow = OtherTabSheetShow
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object AntiSpimCheckBox: TsCheckBox
         Tag = 122
         Left = 12
