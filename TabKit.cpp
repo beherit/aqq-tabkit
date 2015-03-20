@@ -8393,7 +8393,7 @@ INT_PTR __stdcall OnLangCodeChanged(WPARAM wParam, LPARAM lParam)
 	//Aktualizacja lokalizacji form wtyczki
 	for(int i=0;i<Screen->FormCount;i++)
 		LangForm(Screen->Forms[i]);
-	//Poprawka pozycji komponentu
+	//Poprawka pozycji komponentow na formie ustawien
 	if(hSettingsForm)
 	{
 		hSettingsForm->ItemsCountClosedTabsSpinEdit->Left = hSettingsForm->Canvas->TextWidth(hSettingsForm->ItemsCountClosedTabsSpinEdit->BoundLabel->Caption) + 20;
@@ -8407,6 +8407,8 @@ INT_PTR __stdcall OnLangCodeChanged(WPARAM wParam, LPARAM lParam)
 		hSettingsForm->CollapseImagesModeComboBox->Left = hSettingsForm->CollapseImagesCheckBox->Left + hSettingsForm->Canvas->TextWidth(hSettingsForm->CollapseImagesCheckBox->Caption) + 26;
 		hSettingsForm->ShortenLinksModeComboBox->Left = hSettingsForm->ShortenLinksCheckBox->Left + hSettingsForm->Canvas->TextWidth(hSettingsForm->ShortenLinksCheckBox->Caption) + 26;
 	}
+	//Aktualizacja przyciskow w interfejsie
+	FixButtonsPosition();
 
 	return 0;
 }
