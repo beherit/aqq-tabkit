@@ -410,6 +410,8 @@ bool ChatStateNotiferNewMsgChk;
 bool ChatGoneNotiferNewMsgChk;
 bool ChatGoneCloudNotiferNewMsgChk;
 bool ChatGoneSoundNotiferNewMsgChk;
+bool ChatGoneFrmSendNotiferNewMsgChk;
+bool ChatGoneSaveInArchiveChk;
 bool TaskbarPenChk;
 //Titlebar
 bool TweakFrmSendTitlebarChk;
@@ -3128,6 +3130,27 @@ INT_PTR __stdcall ServiceUnsentMsgShowAllItem(WPARAM wParam, LPARAM lParam)
 	}
 
 	return 0;
+}
+//---------------------------------------------------------------------------
+
+//Pokazanie informacji w oknie rozmowy
+void ShowFrmSendNotification(UnicodeString JID, UnicodeString Res, int UserIdx, UnicodeString Text, bool SaveInArchive)
+{
+	//Struktura kontatku
+	TPluginMicroMsg PluginMicroMsg;
+	ZeroMemory(&PluginMicroMsg, sizeof(TPluginMicroMsg));
+	PluginMicroMsg.cbSize = sizeof(TPluginMicroMsg);
+	PluginMicroMsg.Msg = Text.w_str();
+	PluginMicroMsg.SaveToArchive = SaveInArchive;
+	//Struktura wiadomosci
+	TPluginContact PluginContact;
+	ZeroMemory(&PluginContact, sizeof(TPluginContact));
+	PluginContact.cbSize = sizeof(TPluginContact);
+	PluginContact.JID = JID.w_str();
+	PluginContact.Resource = Res.w_str();
+	PluginContact.UserIdx = UserIdx;
+	//Pokazanie informacji
+	PluginLink.CallService(AQQ_CONTACTS_ADDLINEINFO,(WPARAM)(&PluginContact),(LPARAM)(&PluginMicroMsg));
 }
 //---------------------------------------------------------------------------
 
@@ -8399,6 +8422,7 @@ INT_PTR __stdcall OnLangCodeChanged(WPARAM wParam, LPARAM lParam)
 		hSettingsForm->ItemsCountClosedTabsSpinEdit->Left = hSettingsForm->Canvas->TextWidth(hSettingsForm->ItemsCountClosedTabsSpinEdit->BoundLabel->Caption) + 20;
 		hSettingsForm->UnCloseTabHotKeyInput->Left = hSettingsForm->UnCloseTabHotKeyMode2RadioButton->Left + hSettingsForm->Canvas->TextWidth(hSettingsForm->UnCloseTabHotKeyMode2RadioButton->Caption) + 26;
 		hSettingsForm->CountClosedTabsSpinEdit->Left = hSettingsForm->Canvas->TextWidth(hSettingsForm->CountClosedTabsSpinEdit->BoundLabel->Caption) + 20;
+		hSettingsForm->ChatGoneSaveInArchiveCheckBox->Left = hSettingsForm->ChatGoneFrmSendNotiferNewMsgCheckBox->Left + hSettingsForm->Canvas->TextWidth(hSettingsForm->ChatGoneFrmSendNotiferNewMsgCheckBox->Caption) + 26;
 		hSettingsForm->FrmMainEdgeComboBox->Left = hSettingsForm->FrmMainEdgeLabel->Left + hSettingsForm->Canvas->TextWidth(hSettingsForm->FrmMainEdgeLabel->Caption) + 6;
 		hSettingsForm->FrmMainHideModeComboBox->Left = hSettingsForm->FrmMainHideModeLabel->Left + hSettingsForm->Canvas->TextWidth(hSettingsForm->FrmMainHideModeLabel->Caption) + 6;
 		hSettingsForm->FrmSendEdgeComboBox->Left = hSettingsForm->FrmSendEdgeLabel->Left + hSettingsForm->Canvas->TextWidth(hSettingsForm->FrmSendEdgeLabel->Caption) + 6;
@@ -9353,6 +9377,22 @@ INT_PTR __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 					}
 					//Odtworzenie dzwieku
 					if((ChatGoneSoundNotiferNewMsgChk)&&(ChkSoundEnabled())) PluginLink.CallService(AQQ_SYSTEM_PLAYSOUND,SOUND_NEWS,1);
+					//Pokazanie notyfikacji w oknie rozmowy
+					if(ChatGoneFrmSendNotiferNewMsgChk)
+					{
+						//Ustawianie tresci powiadomienia na podstawie plci kontaktu
+						UnicodeString Text;
+						if(ChkContactGender(JID)) Text = GetLangStr("ClosedWndM");
+						else Text = GetLangStr("ClosedWndF");
+						//Pobieranie pseudonimu kontaktu
+						UnicodeString Nick = (wchar_t*)RecvMsgContact.Nick;
+						Text = StringReplace(Text, "CC_NICK", Nick, TReplaceFlags());
+						//Pobieranie danych wiadomosci
+						UnicodeString ResW = (wchar_t*)RecvMsgContact.Resource;
+						int UserIdxW = RecvMsgContact.UserIdx;
+						//Pokazanie notyfikacji
+						ShowFrmSendNotification(JID,ResW,UserIdxW,Text,ChatGoneSaveInArchiveChk);
+					}
 				}
 				//Inny stan
 				else if(ChatState!=PreMsgStateList->ReadInteger("PreMsgState",JID+Res+UserIdx,0))
@@ -11265,6 +11305,8 @@ void LoadSettings()
 	ChatGoneNotiferNewMsgChk = Ini->ReadBool("NewMsg","ChatGoneNotifer",true);
 	ChatGoneCloudNotiferNewMsgChk = Ini->ReadBool("NewMsg","ChatGoneCloudNotifer",false);
 	ChatGoneSoundNotiferNewMsgChk = Ini->ReadBool("NewMsg","ChatGoneSoundNotifer",false);
+	ChatGoneFrmSendNotiferNewMsgChk = Ini->ReadBool("NewMsg","ChatGoneFrmSendNotifer",true);
+	ChatGoneSaveInArchiveChk = Ini->ReadBool("NewMsg","ChatGoneSaveInArchive",false);
 	TaskbarPenChk = Ini->ReadBool("NewMsg","TaskbarPen",true);
 	//Titlebar
 	TweakFrmSendTitlebarChk = Ini->ReadBool("Titlebar","TweakSend",false);
@@ -11680,10 +11722,10 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Load(PPluginLink Link)
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\Const.lng").w_str(),L"EN_CONST",L"DATA");
 	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\Const.lng")!="99E2CDBA63BCC0050D32F6FECEBBC171")
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\Const.lng").w_str(),L"EN_CONST",L"DATA");
-	//13FE1206D7F7A1A3874E9405C8913699
+	//AE303B1D3ED6A5738FFD20B734F607BD
 	if(!FileExists(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSettingsForm.lng"))
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSettingsForm.lng").w_str(),L"EN_SETTINGSFRM",L"DATA");
-	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSettingsForm.lng")!="13FE1206D7F7A1A3874E9405C8913699")
+	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSettingsForm.lng")!="AE303B1D3ED6A5738FFD20B734F607BD")
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSettingsForm.lng").w_str(),L"EN_SETTINGSFRM",L"DATA");
 	//324061A51B896B06E99EF1B88D062B2F
 	if(!FileExists(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSideSlideExceptionsForm.lng"))
@@ -11695,10 +11737,10 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Load(PPluginLink Link)
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\Const.lng").w_str(),L"PL_CONST",L"DATA");
 	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\Const.lng")!="EBB83209A29FEB1D8A412FA57E6BBA48")
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\Const.lng").w_str(),L"PL_CONST",L"DATA");
-	//39ACDD1BC30A337CEAFC572A15C131F0
+	//BC6840291A066B61446D0169FCC725A8
 	if(!FileExists(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSettingsForm.lng"))
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSettingsForm.lng").w_str(),L"PL_SETTINGSFRM",L"DATA");
-	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSettingsForm.lng")!="39ACDD1BC30A337CEAFC572A15C131F0")
+	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSettingsForm.lng")!="BC6840291A066B61446D0169FCC725A8")
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSettingsForm.lng").w_str(),L"PL_SETTINGSFRM",L"DATA");
 	//589F6BBC7D5CB448CBF9DDD2BC15D54C
 	if(!FileExists(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSideSlideExceptionsForm.lng"))
