@@ -268,6 +268,8 @@ __published:	// IDE-managed Components
 	TsLabel *FrmSendHideModeLabel;
 	TsLabel *CloudTickModeLabel;
 	TsEdit *DateFormatEdit;
+	TsCheckBox *ChatGoneFrmSendNotiferNewMsgCheckBox;
+	TsCheckBox *ChatGoneSaveInArchiveCheckBox;
 	void __fastcall UnsentMsgTrayIconClick(TObject *Sender);
 	void __fastcall aExitExecute(TObject *Sender);
 	void __fastcall aLoadSettingsExecute(TObject *Sender);

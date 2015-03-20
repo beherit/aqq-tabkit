@@ -188,6 +188,7 @@ void __fastcall TSettingsForm::FormCreate(TObject *Sender)
 	ItemsCountClosedTabsSpinEdit->Left = Canvas->TextWidth(ItemsCountClosedTabsSpinEdit->BoundLabel->Caption) + 20;
 	UnCloseTabHotKeyInput->Left = UnCloseTabHotKeyMode2RadioButton->Left + Canvas->TextWidth(UnCloseTabHotKeyMode2RadioButton->Caption) + 26;
 	CountClosedTabsSpinEdit->Left = Canvas->TextWidth(CountClosedTabsSpinEdit->BoundLabel->Caption) + 20;
+	ChatGoneSaveInArchiveCheckBox->Left = ChatGoneFrmSendNotiferNewMsgCheckBox->Left + Canvas->TextWidth(ChatGoneFrmSendNotiferNewMsgCheckBox->Caption) + 26;
 	FrmMainEdgeComboBox->Left = FrmMainEdgeLabel->Left + Canvas->TextWidth(FrmMainEdgeLabel->Caption) + 6;
 	FrmMainHideModeComboBox->Left = FrmMainHideModeLabel->Left + Canvas->TextWidth(FrmMainHideModeLabel->Caption) + 6;
 	FrmSendEdgeComboBox->Left = FrmSendEdgeLabel->Left + Canvas->TextWidth(FrmSendEdgeLabel->Caption) + 6;
@@ -339,6 +340,8 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
 	ChatGoneNotiferNewMsgCheckBox->Checked = Ini->ReadBool("NewMsg","ChatGoneNotifer",true);
 	ChatGoneCloudNotiferNewMsgCheckBox->Checked = Ini->ReadBool("NewMsg","ChatGoneCloudNotifer",false);
 	ChatGoneSoundNotiferNewMsgCheckBox->Checked = Ini->ReadBool("NewMsg","ChatGoneSoundNotifer",false);
+	ChatGoneFrmSendNotiferNewMsgCheckBox->Checked = Ini->ReadBool("NewMsg","ChatGoneFrmSendNotifer",true);
+	ChatGoneSaveInArchiveCheckBox->Checked = Ini->ReadBool("NewMsg","ChatGoneSaveInArchive",false);
 	TaskbarPenCheckBox->Checked = !Ini->ReadBool("NewMsg","TaskbarPen",true);
 	//Titlebar
 	TweakFrmSendTitlebarCheckBox->Checked = Ini->ReadBool("Titlebar","TweakSend",false);
@@ -571,6 +574,8 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
 	Ini->WriteBool("NewMsg","ChatGoneNotifer",ChatGoneNotiferNewMsgCheckBox->Checked);
 	Ini->WriteBool("NewMsg","ChatGoneCloudNotifer",ChatGoneCloudNotiferNewMsgCheckBox->Checked);
 	Ini->WriteBool("NewMsg","ChatGoneSoundNotifer",ChatGoneSoundNotiferNewMsgCheckBox->Checked);
+	Ini->WriteBool("NewMsg","ChatGoneFrmSendNotifer",ChatGoneFrmSendNotiferNewMsgCheckBox->Checked);
+	Ini->WriteBool("NewMsg","ChatGoneSaveInArchive",ChatGoneSaveInArchiveCheckBox->Checked);
 	Ini->WriteBool("NewMsg","TaskbarPen",!TaskbarPenCheckBox->Checked);
 	//Titlebar
 	Ini->WriteBool("Titlebar","TweakSend",TweakFrmSendTitlebarCheckBox->Checked);
@@ -786,10 +791,14 @@ void __fastcall TSettingsForm::aNewMsgChkExecute(TObject *Sender)
 	ChatGoneNotiferNewMsgCheckBox->Enabled = ChatStateNotiferNewMsgCheckBox->Checked;
 	ChatGoneCloudNotiferNewMsgCheckBox->Enabled = ChatGoneNotiferNewMsgCheckBox->Checked;
 	ChatGoneSoundNotiferNewMsgCheckBox->Enabled = ChatGoneNotiferNewMsgCheckBox->Checked;
+	ChatGoneFrmSendNotiferNewMsgCheckBox->Enabled = ChatGoneNotiferNewMsgCheckBox->Checked;
+	ChatGoneSaveInArchiveCheckBox->Enabled = (ChatGoneFrmSendNotiferNewMsgCheckBox->Checked && ChatGoneNotiferNewMsgCheckBox->Checked);
 	if(!ChatStateNotiferNewMsgCheckBox->Checked)
 	{
 		ChatGoneCloudNotiferNewMsgCheckBox->Enabled = false;
 		ChatGoneSoundNotiferNewMsgCheckBox->Enabled = false;
+		ChatGoneFrmSendNotiferNewMsgCheckBox->Enabled = false;
+		ChatGoneSaveInArchiveCheckBox->Enabled = false;
 	}
 	SaveButton->Enabled = true;
 }
