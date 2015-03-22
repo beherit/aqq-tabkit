@@ -1290,6 +1290,8 @@ void SetFrmSendPos()
 //Sztywne wysuniecie okna rozmowy zza krawedzi
 void ShowFrmSend()
 {
+	//Wylaczenie statusu okna na wierzchu
+	SetWindowPos(hFrmSend,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE);
 	//Okno rozmowy chowane za lewa krawedzia ekranu
 	if(FrmSendSlideEdge==1)
 		SetWindowPos(hFrmSend,HWND_BOTTOM,0+FrmSend_Shell_TrayWndLeft,FrmSendRect.Top,0,0,SWP_NOSIZE|SWP_NOACTIVATE);
