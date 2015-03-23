@@ -3095,6 +3095,21 @@ object SettingsForm: TSettingsForm
             ImgUnchecked = 0
             WordWrap = True
           end
+          object SaveClosedInfoInArchiveCheckBox: TsCheckBox
+            Tag = 146
+            Left = 26
+            Top = 212
+            Width = 175
+            Height = 28
+            Caption = 'Zapisuj w archiwum informacj'#281' o zamkni'#281'ciu zak'#322'adki'
+            AutoSize = False
+            TabOrder = 6
+            OnClick = aClosedTabsChkExecute
+            SkinData.SkinSection = 'CHECKBOX'
+            ImgChecked = 0
+            ImgUnchecked = 0
+            WordWrap = True
+          end
         end
         object UnCloseTabHotKeyGroupBox: TsGroupBox
           Left = 16
