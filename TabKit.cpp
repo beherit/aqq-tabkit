@@ -380,6 +380,7 @@ bool UnCloseTab2xLPMouseChk;
 int CountUnCloseTabVal;
 bool RestoreLastMsgChk;
 bool OnlyConversationTabsChk;
+bool SaveClosedInfoInArchiveChk;
 //UnsentMsg
 bool UnsentMsgChk;
 bool InfoUnsentMsgChk;
@@ -2270,6 +2271,16 @@ UnicodeString ReceiveAccountName(int UserIdx)
 	UnicodeString Name = (wchar_t*)PluginStateChange.JID;
 	Name = Name + "/" + (wchar_t*)PluginStateChange.Resource;
 	return Name;
+}
+//---------------------------------------------------------------------------
+
+//Pobieranie JID konta przez podanie jego indeksu
+UnicodeString ReceiveAccountJID(int UserIdx)
+{
+	TPluginStateChange PluginStateChange;
+	PluginLink.CallService(AQQ_FUNCTION_GETNETWORKSTATE,(WPARAM)(&PluginStateChange),(LPARAM)UserIdx);
+	UnicodeString JID = (wchar_t*)PluginStateChange.JID;
+	return JID;
 }
 //---------------------------------------------------------------------------
 
@@ -7731,11 +7742,26 @@ INT_PTR __stdcall OnCloseTab(WPARAM wParam, LPARAM lParam)
 		//Dodawanie JID do listy ostatnio zamknietych zakladek
 		if(ClosedTabsChk)
 		{
-			//Sprawdzanie przeprowadzono z kontaktem rozmowe
+			//Sprawdzanie czy przeprowadzono z kontaktem rozmowe
 			if(OnlyConversationTabsChk)
 			{
+				//Brak rozmowy z kontaktem
 				if(AcceptClosedTabsList->IndexOf(JID+UserIdx)==-1)
 					goto SkipClosedTabsChk;
+				//Zapisywanie w archiwum informacji o zamknieciu zakladki 
+				else if(SaveClosedInfoInArchiveChk)
+				{
+					//Pobieranie danych kontaktu
+					UnicodeString ResW = (wchar_t*)CloseTabContact.Resource;
+					int UserIdxW = CloseTabContact.UserIdx;
+					UnicodeString AccountJID =  ReceiveAccountJID(UserIdxW);
+					//Ustawianie tresci informacji na podstawie plci
+					UnicodeString Text;
+					if(ChkContactGender(AccountJID)) Text = GetLangStr("YouClosedWndM");
+					else Text = GetLangStr("YouClosedWndF");					
+					//Zapisywanie informacji
+					ShowFrmSendNotification(JID,ResW,UserIdxW,Text,true);
+				}
 			}
 			//Sprawdzanie czy kontakt jest czatem z wtyczki
 			if((CloseTabContact.IsChat)&&(CloseTabContact.FromPlugin))
@@ -9361,8 +9387,8 @@ INT_PTR __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 					{
 						//Ustawianie tresci powiadomienia na podstawie plci kontaktu
 						UnicodeString Text;
-						if(ChkContactGender(JID)) Text = GetLangStr("ClosedWndM");
-						else Text = GetLangStr("ClosedWndF");
+						if(ChkContactGender(JID)) Text = GetLangStr("ContactClosedWndM");
+						else Text = GetLangStr("ContactClosedWndF");
             //Pobieranie pseudonimu kontaktu
 						UnicodeString Nick = (wchar_t*)RecvMsgContact.Nick;
 						Text = StringReplace(Text, "CC_NICK", Nick, TReplaceFlags());
@@ -9384,8 +9410,8 @@ INT_PTR __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 					{
 						//Ustawianie tresci powiadomienia na podstawie plci kontaktu
 						UnicodeString Text;
-						if(ChkContactGender(JID)) Text = GetLangStr("ClosedWndM");
-						else Text = GetLangStr("ClosedWndF");
+						if(ChkContactGender(JID)) Text = GetLangStr("ContactClosedWndM");
+						else Text = GetLangStr("ContactClosedWndF");
 						//Pobieranie pseudonimu kontaktu
 						UnicodeString Nick = (wchar_t*)RecvMsgContact.Nick;
 						Text = StringReplace(Text, "CC_NICK", Nick, TReplaceFlags());
@@ -11274,6 +11300,7 @@ void LoadSettings()
 	CountUnCloseTabVal = Ini->ReadInteger("ClosedTabs","Count",10);
 	RestoreLastMsgChk = Ini->ReadBool("ClosedTabs","RestoreLastMsg",true);
 	OnlyConversationTabsChk = Ini->ReadBool("ClosedTabs","OnlyConversationTabs",false);
+	SaveClosedInfoInArchiveChk = Ini->ReadBool("ClosedTabs","SaveInfoInArchive",false);
 	//UnsentMsg
 	UnsentMsgChk = Ini->ReadBool("UnsentMsg","Enable",true);
 	InfoUnsentMsgChk = Ini->ReadBool("UnsentMsg","Info",true);
@@ -11718,31 +11745,31 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Load(PPluginLink Link)
 		CreateDir(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN");
 	if(!DirectoryExists(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL"))
 		CreateDir(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL");
-  //Wypakowanie plikow lokalizacji
-	//99E2CDBA63BCC0050D32F6FECEBBC171
+	//Wypakowanie plikow lokalizacji
+	//D9D72C90B851171F8F4011A8932883A5
 	if(!FileExists(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\Const.lng"))
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\Const.lng").w_str(),L"EN_CONST",L"DATA");
-	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\Const.lng")!="99E2CDBA63BCC0050D32F6FECEBBC171")
+	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\Const.lng")!="D9D72C90B851171F8F4011A8932883A5")
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\Const.lng").w_str(),L"EN_CONST",L"DATA");
-	//AE303B1D3ED6A5738FFD20B734F607BD
+	//D13219B912C3C290DF704F4B28979703
 	if(!FileExists(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSettingsForm.lng"))
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSettingsForm.lng").w_str(),L"EN_SETTINGSFRM",L"DATA");
-	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSettingsForm.lng")!="AE303B1D3ED6A5738FFD20B734F607BD")
+	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSettingsForm.lng")!="D13219B912C3C290DF704F4B28979703")
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSettingsForm.lng").w_str(),L"EN_SETTINGSFRM",L"DATA");
 	//324061A51B896B06E99EF1B88D062B2F
 	if(!FileExists(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSideSlideExceptionsForm.lng"))
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSideSlideExceptionsForm.lng").w_str(),L"EN_SIDESLIDEEXCEPTIONSFRM",L"DATA");
 	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSideSlideExceptionsForm.lng")!="324061A51B896B06E99EF1B88D062B2F")
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSideSlideExceptionsForm.lng").w_str(),L"EN_SIDESLIDEEXCEPTIONSFRM",L"DATA");
-	//EBB83209A29FEB1D8A412FA57E6BBA48
+	//1B19E6D7A2D8B85F27E1998271184E58
 	if(!FileExists(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\Const.lng"))
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\Const.lng").w_str(),L"PL_CONST",L"DATA");
-	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\Const.lng")!="EBB83209A29FEB1D8A412FA57E6BBA48")
+	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\Const.lng")!="1B19E6D7A2D8B85F27E1998271184E58")
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\Const.lng").w_str(),L"PL_CONST",L"DATA");
-	//BC6840291A066B61446D0169FCC725A8
+	//5740BC4AB5EEA199DA6CCFA7250DA259
 	if(!FileExists(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSettingsForm.lng"))
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSettingsForm.lng").w_str(),L"PL_SETTINGSFRM",L"DATA");
-	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSettingsForm.lng")!="BC6840291A066B61446D0169FCC725A8")
+	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSettingsForm.lng")!="5740BC4AB5EEA199DA6CCFA7250DA259")
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSettingsForm.lng").w_str(),L"PL_SETTINGSFRM",L"DATA");
 	//589F6BBC7D5CB448CBF9DDD2BC15D54C
 	if(!FileExists(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSideSlideExceptionsForm.lng"))

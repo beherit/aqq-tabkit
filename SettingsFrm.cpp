@@ -303,6 +303,7 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
 	CountClosedTabsSpinEdit->Value = Ini->ReadInteger("ClosedTabs","Count",5);
 	RestoreLastMsgClosedTabsCheckBox->Checked = Ini->ReadBool("ClosedTabs","RestoreLastMsg",true);
 	OnlyConversationTabsCheckBox->Checked = Ini->ReadBool("ClosedTabs","OnlyConversationTabs",false);
+	SaveClosedInfoInArchiveCheckBox->Checked = Ini->ReadBool("ClosedTabs","SaveInfoInArchive",false);
 	//UnsentMsg
 	RememberUnsentMsgCheckBox->Checked = Ini->ReadBool("UnsentMsg","Enable",true);
 	InfoUnsentMsgCheckBox->Checked = Ini->ReadBool("UnsentMsg","Info",true);
@@ -526,6 +527,7 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
 	Ini->WriteInteger("ClosedTabs","Count",CountClosedTabsSpinEdit->Value);
 	Ini->WriteBool("ClosedTabs","RestoreLastMsg",RestoreLastMsgClosedTabsCheckBox->Checked);
 	Ini->WriteBool("ClosedTabs","OnlyConversationTabs",OnlyConversationTabsCheckBox->Checked);
+	Ini->WriteBool("ClosedTabs","SaveInfoInArchive",SaveClosedInfoInArchiveCheckBox->Checked);
 	//UnsentMsg
 	Ini->WriteBool("UnsentMsg","Enable",RememberUnsentMsgCheckBox->Checked);
 	Ini->WriteBool("UnsentMsg","Info",InfoUnsentMsgCheckBox->Checked);
@@ -712,6 +714,7 @@ void __fastcall TSettingsForm::aClosedTabsChkExecute(TObject *Sender)
 	CountClosedTabsSpinEdit->Enabled = RememberClosedTabsCheckBox->Checked;
 	RestoreLastMsgClosedTabsCheckBox->Enabled = RememberClosedTabsCheckBox->Checked;
 	OnlyConversationTabsCheckBox->Enabled = RememberClosedTabsCheckBox->Checked;
+	SaveClosedInfoInArchiveCheckBox->Enabled = (RememberClosedTabsCheckBox->Checked && OnlyConversationTabsCheckBox->Checked);
 	UnCloseMouseLabel->Enabled = RememberClosedTabsCheckBox->Checked;
 	UnCloseTabSPMouseCheckBox->Enabled = RememberClosedTabsCheckBox->Checked;
 	UnCloseTabLPMouseCheckBox->Enabled = RememberClosedTabsCheckBox->Checked;

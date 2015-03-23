@@ -270,6 +270,7 @@ __published:	// IDE-managed Components
 	TsEdit *DateFormatEdit;
 	TsCheckBox *ChatGoneFrmSendNotiferNewMsgCheckBox;
 	TsCheckBox *ChatGoneSaveInArchiveCheckBox;
+	TsCheckBox *SaveClosedInfoInArchiveCheckBox;
 	void __fastcall UnsentMsgTrayIconClick(TObject *Sender);
 	void __fastcall aExitExecute(TObject *Sender);
 	void __fastcall aLoadSettingsExecute(TObject *Sender);
