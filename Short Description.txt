@@ -1,1 +1,4 @@
-Wtyczka oferuje masê funkcjonalnoœci usprawniaj¹cych korzystanie z komunikatora np. zapamiêtywanie zamkniêtych zak³adek, inteligentne prze³¹czanie, zapamiêtywanie sesji.
+PL:
+Oferuje masê funkcjonalnoœci usprawniaj¹cych korzystanie z komunikatora np. zapamiêtywanie zamkniêtych zak³adek, inteligentne prze³¹czanie, zapamiêtywanie sesji.
+EN:
+Offers a lot of functionality to improve the use of the communicator ex. remember recently closed tabs, intelligent switching, saving session.
