@@ -6996,6 +6996,24 @@ INT_PTR __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 					hFlasherKeyboardThread = NULL;
 				}
 			}
+			//Notyfikcja pisania wiadomosci
+			if(ChatStateNotiferNewMsgChk)
+			{
+				//Resetowanie poprzedniego stanu pisania wiadomosci
+				LastChatState = 0;
+				//Ustawienie oryginalnej malej ikonki
+				if(hIconSmall)
+				{
+					SendMessage(hFrmSend, WM_SETICON, ICON_SMALL, (LPARAM)hIconSmall);
+					hIconSmall = 0;
+				}
+				//Ustawienie oryginalnej duzej ikonki
+				if(hIconBig)
+				{
+					SendMessage(hFrmSend, WM_SETICON, ICON_BIG, (LPARAM)hIconBig);
+					hIconBig = 0;
+				}
+			}
 			//Zakladka z kontaktem nie byla otwarta
 			if((TabsListEx->IndexOf(JID+Res+UserIdx)==-1))
 			{
