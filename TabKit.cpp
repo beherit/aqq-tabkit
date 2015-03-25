@@ -497,7 +497,7 @@ INT_PTR __stdcall OnPrimaryTab(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall OnPrimaryTab_GetOnlyList(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall OnReplyList(WPARAM wParam, LPARAM lParam);
-//INT_PTR __stdcall OnSystemRestart(WPARAM wParam, LPARAM lParam);
+INT_PTR __stdcall OnSystemRestart(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall OnResourceChanged(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall OnSetHTMLStatus(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall OnSetLastState(WPARAM wParam, LPARAM lParam);
@@ -9567,14 +9567,18 @@ INT_PTR __stdcall OnReplyList(WPARAM wParam, LPARAM lParam)
 }
 //---------------------------------------------------------------------------
 
-//Hook na restart komunikatora
-/*INT_PTR __stdcall OnSystemRestart(WPARAM wParam, LPARAM lParam)
+//Hook na wylaczenie komunikatora
+INT_PTR __stdcall OnSystemRestart(WPARAM wParam, LPARAM lParam)
 {
-	if((RestoreTabsSessionChk)&&(!ManualRestoreTabsSessionChk))
-		ManualRestoreTabsSessionChk = true;
+	//Restart komunikatora
+	if(lParam)
+	{
+		if((RestoreTabsSessionChk)&&(!ManualRestoreTabsSessionChk))
+			ManualRestoreTabsSessionChk = true;
+	}
 
 	return 0;
-}*/
+}
 //---------------------------------------------------------------------------
 
 //Hook na zmiane nazwy zasobu przez wtyczke ResourcesChanger
@@ -12058,8 +12062,8 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Load(PPluginLink Link)
 	PluginLink.HookEvent(AQQ_CONTACTS_RECVMSG,OnRecvMsg);
 	//Hook na enumeracje listy kontatkow
 	PluginLink.HookEvent(AQQ_CONTACTS_REPLYLIST,OnReplyList);
-	//Hook na restart komunikatora
-	//PluginLink.HookEvent(AQQ_SYSTEM_RESTART,OnSystemRestart);
+	//Hook na wylaczenie komunikatora
+	PluginLink.HookEvent(AQQ_SYSTEM_RESTART,OnSystemRestart);
 	//Hook na zmiane nazwy zasobu przez wtyczke ResourcesChanger
 	PluginLink.HookEvent(RESOURCESCHANGER_SYSTEM_RESOURCECHANGED,OnResourceChanged);
 	//Hook na zmiane widocznego opisu kontaktu na liscie kontatkow
@@ -12407,7 +12411,7 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Unload()
 	PluginLink.UnhookEvent(OnPreSendMsg);
 	PluginLink.UnhookEvent(OnRecvMsg);
 	PluginLink.UnhookEvent(OnReplyList);
-	//PluginLink.UnhookEvent(OnSystemRestart);
+	PluginLink.UnhookEvent(OnSystemRestart);
 	PluginLink.UnhookEvent(OnResourceChanged);
 	PluginLink.UnhookEvent(OnSetHTMLStatus);
 	PluginLink.UnhookEvent(OnSetLastState);
