@@ -473,34 +473,6 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
 
 void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
 {
-	//Sprawdzanie zaleznosci opcji
-	//ClosedTabs
-	if((!FrmMainClosedTabsCheckBox->Checked)&&(!FrmSendClosedTabsCheckBox->Checked))
-	{
-		FastAccessClosedTabsCheckBox->Checked = false;
-		aClosedTabsChk->Execute();
-	}
-	if((!FastAccessClosedTabsCheckBox->Checked)&&(!UnCloseTabHotKeyCheckBox->Checked))
-	{
-		RememberClosedTabsCheckBox->Checked = false;
-		aClosedTabsChk->Execute();
-	}
-	//UnsentMsg
-	if((!CloudUnsentMsgCheckBox->Checked)&&(!TrayUnsentMsgCheckBox->Checked))
-	{
-		InfoUnsentMsgCheckBox->Checked = false;
-		aUnsentMsgChk->Execute();
-	}
-	if((!FrmMainUnsentMsgCheckBox->Checked)&&(!FrmSendUnsentMsgCheckBox->Checked))
-	{
-		FastAccessUnsentMsgCheckBox->Checked = false;
-		aUnsentMsgChk->Execute();
-	}
-	if((!InfoUnsentMsgCheckBox->Checked)&&(!FastAccessUnsentMsgCheckBox->Checked))
-	{
-		RememberUnsentMsgCheckBox->Checked = false;
-		aUnsentMsgChk->Execute();
-	}
 	//Zapisywanie poszczegolnych ustawien
 	TIniFile *Ini = new TIniFile(GetPluginUserDir() + "\\\\TabKit\\\\Settings.ini");
 	//ClosedTabs
@@ -663,6 +635,19 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
 
 void __fastcall TSettingsForm::aSaveSettingsWExecute(TObject *Sender)
 {
+	//Sprawdzanie zaleznosci opcji
+	//ClosedTabs
+	FastAccessClosedTabsCheckBox->Checked = (FastAccessClosedTabsCheckBox->Checked && (FrmMainClosedTabsCheckBox->Checked || FrmSendClosedTabsCheckBox->Checked));
+	//UnsentMsg
+	InfoUnsentMsgCheckBox->Checked = (InfoUnsentMsgCheckBox->Checked && (CloudUnsentMsgCheckBox->Checked || TrayUnsentMsgCheckBox->Checked));
+	FastAccessUnsentMsgCheckBox->Checked = (FastAccessUnsentMsgCheckBox->Checked && (FrmMainUnsentMsgCheckBox->Checked || FrmSendUnsentMsgCheckBox->Checked));
+	RememberUnsentMsgCheckBox->Checked = (InfoUnsentMsgCheckBox->Checked || FastAccessUnsentMsgCheckBox->Checked);
+	//FavouritesTabs
+	FavouritesTabsCheckBox->Checked = (FavouritesTabsCheckBox->Checked && (FastAccessFavouritesTabsCheckBox->Checked || FavouritesTabsHotKeysCheckBox->Checked));
+	//Wylaczenie przyciskow
+	SaveButton->Enabled = false;
+	CancelButton->Enabled = false;
+	OkButton->Enabled = false;
 	//Usuwanie elementow z interfejsu AQQ
 	DestroyFavouritesTabs();
 	DestroyFrmUnsentMsg();
@@ -695,20 +680,23 @@ void __fastcall TSettingsForm::aSaveSettingsWExecute(TObject *Sender)
 	CheckHideScrollTabButtons();
 	//Odswiezenie wszystkich zakladek
 	RefreshTabs();
+	//Wlaczenie przyciskow
+	CancelButton->Enabled = true;
+	OkButton->Enabled = true;
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TSettingsForm::aClosedTabsChkExecute(TObject *Sender)
 {
-	FrmMainClosedTabsCheckBox->Enabled = FastAccessClosedTabsCheckBox->Checked;
-	FrmSendClosedTabsCheckBox->Enabled = FastAccessClosedTabsCheckBox->Checked;
-	ShowTimeClosedTabsCheckBox->Enabled = FastAccessClosedTabsCheckBox->Checked;
-	DateFormatEdit->Enabled = ShowTimeClosedTabsCheckBox->Checked;
-	FastClearClosedTabsCheckBox->Enabled = FastAccessClosedTabsCheckBox->Checked;
-	ItemsCountClosedTabsSpinEdit->Enabled = FastAccessClosedTabsCheckBox->Checked;
-	UnCloseTabHotKeyMode1RadioButton->Enabled = UnCloseTabHotKeyCheckBox->Checked;
-	UnCloseTabHotKeyMode2RadioButton->Enabled = UnCloseTabHotKeyCheckBox->Checked;
-	UnCloseTabHotKeyInput->Enabled = UnCloseTabHotKeyMode2RadioButton->Checked;
+	FrmMainClosedTabsCheckBox->Enabled = (RememberClosedTabsCheckBox->Checked && FastAccessClosedTabsCheckBox->Checked);
+	FrmSendClosedTabsCheckBox->Enabled = (RememberClosedTabsCheckBox->Checked && FastAccessClosedTabsCheckBox->Checked);
+	ShowTimeClosedTabsCheckBox->Enabled = (RememberClosedTabsCheckBox->Checked && FastAccessClosedTabsCheckBox->Checked);
+	DateFormatEdit->Enabled = (RememberClosedTabsCheckBox->Checked && ShowTimeClosedTabsCheckBox->Checked);
+	FastClearClosedTabsCheckBox->Enabled = (RememberClosedTabsCheckBox->Checked && FastAccessClosedTabsCheckBox->Checked);
+	ItemsCountClosedTabsSpinEdit->Enabled = (RememberClosedTabsCheckBox->Checked && FastAccessClosedTabsCheckBox->Checked);
+	UnCloseTabHotKeyMode1RadioButton->Enabled = (RememberClosedTabsCheckBox->Checked && UnCloseTabHotKeyCheckBox->Checked);
+	UnCloseTabHotKeyMode2RadioButton->Enabled = (RememberClosedTabsCheckBox->Checked && UnCloseTabHotKeyCheckBox->Checked);
+	UnCloseTabHotKeyInput->Enabled = (RememberClosedTabsCheckBox->Checked && UnCloseTabHotKeyMode2RadioButton->Checked);
 	FastAccessClosedTabsCheckBox->Enabled = RememberClosedTabsCheckBox->Checked;
 	UnCloseTabHotKeyCheckBox->Enabled = RememberClosedTabsCheckBox->Checked;
 	CountClosedTabsSpinEdit->Enabled = RememberClosedTabsCheckBox->Checked;
@@ -719,18 +707,6 @@ void __fastcall TSettingsForm::aClosedTabsChkExecute(TObject *Sender)
 	UnCloseTabSPMouseCheckBox->Enabled = RememberClosedTabsCheckBox->Checked;
 	UnCloseTabLPMouseCheckBox->Enabled = RememberClosedTabsCheckBox->Checked;
 	UnCloseTab2xLPMouseCheckBox->Enabled = RememberClosedTabsCheckBox->Checked;
-	if(!RememberClosedTabsCheckBox->Checked)
-	{
-		FrmMainClosedTabsCheckBox->Enabled = false;
-		FrmSendClosedTabsCheckBox->Enabled = false;
-		ShowTimeClosedTabsCheckBox->Enabled = false;
-		DateFormatEdit->Enabled = false;
-		FastClearClosedTabsCheckBox->Enabled = false;
-		ItemsCountClosedTabsSpinEdit->Enabled = false;
-		UnCloseTabHotKeyMode1RadioButton->Enabled = false;
-		UnCloseTabHotKeyMode2RadioButton->Enabled = false;
-		UnCloseTabHotKeyInput->Enabled = false;
-	}
 
 	SaveButton->Enabled = true;
 }
@@ -738,25 +714,14 @@ void __fastcall TSettingsForm::aClosedTabsChkExecute(TObject *Sender)
 
 void __fastcall TSettingsForm::aUnsentMsgChkExecute(TObject *Sender)
 {
-	DetailedCloudUnsentMsgCheckBox->Enabled = CloudUnsentMsgCheckBox->Checked;
-	CloudUnsentMsgCheckBox->Enabled = InfoUnsentMsgCheckBox->Checked;
-	TrayUnsentMsgCheckBox->Enabled = InfoUnsentMsgCheckBox->Checked;
-	if(!InfoUnsentMsgCheckBox->Checked)
-		DetailedCloudUnsentMsgCheckBox->Enabled = false;
-	FrmMainUnsentMsgCheckBox->Enabled = FastAccessUnsentMsgCheckBox->Checked;
-	FrmSendUnsentMsgCheckBox->Enabled = FastAccessUnsentMsgCheckBox->Checked;
-	FastClearUnsentMsgCheckBox->Enabled = FastAccessUnsentMsgCheckBox->Checked;
-	InfoUnsentMsgCheckBox->Enabled =	RememberUnsentMsgCheckBox->Checked;
+	InfoUnsentMsgCheckBox->Enabled = RememberUnsentMsgCheckBox->Checked;
+	CloudUnsentMsgCheckBox->Enabled = (RememberUnsentMsgCheckBox->Checked && InfoUnsentMsgCheckBox->Checked);
+	DetailedCloudUnsentMsgCheckBox->Enabled = (RememberUnsentMsgCheckBox->Checked && InfoUnsentMsgCheckBox->Checked && CloudUnsentMsgCheckBox->Checked);
+	TrayUnsentMsgCheckBox->Enabled = (RememberUnsentMsgCheckBox->Checked && InfoUnsentMsgCheckBox->Checked);
 	FastAccessUnsentMsgCheckBox->Enabled = RememberUnsentMsgCheckBox->Checked;
-	if(!RememberUnsentMsgCheckBox->Checked)
-	{
-		CloudUnsentMsgCheckBox->Enabled = false;
-		DetailedCloudUnsentMsgCheckBox->Enabled = false;
-		TrayUnsentMsgCheckBox->Enabled = false;
-		FrmMainUnsentMsgCheckBox->Enabled = false;
-		FrmSendUnsentMsgCheckBox->Enabled = false;
-		FastClearUnsentMsgCheckBox->Enabled = false;
-	}
+	FrmMainUnsentMsgCheckBox->Enabled = (RememberUnsentMsgCheckBox->Checked && FastAccessUnsentMsgCheckBox->Checked);
+	FrmSendUnsentMsgCheckBox->Enabled = (RememberUnsentMsgCheckBox->Checked && FastAccessUnsentMsgCheckBox->Checked);
+	FastClearUnsentMsgCheckBox->Enabled = (RememberUnsentMsgCheckBox->Checked && FastAccessUnsentMsgCheckBox->Checked);
 
 	SaveButton->Enabled = true;
 }
@@ -787,22 +752,13 @@ void __fastcall TSettingsForm::aNewMsgChkExecute(TObject *Sender)
 {
 	KeyboardFlasherModeComboBox->Enabled = KeyboardFlasherCheckBox->Checked;
 	OffCoreInactiveTabsNewMsgCheckBox->Enabled = !InactiveTabsNewMsgCheckBox->Checked;
-	if((InactiveFrmNewMsgCheckBox->Checked)||(TweakFrmSendTitlebarCheckBox->Checked))
-		TaskbarPenCheckBox->Enabled = false;
-	else
-		TaskbarPenCheckBox->Enabled = true;
+	TaskbarPenCheckBox->Enabled = (InactiveFrmNewMsgCheckBox->Checked || TweakFrmSendTitlebarCheckBox->Checked);
 	ChatGoneNotiferNewMsgCheckBox->Enabled = ChatStateNotiferNewMsgCheckBox->Checked;
-	ChatGoneCloudNotiferNewMsgCheckBox->Enabled = ChatGoneNotiferNewMsgCheckBox->Checked;
-	ChatGoneSoundNotiferNewMsgCheckBox->Enabled = ChatGoneNotiferNewMsgCheckBox->Checked;
-	ChatGoneFrmSendNotiferNewMsgCheckBox->Enabled = ChatGoneNotiferNewMsgCheckBox->Checked;
-	ChatGoneSaveInArchiveCheckBox->Enabled = (ChatGoneFrmSendNotiferNewMsgCheckBox->Checked && ChatGoneNotiferNewMsgCheckBox->Checked);
-	if(!ChatStateNotiferNewMsgCheckBox->Checked)
-	{
-		ChatGoneCloudNotiferNewMsgCheckBox->Enabled = false;
-		ChatGoneSoundNotiferNewMsgCheckBox->Enabled = false;
-		ChatGoneFrmSendNotiferNewMsgCheckBox->Enabled = false;
-		ChatGoneSaveInArchiveCheckBox->Enabled = false;
-	}
+	ChatGoneCloudNotiferNewMsgCheckBox->Enabled = (ChatStateNotiferNewMsgCheckBox->Checked && ChatGoneNotiferNewMsgCheckBox->Checked);
+	ChatGoneSoundNotiferNewMsgCheckBox->Enabled = (ChatStateNotiferNewMsgCheckBox->Checked && ChatGoneNotiferNewMsgCheckBox->Checked);
+	ChatGoneFrmSendNotiferNewMsgCheckBox->Enabled = (ChatStateNotiferNewMsgCheckBox->Checked && ChatGoneNotiferNewMsgCheckBox->Checked);
+	ChatGoneSaveInArchiveCheckBox->Enabled = (ChatStateNotiferNewMsgCheckBox->Checked && ChatGoneFrmSendNotiferNewMsgCheckBox->Checked && ChatGoneNotiferNewMsgCheckBox->Checked);
+
 	SaveButton->Enabled = true;
 }
 //---------------------------------------------------------------------------
@@ -814,12 +770,10 @@ void __fastcall TSettingsForm::aTitlebarTweakChkExecute(TObject *Sender)
 	TweakFrmSendTitlebarMode3RadioButton->Enabled = TweakFrmSendTitlebarCheckBox->Checked;
 	TweakFrmSendTitlebarMode4RadioButton->Enabled = TweakFrmSendTitlebarCheckBox->Checked;
 	TweakFrmMainTitlebarMode1RadioButton->Enabled = TweakFrmMainTitlebarCheckBox->Checked;
-	TweakFrmMainTitlebarModeExComboBox->Enabled = TweakFrmMainTitlebarCheckBox->Checked;
-	if(TweakFrmMainTitlebarCheckBox->Checked) TweakFrmMainTitlebarModeExComboBox->Enabled = TweakFrmMainTitlebarMode1RadioButton->Checked;
+	TweakFrmMainTitlebarModeExComboBox->Enabled = (TweakFrmMainTitlebarCheckBox->Checked && TweakFrmMainTitlebarMode1RadioButton->Checked);
 	TweakFrmMainTitlebarModeExLabel->Enabled = TweakFrmMainTitlebarCheckBox->Checked;
 	TweakFrmMainTitlebarMode2RadioButton->Enabled = TweakFrmMainTitlebarCheckBox->Checked;
-	TweakFrmMainTitlebarMode2Edit->Enabled = TweakFrmMainTitlebarCheckBox->Checked;
-	if(TweakFrmMainTitlebarCheckBox->Checked) TweakFrmMainTitlebarMode2Edit->Enabled = TweakFrmMainTitlebarMode2RadioButton->Checked;
+	TweakFrmMainTitlebarMode2Edit->Enabled = (TweakFrmMainTitlebarCheckBox->Checked && TweakFrmMainTitlebarMode2RadioButton->Checked);
 
 	SaveButton->Enabled = true;
 }
@@ -831,8 +785,7 @@ void __fastcall TSettingsForm::aClipTabsChkExecute(TObject *Sender)
 	InactiveClipTabsCheckBox->Enabled = ClipTabsCheckBox->Checked;
 	CounterClipTabsCheckBox->Enabled = ClipTabsCheckBox->Checked;
 	ExcludeClipTabsFromTabSwitchingCheckBox->Enabled = ClipTabsCheckBox->Checked;
-	if(ClipTabsCheckBox->Checked) ExcludeClipTabsFromSwitchToNewMsgCheckBox->Enabled = ExcludeClipTabsFromTabSwitchingCheckBox->Checked;
-	else ExcludeClipTabsFromSwitchToNewMsgCheckBox->Enabled = false;
+	ExcludeClipTabsFromSwitchToNewMsgCheckBox->Enabled = (ClipTabsCheckBox->Checked && ExcludeClipTabsFromTabSwitchingCheckBox->Checked);
 	ExcludeClipTabsFromTabsHotKeysCheckBox->Enabled = ClipTabsCheckBox->Checked;
 	NoMiniAvatarsClipTabsCheckBox->Enabled = ClipTabsCheckBox->Checked;
 
@@ -842,50 +795,27 @@ void __fastcall TSettingsForm::aClipTabsChkExecute(TObject *Sender)
 
 void __fastcall TSettingsForm::aSideSlideChkExecute(TObject *Sender)
 {
-	FrmSendEdgeLabel->Enabled = SlideFrmSendCheckBox->Checked;
-	FrmSendEdgeComboBox->Enabled = SlideFrmSendCheckBox->Checked;
-	FrmSendHideModeLabel->Enabled = SlideFrmSendCheckBox->Checked;
-	FrmSendHideModeComboBox->Enabled = SlideFrmSendCheckBox->Checked;
-	FrmSendTimeGroupBox->Enabled = SlideFrmSendCheckBox->Checked;
-	FrmSendSlideInDelaySpinEdit->Enabled = SlideFrmSendCheckBox->Checked;
-	if(SlideFrmSendCheckBox->Checked)
-	{
-		if(FrmSendHideModeComboBox->ItemIndex==2) FrmSendSlideOutDelaySpinEdit->Enabled = true;
-		else FrmSendSlideOutDelaySpinEdit->Enabled = false;
-	}
-	else
-		FrmSendSlideOutDelaySpinEdit->Enabled = false;
-	FrmSendSlideInTimeSpinEdit->Enabled = SlideFrmSendCheckBox->Checked;
-	FrmSendSlideOutTimeSpinEdit->Enabled = SlideFrmSendCheckBox->Checked;
-	SlideInAtNewMsgCheckBox->Enabled = SlideFrmSendCheckBox->Checked;
 	FrmMainEdgeLabel->Enabled = SlideFrmMainCheckBox->Checked;
 	FrmMainEdgeComboBox->Enabled = SlideFrmMainCheckBox->Checked;
 	FrmMainHideModeLabel->Enabled = SlideFrmMainCheckBox->Checked;
 	FrmMainHideModeComboBox->Enabled = SlideFrmMainCheckBox->Checked;
-	FrmMainTimeGroupBox->Enabled = SlideFrmMainCheckBox->Checked;
 	FrmMainSlideInDelaySpinEdit->Enabled = SlideFrmMainCheckBox->Checked;
-	if(SlideFrmMainCheckBox->Checked)
-	{
-		if(FrmMainHideModeComboBox->ItemIndex==2) FrmMainSlideOutDelaySpinEdit->Enabled = true;
-		else FrmMainSlideOutDelaySpinEdit->Enabled = false;
-	}
-	else
-		FrmMainSlideOutDelaySpinEdit->Enabled = false;
+	FrmMainSlideOutDelaySpinEdit->Enabled = (SlideFrmMainCheckBox->Checked && (FrmMainHideModeComboBox->ItemIndex==2));
 	FrmMainSlideInTimeSpinEdit->Enabled = SlideFrmMainCheckBox->Checked;
 	FrmMainSlideOutTimeSpinEdit->Enabled = SlideFrmMainCheckBox->Checked;
 	ChangeTabAfterSlideInCheckBox->Enabled = SlideFrmMainCheckBox->Checked;
-	if((!SlideFrmSendCheckBox->Checked)&&(!SlideFrmMainCheckBox->Checked))
-	{
-		SideSlideFullScreenModeCheckBox->Enabled = false;
-		SideSlideFullScreenModeExceptionsButton->Enabled = false;
-		SideSlideCtrlAndMousBlockCheckBox->Enabled = false;
-	}
-	else
-	{
-		SideSlideFullScreenModeCheckBox->Enabled = true;
-		SideSlideFullScreenModeExceptionsButton->Enabled = SideSlideFullScreenModeCheckBox->Checked;
-		SideSlideCtrlAndMousBlockCheckBox->Enabled = true;
-	}
+	FrmSendEdgeLabel->Enabled = SlideFrmSendCheckBox->Checked;
+	FrmSendEdgeComboBox->Enabled = SlideFrmSendCheckBox->Checked;
+	FrmSendHideModeLabel->Enabled = SlideFrmSendCheckBox->Checked;
+	FrmSendHideModeComboBox->Enabled = SlideFrmSendCheckBox->Checked;
+	FrmSendSlideInDelaySpinEdit->Enabled = SlideFrmSendCheckBox->Checked;
+	FrmSendSlideOutDelaySpinEdit->Enabled = (SlideFrmSendCheckBox->Checked && (FrmSendHideModeComboBox->ItemIndex==2));
+	FrmSendSlideInTimeSpinEdit->Enabled = SlideFrmSendCheckBox->Checked;
+	FrmSendSlideOutTimeSpinEdit->Enabled = SlideFrmSendCheckBox->Checked;
+	SlideInAtNewMsgCheckBox->Enabled = SlideFrmSendCheckBox->Checked;
+	SideSlideFullScreenModeCheckBox->Enabled = (SlideFrmSendCheckBox->Checked || SlideFrmMainCheckBox->Checked);
+	SideSlideFullScreenModeExceptionsButton->Enabled = (SideSlideFullScreenModeCheckBox->Enabled && SideSlideFullScreenModeCheckBox->Checked);
+	SideSlideCtrlAndMousBlockCheckBox->Enabled = (SlideFrmSendCheckBox->Checked || SlideFrmMainCheckBox->Checked);
 
 	SaveButton->Enabled = true;
 }
@@ -909,23 +839,13 @@ void __fastcall TSettingsForm::aExitExecute(TObject *Sender)
 
 void __fastcall TSettingsForm::SaveButtonClick(TObject *Sender)
 {
-	SaveButton->Enabled = false;
-	CancelButton->Enabled = false;
-	OkButton->Enabled = false;
 	aSaveSettingsW->Execute();
-	CancelButton->Enabled = true;
-	OkButton->Enabled = true;
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TSettingsForm::OkButtonClick(TObject *Sender)
 {
-	SaveButton->Enabled = false;
-	CancelButton->Enabled = false;
-	OkButton->Enabled = false;
 	aSaveSettingsW->Execute();
-	CancelButton->Enabled = true;
-	OkButton->Enabled = true;
 	Close();
 }
 //---------------------------------------------------------------------------
@@ -1051,10 +971,7 @@ void __fastcall TSettingsForm::PayPalImageClick(TObject *Sender)
 
 void __fastcall TSettingsForm::NewMsgTabSheetShow(TObject *Sender)
 {
-	if((InactiveFrmNewMsgCheckBox->Checked)||(TweakFrmSendTitlebarCheckBox->Checked))
-		TaskbarPenCheckBox->Enabled = false;
-	else
-		TaskbarPenCheckBox->Enabled = true;
+	TaskbarPenCheckBox->Enabled = (InactiveFrmNewMsgCheckBox->Checked || TweakFrmSendTitlebarCheckBox->Checked);
 }
 //---------------------------------------------------------------------------
 
@@ -1129,16 +1046,8 @@ void __fastcall TSettingsForm::sSkinManagerSysDlgInit(TacSysDlgData DlgData, boo
 void __fastcall TSettingsForm::aFavouritesTabsChkExecute(TObject *Sender)
 {
 	FastAccessFavouritesTabsCheckBox->Enabled = FavouritesTabsCheckBox->Checked;
-	if(FavouritesTabsCheckBox->Checked)
-	{
-		FrmMainFastAccessFavouritesTabsCheckBox->Enabled = FastAccessFavouritesTabsCheckBox->Checked;
-		FrmSendFastAccessFavouritesTabsCheckBox->Enabled = FastAccessFavouritesTabsCheckBox->Checked;
-	}
-	else
-	{
-		FrmMainFastAccessFavouritesTabsCheckBox->Enabled = false;
-		FrmSendFastAccessFavouritesTabsCheckBox->Enabled = false;
-	}
+	FrmMainFastAccessFavouritesTabsCheckBox->Enabled = (FavouritesTabsCheckBox->Checked && FastAccessFavouritesTabsCheckBox->Checked);
+	FrmSendFastAccessFavouritesTabsCheckBox->Enabled = (FavouritesTabsCheckBox->Checked && FastAccessFavouritesTabsCheckBox->Checked);
 	FavouritesTabsHotKeysCheckBox->Enabled = FavouritesTabsCheckBox->Checked;
 	FavouritesTabsListView->Enabled = FavouritesTabsCheckBox->Checked;
 	AddChatsFavouriteTabSpeedButton->Enabled = FavouritesTabsCheckBox->Checked;
