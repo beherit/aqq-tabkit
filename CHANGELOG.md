@@ -1,3 +1,21 @@
+1.11.0.0
+-----
+* Obsługa lokalizacji (polskiej i angielskiej).
+* Zmiana priorytetów w funkcji skracania odnośników.
+* Usuwanie subdomeny WWW przy skracaniu odnośników.
+* Zapamiętywanie daty zamknięcia zakładki w uniksowym formacie czasu.
+* Ładniejsze prezentowanie daty zamknięcia zakładki oraz możliwość ustalenia jej formatu.
+* Pokazywanie notyfikacji o zamknięciu okna rozmowy w formie wiadomości informacyjnej.
+* Możliwość zapisywania w archiwum informacji o zamknięciu zakładki.
+* Poprawki w sprawdzaniu zależności opcji na formie ustawień.
+* Kosmetyczne poprawki na formie ustawień.
+* Drobna poprawka w pokazywaniu okna rozmowy za pomocą miniaturki z paska zadań.
+* Poprawne wykrywanie restartu komunikatora.
+* Próba usunięcia rzadkiego błędu z nieusuwaniem informacji o pisaniu wiadomości z paska tytułu okna rozmowy.
+* Usunięcie drobnego wycieku pamięci.
+* Inne mniej znaczące poprawki w kodzie.
+* Aktualizacja komponentów AlphaControls do nowszej wersji (9.20).
+
 1.10.0.2
 -----
 * Powrót do starszej wersji komponentów AlphaControls (błąd z ładowaniem wtyczki 64-bitowej).
