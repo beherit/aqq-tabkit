@@ -8476,6 +8476,9 @@ INT_PTR __stdcall OnLangCodeChanged(WPARAM wParam, LPARAM lParam)
 		hSettingsForm->SideSlideFullScreenModeExceptionsButton->Left = hSettingsForm->SideSlideFullScreenModeCheckBox->Left + hSettingsForm->Canvas->TextWidth(hSettingsForm->SideSlideFullScreenModeCheckBox->Caption) + 26;
 		hSettingsForm->CollapseImagesModeComboBox->Left = hSettingsForm->CollapseImagesCheckBox->Left + hSettingsForm->Canvas->TextWidth(hSettingsForm->CollapseImagesCheckBox->Caption) + 26;
 		hSettingsForm->ShortenLinksModeComboBox->Left = hSettingsForm->ShortenLinksCheckBox->Left + hSettingsForm->Canvas->TextWidth(hSettingsForm->ShortenLinksCheckBox->Caption) + 26;
+		hSettingsForm->CloudTimeOutSpinEdit->Left = ((hSettingsForm->CloudSettingsGroupBox->Width - hSettingsForm->CloudTimeOutSpinEdit->Width - hSettingsForm->Canvas->TextWidth(hSettingsForm->CloudTimeOutSpinEdit->BoundLabel->Caption) - 6)/2) + hSettingsForm->Canvas->TextWidth(hSettingsForm->CloudTimeOutSpinEdit->BoundLabel->Caption) + 6;
+		hSettingsForm->CloudTickModeLabel->Left = ((hSettingsForm->CloudSettingsGroupBox->Width - hSettingsForm->CloudTickModeComboBox->Width - hSettingsForm->Canvas->TextWidth(hSettingsForm->CloudTickModeLabel->Caption) - 6)/2);
+		hSettingsForm->CloudTickModeComboBox->Left = hSettingsForm->CloudTickModeLabel->Left + hSettingsForm->Canvas->TextWidth(hSettingsForm->CloudTickModeLabel->Caption) + 6;
 	}
 	//Aktualizacja przyciskow w interfejsie
 	FixButtonsPosition();

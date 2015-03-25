@@ -196,6 +196,9 @@ void __fastcall TSettingsForm::FormCreate(TObject *Sender)
 	SideSlideFullScreenModeExceptionsButton->Left = SideSlideFullScreenModeCheckBox->Left + Canvas->TextWidth(SideSlideFullScreenModeCheckBox->Caption) + 26;
 	CollapseImagesModeComboBox->Left = CollapseImagesCheckBox->Left + Canvas->TextWidth(CollapseImagesCheckBox->Caption) + 26;
 	ShortenLinksModeComboBox->Left = ShortenLinksCheckBox->Left + Canvas->TextWidth(ShortenLinksCheckBox->Caption) + 26;
+	CloudTimeOutSpinEdit->Left = ((CloudSettingsGroupBox->Width - CloudTimeOutSpinEdit->Width - Canvas->TextWidth(CloudTimeOutSpinEdit->BoundLabel->Caption) - 6)/2) + Canvas->TextWidth(CloudTimeOutSpinEdit->BoundLabel->Caption) + 6;
+	CloudTickModeLabel->Left = ((CloudSettingsGroupBox->Width - CloudTickModeComboBox->Width - Canvas->TextWidth(CloudTickModeLabel->Caption) - 6)/2);
+	CloudTickModeComboBox->Left = CloudTickModeLabel->Left + Canvas->TextWidth(CloudTickModeLabel->Caption) + 6;
 	//Wlaczona zaawansowana stylizacja okien
 	if(ChkSkinEnabled())
 	{
