@@ -9274,7 +9274,7 @@ INT_PTR __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 									while(Body.Pos("<AQQ_CACHE_ITEM"))
 									{
 										//Tymczasowe usuwanie obrazka z wiadomosci
-										UnicodeString ImgBodyTmp = BodyTmp;
+										UnicodeString ImgBodyTmp = Body;
 										ImgBodyTmp.Delete(1,ImgBodyTmp.Pos("<AQQ_CACHE_ITEM")-1);
 										ImgBodyTmp.Delete(ImgBodyTmp.Pos(">")+1,ImgBodyTmp.Length());
 										Body = StringReplace(Body, ImgBodyTmp, "["+GetLangStr("Img")+"]", TReplaceFlags());
