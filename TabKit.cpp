@@ -7544,10 +7544,14 @@ INT_PTR __stdcall OnAddLine(WPARAM wParam, LPARAM lParam)
 		{
 			//Pobieranie danych wiadomosci
 			TPluginMessage AddLineMessage = *(PPluginMessage)lParam;
+			//Pobieranie danych kontaktu
+			TPluginContact AddLineContact = *(PPluginContact)wParam;
 			//Pobieranie sformatowanej tresci wiadomosci
 			UnicodeString Body = (wchar_t*)AddLineMessage.Body;
+			//Pobieranie identyfikatora kontaktu
+			UnicodeString JID = (wchar_t*)AddLineContact.JID;
 			//Wiadomosc zawiera przeslany obrazek
-			if(Body.Pos("<IMG CLASS=\"aqqcacheitem\""))
+			if((Body.Pos("<IMG CLASS=\"aqqcacheitem\""))&&(!JID.Pos("@chat.facebook.com")))
 			{
 				//Zwijanie tylko dla wyslanych obrazkow
 				if(CollapseImagesMode==2)
