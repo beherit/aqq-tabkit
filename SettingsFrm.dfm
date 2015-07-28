@@ -2,7 +2,6 @@ object SettingsForm: TSettingsForm
   Tag = 1
   Left = 0
   Top = 0
-  ActiveControl = DefaultTabSheet
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'TabKit - ustawienia'
@@ -2969,20 +2968,27 @@ object SettingsForm: TSettingsForm
       ImageIndex = 1
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      object ClosedTabGroupBox: TsGroupBox
+      object RememberClosedTabsGroupBox: TsGroupBox
+        Tag = 25
         Left = 18
         Top = 18
         Width = 567
-        Height = 336
-        TabOrder = 1
+        Height = 322
+        Caption = 'Zapami'#281'tuj ostatnio zamkni'#281'te zak'#322'adki'
+        TabOrder = 0
+        TabStop = True
         SkinData.SkinSection = 'GROUPBOX'
+        CheckBoxVisible = True
+        Checked = True
+        OnCheckBoxChanged = aClosedTabsChkExecute
         object OtherClosedTabGroupBox: TsGroupBox
           Left = 267
           Top = 22
           Width = 284
-          Height = 292
-          TabOrder = 4
+          Height = 278
+          TabOrder = 2
           SkinData.SkinSection = 'GROUPBOX'
+          Checked = False
           object UnCloseMouseLabel: TsLabel
             Tag = 35
             Left = 14
@@ -3112,15 +3118,20 @@ object SettingsForm: TSettingsForm
           end
         end
         object UnCloseTabHotKeyGroupBox: TsGroupBox
+          Tag = 32
           Left = 16
-          Top = 235
+          Top = 224
           Width = 245
-          Height = 79
-          TabOrder = 3
+          Height = 76
+          Caption = 'Skr'#243't przywracaj'#261'cy zamkni'#281't'#261' zak'#322#261'dk'#281
+          TabOrder = 1
           SkinData.SkinSection = 'GROUPBOX'
+          CheckBoxVisible = True
+          Checked = True
+          OnCheckBoxChanged = aClosedTabsChkExecute
           object UnCloseTabHotKeyInput: THotKey
             Left = 127
-            Top = 50
+            Top = 46
             Width = 105
             Height = 19
             Enabled = False
@@ -3132,7 +3143,7 @@ object SettingsForm: TSettingsForm
           object UnCloseTabHotKeyMode1RadioButton: TsRadioButton
             Tag = 33
             Left = 10
-            Top = 24
+            Top = 20
             Width = 101
             Height = 20
             Caption = 'Ctrl + Backspace'
@@ -3145,7 +3156,7 @@ object SettingsForm: TSettingsForm
           object UnCloseTabHotKeyMode2RadioButton: TsRadioButton
             Tag = 34
             Left = 10
-            Top = 50
+            Top = 46
             Width = 111
             Height = 20
             Caption = 'Zdefiniowany skr'#243't'
@@ -3155,16 +3166,21 @@ object SettingsForm: TSettingsForm
           end
         end
         object FastAccessClosedTabsGroupBox: TsGroupBox
+          Tag = 26
           Left = 16
           Top = 22
           Width = 245
-          Height = 201
-          TabOrder = 1
+          Height = 195
+          Caption = 'Szybki dost'#281'p do zamkni'#281'tych zak'#322'adek'
+          TabOrder = 0
           SkinData.SkinSection = 'GROUPBOX'
+          CheckBoxVisible = True
+          Checked = True
+          OnCheckBoxChanged = aClosedTabsChkExecute
           object FastClearClosedTabsCheckBox: TsCheckBox
             Tag = 31
             Left = 10
-            Top = 172
+            Top = 168
             Width = 220
             Height = 20
             Caption = 'Dodaj element szybkiego czyszczenia listy'
@@ -3180,7 +3196,7 @@ object SettingsForm: TSettingsForm
           object FrmMainClosedTabsCheckBox: TsCheckBox
             Tag = 27
             Left = 10
-            Top = 24
+            Top = 20
             Width = 133
             Height = 20
             Caption = 'W oknie listy kontakt'#243'w'
@@ -3195,7 +3211,7 @@ object SettingsForm: TSettingsForm
           object FrmSendClosedTabsCheckBox: TsCheckBox
             Tag = 28
             Left = 10
-            Top = 50
+            Top = 46
             Width = 104
             Height = 20
             Caption = 'W oknie rozmowy'
@@ -3210,7 +3226,7 @@ object SettingsForm: TSettingsForm
           object ItemsCountClosedTabsSpinEdit: TsSpinEdit
             Tag = 29
             Left = 170
-            Top = 73
+            Top = 69
             Width = 36
             Height = 21
             BiDiMode = bdLeftToRight
@@ -3237,7 +3253,7 @@ object SettingsForm: TSettingsForm
           object ShowTimeClosedTabsCheckBox: TsCheckBox
             Tag = 30
             Left = 10
-            Top = 100
+            Top = 96
             Width = 196
             Height = 20
             Caption = 'Wy'#347'wietlaj dat'#281' zamkni'#281'cia zak'#322'adek'
@@ -3250,7 +3266,7 @@ object SettingsForm: TSettingsForm
           object DateFormatEdit: TsEdit
             Tag = 143
             Left = 26
-            Top = 145
+            Top = 141
             Width = 121
             Height = 21
             ParentShowHint = False
@@ -3272,59 +3288,6 @@ object SettingsForm: TSettingsForm
             BoundLabel.UseSkinColor = True
           end
         end
-        object UnCloseTabHotKeyCheckBox: TsCheckBox
-          Tag = 32
-          Left = 10
-          Top = 229
-          Width = 231
-          Height = 28
-          Caption = 
-            'Przypisz skr'#243't klawiaturowy przywracaj'#261'cy ostatnio zamkni'#281't'#261' zak' +
-            #322'adk'#281
-          AutoSize = False
-          Checked = True
-          State = cbChecked
-          TabOrder = 2
-          OnClick = aClosedTabsChkExecute
-          SkinData.SkinSection = 'CHECKBOX'
-          ImgChecked = 0
-          ImgUnchecked = 0
-          WordWrap = True
-        end
-        object FastAccessClosedTabsCheckBox: TsCheckBox
-          Tag = 26
-          Left = 10
-          Top = 16
-          Width = 213
-          Height = 28
-          Caption = 
-            'Wy'#347'wietlaj przycisk szybkiego dost'#281'pu do ostatnio zamkni'#281'tych za' +
-            'k'#322'adek'
-          AutoSize = False
-          Checked = True
-          State = cbChecked
-          TabOrder = 0
-          OnClick = aClosedTabsChkExecute
-          SkinData.SkinSection = 'CHECKBOX'
-          ImgChecked = 0
-          ImgUnchecked = 0
-          WordWrap = True
-        end
-      end
-      object RememberClosedTabsCheckBox: TsCheckBox
-        Tag = 25
-        Left = 12
-        Top = 12
-        Width = 207
-        Height = 20
-        Caption = 'Zapami'#281'tuj ostatnio zamkni'#281'te zak'#322'adki'
-        Checked = True
-        State = cbChecked
-        TabOrder = 0
-        OnClick = aClosedTabsChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
       end
     end
     object UnsentMsgTabSheet: TsTabSheet
@@ -3334,23 +3297,35 @@ object SettingsForm: TSettingsForm
       SkinData.CustomColor = False
       SkinData.CustomFont = False
       object RememberUnsentMsgGroupBox: TsGroupBox
+        Tag = 42
         Left = 18
         Top = 18
         Width = 401
-        Height = 248
-        TabOrder = 1
+        Height = 249
+        Caption = 'Zapami'#281'tuj niewys'#322'ane wiadomo'#347'ci'
+        TabOrder = 0
+        TabStop = True
         SkinData.SkinSection = 'GROUPBOX'
+        CheckBoxVisible = True
+        Checked = True
+        OnCheckBoxChanged = aUnsentMsgChkExecute
         object FastAccessUnsentMsgGroupBox: TsGroupBox
+          Tag = 47
           Left = 16
-          Top = 130
+          Top = 128
           Width = 369
-          Height = 96
-          TabOrder = 3
+          Height = 99
+          Caption = 'Szybki dost'#281'p do niewys'#322'anych wiadomo'#347'ci'
+          TabOrder = 1
+          TabStop = True
           SkinData.SkinSection = 'GROUPBOX'
+          CheckBoxVisible = True
+          Checked = True
+          OnCheckBoxChanged = aUnsentMsgChkExecute
           object FastClearUnsentMsgCheckBox: TsCheckBox
             Tag = 50
             Left = 10
-            Top = 68
+            Top = 72
             Width = 220
             Height = 20
             Caption = 'Dodaj element szybkiego czyszczenia listy'
@@ -3365,7 +3340,7 @@ object SettingsForm: TSettingsForm
           object FrmMainUnsentMsgCheckBox: TsCheckBox
             Tag = 48
             Left = 10
-            Top = 16
+            Top = 20
             Width = 133
             Height = 20
             Caption = 'W oknie listy kontakt'#243'w'
@@ -3380,7 +3355,7 @@ object SettingsForm: TSettingsForm
           object FrmSendUnsentMsgCheckBox: TsCheckBox
             Tag = 49
             Left = 10
-            Top = 42
+            Top = 46
             Width = 104
             Height = 20
             Caption = 'W oknie rozmowy'
@@ -3394,16 +3369,22 @@ object SettingsForm: TSettingsForm
           end
         end
         object InfoUnsentMsgGroupBox: TsGroupBox
+          Tag = 43
           Left = 16
           Top = 22
           Width = 369
-          Height = 96
-          TabOrder = 1
+          Height = 99
+          Caption = 'Informuj o niewys'#322'anych wiadomo'#347'ciach przy w'#322#261'czeniu AQQ'
+          TabOrder = 0
+          TabStop = True
           SkinData.SkinSection = 'GROUPBOX'
+          CheckBoxVisible = True
+          Checked = True
+          OnCheckBoxChanged = aUnsentMsgChkExecute
           object CloudUnsentMsgCheckBox: TsCheckBox
             Tag = 44
             Left = 10
-            Top = 16
+            Top = 20
             Width = 127
             Height = 20
             Caption = 'Chmurka informacyjna'
@@ -3418,7 +3399,7 @@ object SettingsForm: TSettingsForm
           object DetailedCloudUnsentMsgCheckBox: TsCheckBox
             Tag = 45
             Left = 26
-            Top = 42
+            Top = 46
             Width = 174
             Height = 20
             Caption = 'Pokazuj szczeg'#243#322'owe informacje'
@@ -3431,7 +3412,7 @@ object SettingsForm: TSettingsForm
           object TrayUnsentMsgCheckBox: TsCheckBox
             Tag = 46
             Left = 10
-            Top = 68
+            Top = 72
             Width = 178
             Height = 20
             Caption = 'Ikonka w zasobniku systemowym'
@@ -3444,51 +3425,6 @@ object SettingsForm: TSettingsForm
             ImgUnchecked = 0
           end
         end
-        object FastAccessUnsentMsgCheckBox: TsCheckBox
-          Tag = 47
-          Left = 10
-          Top = 124
-          Width = 226
-          Height = 20
-          Caption = 'Szybki dost'#281'p do niewys'#322'anych wiadomo'#347'ci'
-          Checked = True
-          State = cbChecked
-          TabOrder = 2
-          OnClick = aUnsentMsgChkExecute
-          SkinData.SkinSection = 'CHECKBOX'
-          ImgChecked = 0
-          ImgUnchecked = 0
-        end
-        object InfoUnsentMsgCheckBox: TsCheckBox
-          Tag = 43
-          Left = 10
-          Top = 16
-          Width = 312
-          Height = 20
-          Caption = 'Informuj o niewys'#322'anych wiadomo'#347'ciach przy w'#322#261'czeniu AQQ'
-          Checked = True
-          State = cbChecked
-          TabOrder = 0
-          OnClick = aUnsentMsgChkExecute
-          SkinData.SkinSection = 'CHECKBOX'
-          ImgChecked = 0
-          ImgUnchecked = 0
-        end
-      end
-      object RememberUnsentMsgCheckBox: TsCheckBox
-        Tag = 42
-        Left = 12
-        Top = 12
-        Width = 187
-        Height = 20
-        Caption = 'Zapami'#281'tuj niewys'#322'ane wiadomo'#347'ci'
-        Checked = True
-        State = cbChecked
-        TabOrder = 0
-        OnClick = aUnsentMsgChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
       end
     end
     object TabsSwitchingTabSheet: TsTabSheet
@@ -3498,16 +3434,22 @@ object SettingsForm: TSettingsForm
       SkinData.CustomColor = False
       SkinData.CustomFont = False
       object TabsHotKeysGroupBox: TsGroupBox
+        Tag = 54
         Left = 18
-        Top = 105
+        Top = 103
         Width = 343
-        Height = 107
-        TabOrder = 3
+        Height = 111
+        Caption = 'Przypisz skr'#243'ty klawiaturowe do konkretnych zak'#322'adek'
+        TabOrder = 1
+        TabStop = True
         SkinData.SkinSection = 'GROUPBOX'
+        CheckBoxVisible = True
+        Checked = True
+        OnCheckBoxChanged = aTabsSwitchingChkExecute
         object TabsHotKeysMode1RadioButton: TsRadioButton
           Tag = 55
           Left = 10
-          Top = 16
+          Top = 20
           Width = 129
           Height = 20
           Caption = 'Klawisze od F1 do  F12'
@@ -3518,7 +3460,7 @@ object SettingsForm: TSettingsForm
         object TabsHotKeysMode2RadioButton: TsRadioButton
           Tag = 56
           Left = 10
-          Top = 42
+          Top = 46
           Width = 175
           Height = 20
           Caption = 'Klawisz Ctrl + klawisze od 1 do 9'
@@ -3531,7 +3473,7 @@ object SettingsForm: TSettingsForm
         object NewMgsHoyKeyCheckBox: TsCheckBox
           Tag = 57
           Left = 10
-          Top = 68
+          Top = 72
           Width = 322
           Height = 28
           Caption = 
@@ -3549,16 +3491,22 @@ object SettingsForm: TSettingsForm
         end
       end
       object SwitchToNewMsgGroupBox: TsGroupBox
+        Tag = 51
         Left = 18
         Top = 18
         Width = 343
-        Height = 75
-        TabOrder = 1
+        Height = 73
+        Caption = 'Skr'#243't Ctrl + Tab prze'#322#261'cza do nieprzeczytanych wiadomo'#347'ci'
+        TabOrder = 0
+        TabStop = True
         SkinData.SkinSection = 'GROUPBOX'
+        CheckBoxVisible = True
+        Checked = True
+        OnCheckBoxChanged = aTabsSwitchingChkExecute
         object SwitchToNewMsgMode1RadioButton: TsRadioButton
           Tag = 52
           Left = 10
-          Top = 24
+          Top = 20
           Width = 203
           Height = 20
           Caption = 'Prze'#322#261'czanie na najstarsz'#261' wiadomo'#347#263
@@ -3571,7 +3519,7 @@ object SettingsForm: TSettingsForm
         object SwitchToNewMsgMode2RadioButton: TsRadioButton
           Tag = 53
           Left = 10
-          Top = 50
+          Top = 46
           Width = 204
           Height = 20
           Caption = 'Prze'#322#261'czanie na najnowsz'#261' wiadomo'#347#263
@@ -3579,40 +3527,6 @@ object SettingsForm: TSettingsForm
           OnClick = aTabsSwitchingChkExecute
           SkinData.SkinSection = 'TRANSPARENT'
         end
-      end
-      object SwitchToNewMsgCheckBox: TsCheckBox
-        Tag = 51
-        Left = 12
-        Top = 12
-        Width = 309
-        Height = 28
-        Caption = 
-          'Inteligentne prze'#322#261'czanie do nieprzeczytanych wiadomo'#347'ci za pomo' +
-          'c'#261' skr'#243'tu klawiaturowego Ctrl+Tab'
-        AutoSize = False
-        Checked = True
-        State = cbChecked
-        TabOrder = 0
-        OnClick = aTabsSwitchingChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-        WordWrap = True
-      end
-      object TabsHotKeysCheckBox: TsCheckBox
-        Tag = 54
-        Left = 12
-        Top = 99
-        Width = 280
-        Height = 20
-        Caption = 'Przypisz skr'#243'ty klawiaturowe do konkretnych zak'#322'adek'
-        Checked = True
-        State = cbChecked
-        TabOrder = 2
-        OnClick = aTabsSwitchingChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
       end
     end
     object SessionRememberTabSheet: TsTabSheet
@@ -3622,16 +3536,22 @@ object SettingsForm: TSettingsForm
       SkinData.CustomColor = False
       SkinData.CustomFont = False
       object RestoreTabsSessionGroupBox: TsGroupBox
+        Tag = 58
         Left = 18
         Top = 18
         Width = 391
-        Height = 111
-        TabOrder = 1
+        Height = 107
+        Caption = 'Przywracaj zak'#322'adki po awarii lub restarcie komunikatora'
+        TabOrder = 0
+        TabStop = True
         SkinData.SkinSection = 'GROUPBOX'
+        CheckBoxVisible = True
+        Checked = True
+        OnCheckBoxChanged = aSessionRememberChkExecute
         object RestoreSessionLabel: TsLabel
           Tag = 61
           Left = 10
-          Top = 76
+          Top = 69
           Width = 371
           Height = 26
           Alignment = taCenter
@@ -3646,7 +3566,7 @@ object SettingsForm: TSettingsForm
         object ManualRestoreTabsSessionCheckBox: TsCheckBox
           Tag = 59
           Left = 10
-          Top = 24
+          Top = 20
           Width = 367
           Height = 20
           Caption = 
@@ -3663,7 +3583,7 @@ object SettingsForm: TSettingsForm
         object RestoreMsgSessionCheckBox: TsCheckBox
           Tag = 60
           Left = 10
-          Top = 50
+          Top = 46
           Width = 227
           Height = 20
           Caption = 'Zapami'#281'tuj wpisany tekst w oknie rozmowy'
@@ -3673,25 +3593,6 @@ object SettingsForm: TSettingsForm
           ImgChecked = 0
           ImgUnchecked = 0
         end
-      end
-      object RestoreTabsSessionCheckBox: TsCheckBox
-        Tag = 58
-        Left = 12
-        Top = 12
-        Width = 301
-        Height = 28
-        Caption = 
-          'Przywracaj wszystkie otwarte zak'#322'adki utracone w wyniku niepo'#380#261'd' +
-          'anego zamkni'#281'cia lub restartu komunikatora'
-        AutoSize = False
-        Checked = True
-        State = cbChecked
-        TabOrder = 0
-        OnClick = aSessionRememberChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-        WordWrap = True
       end
     end
     object NewMsgTabSheet: TsTabSheet
@@ -3929,22 +3830,28 @@ object SettingsForm: TSettingsForm
       SkinData.CustomColor = False
       SkinData.CustomFont = False
       object TweakFrmMainTitlebarGroupBox: TsGroupBox
+        Tag = 77
         Left = 18
-        Top = 159
+        Top = 165
         Width = 271
-        Height = 70
-        TabOrder = 3
+        Height = 76
+        Caption = 'Zmieniaj tekst na pasku tytu'#322'u okna kontakt'#243'w'
+        TabOrder = 1
+        TabStop = True
         SkinData.SkinSection = 'GROUPBOX'
+        CheckBoxVisible = True
+        Checked = False
+        OnCheckBoxChanged = aTitlebarTweakChkExecute
         object TweakFrmMainTitlebarModeExLabel: TsLabel
           Left = 185
-          Top = 19
+          Top = 23
           Width = 4
           Height = 13
           Caption = ']'
         end
         object TweakFrmMainTitlebarMode1RadioButton: TsRadioButton
           Left = 10
-          Top = 16
+          Top = 20
           Width = 50
           Height = 20
           Caption = 'AQQ ['
@@ -3957,7 +3864,7 @@ object SettingsForm: TSettingsForm
         object TweakFrmMainTitlebarMode2Edit: TsEdit
           Tag = 78
           Left = 70
-          Top = 42
+          Top = 46
           Width = 121
           Height = 21
           TabOrder = 3
@@ -3976,7 +3883,7 @@ object SettingsForm: TSettingsForm
         end
         object TweakFrmMainTitlebarMode2RadioButton: TsRadioButton
           Left = 10
-          Top = 42
+          Top = 46
           Width = 54
           Height = 20
           Caption = 'AQQ +'
@@ -3986,7 +3893,7 @@ object SettingsForm: TSettingsForm
         end
         object TweakFrmMainTitlebarModeExComboBox: TsComboBox
           Left = 66
-          Top = 16
+          Top = 20
           Width = 113
           Height = 21
           Alignment = taLeftJustify
@@ -4009,16 +3916,22 @@ object SettingsForm: TSettingsForm
         end
       end
       object TweakFrmSendTitlebarGroupBox: TsGroupBox
+        Tag = 72
         Left = 18
         Top = 18
         Width = 271
-        Height = 129
-        TabOrder = 1
+        Height = 135
+        Caption = 'Zmieniaj tekst na pasku tytu'#322'u okna rozmowy'
+        TabOrder = 0
+        TabStop = True
         SkinData.SkinSection = 'GROUPBOX'
+        CheckBoxVisible = True
+        Checked = False
+        OnCheckBoxChanged = aTitlebarTweakChkExecute
         object TweakFrmSendTitlebarMode1RadioButton: TsRadioButton
           Tag = 73
           Left = 10
-          Top = 16
+          Top = 20
           Width = 143
           Height = 20
           Caption = 'Pseudonim i opis kontaktu'
@@ -4031,7 +3944,7 @@ object SettingsForm: TSettingsForm
         object TweakFrmSendTitlebarMode2RadioButton: TsRadioButton
           Tag = 74
           Left = 10
-          Top = 42
+          Top = 46
           Width = 139
           Height = 20
           Caption = 'Sam pseudonim kontaktu'
@@ -4042,7 +3955,7 @@ object SettingsForm: TSettingsForm
         object TweakFrmSendTitlebarMode3RadioButton: TsRadioButton
           Tag = 75
           Left = 10
-          Top = 68
+          Top = 72
           Width = 185
           Height = 20
           Caption = 'Pseudonim i identyfikator kontaktu'
@@ -4053,7 +3966,7 @@ object SettingsForm: TSettingsForm
         object TweakFrmSendTitlebarMode4RadioButton: TsRadioButton
           Tag = 76
           Left = 10
-          Top = 94
+          Top = 98
           Width = 199
           Height = 28
           Caption = 'Pseudonim i identyfikator kontaktu wraz z zasobem oraz opisem'
@@ -4064,32 +3977,6 @@ object SettingsForm: TSettingsForm
           SkinData.SkinSection = 'TRANSPARENT'
         end
       end
-      object TweakFrmMainTitlebarCheckBox: TsCheckBox
-        Tag = 77
-        Left = 12
-        Top = 153
-        Width = 243
-        Height = 20
-        Caption = 'Zmieniaj tekst na pasku tytu'#322'u okna kontakt'#243'w'
-        TabOrder = 2
-        OnClick = aTitlebarTweakChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-      end
-      object TweakFrmSendTitlebarCheckBox: TsCheckBox
-        Tag = 72
-        Left = 12
-        Top = 12
-        Width = 236
-        Height = 20
-        Caption = 'Zmieniaj tekst na pasku tytu'#322'u okna rozmowy'
-        TabOrder = 0
-        OnClick = aTitlebarTweakChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-      end
     end
     object ClipTabsTabSheet: TsTabSheet
       Tag = 12
@@ -4098,16 +3985,22 @@ object SettingsForm: TSettingsForm
       SkinData.CustomColor = False
       SkinData.CustomFont = False
       object ClipTabsGroupBox: TsGroupBox
+        Tag = 79
         Left = 18
         Top = 18
         Width = 351
-        Height = 224
-        TabOrder = 1
+        Height = 228
+        Caption = 'W'#322#261'cz przypinanie zak'#322'adek'
+        TabOrder = 0
+        TabStop = True
         SkinData.SkinSection = 'GROUPBOX'
+        CheckBoxVisible = True
+        Checked = True
+        OnCheckBoxChanged = aClipTabsChkExecute
         object OpenClipTabsCheckBox: TsCheckBox
           Tag = 80
           Left = 10
-          Top = 16
+          Top = 20
           Width = 308
           Height = 20
           Caption = 'Otwieraj przypi'#281'te zak'#322'adki wraz z otwarciem okna rozmowy'
@@ -4129,7 +4022,7 @@ object SettingsForm: TSettingsForm
         object InactiveClipTabsCheckBox: TsCheckBox
           Tag = 81
           Left = 10
-          Top = 42
+          Top = 46
           Width = 268
           Height = 20
           Caption = 'Nie wy'#347'wietlaj licznika nieprzeczytanych wiadomo'#347'ci'
@@ -4143,7 +4036,7 @@ object SettingsForm: TSettingsForm
         object CounterClipTabsCheckBox: TsCheckBox
           Tag = 82
           Left = 10
-          Top = 68
+          Top = 72
           Width = 267
           Height = 20
           Caption = 'Wy'#347'wietlaj licznik znak'#243'w z powiadomienia o pisaniu'
@@ -4156,7 +4049,7 @@ object SettingsForm: TSettingsForm
         object ExcludeClipTabsFromTabSwitchingCheckBox: TsCheckBox
           Tag = 83
           Left = 10
-          Top = 94
+          Top = 98
           Width = 319
           Height = 28
           Caption = 
@@ -4175,7 +4068,7 @@ object SettingsForm: TSettingsForm
         object ExcludeClipTabsFromSwitchToNewMsgCheckBox: TsCheckBox
           Tag = 84
           Left = 26
-          Top = 128
+          Top = 132
           Width = 237
           Height = 28
           Caption = 
@@ -4194,7 +4087,7 @@ object SettingsForm: TSettingsForm
         object ExcludeClipTabsFromTabsHotKeysCheckBox: TsCheckBox
           Tag = 85
           Left = 10
-          Top = 162
+          Top = 166
           Width = 280
           Height = 28
           Caption = 
@@ -4213,7 +4106,7 @@ object SettingsForm: TSettingsForm
         object NoMiniAvatarsClipTabsCheckBox: TsCheckBox
           Tag = 86
           Left = 10
-          Top = 196
+          Top = 200
           Width = 280
           Height = 20
           Caption = 'Nie ustawiaj mini awatar'#243'w na przypi'#281'tych zak'#322'adkach'
@@ -4224,21 +4117,6 @@ object SettingsForm: TSettingsForm
           ImgUnchecked = 0
         end
       end
-      object ClipTabsCheckBox: TsCheckBox
-        Tag = 79
-        Left = 12
-        Top = 12
-        Width = 152
-        Height = 20
-        Caption = 'W'#322#261'cz przypinanie zak'#322'adek'
-        Checked = True
-        State = cbChecked
-        TabOrder = 0
-        OnClick = aClipTabsChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-      end
     end
     object FavouritesTabsTabSheet: TsTabSheet
       Tag = 13
@@ -4247,15 +4125,21 @@ object SettingsForm: TSettingsForm
       SkinData.CustomColor = False
       SkinData.CustomFont = False
       object FavouritesTabsGroupBox: TsGroupBox
+        Tag = 87
         Left = 18
         Top = 18
         Width = 342
         Height = 338
-        TabOrder = 1
+        Caption = 'W'#322#261'cz ulubione zak'#322'adki'
+        TabOrder = 0
+        TabStop = True
         SkinData.SkinSection = 'GROUPBOX'
+        CheckBoxVisible = True
+        Checked = True
+        OnCheckBoxChanged = aFavouritesTabsChkExecute
         object RemoveFavouriteTabSpeedButton: TsSpeedButton
           Left = 295
-          Top = 244
+          Top = 245
           Width = 30
           Height = 30
           Enabled = False
@@ -4268,7 +4152,7 @@ object SettingsForm: TSettingsForm
         object AddChatsFavouriteTabSpeedButton: TsSpeedButton
           Tag = 93
           Left = 295
-          Top = 280
+          Top = 281
           Width = 30
           Height = 30
           Hint = 'Dodaj do listy pokoje czatowe oznaczone gwiazdk'#261
@@ -4282,7 +4166,7 @@ object SettingsForm: TSettingsForm
         end
         object MoveDownFavouriteTabSpeedButton: TsSpeedButton
           Left = 295
-          Top = 208
+          Top = 209
           Width = 30
           Height = 30
           Enabled = False
@@ -4294,7 +4178,7 @@ object SettingsForm: TSettingsForm
         end
         object MoveUpFavouriteTabSpeedButton: TsSpeedButton
           Left = 295
-          Top = 172
+          Top = 173
           Width = 30
           Height = 30
           Enabled = False
@@ -4305,16 +4189,22 @@ object SettingsForm: TSettingsForm
           ShowCaption = False
         end
         object FastAccessFavouritesTabsGroupBox: TsGroupBox
-          Left = 18
-          Top = 20
+          Tag = 88
+          Left = 16
+          Top = 22
           Width = 271
-          Height = 75
-          TabOrder = 1
+          Height = 74
+          Caption = 'Szybki dost'#281'p do ulubionych zak'#322'adek'
+          TabOrder = 0
+          TabStop = True
           SkinData.SkinSection = 'GROUPBOX'
+          CheckBoxVisible = True
+          Checked = True
+          OnCheckBoxChanged = aFavouritesTabsChkExecute
           object FrmMainFastAccessFavouritesTabsCheckBox: TsCheckBox
             Tag = 89
             Left = 10
-            Top = 24
+            Top = 20
             Width = 133
             Height = 20
             Caption = 'W oknie listy kontakt'#243'w'
@@ -4327,7 +4217,7 @@ object SettingsForm: TSettingsForm
           object FrmSendFastAccessFavouritesTabsCheckBox: TsCheckBox
             Tag = 90
             Left = 10
-            Top = 50
+            Top = 46
             Width = 104
             Height = 20
             Caption = 'W oknie rozmowy'
@@ -4343,14 +4233,14 @@ object SettingsForm: TSettingsForm
         object FavouritesTabsHotKeysCheckBox: TsCheckBox
           Tag = 91
           Left = 10
-          Top = 101
+          Top = 102
           Width = 245
           Height = 28
           Caption = 
             'Otwieraj ulubione zak'#322'adki za pomoc'#261' skr'#243'tu klawiaturowego Alt +' +
             ' klawisze od 1 do 0'
           AutoSize = False
-          TabOrder = 2
+          TabOrder = 1
           OnClick = aFavouritesTabsChkExecute
           SkinData.SkinSection = 'CHECKBOX'
           ImgChecked = 0
@@ -4360,7 +4250,7 @@ object SettingsForm: TSettingsForm
         object FavouritesTabsListView: TsListView
           Tag = 92
           Left = 18
-          Top = 154
+          Top = 155
           Width = 271
           Height = 174
           BoundLabel.Active = True
@@ -4387,44 +4277,12 @@ object SettingsForm: TSettingsForm
           ReadOnly = True
           RowSelect = True
           ShowColumnHeaders = False
-          TabOrder = 3
+          TabOrder = 2
           ViewStyle = vsReport
           OnExit = FavouritesTabsListViewExit
           OnKeyDown = FavouritesTabsListViewKeyDown
           OnSelectItem = FavouritesTabsListViewSelectItem
         end
-        object FastAccessFavouritesTabsCheckBox: TsCheckBox
-          Tag = 88
-          Left = 10
-          Top = 16
-          Width = 213
-          Height = 28
-          Caption = 'Wy'#347'wietlaj przycisk szybkiego dost'#281'pu do ulubionych zak'#322'adek'
-          AutoSize = False
-          Checked = True
-          State = cbChecked
-          TabOrder = 0
-          OnClick = aFavouritesTabsChkExecute
-          SkinData.SkinSection = 'CHECKBOX'
-          ImgChecked = 0
-          ImgUnchecked = 0
-          WordWrap = True
-        end
-      end
-      object FavouritesTabsCheckBox: TsCheckBox
-        Tag = 87
-        Left = 12
-        Top = 12
-        Width = 133
-        Height = 20
-        Caption = 'W'#322#261'cz ulubione zak'#322'adki'
-        Checked = True
-        State = cbChecked
-        TabOrder = 0
-        OnClick = aFavouritesTabsChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
       end
     end
     object SideSlideTabSheet: TsTabSheet
@@ -4481,12 +4339,18 @@ object SettingsForm: TSettingsForm
         SkinData.SkinSection = 'SPEEDBUTTON'
       end
       object SlideFrmMainGroupBox: TsGroupBox
+        Tag = 94
         Left = 18
         Top = 18
         Width = 275
         Height = 245
-        TabOrder = 1
+        Caption = 'Chowaj okno kontakt'#243'w za kraw'#281'dzi'#261' ekranu'
+        TabOrder = 0
+        TabStop = True
         SkinData.SkinSection = 'GROUPBOX'
+        CheckBoxVisible = True
+        Checked = False
+        OnCheckBoxChanged = aSideSlideChkExecute
         object FrmMainEdgeLabel: TsLabel
           Tag = 95
           Left = 12
@@ -4513,6 +4377,7 @@ object SettingsForm: TSettingsForm
           Enabled = False
           TabOrder = 2
           SkinData.SkinSection = 'GROUPBOX'
+          Checked = False
           object FrmMainSlideInTimeSpinEdit: TsSpinEdit
             Tag = 102
             Left = 182
@@ -4698,12 +4563,18 @@ object SettingsForm: TSettingsForm
         end
       end
       object SlideFrmSendGroupBox: TsGroupBox
+        Tag = 105
         Left = 310
         Top = 18
         Width = 275
         Height = 245
-        TabOrder = 3
+        Caption = 'Chowaj okno rozmowy za kraw'#281'dzi'#261' ekranu'
+        TabOrder = 1
+        TabStop = True
         SkinData.SkinSection = 'GROUPBOX'
+        CheckBoxVisible = True
+        Checked = False
+        OnCheckBoxChanged = aSideSlideChkExecute
         object FrmSendEdgeLabel: TsLabel
           Tag = 106
           Left = 12
@@ -4730,6 +4601,7 @@ object SettingsForm: TSettingsForm
           Enabled = False
           TabOrder = 2
           SkinData.SkinSection = 'GROUPBOX'
+          Checked = False
           object FrmSendSlideInTimeSpinEdit: TsSpinEdit
             Tag = 113
             Left = 182
@@ -4915,32 +4787,6 @@ object SettingsForm: TSettingsForm
             'kursor opu'#347'ci okno')
         end
       end
-      object SlideFrmSendCheckBox: TsCheckBox
-        Tag = 105
-        Left = 304
-        Top = 12
-        Width = 229
-        Height = 20
-        Caption = 'Chowaj okno rozmowy za kraw'#281'dzi'#261' ekranu'
-        TabOrder = 2
-        OnClick = aSideSlideChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-      end
-      object SlideFrmMainCheckBox: TsCheckBox
-        Tag = 94
-        Left = 12
-        Top = 12
-        Width = 236
-        Height = 20
-        Caption = 'Chowaj okno kontakt'#243'w za kraw'#281'dzi'#261' ekranu'
-        TabOrder = 0
-        OnClick = aSideSlideChkExecute
-        SkinData.SkinSection = 'CHECKBOX'
-        ImgChecked = 0
-        ImgUnchecked = 0
-      end
       object SideSlideFullScreenModeCheckBox: TsCheckBox
         Tag = 116
         Left = 12
@@ -4950,7 +4796,7 @@ object SettingsForm: TSettingsForm
         Caption = 'Wysuwaj okna przy aktywnej aplikacji pe'#322'noekranowej'
         Checked = True
         State = cbChecked
-        TabOrder = 4
+        TabOrder = 2
         OnClick = aSideSlideChkExecute
         SkinData.SkinSection = 'CHECKBOX'
         ImgChecked = 0
@@ -4967,7 +4813,7 @@ object SettingsForm: TSettingsForm
           'prawym przycisku myszy'
         Checked = True
         State = cbChecked
-        TabOrder = 5
+        TabOrder = 3
         OnClick = aSideSlideChkExecute
         SkinData.SkinSection = 'CHECKBOX'
         ImgChecked = 0
@@ -5011,6 +4857,7 @@ object SettingsForm: TSettingsForm
         TabOrder = 14
         CaptionLayout = clTopCenter
         SkinData.SkinSection = 'GROUPBOX'
+        Checked = False
         object SessionRememberEraseButton: TsButton
           Tag = 136
           Left = 28
@@ -5230,6 +5077,7 @@ object SettingsForm: TSettingsForm
         TabOrder = 15
         CaptionLayout = clTopCenter
         SkinData.SkinSection = 'GROUPBOX'
+        Checked = False
         DesignSize = (
           214
           76)
@@ -5536,6 +5384,7 @@ object SettingsForm: TSettingsForm
     AddedTitle.Font.Height = -11
     AddedTitle.Font.Name = 'Tahoma'
     AddedTitle.Font.Style = []
+    FormHeader.AdditionalHeight = 0
     SkinData.SkinSection = 'FORM'
     TitleButtons = <>
     Left = 104
@@ -6035,7 +5884,12 @@ object SettingsForm: TSettingsForm
       end>
     Left = 136
     Top = 400
-    Bitmap = {}
+    Bitmap = {
+      494C010100000800080001000100FFFFFFFF0400FFFFFFFFFFFFFFFF424D7600
+      0000000000007600000028000000040000000100000001000400000000000400
+      0000000000000000000000000000000000000000000000008000008000000080
+      8000800000008000800080800000C0C0C000808080000000FF0000FF000000FF
+      FF00FF000000FF00FF00FFFF0000FFFFFF0000000000}
   end
   object IdHTTP: TIdHTTP
     AllowCookies = False
