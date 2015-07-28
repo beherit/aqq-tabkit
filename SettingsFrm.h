@@ -55,6 +55,7 @@
 #include <Vcl.FileCtrl.hpp>
 #include <Vcl.ImgList.hpp>
 #include <Vcl.StdCtrls.hpp>
+#include <System.ImageList.hpp>
 //---------------------------------------------------------------------------
 class TSettingsForm : public TForm
 {
@@ -62,14 +63,10 @@ __published:	// IDE-managed Components
 	TsBevel *Bevel;
 	TsButton *SaveButton;
 	TsButton *CancelButton;
-	TsCheckBox *RememberUnsentMsgCheckBox;
-	TsCheckBox *InfoUnsentMsgCheckBox;
-	TsCheckBox *FastAccessUnsentMsgCheckBox;
 	TsCheckBox *FrmSendUnsentMsgCheckBox;
 	TsCheckBox *FrmMainUnsentMsgCheckBox;
 	TsCheckBox *CloudUnsentMsgCheckBox;
 	TsCheckBox *TrayUnsentMsgCheckBox;
-	TsCheckBox *SwitchToNewMsgCheckBox;
 	TsRadioButton *SwitchToNewMsgMode1RadioButton;
 	TsRadioButton *SwitchToNewMsgMode2RadioButton;
 	TTrayIcon *UnsentMsgTrayIcon;
@@ -80,30 +77,23 @@ __published:	// IDE-managed Components
 	TAction *aSaveSettings;
 	TAction *aUnsentMsgChk;
 	TAction *aTabsSwitchingChk;
-	TsCheckBox *RememberClosedTabsCheckBox;
-	TsCheckBox *TabsHotKeysCheckBox;
 	TsRadioButton *TabsHotKeysMode1RadioButton;
 	TsRadioButton *TabsHotKeysMode2RadioButton;
 	TsButton *OkButton;
 	TAction *aSaveSettingsW;
-	TsCheckBox *FastAccessClosedTabsCheckBox;
 	TsCheckBox *FrmMainClosedTabsCheckBox;
 	TsCheckBox *FrmSendClosedTabsCheckBox;
-	TsCheckBox *UnCloseTabHotKeyCheckBox;
 	TsRadioButton *UnCloseTabHotKeyMode1RadioButton;
 	TsRadioButton *UnCloseTabHotKeyMode2RadioButton;
 	THotKey *UnCloseTabHotKeyInput;
 	TAction *aClosedTabsChk;
 	TsSpinEdit *CountClosedTabsSpinEdit;
-	TsCheckBox *RestoreTabsSessionCheckBox;
 	TAction *aSessionRememberChk;
 	TsCheckBox *RestoreMsgSessionCheckBox;
 	TsLabel *RestoreSessionLabel;
-	TsCheckBox *TweakFrmSendTitlebarCheckBox;
 	TsRadioButton *TweakFrmSendTitlebarMode1RadioButton;
 	TsRadioButton *TweakFrmSendTitlebarMode2RadioButton;
 	TsRadioButton *TweakFrmSendTitlebarMode3RadioButton;
-	TsCheckBox *TweakFrmMainTitlebarCheckBox;
 	TsRadioButton *TweakFrmMainTitlebarMode1RadioButton;
 	TsRadioButton *TweakFrmMainTitlebarMode2RadioButton;
 	TsEdit *TweakFrmMainTitlebarMode2Edit;
@@ -143,8 +133,6 @@ __published:	// IDE-managed Components
 	TsCheckBox *UnCloseTabSPMouseCheckBox;
 	TsCheckBox *UnCloseTabLPMouseCheckBox;
 	TsLabel *UnCloseMouseLabel;
-	TsCheckBox *SlideFrmSendCheckBox;
-	TsCheckBox *SlideFrmMainCheckBox;
 	TAction *aSideSlideChk;
 	TsCheckBox *HideTabCloseButtonCheckBox;
 	TsCheckBox *CloseBy2xLPMCheckBox;
@@ -175,7 +163,7 @@ __published:	// IDE-managed Components
 	TsTabSheet *SideSlideTabSheet;
 	TsTabSheet *OtherTabSheet;
 	TsTabSheet *DefaultTabSheet;
-	TsGroupBox *ClosedTabGroupBox;
+	TsGroupBox *RememberClosedTabsGroupBox;
 	TsGroupBox *FastAccessClosedTabsGroupBox;
 	TsGroupBox *UnCloseTabHotKeyGroupBox;
 	TsGroupBox *OtherClosedTabGroupBox;
@@ -244,7 +232,6 @@ __published:	// IDE-managed Components
 	TsGroupBox *FastAccessFavouritesTabsGroupBox;
 	TsCheckBox *FrmMainFastAccessFavouritesTabsCheckBox;
 	TsCheckBox *FrmSendFastAccessFavouritesTabsCheckBox;
-	TsCheckBox *FastAccessFavouritesTabsCheckBox;
 	TsListView *FavouritesTabsListView;
 	TAction *aReloadFavouritesTabs;
 	TsSpeedButton *AddChatsFavouriteTabSpeedButton;
@@ -253,9 +240,7 @@ __published:	// IDE-managed Components
 	TsSpeedButton *RemoveFavouriteTabSpeedButton;
 	TsAlphaImageList *FavouritesTabsAlphaImageList;
 	TsGroupBox *ClipTabsGroupBox;
-	TsCheckBox *ClipTabsCheckBox;
 	TsGroupBox *FavouritesTabsGroupBox;
-	TsCheckBox *FavouritesTabsCheckBox;
 	TsComboBox *FrmMainEdgeComboBox;
 	TsLabel *FrmMainEdgeLabel;
 	TsComboBox *FrmMainHideModeComboBox;
