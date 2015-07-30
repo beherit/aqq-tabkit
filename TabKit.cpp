@@ -4539,7 +4539,9 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				&&(WindowCaptionName!="NotifyIconOverflowWindow")
 				&&(WindowCaptionName!="ClockFlyoutWindow")
 				&&(WindowCaptionName!="DV2ControlHost")
-				&&(WindowCaptionName!="TaskSwitcherWnd"))
+				&&(WindowCaptionName!="TaskSwitcherWnd")
+				&&(WindowCaptionName!="MultitaskingViewFrame")
+				&&(WindowCaptionName!="ForegroundStaging"))
 					LastActiveWindow = hActiveFrm;
 			}
 			//Pobranie PID aktywnego okna
@@ -4581,7 +4583,9 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 							&&(WindowCaptionName!="NotifyIconOverflowWindow")
 							&&(WindowCaptionName!="ClockFlyoutWindow")
 							&&(WindowCaptionName!="DV2ControlHost")
-							&&(WindowCaptionName!="TaskSwitcherWnd"))
+							&&(WindowCaptionName!="TaskSwitcherWnd")
+							&&(WindowCaptionName!="MultitaskingViewFrame")
+							&&(WindowCaptionName!="ForegroundStaging"))
 							{
 								//Status chowania okna rozmowy za krawedz ekranu
 								FrmSendSlideOut = true;
@@ -4609,7 +4613,9 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 							&&(WindowCaptionName!="NotifyIconOverflowWindow")
 							&&(WindowCaptionName!="ClockFlyoutWindow")
 							&&(WindowCaptionName!="DV2ControlHost")
-							&&(WindowCaptionName!="TaskSwitcherWnd"))
+							&&(WindowCaptionName!="TaskSwitcherWnd")
+							&&(WindowCaptionName!="MultitaskingViewFrame")
+							&&(WindowCaptionName!="ForegroundStaging"))
 							{
 								//Status chowania okna kontaktow za krawedz ekranu
 								FrmMainSlideOut = true;
@@ -4836,7 +4842,9 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			&&(WindowCaptionName!="NotifyIconOverflowWindow")
 			&&(WindowCaptionName!="ClockFlyoutWindow")
 			&&(WindowCaptionName!="DV2ControlHost")
-			&&(WindowCaptionName!="TaskSwitcherWnd"))
+			&&(WindowCaptionName!="TaskSwitcherWnd")
+			&&(WindowCaptionName!="MultitaskingViewFrame")
+			&&(WindowCaptionName!="ForegroundStaging"))
 				LastActiveWindow_PreFrmSendSlideIn = GetForegroundWindow();
 			//Sprawdzanie czy aktywna jest aplikacja pelno ekranowa
 			ChkFullScreenMode();
@@ -5051,7 +5059,12 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			GetClassNameW(GetForegroundWindow(), WindowCaptionNameW, sizeof(WindowCaptionNameW));
 			UnicodeString WindowCaptionName = WindowCaptionNameW;
 			//Wlaczenie timera ustawienia okna na wierzchu
-			if((WindowCaptionName!="TaskSwitcherWnd")&&(WindowCaptionName!="DV2ControlHost")&&(WindowCaptionName!="CabinetWClass")&&(WindowCaptionName!="Shell_TrayWnd"))
+			if((WindowCaptionName!="TaskSwitcherWnd")
+			&&(WindowCaptionName!="MultitaskingViewFrame")
+			&&(WindowCaptionName!="ForegroundStaging")
+			&&(WindowCaptionName!="DV2ControlHost")
+			&&(WindowCaptionName!="CabinetWClass")
+			&&(WindowCaptionName!="Shell_TrayWnd"))
 			{
 				//Zatrzymanie timera
 				KillTimer(hTimerFrm,TIMER_FRMSEND_TOPMOST);
@@ -5070,7 +5083,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			GetClassNameW(GetForegroundWindow(), WindowCaptionNameW, sizeof(WindowCaptionNameW));
 			UnicodeString WindowCaptionName = WindowCaptionNameW;
 			//Wlaczenie timera ustawienia okna na wierzchu
-			if(WindowCaptionName!="TaskSwitcherWnd")
+			if((WindowCaptionName!="TaskSwitcherWnd")&&(WindowCaptionName!="MultitaskingViewFrame")&&(WindowCaptionName!="ForegroundStaging"))
 			{
 				//Zatrzymanie timera
 				KillTimer(hTimerFrm,TIMER_FRMSEND_TOPMOST_AND_SLIDEOUT);
@@ -5277,7 +5290,9 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			&&(WindowCaptionName!="NotifyIconOverflowWindow")
 			&&(WindowCaptionName!="ClockFlyoutWindow")
 			&&(WindowCaptionName!="DV2ControlHost")
-			&&(WindowCaptionName!="TaskSwitcherWnd"))
+			&&(WindowCaptionName!="TaskSwitcherWnd")
+			&&(WindowCaptionName!="MultitaskingViewFrame")
+			&&(WindowCaptionName!="ForegroundStaging"))
 				LastActiveWindow_PreFrmMainSlideIn = GetForegroundWindow();
 			//Sprawdzanie czy aktywna jest aplikacja pelno ekranowa
 			ChkFullScreenMode();
@@ -5403,7 +5418,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			GetClassNameW(GetForegroundWindow(), WindowCaptionNameW, sizeof(WindowCaptionNameW));
 			UnicodeString WindowCaptionName = WindowCaptionNameW;
 			//Wlaczenie timera ustawienia okna na wierzchu
-			if((WindowCaptionName!="TaskSwitcherWnd")&&(WindowCaptionName!="DV2ControlHost")&&(WindowCaptionName!="CabinetWClass")&&(WindowCaptionName!="Shell_TrayWnd"))
+			if((WindowCaptionName!="TaskSwitcherWnd")&&(WindowCaptionName!="MultitaskingViewFrame")&&(WindowCaptionName!="ForegroundStaging")&&(WindowCaptionName!="DV2ControlHost")&&(WindowCaptionName!="CabinetWClass")&&(WindowCaptionName!="Shell_TrayWnd"))
 			{
 				//Zatrzymanie timera
 				KillTimer(hTimerFrm,TIMER_FRMMAIN_TOPMOST);
@@ -5427,7 +5442,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				GetClassNameW(GetForegroundWindow(), WindowCaptionNameW, sizeof(WindowCaptionNameW));
 				UnicodeString WindowCaptionName = WindowCaptionNameW;
 				//Porownanie klasy nowego aktywnego okna
-				if((WindowCaptionName!="TaskSwitcherWnd")&&(WindowCaptionName!="DV2ControlHost")&&(WindowCaptionName!="CabinetWClass")&&(WindowCaptionName!="Shell_TrayWnd"))
+				if((WindowCaptionName!="TaskSwitcherWnd")&&(WindowCaptionName!="MultitaskingViewFrame")&&(WindowCaptionName!="ForegroundStaging")&&(WindowCaptionName!="DV2ControlHost")&&(WindowCaptionName!="CabinetWClass")&&(WindowCaptionName!="Shell_TrayWnd"))
 				{
 					//Zatrzymanie timera
 					KillTimer(hTimerFrm,TIMER_FRMMAIN_TOPMOST_EX);
@@ -5444,7 +5459,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			GetClassNameW(GetForegroundWindow(), WindowCaptionNameW, sizeof(WindowCaptionNameW));
 			UnicodeString WindowCaptionName = WindowCaptionNameW;
 			//Wlaczenie timera ustawienia okna na wierzchu
-			if(WindowCaptionName!="TaskSwitcherWnd")
+			if((WindowCaptionName!="TaskSwitcherWnd")&&(WindowCaptionName!="MultitaskingViewFrame")&&(WindowCaptionName!="ForegroundStaging"))
 			{
 				//Zatrzymanie timera
 				KillTimer(hTimerFrm,TIMER_FRMMAIN_TOPMOST_AND_SLIDEOUT);
@@ -5540,7 +5555,9 @@ LRESULT CALLBACK FrmMainProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 									&&(WindowCaptionName!="NotifyIconOverflowWindow")
 									&&(WindowCaptionName!="ClockFlyoutWindow")
 									&&(WindowCaptionName!="DV2ControlHost")
-									&&(WindowCaptionName!="TaskSwitcherWnd"))
+									&&(WindowCaptionName!="TaskSwitcherWnd")
+									&&(WindowCaptionName!="MultitaskingViewFrame")
+									&&(WindowCaptionName!="ForegroundStaging"))
 									{
 										//Status chowania okna kontaktow za krawedz ekranu
 										FrmMainSlideOut = true;
@@ -5556,7 +5573,7 @@ LRESULT CALLBACK FrmMainProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 								wchar_t WindowCaptionNameW[128];
 								GetClassNameW(GetForegroundWindow(), WindowCaptionNameW, sizeof(WindowCaptionNameW));
 								UnicodeString WindowCaptionName = WindowCaptionNameW;
-								if(WindowCaptionName!="TaskSwitcherWnd")
+								if((WindowCaptionName!="TaskSwitcherWnd")&&(WindowCaptionName!="MultitaskingViewFrame")&&(WindowCaptionName!="ForegroundStaging"))
 								{
 									//Pobieranie nowego aktywnego okna
 									GetClassNameW(WindowFromPoint(Mouse->CursorPos), WindowCaptionNameW, sizeof(WindowCaptionNameW));
@@ -5595,7 +5612,9 @@ LRESULT CALLBACK FrmMainProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 								&&(WindowCaptionName!="TrayClockWClass")
 								&&(WindowCaptionName!="TrayShowDesktopButtonWClass")
 								&&(WindowCaptionName!="DV2ControlHost")
-								&&(WindowCaptionName!="TaskSwitcherWnd"))
+								&&(WindowCaptionName!="TaskSwitcherWnd")
+								&&(WindowCaptionName!="MultitaskingViewFrame")
+								&&(WindowCaptionName!="ForegroundStaging"))
 									LastActiveWindow_WmInactiveFrmMainSlide = WindowFromPoint(Mouse->CursorPos);
 								//Status chowania okna kontaktow za krawedz ekranu
 								FrmMainSlideOut = true;
@@ -5642,7 +5661,7 @@ LRESULT CALLBACK FrmMainProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					GetClassNameW(WindowFromPoint(Mouse->CursorPos), WindowCaptionNameW2, sizeof(WindowCaptionNameW2));
 					UnicodeString WindowCaptionName2 = WindowCaptionNameW2;
 					//Okno jest schowane i spelnia inne ponizsze warunki
-					if((!FrmMainVisible)&&(!FrmMainBlockSlide)&&(!FrmMainSlideOut)&&(!FrmMainSlideIn)&&(!IsIconic(LastActiveWindow))&&((IsWindowVisible(LastActiveWindow))||(WindowCaptionName=="TaskSwitcherWnd"))&&(WindowCaptionName2!="TrayShowDesktopButtonWClass")&&((WindowFromPoint(Mouse->CursorPos)!=hToolbarWindow32)))
+					if((!FrmMainVisible)&&(!FrmMainBlockSlide)&&(!FrmMainSlideOut)&&(!FrmMainSlideIn)&&(!IsIconic(LastActiveWindow))&&((IsWindowVisible(LastActiveWindow))||(WindowCaptionName=="TaskSwitcherWnd")||(WindowCaptionName=="MultitaskingViewFrame")||(WindowCaptionName=="ForegroundStaging"))&&(WindowCaptionName2!="TrayShowDesktopButtonWClass")&&((WindowFromPoint(Mouse->CursorPos)!=hToolbarWindow32)))
 					{
 						//Sprawdzanie czy aktywna jest aplikacja pelno ekranowa
 						ChkFullScreenMode();
@@ -5893,7 +5912,9 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 									&&(WindowCaptionName!="NotifyIconOverflowWindow")
 									&&(WindowCaptionName!="ClockFlyoutWindow")
 									&&(WindowCaptionName!="DV2ControlHost")
-									&&(WindowCaptionName!="TaskSwitcherWnd"))
+									&&(WindowCaptionName!="TaskSwitcherWnd")
+									&&(WindowCaptionName!="MultitaskingViewFrame")
+									&&(WindowCaptionName!="ForegroundStaging"))
 									{
 										//Status chowania okna rozmowy za krawedz ekranu
 										FrmSendSlideOut = true;
@@ -5909,7 +5930,7 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 								wchar_t WindowCaptionNameW[128];
 								GetClassNameW(GetForegroundWindow(), WindowCaptionNameW, sizeof(WindowCaptionNameW));
 								UnicodeString WindowCaptionName = WindowCaptionNameW;
-								if(WindowCaptionName!="TaskSwitcherWnd")
+								if((WindowCaptionName!="TaskSwitcherWnd")&&(WindowCaptionName!="MultitaskingViewFrame")&&(WindowCaptionName!="ForegroundStaging"))
 								{
 									//Pobieranie nowego aktywnego okna
 									GetClassNameW(WindowFromPoint(Mouse->CursorPos), WindowCaptionNameW, sizeof(WindowCaptionNameW));
@@ -5992,7 +6013,7 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					GetClassNameW(WindowFromPoint(Mouse->CursorPos), WindowCaptionNameW2, sizeof(WindowCaptionNameW2));
 					UnicodeString WindowCaptionName2 = WindowCaptionNameW2;
 					//Okno jest schowane i spelnia inne ponizsze warunki
-					if((!FrmSendVisible)&&(!FrmSendBlockSlide)&&(!FrmSendSlideOut)&&(!FrmSendSlideIn)&&(!IsIconic(LastActiveWindow))&&((IsWindowVisible(LastActiveWindow))||(WindowCaptionName=="TaskSwitcherWnd")||(WindowCaptionName2=="MSTaskListWClass")||(WindowCaptionName2=="ToolbarWindow32"))&&(WindowCaptionName2!="TrayShowDesktopButtonWClass"))
+					if((!FrmSendVisible)&&(!FrmSendBlockSlide)&&(!FrmSendSlideOut)&&(!FrmSendSlideIn)&&(!IsIconic(LastActiveWindow))&&((IsWindowVisible(LastActiveWindow))||(WindowCaptionName=="TaskSwitcherWnd")||(WindowCaptionName=="MultitaskingViewFrame")||(WindowCaptionName=="ForegroundStaging")||(WindowCaptionName2=="MSTaskListWClass")||(WindowCaptionName2=="ToolbarWindow32"))&&(WindowCaptionName2!="TrayShowDesktopButtonWClass"))
 					{
 						//Sprawdzanie czy aktywna jest aplikacja pelno ekranowa
 						ChkFullScreenMode();
