@@ -141,7 +141,6 @@ __published:	// IDE-managed Components
 	TsGroupBox *FrmSendTimeGroupBox;
 	TsSpinEdit *FrmSendSlideInTimeSpinEdit;
 	TsSpinEdit *FrmSendSlideOutTimeSpinEdit;
-	TsCheckBox *SlideInAtNewMsgCheckBox;
 	TsGroupBox *FrmMainTimeGroupBox;
 	TsSpinEdit *FrmMainSlideInTimeSpinEdit;
 	TsSpinEdit *FrmMainSlideOutTimeSpinEdit;
@@ -243,12 +242,8 @@ __published:	// IDE-managed Components
 	TsGroupBox *FavouritesTabsGroupBox;
 	TsComboBox *FrmMainEdgeComboBox;
 	TsLabel *FrmMainEdgeLabel;
-	TsComboBox *FrmMainHideModeComboBox;
-	TsLabel *FrmMainHideModeLabel;
 	TsLabel *FrmSendEdgeLabel;
 	TsComboBox *FrmSendEdgeComboBox;
-	TsComboBox *FrmSendHideModeComboBox;
-	TsLabel *FrmSendHideModeLabel;
 	TsLabel *CloudTickModeLabel;
 	TsEdit *DateFormatEdit;
 	TsCheckBox *ChatGoneFrmSendNotiferNewMsgCheckBox;

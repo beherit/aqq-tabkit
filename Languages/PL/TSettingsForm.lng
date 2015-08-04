@@ -94,8 +94,8 @@
 094=Chowaj okno kontaktów za krawędzią ekranu
 095=Wybrana krawędź
 096=lewa#prawa#dolna#górna
-097=Schowaj gdy
-098=okno utraci fokus#AQQ utraci fokus#kursor opuści okno
+097=
+098=
 099=Ustawienia animacji
 100=Opóźnienie wysuwania okna (ms)
 101=Opóźnienie chowania okna (ms)
@@ -112,7 +112,7 @@
 112=Opóźnienie chowania okna (ms)
 113=Czas wysuwania okna (ms)
 114=Czas chowania okna (ms)
-115=Wysuwaj okno po przyjściu nowej wiadomości (tylko dla otwartych zakładek)
+115=
 116=Wysuwaj okna przy aktywnej aplikacji pełnoekranowej
 117=Ustaw wyjątki
 118=Blokuj wysuwanie okien przy wciśniętym klawiszu Ctrl oraz lewym/prawym przycisku myszy

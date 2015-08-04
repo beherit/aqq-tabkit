@@ -188,9 +188,7 @@ void __fastcall TSettingsForm::FormCreate(TObject *Sender)
 	CountClosedTabsSpinEdit->Left = Canvas->TextWidth(CountClosedTabsSpinEdit->BoundLabel->Caption) + 20;
 	ChatGoneSaveInArchiveCheckBox->Left = ChatGoneFrmSendNotiferNewMsgCheckBox->Left + Canvas->TextWidth(ChatGoneFrmSendNotiferNewMsgCheckBox->Caption) + 26;
 	FrmMainEdgeComboBox->Left = FrmMainEdgeLabel->Left + Canvas->TextWidth(FrmMainEdgeLabel->Caption) + 6;
-	FrmMainHideModeComboBox->Left = FrmMainHideModeLabel->Left + Canvas->TextWidth(FrmMainHideModeLabel->Caption) + 6;
 	FrmSendEdgeComboBox->Left = FrmSendEdgeLabel->Left + Canvas->TextWidth(FrmSendEdgeLabel->Caption) + 6;
-	FrmSendHideModeComboBox->Left = FrmSendHideModeLabel->Left + Canvas->TextWidth(FrmSendHideModeLabel->Caption) + 6;
 	SideSlideFullScreenModeExceptionsButton->Left = SideSlideFullScreenModeCheckBox->Left + Canvas->TextWidth(SideSlideFullScreenModeCheckBox->Caption) + 26;
 	CollapseImagesModeComboBox->Left = CollapseImagesCheckBox->Left + Canvas->TextWidth(CollapseImagesCheckBox->Caption) + 26;
 	ShortenLinksModeComboBox->Left = ShortenLinksCheckBox->Left + Canvas->TextWidth(ShortenLinksCheckBox->Caption) + 26;
@@ -407,7 +405,6 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
 	//SideSlide
 	SlideFrmMainGroupBox->Checked = Ini->ReadBool("SideSlide","SlideFrmMain",false);
 	FrmMainEdgeComboBox->ItemIndex = Ini->ReadInteger("SideSlide","FrmMainEdge",2) - 1;
-	FrmMainHideModeComboBox->ItemIndex = Ini->ReadInteger("SideSlide","FrmMainHideMode",3) - 1;
 	FrmMainSlideInDelaySpinEdit->Value = Ini->ReadInteger("SideSlide","FrmMainSlideInDelay",1000);
 	FrmMainSlideOutDelaySpinEdit->Value = Ini->ReadInteger("SideSlide","FrmMainSlideOutDelay",1);
 	FrmMainSlideInTimeSpinEdit->Value = Ini->ReadInteger("SideSlide","FrmMainSlideInTime",300);
@@ -415,12 +412,10 @@ void __fastcall TSettingsForm::aLoadSettingsExecute(TObject *Sender)
 	ChangeTabAfterSlideInCheckBox->Checked = Ini->ReadBool("SideSlide","ChangeTabAfterSlideIn",true);
 	SlideFrmSendGroupBox->Checked = Ini->ReadBool("SideSlide","SlideFrmSend",false);
 	FrmSendEdgeComboBox->ItemIndex = Ini->ReadInteger("SideSlide","FrmSendEdge",1) - 1;
-	FrmSendHideModeComboBox->ItemIndex = Ini->ReadInteger("SideSlide","FrmSendHideMode",3) - 1;
 	FrmSendSlideInDelaySpinEdit->Value = Ini->ReadInteger("SideSlide","FrmSendSlideInDelay",1000);
 	FrmSendSlideOutDelaySpinEdit->Value = Ini->ReadInteger("SideSlide","FrmSendSlideOutDelay",1);
 	FrmSendSlideInTimeSpinEdit->Value = Ini->ReadInteger("SideSlide","FrmSendSlideInTime",300);
 	FrmSendSlideOutTimeSpinEdit->Value = Ini->ReadInteger("SideSlide","FrmSendSlideOutTime",500);
-	SlideInAtNewMsgCheckBox->Checked = Ini->ReadBool("SideSlide","SlideInAtNewMsg",false);
 	SideSlideFullScreenModeCheckBox->Checked = Ini->ReadBool("SideSlide","FullScreenMode",true);
 	SideSlideCtrlAndMousBlockCheckBox->Checked = Ini->ReadBool("SideSlide","CtrlAndMouseBlock",true);
 	//Other
@@ -596,7 +591,6 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
 	//SideSlide
 	Ini->WriteBool("SideSlide","SlideFrmMain",SlideFrmMainGroupBox->Checked);
 	Ini->WriteInteger("SideSlide","FrmMainEdge",FrmMainEdgeComboBox->ItemIndex+1);
-	Ini->WriteInteger("SideSlide","FrmMainHideMode",FrmMainHideModeComboBox->ItemIndex+1);
 	Ini->WriteInteger("SideSlide","FrmMainSlideInDelay",FrmMainSlideInDelaySpinEdit->Value);
 	Ini->WriteInteger("SideSlide","FrmMainSlideOutDelay",FrmMainSlideOutDelaySpinEdit->Value);
 	Ini->WriteInteger("SideSlide","FrmMainSlideInTime",FrmMainSlideInTimeSpinEdit->Value);
@@ -604,12 +598,10 @@ void __fastcall TSettingsForm::aSaveSettingsExecute(TObject *Sender)
 	Ini->WriteBool("SideSlide","ChangeTabAfterSlideIn",ChangeTabAfterSlideInCheckBox->Checked);
 	Ini->WriteBool("SideSlide","SlideFrmSend",SlideFrmSendGroupBox->Checked);
 	Ini->WriteInteger("SideSlide","FrmSendEdge",FrmSendEdgeComboBox->ItemIndex+1);
-	Ini->WriteInteger("SideSlide","FrmSendHideMode",FrmSendHideModeComboBox->ItemIndex+1);
 	Ini->WriteInteger("SideSlide","FrmSendSlideInDelay",FrmSendSlideInDelaySpinEdit->Value);
 	Ini->WriteInteger("SideSlide","FrmSendSlideOutDelay",FrmSendSlideOutDelaySpinEdit->Value);
 	Ini->WriteInteger("SideSlide","FrmSendSlideInTime",FrmSendSlideInTimeSpinEdit->Value);
 	Ini->WriteInteger("SideSlide","FrmSendSlideOutTime",FrmSendSlideOutTimeSpinEdit->Value);
-	Ini->WriteBool("SideSlide","SlideInAtNewMsg",SlideInAtNewMsgCheckBox->Checked);
 	Ini->WriteBool("SideSlide","FullScreenMode",SideSlideFullScreenModeCheckBox->Checked);
 	Ini->WriteBool("SideSlide","CtrlAndMouseBlock",SideSlideCtrlAndMousBlockCheckBox->Checked);
 	//Other
@@ -798,22 +790,17 @@ void __fastcall TSettingsForm::aSideSlideChkExecute(TObject *Sender)
 {
 	FrmMainEdgeLabel->Enabled = SlideFrmMainGroupBox->Checked;
 	FrmMainEdgeComboBox->Enabled = SlideFrmMainGroupBox->Checked;
-	FrmMainHideModeLabel->Enabled = SlideFrmMainGroupBox->Checked;
-	FrmMainHideModeComboBox->Enabled = SlideFrmMainGroupBox->Checked;
 	FrmMainSlideInDelaySpinEdit->Enabled = SlideFrmMainGroupBox->Checked;
-	FrmMainSlideOutDelaySpinEdit->Enabled = (SlideFrmMainGroupBox->Checked && (FrmMainHideModeComboBox->ItemIndex==2));
+	FrmMainSlideOutDelaySpinEdit->Enabled = SlideFrmMainGroupBox->Checked;
 	FrmMainSlideInTimeSpinEdit->Enabled = SlideFrmMainGroupBox->Checked;
 	FrmMainSlideOutTimeSpinEdit->Enabled = SlideFrmMainGroupBox->Checked;
 	ChangeTabAfterSlideInCheckBox->Enabled = SlideFrmMainGroupBox->Checked;
 	FrmSendEdgeLabel->Enabled = SlideFrmSendGroupBox->Checked;
 	FrmSendEdgeComboBox->Enabled = SlideFrmSendGroupBox->Checked;
-	FrmSendHideModeLabel->Enabled = SlideFrmSendGroupBox->Checked;
-	FrmSendHideModeComboBox->Enabled = SlideFrmSendGroupBox->Checked;
 	FrmSendSlideInDelaySpinEdit->Enabled = SlideFrmSendGroupBox->Checked;
-	FrmSendSlideOutDelaySpinEdit->Enabled = (SlideFrmSendGroupBox->Checked && (FrmSendHideModeComboBox->ItemIndex==2));
+	FrmSendSlideOutDelaySpinEdit->Enabled = SlideFrmSendGroupBox->Checked;
 	FrmSendSlideInTimeSpinEdit->Enabled = SlideFrmSendGroupBox->Checked;
 	FrmSendSlideOutTimeSpinEdit->Enabled = SlideFrmSendGroupBox->Checked;
-	SlideInAtNewMsgCheckBox->Enabled = SlideFrmSendGroupBox->Checked;
 	SideSlideFullScreenModeCheckBox->Enabled = (SlideFrmSendGroupBox->Checked || SlideFrmMainGroupBox->Checked);
 	SideSlideFullScreenModeExceptionsButton->Enabled = (SideSlideFullScreenModeCheckBox->Enabled && SideSlideFullScreenModeCheckBox->Checked);
 	SideSlideCtrlAndMousBlockCheckBox->Enabled = (SlideFrmSendGroupBox->Checked || SlideFrmMainGroupBox->Checked);

@@ -94,8 +94,8 @@
 094=Hide contact window behind the edge of the screen
 095=Selected edge
 096=left#right#bottom#upper
-097=Hide when
-098=window loses focus#AQQ loses focus#cursor leaves window
+097=
+098=
 099=Animation settings
 100=Window unhiding delay (ms)
 101=Window hiding delay (ms)
@@ -112,7 +112,7 @@
 112=Window hiding delay (ms)
 113=Window unhiding speed (ms)
 114=Window hiding speed (ms)
-115=Unhide the window when the new message arrives (only for open tabs)
+115=
 116=Unhide the windows when is active full-screen application
 117=Set exceptions
 118=Block window unhide while holding down the Ctrl key and left/right mouse button
