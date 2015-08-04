@@ -184,10 +184,6 @@ bool FullScreenModeExeptions = false;
 HWND FullScreenWindow;
 //Ostatnio aktywne okno
 HWND LastActiveWindow;
-HWND LastActiveWindow_WmInactiveFrmSendSlide;
-HWND LastActiveWindow_PreFrmSendSlideIn;
-HWND LastActiveWindow_WmInactiveFrmMainSlide;
-HWND LastActiveWindow_PreFrmMainSlideIn;
 //Blokada okna przy aktywnym popupmenu poza obszarem okna
 bool PopupMenuBlockSlide = false;
 //Blokada przy zmianie pozycji okien
@@ -437,7 +433,6 @@ bool FavouritesTabsHotKeysChk;
 //SideSlide
 bool FrmMainSlideChk = false;
 int FrmMainSlideEdge = 2;
-int FrmMainSlideHideMode;
 int FrmMainSlideInDelay;
 int FrmMainSlideOutDelay;
 int FrmMainSlideInTime;
@@ -446,13 +441,11 @@ int FrmMainStepInterval;
 bool ChangeTabAfterSlideIn;
 bool FrmSendSlideChk = false;
 int FrmSendSlideEdge = 1;
-int FrmSendSlideHideMode;
 int FrmSendSlideInDelay;
 int FrmSendSlideOutDelay;
 int FrmSendSlideInTime;
 int FrmSendSlideOutTime;
 int FrmSendStepInterval;
-bool SlideInAtNewMsgChk;
 bool SideSlideFullScreenModeChk;
 bool SideSlideCtrlAndMouseBlockChk;
 //Other
@@ -1452,7 +1445,7 @@ void MinimizeRestoreFrmSendExecute()
 				if(FrmSendVisible)
 				{
 					//Wylaczenie tymczasowej blokady chowania/pokazywania okna rozmowy
-					if((FrmSendSlideHideMode==3)&&(FrmSendUnBlockSlide))
+					if(FrmSendUnBlockSlide)
 					{
 						//Zatrzymanie timera wylaczenia tymczasowej blokady chowania/pokazywania okna rozmowy
 						KillTimer(hTimerFrm,TIMER_FRMSEND_UNBLOCK_SLIDE);
@@ -1504,7 +1497,7 @@ void MinimizeRestoreFrmMainExecute()
 			if(FrmMainVisible)
 			{
 				//Wylaczenie tymczasowej blokady chowania/pokazywania okna kontaktow
-				if((FrmMainSlideHideMode==3)&&(FrmMainUnBlockSlide))
+				if(FrmMainUnBlockSlide)
 				{
 					//Zatrzymanie timera wylaczenia tymczasowej blokady chowania/pokazywania okna kontaktow
 					KillTimer(hTimerFrm,TIMER_FRMMAIN_UNBLOCK_SLIDE);
@@ -3877,13 +3870,13 @@ INT_PTR __stdcall ServiceStayOnTopItem(WPARAM wParam, LPARAM lParam)
 	if(StayOnTopStatus)
 	{
 		//Okno rozmowy na wierzchu
-		if((!FrmSendSlideChk)||((FrmSendSlideChk)&&(FrmSendSlideHideMode==2))) SetWindowPos(hFrmSend,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
+		if(!FrmSendSlideChk) SetWindowPos(hFrmSend,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 	}
 	//Przywracanie okna do normalnosci
 	else
 	{
 		//Przywrocenie "normalnosci" okna
-		if((!FrmSendSlideChk)||((FrmSendSlideChk)&&(FrmSendSlideHideMode==2))) SetWindowPos(hFrmSend,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
+		if(!FrmSendSlideChk) SetWindowPos(hFrmSend,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 	}
 	//Tymczasowa blokada chowania/pokazywania okna rozmowy
 	if(FrmSendSlideChk) FrmSendBlockSlide = StayOnTopStatus;
@@ -4301,69 +4294,66 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 					}
 				}
 				//Chowanie okna rozmowy (gdy kursor opusci okno)
-				if(FrmSendSlideHideMode==3)
+				//Okno rozmowy jest widoczne, aktualnie nie jest chowane/wysuwane, nie jest aktywna blokada
+				if((FrmSendVisible)&&(!FrmSendSlideOut)&&(!FrmSendSlideIn)&&(!FrmSendBlockSlide))
 				{
-					//Okno rozmowy jest widoczne, aktualnie nie jest chowane/wysuwane, nie jest aktywna blokada
-					if((FrmSendVisible)&&(!FrmSendSlideOut)&&(!FrmSendSlideIn)&&(!FrmSendBlockSlide))
+					//Kursor znajduje sie poza oknem rozmowy
+					if((Mouse->CursorPos.y<FrmSendRect.Top+FrmSendRealTopPos-FrmSend_Shell_TrayWndTop)||(FrmSendRect.Bottom+FrmSendRealBottomPos+FrmSend_Shell_TrayWndBottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmSendRect.Left+FrmSendRealLeftPos-FrmSend_Shell_TrayWndLeft)||(FrmSendRect.Right+FrmSendRealRightPos+FrmSend_Shell_TrayWndRight<Mouse->CursorPos.x))
 					{
-						//Kursor znajduje sie poza oknem rozmowy
-						if((Mouse->CursorPos.y<FrmSendRect.Top+FrmSendRealTopPos-FrmSend_Shell_TrayWndTop)||(FrmSendRect.Bottom+FrmSendRealBottomPos+FrmSend_Shell_TrayWndBottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmSendRect.Left+FrmSendRealLeftPos-FrmSend_Shell_TrayWndLeft)||(FrmSendRect.Right+FrmSendRealRightPos+FrmSend_Shell_TrayWndRight<Mouse->CursorPos.x))
+						//LPM nie jest wcisniety
+						if(GetKeyState(VK_LBUTTON)>=0)
 						{
-							//LPM nie jest wcisniety
-							if(GetKeyState(VK_LBUTTON)>=0)
+							//Pobranie klasy okna w ktorym znajduje sie kursor
+							HWND hCurActiveFrm = WindowFromPoint(Mouse->CursorPos);
+							wchar_t WindowClassNameW[128];
+							GetClassNameW(hCurActiveFrm, WindowClassNameW, sizeof(WindowClassNameW));
+							UnicodeString WindowClassName = WindowClassNameW;
+							//Pobieranie PID procesu wskazanego okna
+							DWORD PID;
+							GetWindowThreadProcessId(hCurActiveFrm, &PID);
+							//Kursor nie znajduje sie w obrebie menu z okna
+							if(!((WindowClassName=="#32768")&&(PID==ProcessPID)))
 							{
-								//Pobranie klasy okna w ktorym znajduje sie kursor
-								HWND hCurActiveFrm = WindowFromPoint(Mouse->CursorPos);
-								wchar_t WindowClassNameW[128];
-								GetClassNameW(hCurActiveFrm, WindowClassNameW, sizeof(WindowClassNameW));
-								UnicodeString WindowClassName = WindowClassNameW;
-								//Pobieranie PID procesu wskazanego okna
-								DWORD PID;
-								GetWindowThreadProcessId(hCurActiveFrm, &PID);
-								//Kursor nie znajduje sie w obrebie menu z okna
-								if(!((WindowClassName=="#32768")&&(PID==ProcessPID)))
-								{
-									//Tymczasowa blokada chowania/pokazywania okna rozmowy
-									if(PopupMenuBlockSlide)
-									{
-										//Kursor w obrebie menu z okna
-										PopupMenuBlockSlide = false;
-										//Tymczasowa blokada chowania/pokazywania okna rozmowy
-										FrmSendBlockSlide = true;
-										//Wlaczenie timera wylaczenia tymczasowej blokady chowania/pokazywania okna rozmowy
-										SetTimer(hTimerFrm,TIMER_FRMSEND_UNBLOCK_SLIDE,2000,(TIMERPROC)TimerFrmProc);
-									}
-									//Chowanie okna rozmowy
-									else if(!PreFrmSendSlideOut)
-									{
-										//Status pre-chowania okna rozmowy za krawedz ekranu
-										PreFrmSendSlideOut = true;
-										//Wlaczenie chowania okna rozmowy (part I)
-										SetTimer(hTimerFrm,TIMER_FRMSEND_PRE_SLIDEOUT,FrmSendSlideOutDelay,(TIMERPROC)TimerFrmProc);
-									}
-								}
-								//Kursor znajduje sie w obrebie menu z okna
-								else PopupMenuBlockSlide = true;
-							}
-							//Tymczasowa blokada chowania/pokazywania okna rozmowy
-							else
-							{
-								//Kursor w obrebie menu z okna
-								PopupMenuBlockSlide = false;
 								//Tymczasowa blokada chowania/pokazywania okna rozmowy
-								FrmSendBlockSlide = true;
-								//Wlaczenie timera wylaczenia tymczasowej blokady chowania/pokazywania okna rozmowy
-								SetTimer(hTimerFrm,TIMER_FRMSEND_UNBLOCK_SLIDE,2000,(TIMERPROC)TimerFrmProc);
+								if(PopupMenuBlockSlide)
+								{
+									//Kursor w obrebie menu z okna
+									PopupMenuBlockSlide = false;
+									//Tymczasowa blokada chowania/pokazywania okna rozmowy
+									FrmSendBlockSlide = true;
+									//Wlaczenie timera wylaczenia tymczasowej blokady chowania/pokazywania okna rozmowy
+									SetTimer(hTimerFrm,TIMER_FRMSEND_UNBLOCK_SLIDE,2000,(TIMERPROC)TimerFrmProc);
+								}
+								//Chowanie okna rozmowy
+								else if(!PreFrmSendSlideOut)
+								{
+									//Status pre-chowania okna rozmowy za krawedz ekranu
+									PreFrmSendSlideOut = true;
+									//Wlaczenie chowania okna rozmowy (part I)
+									SetTimer(hTimerFrm,TIMER_FRMSEND_PRE_SLIDEOUT,FrmSendSlideOutDelay,(TIMERPROC)TimerFrmProc);
+								}
 							}
+							//Kursor znajduje sie w obrebie menu z okna
+							else PopupMenuBlockSlide = true;
 						}
-						//Kursor znajduje sie w oknie rozmowy
-						else if(PreFrmSendSlideOut)
+						//Tymczasowa blokada chowania/pokazywania okna rozmowy
+						else
 						{
-							//Zatrzymanie timera
-							KillTimer(hTimerFrm,TIMER_FRMSEND_PRE_SLIDEOUT);
-							//Status pre-chowania okna rozmowy za krawedz ekranu
-							PreFrmSendSlideOut = false;
+							//Kursor w obrebie menu z okna
+							PopupMenuBlockSlide = false;
+							//Tymczasowa blokada chowania/pokazywania okna rozmowy
+							FrmSendBlockSlide = true;
+							//Wlaczenie timera wylaczenia tymczasowej blokady chowania/pokazywania okna rozmowy
+							SetTimer(hTimerFrm,TIMER_FRMSEND_UNBLOCK_SLIDE,2000,(TIMERPROC)TimerFrmProc);
 						}
+					}
+					//Kursor znajduje sie w oknie rozmowy
+					else if(PreFrmSendSlideOut)
+					{
+						//Zatrzymanie timera
+						KillTimer(hTimerFrm,TIMER_FRMSEND_PRE_SLIDEOUT);
+						//Status pre-chowania okna rozmowy za krawedz ekranu
+						PreFrmSendSlideOut = false;
 					}
 				}
 			}
@@ -4440,69 +4430,65 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 					}
 				}
 				//Chowanie okna kontaktow (gdy kursor opusci okno)
-				if(FrmMainSlideHideMode==3)
+				if((FrmMainVisible)&&(!FrmMainSlideOut)&&(!FrmMainSlideIn)&&(!FrmMainBlockSlide))
 				{
-					//Okno kontatkow jest widoczne, aktualnie nie jest chowane/wysuwane, nie jest aktywna blokada
-					if((FrmMainVisible)&&(!FrmMainSlideOut)&&(!FrmMainSlideIn)&&(!FrmMainBlockSlide))
+					//Kursor znajduje sie poza oknem kontaktow
+					if((Mouse->CursorPos.y<FrmMainRect.Top+FrmMainRealTopPos-FrmMain_Shell_TrayWndTop)||(FrmMainRect.Bottom+FrmMainRealBottomPos+FrmMain_Shell_TrayWndBottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmMainRect.Left+FrmMainRealLeftPos-FrmMain_Shell_TrayWndLeft)||(FrmMainRect.Right+FrmMainRealRightPos+FrmMain_Shell_TrayWndRight<Mouse->CursorPos.x))
 					{
-						//Kursor znajduje sie poza oknem kontaktow
-						if((Mouse->CursorPos.y<FrmMainRect.Top+FrmMainRealTopPos-FrmMain_Shell_TrayWndTop)||(FrmMainRect.Bottom+FrmMainRealBottomPos+FrmMain_Shell_TrayWndBottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmMainRect.Left+FrmMainRealLeftPos-FrmMain_Shell_TrayWndLeft)||(FrmMainRect.Right+FrmMainRealRightPos+FrmMain_Shell_TrayWndRight<Mouse->CursorPos.x))
+						//LPM nie jest wcisniety
+						if(GetKeyState(VK_LBUTTON)>=0)
 						{
-							//LPM nie jest wcisniety
-							if(GetKeyState(VK_LBUTTON)>=0)
+							//Pobranie klasy okna w ktorym znajduje sie kursor
+							HWND hCurActiveFrm = WindowFromPoint(Mouse->CursorPos);
+							wchar_t WindowClassNameW[128];
+							GetClassNameW(hCurActiveFrm, WindowClassNameW, sizeof(WindowClassNameW));
+							UnicodeString WindowClassName = WindowClassNameW;
+							//Pobieranie PID procesu wskazanego okna
+							DWORD PID;
+							GetWindowThreadProcessId(hCurActiveFrm, &PID);
+							//Kursor nie znajduje sie w obrebie menu z okna
+							if(!((WindowClassName=="#32768")&&(PID==ProcessPID)))
 							{
-								//Pobranie klasy okna w ktorym znajduje sie kursor
-								HWND hCurActiveFrm = WindowFromPoint(Mouse->CursorPos);
-								wchar_t WindowClassNameW[128];
-								GetClassNameW(hCurActiveFrm, WindowClassNameW, sizeof(WindowClassNameW));
-								UnicodeString WindowClassName = WindowClassNameW;
-								//Pobieranie PID procesu wskazanego okna
-								DWORD PID;
-								GetWindowThreadProcessId(hCurActiveFrm, &PID);
-								//Kursor nie znajduje sie w obrebie menu z okna
-								if(!((WindowClassName=="#32768")&&(PID==ProcessPID)))
-								{
-									//Tymczasowa blokada chowania/pokazywania okna kontaktow
-									if(PopupMenuBlockSlide)
-									{
-										//Kursor w obrebie menu z okna
-										PopupMenuBlockSlide = false;
-										//Tymczasowa blokada chowania/pokazywania okna kontaktow
-										FrmMainBlockSlide = true;
-										//Wlaczenie timera wylaczenia tymczasowej blokady chowania/pokazywania okna kontaktow
-										SetTimer(hTimerFrm,TIMER_FRMMAIN_UNBLOCK_SLIDE,1500,(TIMERPROC)TimerFrmProc);
-									}
-									//Chowanie okna kontaktow
-									else if(!PreFrmMainSlideOut)
-									{
-										//Status pre-chowania okna kontaktow za krawedz ekranu
-										PreFrmMainSlideOut = true;
-										//Wlaczenie chowania okna kontaktow (part I)
-										SetTimer(hTimerFrm,TIMER_FRMMAIN_PRE_SLIDEOUT,FrmMainSlideOutDelay,(TIMERPROC)TimerFrmProc);
-									}
-								}
-								//Kursor znajduje sie w obrebie menu z okna
-								else PopupMenuBlockSlide = true;
-							}
-							//Tymczasowa blokada chowania/pokazywania okna kontaktow
-							else
-							{
-								//Kursor w obrebie menu z okna
-								PopupMenuBlockSlide = false;
 								//Tymczasowa blokada chowania/pokazywania okna kontaktow
-								FrmMainBlockSlide = true;
-								//Wlaczenie timera wylaczenia tymczasowej blokady chowania/pokazywania okna kontaktow
-								SetTimer(hTimerFrm,TIMER_FRMMAIN_UNBLOCK_SLIDE,1500,(TIMERPROC)TimerFrmProc);
+								if(PopupMenuBlockSlide)
+								{
+									//Kursor w obrebie menu z okna
+									PopupMenuBlockSlide = false;
+									//Tymczasowa blokada chowania/pokazywania okna kontaktow
+									FrmMainBlockSlide = true;
+									//Wlaczenie timera wylaczenia tymczasowej blokady chowania/pokazywania okna kontaktow
+									SetTimer(hTimerFrm,TIMER_FRMMAIN_UNBLOCK_SLIDE,1500,(TIMERPROC)TimerFrmProc);
+								}
+								//Chowanie okna kontaktow
+								else if(!PreFrmMainSlideOut)
+								{
+									//Status pre-chowania okna kontaktow za krawedz ekranu
+									PreFrmMainSlideOut = true;
+									//Wlaczenie chowania okna kontaktow (part I)
+									SetTimer(hTimerFrm,TIMER_FRMMAIN_PRE_SLIDEOUT,FrmMainSlideOutDelay,(TIMERPROC)TimerFrmProc);
+								}
 							}
+							//Kursor znajduje sie w obrebie menu z okna
+							else PopupMenuBlockSlide = true;
 						}
-						//Kursor znajduje sie w oknie kontaktow
-						else if(PreFrmMainSlideOut)
+						//Tymczasowa blokada chowania/pokazywania okna kontaktow
+						else
 						{
-							//Zatrzymanie timera
-							KillTimer(hTimerFrm,TIMER_FRMMAIN_PRE_SLIDEOUT);
-							//Status pre-chowania okna kontaktow za krawedz ekranu
-							PreFrmMainSlideOut = false;
+							//Kursor w obrebie menu z okna
+							PopupMenuBlockSlide = false;
+							//Tymczasowa blokada chowania/pokazywania okna kontaktow
+							FrmMainBlockSlide = true;
+							//Wlaczenie timera wylaczenia tymczasowej blokady chowania/pokazywania okna kontaktow
+							SetTimer(hTimerFrm,TIMER_FRMMAIN_UNBLOCK_SLIDE,1500,(TIMERPROC)TimerFrmProc);
 						}
+					}
+					//Kursor znajduje sie w oknie kontaktow
+					else if(PreFrmMainSlideOut)
+					{
+						//Zatrzymanie timera
+						KillTimer(hTimerFrm,TIMER_FRMMAIN_PRE_SLIDEOUT);
+						//Status pre-chowania okna kontaktow za krawedz ekranu
+						PreFrmMainSlideOut = false;
 					}
 				}
 			}
@@ -4566,68 +4552,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				//Aktywacja okna kontaktow + nadanie fokusa kontrolce IE
 				ActivateAndFocusFrmMain();
 				//Tymczasowa blokada chowania/pokazywania okna kontaktow
-				if(FrmMainSlideHideMode==3) SetTimer(hTimerFrm,TIMER_FRMMAIN_UNBLOCK_SLIDE,1500,(TIMERPROC)TimerFrmProc);
-				else FrmMainBlockSlide = false;
-			}
-			//Chowanie okna rozmowy gdy aplikacja straci fokus
-			if((FrmSendSlideChk)&&(FrmSendSlideHideMode==2))
-			{
-				//Okno rozmowy jest widoczne, aktualnie nie jest chowane/wysuwane, nie jest aktywna blokada
-				if((FrmSendVisible)&&(!FrmSendSlideOut)&&(!FrmSendSlideIn)&&(!FrmSendBlockSlide))
-				{
-					//Kursor znajduje sie poza oknem rozmowy
-					if((Mouse->CursorPos.y<FrmSendRect.Top)||(FrmSendRect.Bottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmSendRect.Left)||(FrmSendRect.Right<Mouse->CursorPos.x))
-					{
-						//Okno nie jest innym oknem aplikacji
-						if(PID!=ProcessPID)
-						{
-							if((WindowClassName!="Shell_TrayWnd")
-							&&(WindowClassName!="MSTaskListWClass")
-							&&(WindowClassName!="NotifyIconOverflowWindow")
-							&&(WindowClassName!="ClockFlyoutWindow")
-							&&(WindowClassName!="DV2ControlHost")
-							&&(WindowClassName!="TaskSwitcherWnd")
-							&&(WindowClassName!="MultitaskingViewFrame")
-							&&(WindowClassName!="ForegroundStaging"))
-							{
-								//Status chowania okna rozmowy za krawedz ekranu
-								FrmSendSlideOut = true;
-								//Wlaczenie chowania okna rozmowy (part I)
-								SetTimer(hTimerFrm,TIMER_FRMSEND_PRE_SLIDEOUT,1,(TIMERPROC)TimerFrmProc);
-							}
-						}
-					}
-				}
-			}
-			//Chowanie okna kontaktow gdy aplikacja straci fokus
-			if((FrmMainSlideChk)&&(FrmMainSlideHideMode==2))
-			{
-				//Okno kontaktow jest widoczne, aktualnie nie jest chowane/wysuwane, nie jest aktywna blokada
-				if((FrmMainVisible)&&(!FrmMainSlideOut)&&(!FrmMainSlideIn)&&(!FrmMainBlockSlide))
-				{
-					//Kursor znajduje sie poza oknem rozmowy
-					if((Mouse->CursorPos.y<FrmMainRect.Top)||(FrmMainRect.Bottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmMainRect.Left)||(FrmMainRect.Right<Mouse->CursorPos.x))
-					{
-						//Okno nie jest innym oknem aplikacji
-						if(PID!=ProcessPID)
-						{
-							if((WindowClassName!="Shell_TrayWnd")
-							&&(WindowClassName!="MSTaskListWClass")
-							&&(WindowClassName!="NotifyIconOverflowWindow")
-							&&(WindowClassName!="ClockFlyoutWindow")
-							&&(WindowClassName!="DV2ControlHost")
-							&&(WindowClassName!="TaskSwitcherWnd")
-							&&(WindowClassName!="MultitaskingViewFrame")
-							&&(WindowClassName!="ForegroundStaging"))
-							{
-								//Status chowania okna kontaktow za krawedz ekranu
-								FrmMainSlideOut = true;
-								//Wlaczenie chowania okna kontaktow (part I)
-								SetTimer(hTimerFrm,TIMER_FRMMAIN_PRE_SLIDEOUT,1,(TIMERPROC)TimerFrmProc);
-							}
-						}
-					}
-				}
+				SetTimer(hTimerFrm,TIMER_FRMMAIN_UNBLOCK_SLIDE,1500,(TIMERPROC)TimerFrmProc);
 			}
 			//Pobieranie okna w ktorym znajduje sie kursor
 			HWND hCurActiveFrm = WindowFromPoint(Mouse->CursorPos);
@@ -4671,9 +4596,9 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 						//Odznaczenie pokazania okna rozmowy za pomoca miniaturki
 						FrmSendShownByThumbnail = false;
 						//Wylaczenie/wylaczenie mozliwosci odblokowania tymczasowej blokady
-						if(FrmSendSlideHideMode==3) FrmSendUnBlockSlide = true;
+						FrmSendUnBlockSlide = true;
 						//Wlaczenie timera wylaczenia tymczasowej blokady chowania/pokazywania okna rozmowy
-						if(FrmSendSlideHideMode==3) SetTimer(hTimerFrm,TIMER_FRMSEND_UNBLOCK_SLIDE,2000,(TIMERPROC)TimerFrmProc);
+						SetTimer(hTimerFrm,TIMER_FRMSEND_UNBLOCK_SLIDE,2000,(TIMERPROC)TimerFrmProc);
 					}
 					//Wlaczenie timera odblokowania pokazywania okna rozmowy poprzez miniaturke z paska zadan
 					else if(!FrmSendShownByThumbnailTimer)
@@ -4776,57 +4701,16 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				FrmSendSlideOut = false;
 				//Stan widocznosci okna rozmowy
 				FrmSendVisible = false;
-				//Aktywacja poprzedniego okna, jezeli nie jest aktywne chowanie przy utracie fokusa calej aplikacji
-				if((FrmMainSlideChk)&&(FrmMainSlideHideMode==2)&&(FrmSendSlideHideMode!=2)&&(FrmMainVisible)&&(!FrmMainSlideOut)&&(!FrmMainSlideIn))
-				{
-					//Aktywacja okna kontaktow + nadanie fokusa kontrolce IE
+				//Kursor znajduje sie nad oknem kontaktow
+				if((Mouse->CursorPos.y>FrmMainRect.Top)&&(FrmMainRect.Bottom>Mouse->CursorPos.y)&&(Mouse->CursorPos.x>FrmMainRect.Left)&&(FrmMainRect.Right>Mouse->CursorPos.x))
 					ActivateAndFocusFrmMain();
+				//Aktywacja poprzedniego okna
+				else {
+					if(IsWindowVisible(LastActiveWindow))
+						SetForegroundWindow(LastActiveWindow);
+					else
+						SetForegroundWindow(WindowFromPoint(Mouse->CursorPos));
 				}
-				else
-				{
-					//Okno nie bylo chowane po straceniu fokusa calej aplikacji
-					if(FrmSendSlideHideMode!=2)
-					{
-						//Aktywacja okna kontaktow?
-						bool ActiveFrmMain = false;
-						//Aktywacja okna kontaktow przy chowaniu obu okien po opuszczeniu kursora
-						if((FrmMainSlideChk)&&(FrmMainSlideHideMode==3)&&(FrmSendSlideHideMode==3)&&(FrmMainVisible)&&(!FrmMainSlideOut)&&(!FrmMainSlideIn))
-						{
-							//Kursor znajduje sie w oknie kontaktow
-							if((Mouse->CursorPos.y>FrmMainRect.Top)&&(FrmMainRect.Bottom>Mouse->CursorPos.y)&&(Mouse->CursorPos.x>FrmMainRect.Left)&&(FrmMainRect.Right>Mouse->CursorPos.x))
-							{
-								//Aktywacja okna kontaktow + nadanie fokusa kontrolce IE
-								ActivateAndFocusFrmMain();
-								//Odznaczenie aktywacji okna kontaktow
-								ActiveFrmMain = true;
-							}
-						}
-						//Okno kontatkow nie zostalo aktywowane
-						if(!ActiveFrmMain)
-						{
-							//Pobieranie PID procesu wskazanego okna
-							DWORD PID;
-							GetWindowThreadProcessId(LastActiveWindow, &PID);
-							//Okno z innej aplikacji
-							if(PID!=ProcessPID)
-							{
-								if((LastActiveWindow_WmInactiveFrmSendSlide)&&(LastActiveWindow_WmInactiveFrmSendSlide!=hFrmMain)&&(LastActiveWindow_WmInactiveFrmSendSlide==hFrmSend))
-									SetForegroundWindow(LastActiveWindow_WmInactiveFrmSendSlide);
-								else if((LastActiveWindow_PreFrmSendSlideIn)&&(LastActiveWindow_PreFrmSendSlideIn!=hFrmMain)&&(LastActiveWindow_PreFrmSendSlideIn==hFrmSend))
-									SetForegroundWindow(LastActiveWindow_PreFrmSendSlideIn);
-								else if(LastActiveWindow)
-									SetForegroundWindow(LastActiveWindow);
-							}
-							//Aktywacja okna w AQQ
-							else SetForegroundWindow(LastActiveWindow);
-						}
-					}
-					//Aktywacja okna spod kursora
-					else SetForegroundWindow(WindowFromPoint(Mouse->CursorPos));
-				}
-				//Usuniecie uchwytow do nowego aktywnego okna
-				LastActiveWindow_WmInactiveFrmSendSlide = NULL;
-				LastActiveWindow_PreFrmSendSlideIn = NULL;
 			}
 		}
 		//Pokazywanie okna rozmowy (part I)
@@ -4836,19 +4720,6 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			KillTimer(hTimerFrm,TIMER_FRMSEND_PRE_SLIDEIN);
 			//Status pre-wysuwania okna rozmowy zza krawedzi ekranu
 			PreFrmSendSlideIn = false;
-			//Pobieranie nowego aktywnego okna
-			wchar_t WindowClassNameW[128];
-			GetClassNameW(GetForegroundWindow(), WindowClassNameW, sizeof(WindowClassNameW));
-			UnicodeString WindowClassName = WindowClassNameW;
-			if((WindowClassName!="Shell_TrayWnd")
-			&&(WindowClassName!="MSTaskListWClass")
-			&&(WindowClassName!="NotifyIconOverflowWindow")
-			&&(WindowClassName!="ClockFlyoutWindow")
-			&&(WindowClassName!="DV2ControlHost")
-			&&(WindowClassName!="TaskSwitcherWnd")
-			&&(WindowClassName!="MultitaskingViewFrame")
-			&&(WindowClassName!="ForegroundStaging"))
-				LastActiveWindow_PreFrmSendSlideIn = GetForegroundWindow();
 			//Sprawdzanie czy aktywna jest aplikacja pelno ekranowa
 			ChkFullScreenMode();
 			//Blokowanie wysuwania przy aplikacji pelnoekranowej
@@ -4944,8 +4815,6 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 					hHideFrm = FindWindow(L"Button",L"Start");
 					if(hHideFrm) ShowWindow(hHideFrm,SW_HIDE);
 				}
-				//Wylaczenie statusu okna na wierzchu
-				if(FrmSendSlideHideMode==2) SetWindowPos(hFrmSend,HWND_NOTOPMOST,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
 				//Aktywcja okna rozmowy + nadanie fokusa na polu wpisywania wiadomosci
 				ActivateAndFocusFrmSend();
 				//Status wysuwania okna rozmowy zza krawedzi ekranu
@@ -4953,7 +4822,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				//Stan widocznosci okna rozmowy
 				FrmSendVisible = true;
 				//Tymczasowa blokada chowania okna rozmowy
-				if((FrmSendSlideHideMode==3)&&(!FrmSendDontBlockSlide))
+				if(!FrmSendDontBlockSlide)
 				{
 					//Tymczasowa blokada chowania/pokazywania okna rozmowy
 					FrmSendBlockSlide = true;
@@ -5050,9 +4919,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			//Wlaczenie funkcjanalnosci
 			FrmSendSlideChk = true;
 			//Wlaczenie timera wylaczenia tymczasowej blokady chowania/pokazywania okna rozmowy
-			if(FrmSendSlideHideMode==3) SetTimer(hTimerFrm,TIMER_FRMSEND_UNBLOCK_SLIDE,2000,(TIMERPROC)TimerFrmProc);
-			//Tymczasowa blokada chowania/pokazywania okna rozmowy
-			else FrmSendBlockSlide = false;
+			SetTimer(hTimerFrm,TIMER_FRMSEND_UNBLOCK_SLIDE,2000,(TIMERPROC)TimerFrmProc);
 		}
 		//Ustawienie okna rozmowy na wierzchu
 		else if(wParam==TIMER_FRMSEND_TOPMOST)
@@ -5071,8 +4938,6 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			{
 				//Zatrzymanie timera
 				KillTimer(hTimerFrm,TIMER_FRMSEND_TOPMOST);
-				//Pobranie uchwytu
-				LastActiveWindow_PreFrmSendSlideIn = GetForegroundWindow();
 				//Ustawienie okna rozmowy na wierzchu
 				SetWindowPos(hFrmSend,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 			}
@@ -5094,8 +4959,6 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				KillTimer(hTimerFrm,TIMER_FRMSEND_TOPMOST_AND_SLIDEOUT);
 				if(GetForegroundWindow()==hFrmSend)
 				{
-					//Pobieranie nowego aktywnego okna
-					LastActiveWindow_WmInactiveFrmSendSlide = GetForegroundWindow();
 					//Status chowania okna rozmowy za krawedz ekranu
 					FrmSendSlideOut = true;
 					//Ustawienie okna na wierzchu
@@ -5105,8 +4968,6 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				}
 				else
 				{
-					//Pobranie uchwytu
-					LastActiveWindow_PreFrmSendSlideIn = GetForegroundWindow();
 					//Aktywcja okna rozmowy + nadanie fokusa na polu wpisywania wiadomosci
 					ActivateAndFocusFrmSend();
 				}
@@ -5226,55 +5087,16 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				FrmMainSlideOut = false;
 				//Stan widocznosci okna kontaktow
 				FrmMainVisible = false;
+				//Kursor znajduje sie nad oknem rozmowy
+				if((Mouse->CursorPos.y>FrmSendRect.Top)&&(FrmSendRect.Bottom>Mouse->CursorPos.y)&&(Mouse->CursorPos.x>FrmSendRect.Left)&&(FrmSendRect.Right>Mouse->CursorPos.x))
+					ActivateAndFocusFrmSend();
 				//Aktywacja poprzedniego okna
-				if((FrmSendSlideChk)&&((FrmSendBlockSlideOnMsgComposing)||((FrmSendVisible)&&(!FrmSendSlideOut)&&(!FrmSendSlideIn))))
-				{
-					//Okno tworzenia wycinka nie jest aktywne
-					if(!FrmPosExist)
-					{
-						//Aktywcja okna rozmowy + nadanie fokusa na polu wpisywania wiadomosci
-						ActivateAndFocusFrmSend();
-					}
+				else {
+					if(IsWindowVisible(LastActiveWindow))
+						SetForegroundWindow(LastActiveWindow);
+					else
+						SetForegroundWindow(WindowFromPoint(Mouse->CursorPos));
 				}
-				else
-				{
-					//Gdy okno nie bylo chowane po straceniu fokusa calej aplikacji
-					if(FrmMainSlideHideMode!=2)
-					{
-						//Okno kontaktow nie zostalo schowane przy aktywacji okna rozmowy
-						if(!FrmMainSlideOutActiveFrmSend)
-						{
-							//Pobieranie PID procesu wskazanego okna
-							DWORD PID;
-							GetWindowThreadProcessId(LastActiveWindow, &PID);
-							//Okno z innej aplikacji
-							if(PID!=ProcessPID)
-							{
-								if((LastActiveWindow_WmInactiveFrmMainSlide)&&(LastActiveWindow_WmInactiveFrmMainSlide!=hFrmMain)&&(LastActiveWindow_WmInactiveFrmMainSlide==hFrmSend))
-									SetForegroundWindow(LastActiveWindow_WmInactiveFrmMainSlide);
-								else if((LastActiveWindow_PreFrmMainSlideIn)&&(LastActiveWindow_PreFrmMainSlideIn!=hFrmMain)&&(LastActiveWindow_PreFrmMainSlideIn==hFrmSend))
-									SetForegroundWindow(LastActiveWindow_PreFrmMainSlideIn);
-								else
-									SetForegroundWindow(LastActiveWindow);
-							}
-							//Aktywacja okna w AQQ
-							else SetForegroundWindow(LastActiveWindow);
-						}
-						//Okno kontaktow zostalo schowane przy aktywacji okna rozmowy
-						else
-						{
-							//Schowanie okna kontaktow przy aktywacji okna rozmowy
-							FrmMainSlideOutActiveFrmSend = false;
-							//Aktywcja okna rozmowy + nadanie fokusa na polu wpisywania wiadomosci
-							ActivateAndFocusFrmSend();
-						}
-					}
-					//Aktywacja okna spod kursora
-					else SetForegroundWindow(WindowFromPoint(Mouse->CursorPos));
-				}
-				//Usuniecie uchwytow do nowego aktywnego okna
-				LastActiveWindow_WmInactiveFrmMainSlide = NULL;
-				LastActiveWindow_PreFrmMainSlideIn = NULL;
 				//Zatrzymanie timera
 				KillTimer(hTimerFrm,TIMER_FRMMAIN_SLIDEOUT);
 			}
@@ -5286,19 +5108,6 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			KillTimer(hTimerFrm,TIMER_FRMMAIN_PRE_SLIDEIN);
 			//Status pre-wysuwania okna kontaktow zza krawedzi ekranu
 			PreFrmMainSlideIn = false;
-			//Pobieranie nowego aktywnego okna
-			wchar_t WindowClassNameW[128];
-			GetClassNameW(GetForegroundWindow(), WindowClassNameW, sizeof(WindowClassNameW));
-			UnicodeString WindowClassName = WindowClassNameW;
-			if((WindowClassName!="Shell_TrayWnd")
-			&&(WindowClassName!="MSTaskListWClass")
-			&&(WindowClassName!="NotifyIconOverflowWindow")
-			&&(WindowClassName!="ClockFlyoutWindow")
-			&&(WindowClassName!="DV2ControlHost")
-			&&(WindowClassName!="TaskSwitcherWnd")
-			&&(WindowClassName!="MultitaskingViewFrame")
-			&&(WindowClassName!="ForegroundStaging"))
-				LastActiveWindow_PreFrmMainSlideIn = GetForegroundWindow();
 			//Sprawdzanie czy aktywna jest aplikacja pelno ekranowa
 			ChkFullScreenMode();
 			//Blokowanie wysuwania przy aplikacji pelnoekranowej
@@ -5381,8 +5190,6 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 					if(hHideFrm) hHideFrm = FindWindow(L"Button",L"Start");
 					ShowWindow(hHideFrm,SW_HIDE);
 				}
-				//Wylaczenie statusu okna na wierzchu
-				if(FrmMainSlideHideMode==2) SetWindowPos(hFrmMain,HWND_NOTOPMOST,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
 				//Aktywacja okna kontaktow + nadanie fokusa kontrolce IE
 				ActivateAndFocusFrmMain();
 				//Status wysuwania okna kontaktow zza krawedzi ekranu
@@ -5390,7 +5197,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				//Stan widocznosci okna kontaktow
 				FrmMainVisible = true;
 				//Tymczasowa blokada chowania okna kontaktow
-				if((FrmMainSlideHideMode==3)&&(!FrmMainDontBlockSlide))
+				if(!FrmMainDontBlockSlide)
 				{
 					//Tymczasowa blokada chowania/pokazywania okna kontaktow
 					FrmMainBlockSlide = true;
@@ -5432,8 +5239,6 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			{
 				//Zatrzymanie timera
 				KillTimer(hTimerFrm,TIMER_FRMMAIN_TOPMOST);
-				//Pobranie uchwytu
-				LastActiveWindow_PreFrmMainSlideIn = GetForegroundWindow();
 				//Aktywacja okna kontaktow + nadanie fokusa kontrolce IE
 				ActivateAndFocusFrmMain();
 			}
@@ -5482,8 +5287,6 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				KillTimer(hTimerFrm,TIMER_FRMMAIN_TOPMOST_AND_SLIDEOUT);
 				if(GetForegroundWindow()!=hFrmMain)
 				{
-					//Pobieranie nowego aktywnego okna
-					LastActiveWindow_WmInactiveFrmMainSlide = GetForegroundWindow();
 					//Status chowania okna kontaktow za krawedz ekranu
 					FrmMainSlideOut = true;
 					//Wlaczenie chowania okna kontaktow (part I)
@@ -5491,8 +5294,6 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				}
 				else
 				{
-					//Pobranie uchwytu
-					LastActiveWindow_PreFrmMainSlideIn = GetForegroundWindow();
 					//Aktywacja okna kontaktow + nadanie fokusa kontrolce IE
 					ActivateAndFocusFrmMain();
 				}
@@ -5512,7 +5313,7 @@ LRESULT CALLBACK FrmMainProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	//Kompozycja nie jest zmieniana / komunikator nie jest zamykany
 	if((!ThemeChanging)&&(!ForceUnloadExecuted))
 	{
-		if((uMsg==WM_SETICON)&&(FrmMainSlideChk)&&(FrmMainSlideHideMode!=2)&&(FrmMainVisible))
+		if((uMsg==WM_SETICON)&&(FrmMainSlideChk)&&(FrmMainVisible))
 		{
 			//Pobieranie okna w ktorym znajduje sie kursor
 			HWND hCurActiveFrm = WindowFromPoint(Mouse->CursorPos);
@@ -5547,99 +5348,17 @@ LRESULT CALLBACK FrmMainProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				if(wParam==WA_INACTIVE)
 				{
 					//Tymczasowa blokada chowania/pokazywania okna kontaktow
-					if((FrmMainVisible)&&(FrmMainSlideHideMode==3)&&(FrmMainUnBlockSlide)) FrmMainBlockSlide = false;
+					if((FrmMainVisible)&&(FrmMainUnBlockSlide)) FrmMainBlockSlide = false;
 					//Wlaczenie chowania okna kontaktow
 					if((FrmMainVisible)&&(!PreFrmMainSlideOut)&&(!FrmMainSlideOut)&&(!FrmMainSlideIn)&&(!FrmMainBlockSlide))
 					{
 						//Kursor znajduje sie poza oknem rozmowy
 						if((Mouse->CursorPos.y<FrmMainRect.Top)||(FrmMainRect.Bottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmMainRect.Left)||(FrmMainRect.Right<Mouse->CursorPos.x))
 						{
-							//Chowanie gdy aplikacja straci fokus
-							if(FrmMainSlideHideMode==2)
-							{
-								//Pobranie PID procesu nowego okna
-								DWORD PID;
-								GetWindowThreadProcessId(GetForegroundWindow(), &PID);
-								//Aktywne okno z innego procesu
-								if(PID!=ProcessPID)
-								{
-									//Pobieranie klasy nowego aktywnego okna
-									wchar_t WindowClassNameW[128];
-									GetClassNameW(GetForegroundWindow(), WindowClassNameW, sizeof(WindowClassNameW));
-									UnicodeString WindowClassName = WindowClassNameW;
-									if((WindowClassName!="Shell_TrayWnd")
-									&&(WindowClassName!="MSTaskListWClass")
-									&&(WindowClassName!="NotifyIconOverflowWindow")
-									&&(WindowClassName!="ClockFlyoutWindow")
-									&&(WindowClassName!="DV2ControlHost")
-									&&(WindowClassName!="TaskSwitcherWnd")
-									&&(WindowClassName!="MultitaskingViewFrame")
-									&&(WindowClassName!="ForegroundStaging"))
-									{
-										//Status chowania okna kontaktow za krawedz ekranu
-										FrmMainSlideOut = true;
-										//Wlaczenie chowania okna kontaktow (part I)
-										SetTimer(hTimerFrm,TIMER_FRMMAIN_PRE_SLIDEOUT,1,(TIMERPROC)TimerFrmProc);
-									}
-								}
-							}
-							//Chowanie gdy okno straci fokus
-							else if(FrmMainSlideHideMode==1)
-							{
-								//Pobieranie klasy nowego aktywnego okna
-								wchar_t WindowClassNameW[128];
-								GetClassNameW(GetForegroundWindow(), WindowClassNameW, sizeof(WindowClassNameW));
-								UnicodeString WindowClassName = WindowClassNameW;
-								if((WindowClassName!="TaskSwitcherWnd")
-								&&(WindowClassName!="MultitaskingViewFrame")
-								&&(WindowClassName!="ForegroundStaging"))
-								{
-									//Pobieranie nowego aktywnego okna
-									GetClassNameW(WindowFromPoint(Mouse->CursorPos), WindowClassNameW, sizeof(WindowClassNameW));
-									UnicodeString WindowClassName = WindowClassNameW;
-									if((WindowClassName!="Shell_TrayWnd")
-									&&(WindowClassName!="EdgeUiInputWndClass")
-									&&(WindowClassName!="ReBarWindow32")
-									&&(WindowClassName!="MSTaskListWClass")
-									&&(WindowClassName!="TrayNotifyWnd")
-									&&(WindowClassName!="ToolbarWindow32")
-									&&(WindowClassName!="TrayClockWClass")
-									&&(WindowClassName!="TrayShowDesktopButtonWClass")
-									&&(WindowClassName!="DV2ControlHost"))
-										LastActiveWindow_WmInactiveFrmMainSlide = WindowFromPoint(Mouse->CursorPos);
-									//Status chowania okna kontaktow za krawedz ekranu
-									FrmMainSlideOut = true;
-									//Wlaczenie chowania okna kontaktow (part I)
-									SetTimer(hTimerFrm,TIMER_FRMMAIN_PRE_SLIDEOUT,1,(TIMERPROC)TimerFrmProc);
-								}
-								else
-									SetTimer(hTimerFrm,TIMER_FRMMAIN_TOPMOST_AND_SLIDEOUT,10,(TIMERPROC)TimerFrmProc);
-							}
-							//Chowanie gdy kursor opusci okno
-							else
-							{
-								//Pobieranie nowego aktywnego okna
-								wchar_t WindowClassNameW[128];
-								GetClassNameW(WindowFromPoint(Mouse->CursorPos), WindowClassNameW, sizeof(WindowClassNameW));
-								UnicodeString WindowClassName = WindowClassNameW;
-								if((WindowClassName!="Shell_TrayWnd")
-								&&(WindowClassName!="EdgeUiInputWndClass")
-								&&(WindowClassName!="ReBarWindow32")
-								&&(WindowClassName!="MSTaskListWClass")
-								&&(WindowClassName!="TrayNotifyWnd")
-								&&(WindowClassName!="ToolbarWindow32")
-								&&(WindowClassName!="TrayClockWClass")
-								&&(WindowClassName!="TrayShowDesktopButtonWClass")
-								&&(WindowClassName!="DV2ControlHost")
-								&&(WindowClassName!="TaskSwitcherWnd")
-								&&(WindowClassName!="MultitaskingViewFrame")
-								&&(WindowClassName!="ForegroundStaging"))
-									LastActiveWindow_WmInactiveFrmMainSlide = WindowFromPoint(Mouse->CursorPos);
-								//Status chowania okna kontaktow za krawedz ekranu
-								FrmMainSlideOut = true;
-								//Wlaczenie chowania okna kontaktow (part I)
-								SetTimer(hTimerFrm,TIMER_FRMMAIN_PRE_SLIDEOUT,1,(TIMERPROC)TimerFrmProc);
-							}
+							//Status chowania okna kontaktow za krawedz ekranu
+							FrmMainSlideOut = true;
+							//Wlaczenie chowania okna kontaktow (part I)
+							SetTimer(hTimerFrm,TIMER_FRMMAIN_PRE_SLIDEOUT,1,(TIMERPROC)TimerFrmProc);
 						}
 						//Kursor znajduje sie w oknie ale zostalo zmienione aktywne okno
 						else
@@ -5663,8 +5382,6 @@ LRESULT CALLBACK FrmMainProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 							PreFrmMainSlideOut = false;
 							//Status chowania okna kontaktow za krawedz ekranu
 							FrmMainSlideOut = false;
-							//Usuniecie uchwytu do nowego aktywnego okna
-							LastActiveWindow_WmInactiveFrmMainSlide = NULL;
 						}
 					}
 				}
@@ -5702,7 +5419,7 @@ LRESULT CALLBACK FrmMainProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		else if((uMsg==WM_CLOSE)&&(FrmMainSlideChk))
 		{
 			//Wylaczenie tymczasowej blokady
-			if((FrmMainVisible)&&(FrmMainSlideHideMode==3)&&(FrmMainUnBlockSlide)) FrmMainBlockSlide = false;
+			if((FrmMainVisible)&&(FrmMainUnBlockSlide)) FrmMainBlockSlide = false;
 			//Wlaczenie chowania okna kontaktow
 			if((FrmMainVisible)&&(!PreFrmMainSlideOut)&&(!FrmMainBlockSlide)&&(!FrmMainSlideOut)&&(!FrmMainSlideIn))
 			{
@@ -5733,16 +5450,10 @@ LRESULT CALLBACK FrmMainProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			SetFrmMainPos();
 			//Pobranie rozmiaru+pozycji okna kontatkow
 			GetFrmMainRect();
-			//Wylaczenie tymczasowej blokady
-			if(FrmMainSlideHideMode==3)
-			{
-				//Wylaczenie/wylaczenie mozliwosci odblokowania tymczasowej blokady
-				FrmMainUnBlockSlide = true;
-				//Wlaczenie timera wylaczenia tymczasowej blokady chowania/pokazywania okna kontaktow
-				SetTimer(hTimerFrm,TIMER_FRMMAIN_UNBLOCK_SLIDE,1500,(TIMERPROC)TimerFrmProc);
-			}
-			//Tymczasowa blokada chowania/pokazywania okna kontaktow
-			else FrmMainBlockSlide = false;
+			//Wylaczenie/wylaczenie mozliwosci odblokowania tymczasowej blokady
+			FrmMainUnBlockSlide = true;
+			//Wlaczenie timera wylaczenia tymczasowej blokady chowania/pokazywania okna kontaktow
+			SetTimer(hTimerFrm,TIMER_FRMMAIN_UNBLOCK_SLIDE,1500,(TIMERPROC)TimerFrmProc);
 		}
 	}
 	//Przypisanie starej procki do okna kontaktow
@@ -5828,9 +5539,9 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				//Odznaczenie pokazania okna rozmowy za pomoca miniaturki
 				FrmSendShownByThumbnail = false;
 				//Wylaczenie/wylaczenie mozliwosci odblokowania tymczasowej blokady
-				if(FrmSendSlideHideMode==3) FrmSendUnBlockSlide = true;
+				FrmSendUnBlockSlide = true;
 				//Wlaczenie timera wylaczenia tymczasowej blokady chowania/pokazywania okna rozmowy
-				if(FrmSendSlideHideMode==3) SetTimer(hTimerFrm,TIMER_FRMSEND_UNBLOCK_SLIDE,2000,(TIMERPROC)TimerFrmProc);
+				SetTimer(hTimerFrm,TIMER_FRMSEND_UNBLOCK_SLIDE,2000,(TIMERPROC)TimerFrmProc);
 			}
 			//Zmiana tekstu na belce okna
 			if(InactiveFrmNewMsgChk)
@@ -5897,7 +5608,7 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				if(wParam==WA_INACTIVE)
 				{
 					//Wylaczenie tymczasowej blokady
-					if((FrmSendVisible)&&(FrmSendSlideHideMode==3)&&(FrmSendUnBlockSlide))
+					if((FrmSendVisible)&&(FrmSendUnBlockSlide))
 					{
 						//Zatrzymanie timera wylaczenia tymczasowej blokady chowania/pokazywania okna rozmowy
 						KillTimer(hTimerFrm,TIMER_FRMSEND_UNBLOCK_SLIDE);
@@ -5913,88 +5624,10 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 						//Kursor znajduje sie poza oknem rozmowy
 						if((Mouse->CursorPos.y<FrmSendRect.Top)||(FrmSendRect.Bottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmSendRect.Left)||(FrmSendRect.Right<Mouse->CursorPos.x))
 						{
-							//Chowanie gdy aplikacja straci fokus
-							if(FrmSendSlideHideMode==2)
-							{
-								//Pobranie PID procesu nowego okna
-								DWORD PID;
-								GetWindowThreadProcessId(GetForegroundWindow(), &PID);
-								//Aktywne okno z innego procesu
-								if(PID!=ProcessPID)
-								{
-									//Pobieranie klasy nowego aktywnego okna
-									wchar_t WindowClassNameW[128];
-									GetClassNameW(GetForegroundWindow(), WindowClassNameW, sizeof(WindowClassNameW));
-									UnicodeString WindowClassName = WindowClassNameW;
-									if((WindowClassName!="Shell_TrayWnd")
-									&&(WindowClassName!="MSTaskListWClass")
-									&&(WindowClassName!="NotifyIconOverflowWindow")
-									&&(WindowClassName!="ClockFlyoutWindow")
-									&&(WindowClassName!="DV2ControlHost")
-									&&(WindowClassName!="TaskSwitcherWnd")
-									&&(WindowClassName!="MultitaskingViewFrame")
-									&&(WindowClassName!="ForegroundStaging"))
-									{
-										//Status chowania okna rozmowy za krawedz ekranu
-										FrmSendSlideOut = true;
-										//Wlaczenie chowania okna rozmowy (part I)
-										SetTimer(hTimerFrm,TIMER_FRMSEND_PRE_SLIDEOUT,1,(TIMERPROC)TimerFrmProc);
-									}
-								}
-							}
-							//Chowanie gdy okno straci fokus
-							else if(FrmSendSlideHideMode==1)
-							{
-								//Pobieranie klasy nowego aktywnego okna
-								wchar_t WindowClassNameW[128];
-								GetClassNameW(GetForegroundWindow(), WindowClassNameW, sizeof(WindowClassNameW));
-								UnicodeString WindowClassName = WindowClassNameW;
-								if((WindowClassName!="TaskSwitcherWnd")
-								&&(WindowClassName!="MultitaskingViewFrame")
-								&&(WindowClassName!="ForegroundStaging"))
-								{
-									//Pobieranie nowego aktywnego okna
-									GetClassNameW(WindowFromPoint(Mouse->CursorPos), WindowClassNameW, sizeof(WindowClassNameW));
-									WindowClassName = WindowClassNameW;
-									if((WindowClassName!="Shell_TrayWnd")
-									&&(WindowClassName!="EdgeUiInputWndClass")
-									&&(WindowClassName!="ReBarWindow32")
-									&&(WindowClassName!="MSTaskListWClass")
-									&&(WindowClassName!="TrayNotifyWnd")
-									&&(WindowClassName!="ToolbarWindow32")
-									&&(WindowClassName!="TrayClockWClass")
-									&&(WindowClassName!="TrayShowDesktopButtonWClass")
-									&&(WindowClassName!="DV2ControlHost"))
-										LastActiveWindow_WmInactiveFrmSendSlide = WindowFromPoint(Mouse->CursorPos);
-									//Status chowania okna rozmowy za krawedz ekranu
-									FrmSendSlideOut = true;
-									//Wlaczenie chowania okna rozmowy (part I)
-									SetTimer(hTimerFrm,TIMER_FRMSEND_PRE_SLIDEOUT,1,(TIMERPROC)TimerFrmProc);
-								}
-								else SetTimer(hTimerFrm,TIMER_FRMSEND_TOPMOST_AND_SLIDEOUT,10,(TIMERPROC)TimerFrmProc);
-							}
-							//Chowanie gdy kursor opusci okno
-							else
-							{
-								//Pobieranie nowego aktywnego okna
-								wchar_t WindowClassNameW[128];
-								GetClassNameW(WindowFromPoint(Mouse->CursorPos), WindowClassNameW, sizeof(WindowClassNameW));
-								UnicodeString WindowClassName = WindowClassNameW;
-								if((WindowClassName!="Shell_TrayWnd")
-								&&(WindowClassName!="EdgeUiInputWndClass")
-								&&(WindowClassName!="ReBarWindow32")
-								&&(WindowClassName!="MSTaskListWClass")
-								&&(WindowClassName!="TrayNotifyWnd")
-								&&(WindowClassName!="ToolbarWindow32")
-								&&(WindowClassName!="TrayClockWClass")
-								&&(WindowClassName!="TrayShowDesktopButtonWClass")
-								&&(WindowClassName!="DV2ControlHost"))
-									LastActiveWindow_WmInactiveFrmSendSlide = WindowFromPoint(Mouse->CursorPos);
-								//Status chowania okna rozmowy za krawedz ekranu
-								FrmSendSlideOut = true;
-								//Wlaczenie chowania okna rozmowy (part I)
-								SetTimer(hTimerFrm,TIMER_FRMSEND_PRE_SLIDEOUT,1,(TIMERPROC)TimerFrmProc);
-							}
+							//Status chowania okna rozmowy za krawedz ekranu
+							FrmSendSlideOut = true;
+							//Wlaczenie chowania okna rozmowy (part I)
+							SetTimer(hTimerFrm,TIMER_FRMSEND_PRE_SLIDEOUT,1,(TIMERPROC)TimerFrmProc);
 						}
 						//Kursor znajduje sie w oknie ale zostalo zmienione aktywne okno
 						else
@@ -6017,8 +5650,6 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 							FrmSendSlideOut = false;
 							//Status pre-chowania okna rozmowy za krawedz ekranu
 							PreFrmSendSlideOut = false;
-							//Usuniecie uchwytu do nowego aktywnego okna
-							LastActiveWindow_WmInactiveFrmSendSlide= NULL;
 						}
 					}
 				}
@@ -6194,15 +5825,10 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			//Pobranie rozmiaru+pozycji okna rozmowy
 			GetFrmSendRect();
 			//Wlaczenie timera wylaczania tymczasowej blokady chowania/pokazywania okna rozmowy
-			if(FrmSendSlideHideMode==3)
-			{
-				//Wylaczenie/wylaczenie mozliwosci odblokowania tymczasowej blokady
-				FrmSendUnBlockSlide = true;
-				//Wlaczenie timera wylaczenia tymczasowej blokady chowania/pokazywania okna rozmowy
-				SetTimer(hTimerFrm,TIMER_FRMSEND_UNBLOCK_SLIDE,2000,(TIMERPROC)TimerFrmProc);
-			}
-			//Tymczasowa blokada chowania/pokazywania okna rozmowy
-			else FrmSendBlockSlide = false;
+			//Wylaczenie/wylaczenie mozliwosci odblokowania tymczasowej blokady
+			FrmSendUnBlockSlide = true;
+			//Wlaczenie timera wylaczenia tymczasowej blokady chowania/pokazywania okna rozmowy
+			SetTimer(hTimerFrm,TIMER_FRMSEND_UNBLOCK_SLIDE,2000,(TIMERPROC)TimerFrmProc);
 		}
 	}
 	//Przypisanie starej procki do okna rozmowy
@@ -6296,7 +5922,7 @@ LRESULT CALLBACK ThreadKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 				if(GetForegroundWindow()==hFrmMain)
 				{
 					//Tymczasowa blokada chowania/pokazywania okna kontaktow
-					if((FrmMainSlideHideMode==3)&&(FrmMainUnBlockSlide)) FrmMainBlockSlide = false;
+					if(FrmMainUnBlockSlide) FrmMainBlockSlide = false;
 					//Wlaczenie FrmMainSlideOut
 					if((!FrmMainBlockSlide)&&(!FrmMainSlideOut)&&(!FrmMainSlideIn))
 					{
@@ -6986,20 +6612,6 @@ INT_PTR __stdcall OnActiveTab(WPARAM wParam, LPARAM lParam)
 					ActivateAndSetTopmostFrmSend();
 					//Wlaczenie pokazywania okna rozmowy (part II)
 					SetTimer(hTimerFrm,TIMER_FRMSEND_SLIDEIN,FrmSendStepInterval,(TIMERPROC)TimerFrmProc);
-					//Schowanie okna kontaktow (gdy okno ustraci fokus)
-					if((FrmMainSlideChk)&&(FrmMainSlideHideMode==1))
-					{
-						//Okno kontatkow jest widoczne, aktualnie nie jest chowane/wysuwane, nie jest aktywna blokada
-						if((FrmMainVisible)&&(!FrmMainSlideOut)&&(!FrmMainSlideIn)&&(!FrmMainBlockSlide))
-						{
-							//Status chowania okna kontaktow za krawedz ekranu
-							FrmMainSlideOut = true;
-							//Schowanie okna kontaktow przy aktywacji okna rozmowy
-							FrmMainSlideOutActiveFrmSend = true;
-							//Wlaczenie chowania okna kontaktow (part I)
-							SetTimer(hTimerFrm,TIMER_FRMMAIN_PRE_SLIDEOUT,1,(TIMERPROC)TimerFrmProc);
-						}
-					}
 				}
 			}
 			//Usuwanie JID z kolejki pokazywania wiadomosci przy skrocie Ctrl+Shift+F1 lub nieprzypisanym skrotem do zakladki
@@ -7354,7 +6966,7 @@ INT_PTR __stdcall OnAddLine(WPARAM wParam, LPARAM lParam)
 		if(GetForegroundWindow()!=hFrmArch)
 		{
 			//Transfer plikow - pseudo nowa wiadomosc
-			if((SwitchToNewMsgChk)||(InactiveFrmNewMsgChk)||(KeyboardFlasherChk)||(InactiveTabsNewMsgChk)||(ClosedTabsChk)||((FrmSendSlideChk)&&(SlideInAtNewMsgChk)&&(!FrmSendVisible)&&(!FrmSendBlockSlide)&&(!FrmSendSlideIn)&&(!FrmSendSlideOut)))
+			if((SwitchToNewMsgChk)||(InactiveFrmNewMsgChk)||(KeyboardFlasherChk)||(InactiveTabsNewMsgChk)||(ClosedTabsChk))
 			{
 				//Pobieranie danych wiadomosci
 				TPluginMessage AddLineMessage = *(PPluginMessage)lParam;
@@ -7530,51 +7142,6 @@ INT_PTR __stdcall OnAddLine(WPARAM wParam, LPARAM lParam)
 							if(AcceptClosedTabsList->IndexOf(JID+UserIdx)==-1)
 							{
 								AcceptClosedTabsList->Add(JID+UserIdx);
-							}
-						}
-						//Wysuwanie okna rozmowy zza krawedzi ekranu przy przyjsciu nowej wiadomosci
-						if((FrmSendSlideChk)&&(SlideInAtNewMsgChk)&&(!FrmSendVisible)&&(!FrmSendBlockSlide)&&(!FrmSendSlideIn)&&(!FrmSendSlideOut))
-						{
-							//Pobieranie danych kontaktu
-							TPluginContact AddLineContact = *(PPluginContact)wParam;
-							UnicodeString JID = (wchar_t*)AddLineContact.JID;
-							UnicodeString Res = (wchar_t*)AddLineContact.Resource;
-							if(!Res.IsEmpty()) Res = "/" + Res;
-							if(AddLineContact.IsChat) Res = "";
-							UnicodeString UserIdx = ":" + IntToStr(AddLineContact.UserIdx);
-							//Zakladka jest otwarta
-							if(TabsListEx->IndexOf(JID+Res+UserIdx)!=-1)
-							{
-								//Sprawdzanie czy aktywna jest aplikacja pelno ekranowa
-								ChkFullScreenMode();
-								//Blokowanie wysuwania przy aplikacji pelnoekranowej
-								if(((FullScreenMode)&&(!SideSlideFullScreenModeChk))||((FullScreenModeExeptions)&&(SideSlideFullScreenModeChk)))
-								{ /* Blokada */ }
-								else
-								{
-									//Status wysuwania okna rozmowy zza krawedzi ekranu
-									FrmSendSlideIn = true;
-									//Odswiezenie okna rozmowy
-									RefreshFrmSend();
-									//Aktywacja okna rozmowy + ustawienie okna na wierzchu
-									ActivateAndSetTopmostFrmSend();
-									//Wlaczenie pokazywania okna rozmowy (part II)
-									SetTimer(hTimerFrm,TIMER_FRMSEND_SLIDEIN,FrmSendStepInterval,(TIMERPROC)TimerFrmProc);
-									//Schowanie okna kontaktow (gdy okno ustraci fokus)
-									if((FrmMainSlideChk)&&(FrmMainSlideHideMode==1))
-									{
-										//Okno kontatkow jest widoczne, aktualnie nie jest chowane/wysuwane, nie jest aktywna blokada
-										if((FrmMainVisible)&&(!FrmMainSlideOut)&&(!FrmMainSlideIn)&&(!FrmMainBlockSlide))
-										{
-											//Status chowania okna kontaktow za krawedz ekranu
-											FrmMainSlideOut = true;
-											//Schowanie okna kontaktow przy aktywacji okna rozmowy
-											FrmMainSlideOutActiveFrmSend = true;
-											//Wlaczenie chowania okna kontaktow (part I)
-											SetTimer(hTimerFrm,TIMER_FRMMAIN_PRE_SLIDEOUT,1,(TIMERPROC)TimerFrmProc);
-										}
-									}
-								}
 							}
 						}
 					}
@@ -8514,9 +8081,7 @@ INT_PTR __stdcall OnLangCodeChanged(WPARAM wParam, LPARAM lParam)
 		hSettingsForm->CountClosedTabsSpinEdit->Left = hSettingsForm->Canvas->TextWidth(hSettingsForm->CountClosedTabsSpinEdit->BoundLabel->Caption) + 20;
 		hSettingsForm->ChatGoneSaveInArchiveCheckBox->Left = hSettingsForm->ChatGoneFrmSendNotiferNewMsgCheckBox->Left + hSettingsForm->Canvas->TextWidth(hSettingsForm->ChatGoneFrmSendNotiferNewMsgCheckBox->Caption) + 26;
 		hSettingsForm->FrmMainEdgeComboBox->Left = hSettingsForm->FrmMainEdgeLabel->Left + hSettingsForm->Canvas->TextWidth(hSettingsForm->FrmMainEdgeLabel->Caption) + 6;
-		hSettingsForm->FrmMainHideModeComboBox->Left = hSettingsForm->FrmMainHideModeLabel->Left + hSettingsForm->Canvas->TextWidth(hSettingsForm->FrmMainHideModeLabel->Caption) + 6;
 		hSettingsForm->FrmSendEdgeComboBox->Left = hSettingsForm->FrmSendEdgeLabel->Left + hSettingsForm->Canvas->TextWidth(hSettingsForm->FrmSendEdgeLabel->Caption) + 6;
-		hSettingsForm->FrmSendHideModeComboBox->Left = hSettingsForm->FrmSendHideModeLabel->Left + hSettingsForm->Canvas->TextWidth(hSettingsForm->FrmSendHideModeLabel->Caption) + 6;
 		hSettingsForm->SideSlideFullScreenModeExceptionsButton->Left = hSettingsForm->SideSlideFullScreenModeCheckBox->Left + hSettingsForm->Canvas->TextWidth(hSettingsForm->SideSlideFullScreenModeCheckBox->Caption) + 26;
 		hSettingsForm->CollapseImagesModeComboBox->Left = hSettingsForm->CollapseImagesCheckBox->Left + hSettingsForm->Canvas->TextWidth(hSettingsForm->CollapseImagesCheckBox->Caption) + 26;
 		hSettingsForm->ShortenLinksModeComboBox->Left = hSettingsForm->ShortenLinksCheckBox->Left + hSettingsForm->Canvas->TextWidth(hSettingsForm->ShortenLinksCheckBox->Caption) + 26;
@@ -8584,7 +8149,7 @@ INT_PTR __stdcall OnMsgComposing(WPARAM wParam, LPARAM lParam)
 			}
 		}
 		//Blokowanie chowania okna rozmowy gdy kursor znajduje sie poza oknem
-		if((FrmSendSlideChk)&&(FrmSendSlideHideMode==3)&&(!FrmCompletionExists))
+		if((FrmSendSlideChk)&&(!FrmCompletionExists))
 		{
 			//Okno jest widoczne i nie jest chowane/pokazywane
 			if((FrmSendVisible)&&(!FrmSendSlideOut)&&(!FrmSendSlideIn))
@@ -9511,61 +9076,6 @@ INT_PTR __stdcall OnRecvMsg(WPARAM wParam, LPARAM lParam)
 			UnicodeString UserIdx = ":" + IntToStr(RecvMsgContact.UserIdx);
 			if(AcceptClosedTabsList->IndexOf(JID+UserIdx)==-1)
 				AcceptClosedTabsList->Add(JID+UserIdx);
-		}
-		//Wysuwanie okna rozmowy zza krawedzi ekranu przy przyjsciu nowej wiadomosci
-		if((FrmSendSlideChk)&&(SlideInAtNewMsgChk)&&(!FrmSendVisible)&&(!FrmSendBlockSlide))
-		{
-			//Pobieranie danych kontaktu
-			TPluginContact RecvMsgContact = *(PPluginContact)wParam;
-			UnicodeString JID = (wchar_t*)RecvMsgContact.JID;
-			UnicodeString Res = (wchar_t*)RecvMsgContact.Resource;
-			if(!Res.IsEmpty()) Res = "/" + Res;
-			if(RecvMsgContact.IsChat) Res = "";
-			UnicodeString UserIdx = ":" + IntToStr(RecvMsgContact.UserIdx);
-			//Jezeli zakladka jest otwarta
-			if(TabsListEx->IndexOf(JID+Res+UserIdx)!=-1)
-			{
-				//Pobieranie danych wiadomosci
-				TPluginMessage RecvMsgMessage = *(PPluginMessage)lParam;
-				//Rodzaj wiadomosci
-				if((!RecvMsgMessage.ShowAsOutgoing)&&((RecvMsgMessage.Kind==MSGKIND_CHAT)||(RecvMsgMessage.Kind==MSGKIND_GROUPCHAT)))
-				{
-					//Jezeli wiadomosc nie jest pusta
-					if(!((UnicodeString)((wchar_t*)RecvMsgMessage.Body)).IsEmpty())
-					{
-						//Sprawdzanie czy aktywna jest aplikacja pelno ekranowa
-						ChkFullScreenMode();
-						//Blokowanie wysuwania przy aplikacji pelnoekranowej
-						if(((FullScreenMode)&&(!SideSlideFullScreenModeChk))||((FullScreenModeExeptions)&&(SideSlideFullScreenModeChk)))
-						{ /* Blokada */ }
-						else
-						{
-							//Status wysuwania okna rozmowy zza krawedzi ekranu
-							FrmSendSlideIn = true;
-							//Odswiezenie okna rozmowy
-							RefreshFrmSend();
-							//Aktywacja okna rozmowy + ustawienie okna na wierzchu
-							ActivateAndSetTopmostFrmSend();
-							//Wlaczenie pokazywania okna rozmowy (part II)
-							SetTimer(hTimerFrm,TIMER_FRMSEND_SLIDEIN,FrmSendStepInterval,(TIMERPROC)TimerFrmProc);
-							//Schowanie okna kontaktow (gdy okno ustraci fokus)
-							if((FrmMainSlideChk)&&(FrmMainSlideHideMode==1))
-							{
-								//Okno kontatkow jest widoczne, aktualnie nie jest chowane/wysuwane, nie jest aktywna blokada
-								if((FrmMainVisible)&&(!FrmMainSlideOut)&&(!FrmMainSlideIn)&&(!FrmMainBlockSlide))
-								{
-									//Status chowania okna kontaktow za krawedz ekranu
-									FrmMainSlideOut = true;
-									//Schowanie okna kontaktow przy aktywacji okna rozmowy
-									FrmMainSlideOutActiveFrmSend = true;
-									//Wlaczenie chowania okna kontaktow (part I)
-									SetTimer(hTimerFrm,TIMER_FRMMAIN_PRE_SLIDEOUT,1,(TIMERPROC)TimerFrmProc);
-								}
-							}
-						}
-					}
-				}
-			}
 		}
 		//Dodawanie JID do kolejki pokazywania wiadomosci przy skrocie Ctrl+Shift+F1 lub nieprzypisanym skrotem do zakladki
 		if((FrmMainSlideChk)||(NewMgsHoyKeyChk))
@@ -10960,7 +10470,7 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 			if((FrmSendSlideChk)&&(!StayOnTopStatus)) FrmSendBlockSlide = false;
 			FrmMainBlockSlide = false;
 			//Trzymanie okna na wierzchu
-			if(((StayOnTopChk)&&(StayOnTopStatus))||((FrmSendSlideChk)&&(FrmSendSlideHideMode!=2)))
+			if((StayOnTopChk)&&(StayOnTopStatus))
 				SetWindowPos(hFrmSend,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 			//Tworzenie timera aktywacji pola wpisywania tekstu
 			if((!FrmSetStateExist)&&(hRichEdit))
@@ -10986,7 +10496,7 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 			//Stan widocznosci okna szybkich emotek
 			FrmCompletionExists = false;
 			//Trzymanie okna na wierzchu
-			if(((StayOnTopChk)&&(StayOnTopStatus))||((FrmSendSlideChk)&&(FrmSendSlideHideMode!=2)))
+			if((StayOnTopChk)&&(StayOnTopStatus))
 				SetWindowPos(hFrmSend,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 			//Gdy kursor znajduje sie poza oknem rozmowy
 			if((Mouse->CursorPos.y<FrmSendRect.Top)||(FrmSendRect.Bottom<Mouse->CursorPos.y)||(Mouse->CursorPos.x<FrmSendRect.Left)||(FrmSendRect.Right<Mouse->CursorPos.x))
@@ -11024,11 +10534,11 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 			if(((StayOnTopChk)&&(StayOnTopStatus))||(FrmSendSlideChk)||(FrmMainSlideChk))
 			{
 				//Ustawienie okna rozmowy/kontaktow na wierzchu
-				if(((StayOnTopChk)&&(StayOnTopStatus))||((FrmSendSlideChk)&&(FrmSendSlideHideMode!=2))) SetWindowPos(hFrmSend,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
-				if((FrmMainSlideChk)&&(FrmMainVisible)&&(FrmMainSlideHideMode!=2)) SetWindowPos(hFrmMain,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
+				if((StayOnTopChk)&&(StayOnTopStatus)) SetWindowPos(hFrmSend,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
+				if((FrmMainSlideChk)&&(FrmMainVisible)) SetWindowPos(hFrmMain,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 			}
 			//Tymczasowa blokada FrmSendSlideOut
-			if((FrmSendSlideChk)&&(FrmSendSlideHideMode==3))
+			if(FrmSendSlideChk)
 			{
 				//Tymczasowa blokada chowania/pokazywania okna rozmowy
 				FrmSendBlockSlide = true;
@@ -11063,7 +10573,7 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 			//Tymczasowa blokada chowania/pokazywania okna rozmowy
 			if((FrmSendSlideChk)&&(!StayOnTopStatus)) FrmSendBlockSlide = false;
 			//Trzymanie okna na wierzchu
-			if(((StayOnTopChk)&&(StayOnTopStatus))||((FrmSendSlideChk)&&(FrmSendSlideHideMode!=2)))
+			if((StayOnTopChk)&&(StayOnTopStatus))
 				SetWindowPos(hFrmSend,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 		}
 
@@ -11084,7 +10594,7 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 			//Tymczasowa blokada chowania/pokazywania okna rozmowy
 			if((FrmSendSlideChk)&&(!StayOnTopStatus)) FrmSendBlockSlide = false;
 			//Trzymanie okna na wierzchu
-			if(((StayOnTopChk)&&(StayOnTopStatus))||((FrmSendSlideChk)&&(FrmSendSlideHideMode!=2)))
+			if((StayOnTopChk)&&(StayOnTopStatus))
 				SetWindowPos(hFrmSend,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 		}
 
@@ -11143,10 +10653,7 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 				//Usuniecie uchwytu do okna wyszukiwarki
 				hFrmSeekOnList = NULL;
 				//Ustawienie okna kontaktow na wierzchu
-				if(FrmMainSlideHideMode!=2)
-					SetWindowPos(hFrmMain,HWND_TOPMOST,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
-				else
-					SetWindowPos(hFrmMain,HWND_NOTOPMOST,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
+				SetWindowPos(hFrmMain,HWND_TOPMOST,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
 			}
 		}
 
@@ -11443,7 +10950,6 @@ void LoadSettings()
 	FrmMainSlideChk = Ini->ReadBool("SideSlide","SlideFrmMain",false);
 	int pFrmMainSlideEdge = FrmMainSlideEdge;
 	FrmMainSlideEdge = Ini->ReadInteger("SideSlide","FrmMainEdge",2);
-	FrmMainSlideHideMode = Ini->ReadInteger("SideSlide","FrmMainHideMode",3);
 	FrmMainSlideInDelay = Ini->ReadInteger("SideSlide","FrmMainSlideInDelay",1000);
 	FrmMainSlideOutDelay = Ini->ReadInteger("SideSlide","FrmMainSlideOutDelay",1);
 	FrmMainSlideInTime = Ini->ReadInteger("SideSlide","FrmMainSlideInTime",300);
@@ -11586,13 +11092,11 @@ void LoadSettings()
 	FrmSendSlideChk = Ini->ReadBool("SideSlide","SlideFrmSend",false);
 	int pFrmSendSlideEdge = FrmSendSlideEdge;
 	FrmSendSlideEdge = Ini->ReadInteger("SideSlide","FrmSendEdge",1);
-	FrmSendSlideHideMode = Ini->ReadInteger("SideSlide","FrmSendHideMode",3);
 	FrmSendSlideInDelay = Ini->ReadInteger("SideSlide","FrmSendSlideInDelay",1000);
 	FrmSendSlideOutDelay = Ini->ReadInteger("SideSlide","FrmSendSlideOutDelay",1);
 	FrmSendSlideInTime = Ini->ReadInteger("SideSlide","FrmSendSlideInTime",300);
 	FrmSendSlideOutTime = Ini->ReadInteger("SideSlide","FrmSendSlideOutTime",500);
 	FrmSendStepInterval = Ini->ReadInteger("SideSlide","FrmSendStepInterval",30);
-	SlideInAtNewMsgChk = Ini->ReadBool("SideSlide","SlideInAtNewMsg",false);
 	if(FrmSendStepInterval==30) Ini->WriteInteger("SideSlide","FrmSendStepInterval",30);
 	//Wylaczenia opcji uruchamiania okna rozmowy w postaci zminimalizowanej po przyjsciu nowej wiadomosci
 	if(FrmSendSlideChk)
@@ -11824,7 +11328,7 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Load(PPluginLink Link)
 	//51AEA113661C1C8C34B72F0DFA1E4082
 	if(!FileExists(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSettingsForm.lng"))
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSettingsForm.lng").w_str(),L"EN_SETTINGSFRM",L"DATA");
-	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSettingsForm.lng")!="013BAE71C66E2504A5126474B625B4EF")
+	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSettingsForm.lng")!="E85D3DEF41F1D3826AC5990B5FA5D7DE")
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSettingsForm.lng").w_str(),L"EN_SETTINGSFRM",L"DATA");
 	//324061A51B896B06E99EF1B88D062B2F
 	if(!FileExists(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSideSlideExceptionsForm.lng"))
@@ -11839,7 +11343,7 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Load(PPluginLink Link)
 	//5740BC4AB5EEA199DA6CCFA7250DA259
 	if(!FileExists(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSettingsForm.lng"))
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSettingsForm.lng").w_str(),L"PL_SETTINGSFRM",L"DATA");
-	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSettingsForm.lng")!="CF3224A7213C98E0250565396D27F796")
+	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSettingsForm.lng")!="B418382FEA87BF6E1CFEBBB25261D578")
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSettingsForm.lng").w_str(),L"PL_SETTINGSFRM",L"DATA");
 	//589F6BBC7D5CB448CBF9DDD2BC15D54C
 	if(!FileExists(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSideSlideExceptionsForm.lng"))

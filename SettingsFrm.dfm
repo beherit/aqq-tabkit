@@ -4294,7 +4294,7 @@ object SettingsForm: TSettingsForm
       object SideSlideFullScreenModeExceptionsButton: TsSpeedButton
         Tag = 117
         Left = 299
-        Top = 269
+        Top = 242
         Width = 30
         Height = 30
         Hint = 'Ustaw wyj'#261'tki'
@@ -4343,7 +4343,7 @@ object SettingsForm: TSettingsForm
         Left = 18
         Top = 18
         Width = 275
-        Height = 245
+        Height = 219
         Caption = 'Chowaj okno kontakt'#243'w za kraw'#281'dzi'#261' ekranu'
         TabOrder = 0
         TabStop = True
@@ -4359,23 +4359,15 @@ object SettingsForm: TSettingsForm
           Height = 13
           Caption = 'Wybrana kraw'#281'd'#378
         end
-        object FrmMainHideModeLabel: TsLabel
-          Tag = 97
-          Left = 12
-          Top = 50
-          Width = 61
-          Height = 13
-          Caption = 'Schowaj gdy'
-        end
         object FrmMainTimeGroupBox: TsGroupBox
           Tag = 99
           Left = 12
-          Top = 74
+          Top = 47
           Width = 250
           Height = 128
           Caption = 'Ustawienia animacji'
           Enabled = False
-          TabOrder = 2
+          TabOrder = 1
           SkinData.SkinSection = 'GROUPBOX'
           Checked = False
           object FrmMainSlideInTimeSpinEdit: TsSpinEdit
@@ -4490,14 +4482,14 @@ object SettingsForm: TSettingsForm
         object ChangeTabAfterSlideInCheckBox: TsCheckBox
           Tag = 104
           Left = 12
-          Top = 208
+          Top = 181
           Width = 232
           Height = 28
           Caption = 'Zawsze pokazuj zak'#322'adk'#281' z list'#261' kontakt'#243'w po wysuni'#281'ciu okna'
           AutoSize = False
           Checked = True
           State = cbChecked
-          TabOrder = 3
+          TabOrder = 2
           OnClick = aSideSlideChkExecute
           SkinData.SkinSection = 'CHECKBOX'
           ImgChecked = 0
@@ -4533,41 +4525,13 @@ object SettingsForm: TSettingsForm
             'dolna'
             'g'#243'rna')
         end
-        object FrmMainHideModeComboBox: TsComboBox
-          Tag = 98
-          Left = 79
-          Top = 47
-          Width = 135
-          Height = 21
-          Alignment = taLeftJustify
-          BoundLabel.Indent = 0
-          BoundLabel.Font.Charset = DEFAULT_CHARSET
-          BoundLabel.Font.Color = clWindowText
-          BoundLabel.Font.Height = -11
-          BoundLabel.Font.Name = 'Tahoma'
-          BoundLabel.Font.Style = []
-          BoundLabel.Layout = sclLeft
-          BoundLabel.MaxWidth = 0
-          BoundLabel.UseSkinColor = True
-          SkinData.SkinSection = 'COMBOBOX'
-          VerticalAlignment = taAlignTop
-          Style = csDropDownList
-          ItemIndex = 2
-          TabOrder = 1
-          Text = 'kursor opu'#347'ci okno'
-          OnChange = aSideSlideChkExecute
-          Items.Strings = (
-            'okno utraci fokus'
-            'AQQ utraci fokus'
-            'kursor opu'#347'ci okno')
-        end
       end
       object SlideFrmSendGroupBox: TsGroupBox
         Tag = 105
         Left = 310
         Top = 18
         Width = 275
-        Height = 245
+        Height = 197
         Caption = 'Chowaj okno rozmowy za kraw'#281'dzi'#261' ekranu'
         TabOrder = 1
         TabStop = True
@@ -4583,23 +4547,15 @@ object SettingsForm: TSettingsForm
           Height = 13
           Caption = 'Wybrana kraw'#281'd'#378
         end
-        object FrmSendHideModeLabel: TsLabel
-          Tag = 108
-          Left = 12
-          Top = 50
-          Width = 61
-          Height = 13
-          Caption = 'Schowaj gdy'
-        end
         object FrmSendTimeGroupBox: TsGroupBox
           Tag = 110
           Left = 12
-          Top = 74
+          Top = 47
           Width = 251
           Height = 128
           Caption = 'Ustawienia animacji'
           Enabled = False
-          TabOrder = 2
+          TabOrder = 1
           SkinData.SkinSection = 'GROUPBOX'
           Checked = False
           object FrmSendSlideInTimeSpinEdit: TsSpinEdit
@@ -4711,24 +4667,6 @@ object SettingsForm: TSettingsForm
             Value = 1
           end
         end
-        object SlideInAtNewMsgCheckBox: TsCheckBox
-          Tag = 115
-          Left = 12
-          Top = 208
-          Width = 255
-          Height = 28
-          Caption = 
-            'Wysuwaj okno po przyj'#347'ciu nowej wiadomo'#347'ci (tylko dla otwartych ' +
-            'zak'#322'adek)'
-          AutoSize = False
-          Enabled = False
-          TabOrder = 3
-          OnClick = aSideSlideChkExecute
-          SkinData.SkinSection = 'CHECKBOX'
-          ImgChecked = 0
-          ImgUnchecked = 0
-          WordWrap = True
-        end
         object FrmSendEdgeComboBox: TsComboBox
           Tag = 107
           Left = 105
@@ -4758,39 +4696,11 @@ object SettingsForm: TSettingsForm
             'dolna'
             'g'#243'rna')
         end
-        object FrmSendHideModeComboBox: TsComboBox
-          Tag = 109
-          Left = 79
-          Top = 47
-          Width = 135
-          Height = 21
-          Alignment = taLeftJustify
-          BoundLabel.Indent = 0
-          BoundLabel.Font.Charset = DEFAULT_CHARSET
-          BoundLabel.Font.Color = clWindowText
-          BoundLabel.Font.Height = -11
-          BoundLabel.Font.Name = 'Tahoma'
-          BoundLabel.Font.Style = []
-          BoundLabel.Layout = sclLeft
-          BoundLabel.MaxWidth = 0
-          BoundLabel.UseSkinColor = True
-          SkinData.SkinSection = 'COMBOBOX'
-          VerticalAlignment = taAlignTop
-          Style = csDropDownList
-          ItemIndex = 2
-          TabOrder = 1
-          Text = 'kursor opu'#347'ci okno'
-          OnChange = aSideSlideChkExecute
-          Items.Strings = (
-            'okno utraci fokus'
-            'AQQ utraci fokus'
-            'kursor opu'#347'ci okno')
-        end
       end
       object SideSlideFullScreenModeCheckBox: TsCheckBox
         Tag = 116
         Left = 12
-        Top = 274
+        Top = 247
         Width = 281
         Height = 20
         Caption = 'Wysuwaj okna przy aktywnej aplikacji pe'#322'noekranowej'
@@ -4805,7 +4715,7 @@ object SettingsForm: TSettingsForm
       object SideSlideCtrlAndMousBlockCheckBox: TsCheckBox
         Tag = 118
         Left = 12
-        Top = 305
+        Top = 278
         Width = 452
         Height = 20
         Caption = 
