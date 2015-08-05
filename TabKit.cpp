@@ -4249,7 +4249,11 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 								//Kursor nie znajduje sie w obrebie menu start
 								if((WindowClassName!="DV2ControlHost")
 								&&(WindowClassName!="DesktopProgramsMFU")
-								&&(!((WindowClassName=="Windows.UI.Core.CoreWindow")&&(WindowText=="Start"))))
+								&&(!((WindowClassName=="Windows.UI.Core.CoreWindow")&&(WindowText=="Start")))
+								&&(WindowClassName!="TaskSwitcherWnd")
+								&&(WindowClassName!="MSTaskListWClass")
+								&&(WindowClassName!="MultitaskingViewFrame")
+								&&(WindowClassName!="ForegroundStaging"))
 								{
 									if(!PreFrmSendSlideIn)
 									{
@@ -4389,7 +4393,11 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 								//Kursor nie znajduje sie w obrebie menu start
 								if((WindowClassName!="DV2ControlHost")
 								&&(WindowClassName!="DesktopProgramsMFU")
-								&&(!((WindowClassName=="Windows.UI.Core.CoreWindow")&&(WindowText=="Start"))))
+								&&(!((WindowClassName=="Windows.UI.Core.CoreWindow")&&(WindowText=="Start")))
+								&&(WindowClassName!="TaskSwitcherWnd")
+								&&(WindowClassName!="MSTaskListWClass")
+								&&(WindowClassName!="MultitaskingViewFrame")
+								&&(WindowClassName!="ForegroundStaging"))
 								{
 									if(!PreFrmMainSlideIn)
 									{
@@ -4537,10 +4545,10 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				&&(WindowClassName!="DesktopProgramsMFU")
 				&&(!((WindowClassName=="Windows.UI.Core.CoreWindow")&&(WindowText=="Start")))
 				&&(WindowClassName!="TaskSwitcherWnd")
+				&&(WindowClassName!="MSTaskListWClass")
 				&&(WindowClassName!="MultitaskingViewFrame")
 				&&(WindowClassName!="ForegroundStaging")
 				&&(WindowClassName!="Shell_TrayWnd")
-				&&(WindowClassName!="MSTaskListWClass")
 				&&(WindowClassName!="NotifyIconOverflowWindow")
 				&&(WindowClassName!="ClockFlyoutWindow"))
 					LastActiveWindow = hActiveFrm;
@@ -4947,6 +4955,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			&&(WindowClassName!="DesktopProgramsMFU")
 			&&(!((WindowClassName=="Windows.UI.Core.CoreWindow")&&(WindowText=="Start")))
 			&&(WindowClassName!="TaskSwitcherWnd")
+			&&(WindowClassName!="MSTaskListWClass")
 			&&(WindowClassName!="MultitaskingViewFrame")
 			&&(WindowClassName!="ForegroundStaging")
 			&&(WindowClassName!="Shell_TrayWnd"))
@@ -4967,6 +4976,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			UnicodeString WindowClassName = WindowClassNameW;
 			//Wlaczenie timera ustawienia okna na wierzchu
 			if((WindowClassName!="TaskSwitcherWnd")
+			&&(WindowClassName!="MSTaskListWClass")
 			&&(WindowClassName!="MultitaskingViewFrame")
 			&&(WindowClassName!="ForegroundStaging"))
 			{
@@ -5251,6 +5261,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			&&(WindowClassName!="DesktopProgramsMFU")
 			&&(!((WindowClassName=="Windows.UI.Core.CoreWindow")&&(WindowText=="Start")))
 			&&(WindowClassName!="TaskSwitcherWnd")
+			&&(WindowClassName!="MSTaskListWClass")
 			&&(WindowClassName!="MultitaskingViewFrame")
 			&&(WindowClassName!="ForegroundStaging")
 			&&(WindowClassName!="Shell_TrayWnd"))
@@ -5281,6 +5292,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				&&(WindowClassName!="DesktopProgramsMFU")
 				&&(!((WindowClassName=="Windows.UI.Core.CoreWindow")&&(WindowText=="Start")))
 				&&(WindowClassName!="TaskSwitcherWnd")
+				&&(WindowClassName!="MSTaskListWClass")
 				&&(WindowClassName!="MultitaskingViewFrame")
 				&&(WindowClassName!="ForegroundStaging")
 				&&(WindowClassName!="Shell_TrayWnd"))
@@ -5301,6 +5313,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			UnicodeString WindowClassName = WindowClassNameW;
 			//Wlaczenie timera ustawienia okna na wierzchu
 			if((WindowClassName!="TaskSwitcherWnd")
+			&&(WindowClassName!="MSTaskListWClass")
 			&&(WindowClassName!="MultitaskingViewFrame")
 			&&(WindowClassName!="ForegroundStaging"))
 			{
@@ -5420,7 +5433,11 @@ LRESULT CALLBACK FrmMainProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					UnicodeString WindowClassName2 = WindowClassNameW2;
 					//Okno jest schowane i spelnia inne ponizsze warunki
 					if((!FrmMainVisible)&&(!FrmMainBlockSlide)&&(!FrmMainSlideOut)&&(!FrmMainSlideIn)&&(!IsIconic(LastActiveWindow))
-					&&((IsWindowVisible(LastActiveWindow))||(WindowClassName=="TaskSwitcherWnd")||(WindowClassName=="MultitaskingViewFrame")||(WindowClassName=="ForegroundStaging"))
+					&&((IsWindowVisible(LastActiveWindow))
+					||(WindowClassName=="TaskSwitcherWnd")
+					||(WindowClassName!="MSTaskListWClass")
+					||(WindowClassName=="MultitaskingViewFrame")
+					||(WindowClassName=="ForegroundStaging"))
 					&&(WindowClassName2!="TrayShowDesktopButtonWClass")&&((WindowFromPoint(Mouse->CursorPos)!=hToolbarWindow32)))
 					{
 						//Sprawdzanie czy aktywna jest aplikacja pelno ekranowa
@@ -5690,7 +5707,12 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					UnicodeString WindowClassName2 = WindowClassNameW2;
 					//Okno jest schowane i spelnia inne ponizsze warunki
 					if((!FrmSendVisible)&&(!FrmSendBlockSlide)&&(!FrmSendSlideOut)&&(!FrmSendSlideIn)&&(!IsIconic(LastActiveWindow))
-					&&((IsWindowVisible(LastActiveWindow))||(WindowClassName=="TaskSwitcherWnd")||(WindowClassName=="MultitaskingViewFrame")||(WindowClassName=="ForegroundStaging")||(WindowClassName2=="MSTaskListWClass")||(WindowClassName2=="ToolbarWindow32"))
+					&&((IsWindowVisible(LastActiveWindow))
+					||(WindowClassName=="TaskSwitcherWnd")
+					||(WindowClassName!="MSTaskListWClass")
+					||(WindowClassName=="MultitaskingViewFrame")
+					||(WindowClassName=="ForegroundStaging")
+					||(WindowClassName2=="ToolbarWindow32"))
 					&&(WindowClassName2!="TrayShowDesktopButtonWClass"))
 					{
 						//Sprawdzanie czy aktywna jest aplikacja pelno ekranowa
