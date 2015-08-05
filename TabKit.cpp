@@ -1340,8 +1340,8 @@ void ChkFullScreenMode()
 		UnicodeString WindowClassName = WindowClassNameW;
 		//Wyjatek dla pulpitu oraz programu DeskScapes
 		if((WindowClassName!="Progman")
-		&&(WindowClassName!="SysListView32")
 		&&(WindowClassName!="WorkerW")
+		&&(WindowClassName!="SysListView32")
 		&&(WindowClassName!="NDesk"))
 		{
 			//Dodano jakies wyjatki w aplikacjach pelnoekranowych
@@ -1353,7 +1353,7 @@ void ChkFullScreenMode()
 				if(SideSlideExceptions->IndexOf(ExtractFileName(Process).LowerCase())!=-1)
 					FullScreenModeExeptions = true;
 			}
-			//Wyjatek dla aplikacji Metro UI
+			//Wyjatek dla aplikacji Metro UI w Windows 8/8.1
 			if(WindowClassName.Pos("Windows.UI.Core.CoreWindow"))
 				FullScreenModeExeptions = true;
 			//Aplikacja pelnoekranowa
