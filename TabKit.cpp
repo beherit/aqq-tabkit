@@ -344,17 +344,15 @@ int FASTACCESS;
 #define TIMER_FRMSEND_MINIMIZED 240
 #define TIMER_FRMSEND_CHANGEPOS 250
 #define TIMER_FRMSEND_TOPMOST 260
-#define TIMER_FRMSEND_TOPMOST_AND_SLIDEOUT 270
-#define TIMER_FRMSEND_FOCUS_RICHEDIT 280
-#define TIMER_FRMSEND_UNBLOCK_THUMBNAIL 290
-#define TIMER_FRMMAIN_PRE_SLIDEOUT 300
-#define TIMER_FRMMAIN_SLIDEOUT 310
-#define TIMER_FRMMAIN_PRE_SLIDEIN 320
-#define TIMER_FRMMAIN_SLIDEIN 330
-#define TIMER_FRMMAIN_UNBLOCK_SLIDE 340
-#define TIMER_FRMMAIN_TOPMOST 350
-#define TIMER_FRMMAIN_TOPMOST_EX 360
-#define TIMER_FRMMAIN_TOPMOST_AND_SLIDEOUT 370
+#define TIMER_FRMSEND_FOCUS_RICHEDIT 270
+#define TIMER_FRMSEND_UNBLOCK_THUMBNAIL 280
+#define TIMER_FRMMAIN_PRE_SLIDEOUT 290
+#define TIMER_FRMMAIN_SLIDEOUT 300
+#define TIMER_FRMMAIN_PRE_SLIDEIN 310
+#define TIMER_FRMMAIN_SLIDEIN 320
+#define TIMER_FRMMAIN_UNBLOCK_SLIDE 330
+#define TIMER_FRMMAIN_TOPMOST 340
+#define TIMER_FRMMAIN_TOPMOST_EX 350
 //SETTINGS-------------------------------------------------------------------
 //ClosedTabs
 bool ClosedTabsChk;
@@ -4965,37 +4963,6 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			}
 			else SetWindowPos(GetForegroundWindow(),HWND_TOP,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 		}
-		//Ustawienie okna rozmowy na wierzchu i je schowanie
-		else if(wParam==TIMER_FRMSEND_TOPMOST_AND_SLIDEOUT)
-		{
-			//Pobieranie klasy nowego okna
-			wchar_t WindowClassNameW[128];
-			GetClassNameW(GetForegroundWindow(), WindowClassNameW, sizeof(WindowClassNameW));
-			UnicodeString WindowClassName = WindowClassNameW;
-			//Wlaczenie timera ustawienia okna na wierzchu
-			if((WindowClassName!="TaskSwitcherWnd")
-			&&(WindowClassName!="MSTaskListWClass")
-			&&(WindowClassName!="MultitaskingViewFrame")
-			&&(WindowClassName!="ForegroundStaging"))
-			{
-				//Zatrzymanie timera
-				KillTimer(hTimerFrm,TIMER_FRMSEND_TOPMOST_AND_SLIDEOUT);
-				if(GetForegroundWindow()==hFrmSend)
-				{
-					//Status chowania okna rozmowy za krawedz ekranu
-					FrmSendSlideOut = true;
-					//Ustawienie okna na wierzchu
-					SetWindowPos(hFrmSend,HWND_TOPMOST,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
-					//Wlaczenie chowania okna rozmowy (part I)
-					SetTimer(hTimerFrm,TIMER_FRMSEND_PRE_SLIDEOUT,1,(TIMERPROC)TimerFrmProc);
-				}
-				else
-				{
-					//Aktywcja okna rozmowy + nadanie fokusa na polu wpisywania wiadomosci
-					ActivateAndFocusFrmSend();
-				}
-			}
-		}
 		//Aktywacja pola wpisywania tekstu
 		else if(wParam==TIMER_FRMSEND_FOCUS_RICHEDIT)
 		{
@@ -5297,35 +5264,6 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 					KillTimer(hTimerFrm,TIMER_FRMMAIN_TOPMOST_EX);
 					//Ustawienie okna kontaktow na wierzchu
 					SetWindowPos(hFrmMain,HWND_TOPMOST,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
-				}
-			}
-		}
-		//Ustawienie okna kontaktow na wierzchu i schowanie go
-		else if(wParam==TIMER_FRMMAIN_TOPMOST_AND_SLIDEOUT)
-		{
-			//Pobieranie klasy nowego okna
-			wchar_t WindowClassNameW[128];
-			GetClassNameW(GetForegroundWindow(), WindowClassNameW, sizeof(WindowClassNameW));
-			UnicodeString WindowClassName = WindowClassNameW;
-			//Wlaczenie timera ustawienia okna na wierzchu
-			if((WindowClassName!="TaskSwitcherWnd")
-			&&(WindowClassName!="MSTaskListWClass")
-			&&(WindowClassName!="MultitaskingViewFrame")
-			&&(WindowClassName!="ForegroundStaging"))
-			{
-				//Zatrzymanie timera
-				KillTimer(hTimerFrm,TIMER_FRMMAIN_TOPMOST_AND_SLIDEOUT);
-				if(GetForegroundWindow()!=hFrmMain)
-				{
-					//Status chowania okna kontaktow za krawedz ekranu
-					FrmMainSlideOut = true;
-					//Wlaczenie chowania okna kontaktow (part I)
-					SetTimer(hTimerFrm,TIMER_FRMMAIN_PRE_SLIDEOUT,1,(TIMERPROC)TimerFrmProc);
-				}
-				else
-				{
-					//Aktywacja okna kontaktow + nadanie fokusa kontrolce IE
-					ActivateAndFocusFrmMain();
 				}
 			}
 		}
