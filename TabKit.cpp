@@ -4536,13 +4536,13 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				if((WindowClassName!="DV2ControlHost")
 				&&(WindowClassName!="DesktopProgramsMFU")
 				&&(!((WindowClassName=="Windows.UI.Core.CoreWindow")&&(WindowText=="Start")))
+				&&(WindowClassName!="TaskSwitcherWnd")
+				&&(WindowClassName!="MultitaskingViewFrame")
+				&&(WindowClassName!="ForegroundStaging")
 				&&(WindowClassName!="Shell_TrayWnd")
 				&&(WindowClassName!="MSTaskListWClass")
 				&&(WindowClassName!="NotifyIconOverflowWindow")
-				&&(WindowClassName!="ClockFlyoutWindow")
-				&&(WindowClassName!="TaskSwitcherWnd")
-				&&(WindowClassName!="MultitaskingViewFrame")
-				&&(WindowClassName!="ForegroundStaging"))
+				&&(WindowClassName!="ClockFlyoutWindow"))
 					LastActiveWindow = hActiveFrm;
 			}
 			//Pobranie PID aktywnego okna
@@ -4949,7 +4949,6 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			&&(WindowClassName!="TaskSwitcherWnd")
 			&&(WindowClassName!="MultitaskingViewFrame")
 			&&(WindowClassName!="ForegroundStaging")
-			&&(WindowClassName!="CabinetWClass")
 			&&(WindowClassName!="Shell_TrayWnd"))
 			{
 				//Zatrzymanie timera
@@ -5254,7 +5253,6 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			&&(WindowClassName!="TaskSwitcherWnd")
 			&&(WindowClassName!="MultitaskingViewFrame")
 			&&(WindowClassName!="ForegroundStaging")
-			&&(WindowClassName!="CabinetWClass")
 			&&(WindowClassName!="Shell_TrayWnd"))
 			{
 				//Zatrzymanie timera
@@ -5285,7 +5283,6 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				&&(WindowClassName!="TaskSwitcherWnd")
 				&&(WindowClassName!="MultitaskingViewFrame")
 				&&(WindowClassName!="ForegroundStaging")
-				&&(WindowClassName!="CabinetWClass")
 				&&(WindowClassName!="Shell_TrayWnd"))
 				{
 					//Zatrzymanie timera
