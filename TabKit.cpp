@@ -4549,8 +4549,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				&&(WindowClassName!="MultitaskingViewFrame")
 				&&(WindowClassName!="ForegroundStaging")
 				&&(WindowClassName!="Shell_TrayWnd")
-				&&(WindowClassName!="NotifyIconOverflowWindow")
-				&&(WindowClassName!="ClockFlyoutWindow"))
+				&&(WindowClassName!="NotifyIconOverflowWindow"))
 					LastActiveWindow = hActiveFrm;
 			}
 			//Pobranie PID aktywnego okna
@@ -5292,8 +5291,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				&&(WindowClassName!="TaskSwitcherWnd")
 				&&(WindowClassName!="MSTaskListWClass")
 				&&(WindowClassName!="MultitaskingViewFrame")
-				&&(WindowClassName!="ForegroundStaging")
-				&&(WindowClassName!="Shell_TrayWnd"))
+				&&(WindowClassName!="ForegroundStaging"))
 				{
 					//Zatrzymanie timera
 					KillTimer(hTimerFrm,TIMER_FRMMAIN_TOPMOST_EX);
