@@ -4240,12 +4240,16 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 							if((((FrmSendSlideEdge==1)||(FrmSendSlideEdge==2))&&((FrmSendRect.Top<=Mouse->CursorPos.y)&&(Mouse->CursorPos.y<=FrmSendRect.Bottom)))
 							||(((FrmSendSlideEdge==3)||(FrmSendSlideEdge==4))&&((FrmSendRect.Left<=Mouse->CursorPos.x)&&(Mouse->CursorPos.x<=FrmSendRect.Right))))
 							{
-								//Pobranie klasy okna w ktorym znajduje sie kursor
-								wchar_t WindowClassNameW[128];
+								//Pobranie klasy/tekstu okna w ktorym znajduje sie kursor
+								wchar_t WindowClassNameW[128], WindowTextW[128];
 								GetClassNameW(WindowFromPoint(Mouse->CursorPos), WindowClassNameW, sizeof(WindowClassNameW));
+								GetWindowTextW(WindowFromPoint(Mouse->CursorPos), WindowTextW, sizeof(WindowTextW));
 								UnicodeString WindowClassName = WindowClassNameW;
+								UnicodeString WindowText = WindowTextW;
 								//Kursor nie znajduje sie w obrebie menu start
-								if(WindowClassName!="DV2ControlHost")
+								if((WindowClassName!="DV2ControlHost")
+								&&(WindowClassName!="DesktopProgramsMFU")
+								&&(!((WindowClassName=="Windows.UI.Core.CoreWindow")&&(WindowText=="Start"))))
 								{
 									if(!PreFrmSendSlideIn)
 									{
@@ -4376,12 +4380,16 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 							if((((FrmMainSlideEdge==1)||(FrmMainSlideEdge==2))&&((FrmMainRect.Top<=Mouse->CursorPos.y)&&(Mouse->CursorPos.y<=FrmMainRect.Bottom)))
 							||(((FrmMainSlideEdge==3)||(FrmMainSlideEdge==4))&&((FrmMainRect.Left<=Mouse->CursorPos.x)&&(Mouse->CursorPos.x<=FrmMainRect.Right))))
 							{
-								//Pobranie klasy okna w ktorym znajduje sie kursor
-								wchar_t WindowClassNameW[128];
+								//Pobranie klasy/tekstu okna w ktorym znajduje sie kursor
+								wchar_t WindowClassNameW[128], WindowTextW[128];
 								GetClassNameW(WindowFromPoint(Mouse->CursorPos), WindowClassNameW, sizeof(WindowClassNameW));
+								GetWindowTextW(WindowFromPoint(Mouse->CursorPos), WindowTextW, sizeof(WindowTextW));
 								UnicodeString WindowClassName = WindowClassNameW;
+								UnicodeString WindowText = WindowTextW;
 								//Kursor nie znajduje sie w obrebie menu start
-								if(WindowClassName!="DV2ControlHost")
+								if((WindowClassName!="DV2ControlHost")
+								&&(WindowClassName!="DesktopProgramsMFU")
+								&&(!((WindowClassName=="Windows.UI.Core.CoreWindow")&&(WindowText=="Start"))))
 								{
 									if(!PreFrmMainSlideIn)
 									{
@@ -4516,18 +4524,22 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		{
 			//Pobieranie aktywnego okna
 			HWND hActiveFrm = GetForegroundWindow();
-			//Pobieranie klasy aktywnego okna
-			wchar_t WindowClassNameW[128];
+			//Pobieranie klasy/tekstu aktywnego okna
+			wchar_t WindowClassNameW[128], WindowTextW[128];
 			GetClassNameW(hActiveFrm, WindowClassNameW, sizeof(WindowClassNameW));
+			GetWindowTextW(WindowFromPoint(Mouse->CursorPos), WindowTextW, sizeof(WindowTextW));
 			UnicodeString WindowClassName = WindowClassNameW;
+			UnicodeString WindowText = WindowTextW;
 			//Ustawianie uchwytu do nowego aktywnego okna
 			if((hActiveFrm!=LastActiveWindow)&&(hActiveFrm!=hFrmSend)&&(hActiveFrm!=hFrmMain)&&(IsWindow(hActiveFrm)))
 			{
-				if((WindowClassName!="Shell_TrayWnd")
+				if((WindowClassName!="DV2ControlHost")
+				&&(WindowClassName!="DesktopProgramsMFU")
+				&&(!((WindowClassName=="Windows.UI.Core.CoreWindow")&&(WindowText=="Start")))
+				&&(WindowClassName!="Shell_TrayWnd")
 				&&(WindowClassName!="MSTaskListWClass")
 				&&(WindowClassName!="NotifyIconOverflowWindow")
 				&&(WindowClassName!="ClockFlyoutWindow")
-				&&(WindowClassName!="DV2ControlHost")
 				&&(WindowClassName!="TaskSwitcherWnd")
 				&&(WindowClassName!="MultitaskingViewFrame")
 				&&(WindowClassName!="ForegroundStaging"))
@@ -4924,15 +4936,19 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		//Ustawienie okna rozmowy na wierzchu
 		else if(wParam==TIMER_FRMSEND_TOPMOST)
 		{
-			//Pobieranie klasy nowego okna
-			wchar_t WindowClassNameW[128];
+			//Pobieranie klasy/tekstu nowego okna
+			wchar_t WindowClassNameW[128], WindowTextW[128];
 			GetClassNameW(GetForegroundWindow(), WindowClassNameW, sizeof(WindowClassNameW));
+			GetWindowTextW(WindowFromPoint(Mouse->CursorPos), WindowTextW, sizeof(WindowTextW));
 			UnicodeString WindowClassName = WindowClassNameW;
+			UnicodeString WindowText = WindowTextW;
 			//Wlaczenie timera ustawienia okna na wierzchu
-			if((WindowClassName!="TaskSwitcherWnd")
+			if((WindowClassName!="DV2ControlHost")
+			&&(WindowClassName!="DesktopProgramsMFU")
+			&&(!((WindowClassName=="Windows.UI.Core.CoreWindow")&&(WindowText=="Start")))
+			&&(WindowClassName!="TaskSwitcherWnd")
 			&&(WindowClassName!="MultitaskingViewFrame")
 			&&(WindowClassName!="ForegroundStaging")
-			&&(WindowClassName!="DV2ControlHost")
 			&&(WindowClassName!="CabinetWClass")
 			&&(WindowClassName!="Shell_TrayWnd"))
 			{
@@ -5225,15 +5241,19 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		//Ustawienie okna kontaktow na wierzchu
 		else if(wParam==TIMER_FRMMAIN_TOPMOST)
 		{
-			//Pobieranie klasy nowego okna
-			wchar_t WindowClassNameW[128];
+			//Pobieranie klasy/tekstu nowego okna
+			wchar_t WindowClassNameW[128], WindowTextW[128];
 			GetClassNameW(GetForegroundWindow(), WindowClassNameW, sizeof(WindowClassNameW));
+			GetWindowTextW(WindowFromPoint(Mouse->CursorPos), WindowTextW, sizeof(WindowTextW));
 			UnicodeString WindowClassName = WindowClassNameW;
+			UnicodeString WindowText = WindowTextW;
 			//Wlaczenie timera ustawienia okna na wierzchu
-			if((WindowClassName!="TaskSwitcherWnd")
+			if((WindowClassName!="DV2ControlHost")
+			&&(WindowClassName!="DesktopProgramsMFU")
+			&&(!((WindowClassName=="Windows.UI.Core.CoreWindow")&&(WindowText=="Start")))
+			&&(WindowClassName!="TaskSwitcherWnd")
 			&&(WindowClassName!="MultitaskingViewFrame")
 			&&(WindowClassName!="ForegroundStaging")
-			&&(WindowClassName!="DV2ControlHost")
 			&&(WindowClassName!="CabinetWClass")
 			&&(WindowClassName!="Shell_TrayWnd"))
 			{
@@ -5252,15 +5272,19 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			//Porownanie PID okna
 			if(PID!=ProcessPID)
 			{
-				//Pobieranie klasy nowego okna
-				wchar_t WindowClassNameW[128];
+				//Pobieranie klasy/tekstu nowego okna
+				wchar_t WindowClassNameW[128], WindowTextW[128];
 				GetClassNameW(GetForegroundWindow(), WindowClassNameW, sizeof(WindowClassNameW));
+				GetWindowTextW(WindowFromPoint(Mouse->CursorPos), WindowTextW, sizeof(WindowTextW));
 				UnicodeString WindowClassName = WindowClassNameW;
+				UnicodeString WindowText = WindowTextW;
 				//Porownanie klasy nowego aktywnego okna
-				if((WindowClassName!="TaskSwitcherWnd")
+				if((WindowClassName!="DV2ControlHost")
+				&&(WindowClassName!="DesktopProgramsMFU")
+				&&(!((WindowClassName=="Windows.UI.Core.CoreWindow")&&(WindowText=="Start")))
+				&&(WindowClassName!="TaskSwitcherWnd")
 				&&(WindowClassName!="MultitaskingViewFrame")
 				&&(WindowClassName!="ForegroundStaging")
-				&&(WindowClassName!="DV2ControlHost")
 				&&(WindowClassName!="CabinetWClass")
 				&&(WindowClassName!="Shell_TrayWnd"))
 				{
