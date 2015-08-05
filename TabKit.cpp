@@ -5349,7 +5349,8 @@ LRESULT CALLBACK FrmMainProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			DWORD PID;
 			GetWindowThreadProcessId(hCurActiveFrm, &PID);
 			//Gdy kursor znajduje sie w obrebie menu z okna aplikacji lub w oknie kontaktow
-			if(((WindowClassName=="#32768")&&(PID==ProcessPID))||((Mouse->CursorPos.y>FrmMainRect.Top+FrmMainRealTopPos-FrmMain_Shell_TrayWndTop)&&(FrmMainRect.Bottom+FrmMainRealBottomPos+FrmMain_Shell_TrayWndBottom>Mouse->CursorPos.y)&&(Mouse->CursorPos.x>FrmMainRect.Left+FrmMainRealLeftPos-FrmMain_Shell_TrayWndLeft)&&(FrmMainRect.Right+FrmMainRealRightPos+FrmMain_Shell_TrayWndRight>Mouse->CursorPos.x)))
+			if(((WindowClassName=="#32768")&&(PID==ProcessPID))
+			||((Mouse->CursorPos.y>FrmMainRect.Top+FrmMainRealTopPos-FrmMain_Shell_TrayWndTop)&&(FrmMainRect.Bottom+FrmMainRealBottomPos+FrmMain_Shell_TrayWndBottom>Mouse->CursorPos.y)&&(Mouse->CursorPos.x>FrmMainRect.Left+FrmMainRealLeftPos-FrmMain_Shell_TrayWndLeft)&&(FrmMainRect.Right+FrmMainRealRightPos+FrmMain_Shell_TrayWndRight>Mouse->CursorPos.x)))
 				SetWindowPos(hFrmMain,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 			else
 				SetWindowPos(hFrmMain,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
@@ -5421,7 +5422,9 @@ LRESULT CALLBACK FrmMainProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					GetClassNameW(WindowFromPoint(Mouse->CursorPos), WindowClassNameW2, sizeof(WindowClassNameW2));
 					UnicodeString WindowClassName2 = WindowClassNameW2;
 					//Okno jest schowane i spelnia inne ponizsze warunki
-					if((!FrmMainVisible)&&(!FrmMainBlockSlide)&&(!FrmMainSlideOut)&&(!FrmMainSlideIn)&&(!IsIconic(LastActiveWindow))&&((IsWindowVisible(LastActiveWindow))||(WindowClassName=="TaskSwitcherWnd")||(WindowClassName=="MultitaskingViewFrame")||(WindowClassName=="ForegroundStaging"))&&(WindowClassName2!="TrayShowDesktopButtonWClass")&&((WindowFromPoint(Mouse->CursorPos)!=hToolbarWindow32)))
+					if((!FrmMainVisible)&&(!FrmMainBlockSlide)&&(!FrmMainSlideOut)&&(!FrmMainSlideIn)&&(!IsIconic(LastActiveWindow))
+					&&((IsWindowVisible(LastActiveWindow))||(WindowClassName=="TaskSwitcherWnd")||(WindowClassName=="MultitaskingViewFrame")||(WindowClassName=="ForegroundStaging"))
+					&&(WindowClassName2!="TrayShowDesktopButtonWClass")&&((WindowFromPoint(Mouse->CursorPos)!=hToolbarWindow32)))
 					{
 						//Sprawdzanie czy aktywna jest aplikacja pelno ekranowa
 						ChkFullScreenMode();
@@ -5689,7 +5692,9 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					GetClassNameW(WindowFromPoint(Mouse->CursorPos), WindowClassNameW2, sizeof(WindowClassNameW2));
 					UnicodeString WindowClassName2 = WindowClassNameW2;
 					//Okno jest schowane i spelnia inne ponizsze warunki
-					if((!FrmSendVisible)&&(!FrmSendBlockSlide)&&(!FrmSendSlideOut)&&(!FrmSendSlideIn)&&(!IsIconic(LastActiveWindow))&&((IsWindowVisible(LastActiveWindow))||(WindowClassName=="TaskSwitcherWnd")||(WindowClassName=="MultitaskingViewFrame")||(WindowClassName=="ForegroundStaging")||(WindowClassName2=="MSTaskListWClass")||(WindowClassName2=="ToolbarWindow32"))&&(WindowClassName2!="TrayShowDesktopButtonWClass"))
+					if((!FrmSendVisible)&&(!FrmSendBlockSlide)&&(!FrmSendSlideOut)&&(!FrmSendSlideIn)&&(!IsIconic(LastActiveWindow))
+					&&((IsWindowVisible(LastActiveWindow))||(WindowClassName=="TaskSwitcherWnd")||(WindowClassName=="MultitaskingViewFrame")||(WindowClassName=="ForegroundStaging")||(WindowClassName2=="MSTaskListWClass")||(WindowClassName2=="ToolbarWindow32"))
+					&&(WindowClassName2!="TrayShowDesktopButtonWClass"))
 					{
 						//Sprawdzanie czy aktywna jest aplikacja pelno ekranowa
 						ChkFullScreenMode();
