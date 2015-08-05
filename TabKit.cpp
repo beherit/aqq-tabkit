@@ -4957,8 +4957,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			&&(WindowClassName!="TaskSwitcherWnd")
 			&&(WindowClassName!="MSTaskListWClass")
 			&&(WindowClassName!="MultitaskingViewFrame")
-			&&(WindowClassName!="ForegroundStaging")
-			&&(WindowClassName!="Shell_TrayWnd"))
+			&&(WindowClassName!="ForegroundStaging"))
 			{
 				//Zatrzymanie timera
 				KillTimer(hTimerFrm,TIMER_FRMSEND_TOPMOST);
@@ -5263,8 +5262,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			&&(WindowClassName!="TaskSwitcherWnd")
 			&&(WindowClassName!="MSTaskListWClass")
 			&&(WindowClassName!="MultitaskingViewFrame")
-			&&(WindowClassName!="ForegroundStaging")
-			&&(WindowClassName!="Shell_TrayWnd"))
+			&&(WindowClassName!="ForegroundStaging"))
 			{
 				//Zatrzymanie timera
 				KillTimer(hTimerFrm,TIMER_FRMMAIN_TOPMOST);
