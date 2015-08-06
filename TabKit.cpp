@@ -4408,7 +4408,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 									}
 								}
 								//Kursor znajduje sie w obrebie menu start
-								else if(!PreFrmMainSlideIn) StopPreFrmMainSlideIn();
+								else if(PreFrmMainSlideIn) StopPreFrmMainSlideIn();
 							}
 							//Kursor nie znajduje sie przy krawedzi ekranu z uwglednieniem miejsca schowania okna kontaktow
 							else if(PreFrmMainSlideIn) StopPreFrmMainSlideIn();
