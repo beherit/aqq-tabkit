@@ -4244,7 +4244,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 								GetWindowTextW(WindowFromPoint(Mouse->CursorPos), WindowTextW, sizeof(WindowTextW));
 								UnicodeString WindowClassName = WindowClassNameW;
 								UnicodeString WindowText = WindowTextW;
-								//Kursor nie znajduje sie w obrebie menu start
+								//Kursor nie znajduje sie w obrebie menu start, okna przelaczania
 								if((WindowClassName!="DV2ControlHost")
 								&&(WindowClassName!="DesktopProgramsMFU")
 								&&(!((WindowClassName=="Windows.UI.Core.CoreWindow")&&(WindowText=="Start")))
@@ -4388,7 +4388,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 								GetWindowTextW(WindowFromPoint(Mouse->CursorPos), WindowTextW, sizeof(WindowTextW));
 								UnicodeString WindowClassName = WindowClassNameW;
 								UnicodeString WindowText = WindowTextW;
-								//Kursor nie znajduje sie w obrebie menu start
+								//Kursor nie znajduje sie w obrebie menu start, okna przelaczania
 								if((WindowClassName!="DV2ControlHost")
 								&&(WindowClassName!="DesktopProgramsMFU")
 								&&(!((WindowClassName=="Windows.UI.Core.CoreWindow")&&(WindowText=="Start")))
@@ -4539,6 +4539,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			//Ustawianie uchwytu do nowego aktywnego okna
 			if((hActiveFrm!=LastActiveWindow)&&(hActiveFrm!=hFrmSend)&&(hActiveFrm!=hFrmMain)&&(IsWindow(hActiveFrm)))
 			{
+				//Kursor nie znajduje sie w obrebie menu start, okna przelaczania, pasku zadan i oknie ukrytych ikon
 				if((WindowClassName!="DV2ControlHost")
 				&&(WindowClassName!="DesktopProgramsMFU")
 				&&(!((WindowClassName=="Windows.UI.Core.CoreWindow")&&(WindowText=="Start")))
@@ -4948,6 +4949,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			UnicodeString WindowClassName = WindowClassNameW;
 			UnicodeString WindowText = WindowTextW;
 			//Wlaczenie timera ustawienia okna na wierzchu
+			//Kursor nie znajduje sie w obrebie menu start, okna przelaczania
 			if((WindowClassName!="DV2ControlHost")
 			&&(WindowClassName!="DesktopProgramsMFU")
 			&&(!((WindowClassName=="Windows.UI.Core.CoreWindow")&&(WindowText=="Start")))
@@ -5222,6 +5224,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			UnicodeString WindowClassName = WindowClassNameW;
 			UnicodeString WindowText = WindowTextW;
 			//Wlaczenie timera ustawienia okna na wierzchu
+			//Kursor nie znajduje sie w obrebie menu start, okna przelaczania
 			if((WindowClassName!="DV2ControlHost")
 			&&(WindowClassName!="DesktopProgramsMFU")
 			&&(!((WindowClassName=="Windows.UI.Core.CoreWindow")&&(WindowText=="Start")))
@@ -5252,6 +5255,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				UnicodeString WindowClassName = WindowClassNameW;
 				UnicodeString WindowText = WindowTextW;
 				//Porownanie klasy nowego aktywnego okna
+				//Kursor nie znajduje sie w obrebie menu start, okna przelaczania
 				if((WindowClassName!="DV2ControlHost")
 				&&(WindowClassName!="DesktopProgramsMFU")
 				&&(!((WindowClassName=="Windows.UI.Core.CoreWindow")&&(WindowText=="Start")))
