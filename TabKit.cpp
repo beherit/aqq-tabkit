@@ -5366,13 +5366,15 @@ LRESULT CALLBACK FrmMainProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					GetClassNameW(WindowFromPoint(Mouse->CursorPos), WindowClassNameW2, sizeof(WindowClassNameW2));
 					UnicodeString WindowClassName2 = WindowClassNameW2;
 					//Okno jest schowane i spelnia inne ponizsze warunki
-					if((!FrmMainVisible)&&(!FrmMainBlockSlide)&&(!FrmMainSlideOut)&&(!FrmMainSlideIn)&&(!IsIconic(LastActiveWindow))
+					if((!FrmMainVisible)&&(!FrmMainBlockSlide)&&(!FrmMainSlideOut)&&(!FrmMainSlideIn)
+					&&(!IsIconic(LastActiveWindow))
 					&&((IsWindowVisible(LastActiveWindow))
 					||(WindowClassName=="TaskSwitcherWnd")
-					||(WindowClassName!="MSTaskListWClass")
+					||(WindowClassName=="MSTaskListWClass")
 					||(WindowClassName=="MultitaskingViewFrame")
-					||(WindowClassName=="ForegroundStaging"))
-					&&(WindowClassName2!="TrayShowDesktopButtonWClass")&&((WindowFromPoint(Mouse->CursorPos)!=hToolbarWindow32)))
+					||(WindowClassName=="ForegroundStaging")
+					||(WindowClassName2=="ToolbarWindow32"))
+					&&(WindowClassName2!="TrayShowDesktopButtonWClass"))
 					{
 						//Sprawdzanie czy aktywna jest aplikacja pelno ekranowa
 						ChkFullScreenMode();
@@ -5387,6 +5389,7 @@ LRESULT CALLBACK FrmMainProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 							SetTimer(hTimerFrm,TIMER_FRMMAIN_SLIDEIN,FrmMainStepInterval,(TIMERPROC)TimerFrmProc);
 						}
 					}
+					else SetForegroundWindow(WindowFromPoint(Mouse->CursorPos));
 				}
 			}
 		}
@@ -5640,10 +5643,11 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					GetClassNameW(WindowFromPoint(Mouse->CursorPos), WindowClassNameW2, sizeof(WindowClassNameW2));
 					UnicodeString WindowClassName2 = WindowClassNameW2;
 					//Okno jest schowane i spelnia inne ponizsze warunki
-					if((!FrmSendVisible)&&(!FrmSendBlockSlide)&&(!FrmSendSlideOut)&&(!FrmSendSlideIn)&&(!IsIconic(LastActiveWindow))
+					if((!FrmSendVisible)&&(!FrmSendBlockSlide)&&(!FrmSendSlideOut)&&(!FrmSendSlideIn)
+					&&(!IsIconic(LastActiveWindow))
 					&&((IsWindowVisible(LastActiveWindow))
 					||(WindowClassName=="TaskSwitcherWnd")
-					||(WindowClassName!="MSTaskListWClass")
+					||(WindowClassName=="MSTaskListWClass")
 					||(WindowClassName=="MultitaskingViewFrame")
 					||(WindowClassName=="ForegroundStaging")
 					||(WindowClassName2=="ToolbarWindow32"))
@@ -5668,6 +5672,7 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 							SetTimer(hTimerFrm,TIMER_FRMSEND_SLIDEIN,FrmSendStepInterval,(TIMERPROC)TimerFrmProc);
 						}
 					}
+					else SetForegroundWindow(WindowFromPoint(Mouse->CursorPos));
 				}
 			}
 		}
