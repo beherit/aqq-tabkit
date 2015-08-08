@@ -3296,6 +3296,10 @@ object SettingsForm: TSettingsForm
       ImageIndex = 2
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object RememberUnsentMsgGroupBox: TsGroupBox
         Tag = 42
         Left = 18
@@ -3433,6 +3437,10 @@ object SettingsForm: TSettingsForm
       ImageIndex = 3
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object TabsHotKeysGroupBox: TsGroupBox
         Tag = 54
         Left = 18
@@ -3535,6 +3543,10 @@ object SettingsForm: TSettingsForm
       ImageIndex = 4
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object RestoreTabsSessionGroupBox: TsGroupBox
         Tag = 58
         Left = 18
@@ -3984,6 +3996,10 @@ object SettingsForm: TSettingsForm
       ImageIndex = 7
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object ClipTabsGroupBox: TsGroupBox
         Tag = 79
         Left = 18
@@ -4124,6 +4140,10 @@ object SettingsForm: TSettingsForm
       ImageIndex = 8
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object FavouritesTabsGroupBox: TsGroupBox
         Tag = 87
         Left = 18
@@ -4716,11 +4736,11 @@ object SettingsForm: TSettingsForm
         Tag = 118
         Left = 12
         Top = 278
-        Width = 452
+        Width = 485
         Height = 20
         Caption = 
-          'Blokuj wysuwanie okien przy wci'#347'ni'#281'tym klawiszu Ctrl oraz lewym/' +
-          'prawym przycisku myszy'
+          'Blokuj wysuwanie okien przy wci'#347'ni'#281'tym klawiszu Ctrl lub Alt ora' +
+          'z lewym/prawym przycisku myszy'
         Checked = True
         State = cbChecked
         TabOrder = 3

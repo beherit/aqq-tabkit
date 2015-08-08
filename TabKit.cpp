@@ -4225,8 +4225,11 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				//Pokazywanie okna rozmowy (gdy kursor zblizy sie do krawedzi ekranu)
 				if((!FrmSendVisible)&&(!SecureMode)&&(!FrmSendSlideOut)&&(!FrmSendSlideIn)&&(!FrmSendBlockSlide))
 				{
-					//Blokada wysuwania okna przy wcisnietym klawiszu Ctrl/LPM/PPM
-					if((!SideSlideCtrlAndMouseBlockChk)||((SideSlideCtrlAndMouseBlockChk)&&(GetKeyState(VK_CONTROL)>=0)&&(GetKeyState(VK_LBUTTON)>=0)&&(GetKeyState(VK_RBUTTON)>=0))||((SideSlideCtrlAndMouseBlockChk)&&(GetKeyState(VK_CONTROL)<0)&&(GetKeyState(VK_LBUTTON)<0)))
+					//Blokada wysuwania okna przy wcisnietym klawiszu Ctrl/Alt/LPM/PPM
+					//if((!SideSlideCtrlAndMouseBlockChk)||((SideSlideCtrlAndMouseBlockChk)&&(GetKeyState(VK_CONTROL)>=0)&&(GetKeyState(VK_LBUTTON)>=0)&&(GetKeyState(VK_RBUTTON)>=0))||((SideSlideCtrlAndMouseBlockChk)&&(GetKeyState(VK_CONTROL)<0)&&(GetKeyState(VK_LBUTTON)<0)))
+					if((!SideSlideCtrlAndMouseBlockChk)||((SideSlideCtrlAndMouseBlockChk)&&(((GetKeyState(VK_LBUTTON)>=0)&&(GetKeyState(VK_RBUTTON)>=0)&&(GetKeyState(VK_CONTROL)>=0)&&(GetKeyState(VK_MENU)>=0))||((GetKeyState(VK_SHIFT)<0)))))
+
+					//&&(GetKeyState(VK_CONTROL)>=0)&&(GetKeyState(VK_LBUTTON)>=0)&&(GetKeyState(VK_RBUTTON)>=0))||((SideSlideCtrlAndMouseBlockChk)&&(GetKeyState(VK_CONTROL)<0)&&(GetKeyState(VK_LBUTTON)<0)))
 					{
 						//Kursor znajduje sie przy krawedzi ekranu za ktora zostalo schowane okno
 						if(((FrmSendSlideEdge==1)&&(Mouse->CursorPos.x==0))
@@ -4369,8 +4372,9 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				//Pokazywanie okna kontaktow (gdy kursor zblizy sie do krawedzi ekranu)
 				if((!FrmMainVisible)&&(!SecureMode)&&(!FrmMainSlideOut)&&(!FrmMainSlideIn)&&(!FrmMainBlockSlide))
 				{
-					//Blokada wysuwania okna przy wcisnietym klawiszu Ctrl/LPM/PPM
-					if((!SideSlideCtrlAndMouseBlockChk)||((SideSlideCtrlAndMouseBlockChk)&&(GetKeyState(VK_CONTROL)>=0)&&(GetKeyState(VK_LBUTTON)>=0)&&(GetKeyState(VK_RBUTTON)>=0))||((SideSlideCtrlAndMouseBlockChk)&&(GetKeyState(VK_CONTROL)<0)&&(GetKeyState(VK_LBUTTON)<0)))
+					//Blokada wysuwania okna przy wcisnietym klawiszu Ctrl/Alt/LPM/PPM
+					//if((!SideSlideCtrlAndMouseBlockChk)||((SideSlideCtrlAndMouseBlockChk)&&(GetKeyState(VK_CONTROL)>=0)&&(GetKeyState(VK_LBUTTON)>=0)&&(GetKeyState(VK_RBUTTON)>=0))||((SideSlideCtrlAndMouseBlockChk)&&(GetKeyState(VK_CONTROL)<0)&&(GetKeyState(VK_LBUTTON)<0)))
+					if((!SideSlideCtrlAndMouseBlockChk)||((SideSlideCtrlAndMouseBlockChk)&&(((GetKeyState(VK_LBUTTON)>=0)&&(GetKeyState(VK_RBUTTON)>=0)&&(GetKeyState(VK_CONTROL)>=0)&&(GetKeyState(VK_MENU)>=0))||((GetKeyState(VK_SHIFT)<0)))))
 					{
 						//Kursor znajduje sie przy krawedzi ekranu za ktora zostalo schowane okno
 						if(((FrmMainSlideEdge==1)&&(Mouse->CursorPos.x==0))
