@@ -115,7 +115,7 @@
 115=
 116=Unhide the windows when is active full-screen application
 117=Set exceptions
-118=Block window unhide while holding down the Ctrl key and left/right mouse button
+118=Block window unhide while holding down the Ctrl or Alt key and left/right mouse button
 119=Activate keyboard shortcut Ctrl+Q to paste text from the clipboard as a quotation
 120=Collapse sent pictures to the attachment form
 121=All#Sent#Received
