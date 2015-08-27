@@ -4724,7 +4724,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				//Stan widocznosci okna rozmowy
 				FrmSendVisible = false;
 				//Kursor znajduje sie nad oknem kontaktow
-				if((Mouse->CursorPos.y>FrmMainRect.Top)&&(FrmMainRect.Bottom>Mouse->CursorPos.y)&&(Mouse->CursorPos.x>FrmMainRect.Left)&&(FrmMainRect.Right>Mouse->CursorPos.x))
+				if((FrmMainVisible)&&(Mouse->CursorPos.y>FrmMainRect.Top)&&(FrmMainRect.Bottom>Mouse->CursorPos.y)&&(Mouse->CursorPos.x>FrmMainRect.Left)&&(FrmMainRect.Right>Mouse->CursorPos.x))
 					ActivateAndFocusFrmMain();
 				//Aktywacja poprzedniego okna
 				else {
@@ -5084,7 +5084,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				//Stan widocznosci okna kontaktow
 				FrmMainVisible = false;
 				//Kursor znajduje sie nad oknem rozmowy
-				if((Mouse->CursorPos.y>FrmSendRect.Top)&&(FrmSendRect.Bottom>Mouse->CursorPos.y)&&(Mouse->CursorPos.x>FrmSendRect.Left)&&(FrmSendRect.Right>Mouse->CursorPos.x))
+				if((FrmSendVisible)&&(Mouse->CursorPos.y>FrmSendRect.Top)&&(FrmSendRect.Bottom>Mouse->CursorPos.y)&&(Mouse->CursorPos.x>FrmSendRect.Left)&&(FrmSendRect.Right>Mouse->CursorPos.x))
 					ActivateAndFocusFrmSend();
 				//Aktywacja poprzedniego okna
 				else {
