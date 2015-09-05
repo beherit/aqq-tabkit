@@ -2690,7 +2690,7 @@ object SettingsForm: TSettingsForm
         HoverFont.Height = -11
         HoverFont.Name = 'Tahoma'
         HoverFont.Style = [fsUnderline]
-        URL = 'mailto:kontakt@beherit.pl'
+        URL = 'mailto:contact@beherit.pl'
       end
       object XMPPWebLabel: TsWebLabel
         Left = 165
