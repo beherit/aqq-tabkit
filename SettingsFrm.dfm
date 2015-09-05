@@ -2775,6 +2775,7 @@ object SettingsForm: TSettingsForm
           FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
           FF00FFFFFF00}
         Transparent = True
+        Visible = False
       end
       object ForumImage: TImage
         Left = 32
@@ -2819,6 +2820,7 @@ object SettingsForm: TSettingsForm
           55555555556355555563555555555555553E5454541553535300525252005050
           50004F4F4F00}
         Transparent = True
+        Visible = False
       end
       object ForumWebLabel: TsWebLabel
         Tag = 20
@@ -2828,6 +2830,7 @@ object SettingsForm: TSettingsForm
         Height = 13
         Caption = 'Odwied'#378' temat wtyczki na forum AQQ'
         ParentFont = False
+        Visible = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
@@ -2849,6 +2852,7 @@ object SettingsForm: TSettingsForm
         Height = 13
         Caption = 'Znalaz'#322'e'#347' b'#322#261'd? Zg'#322'o'#347' go na bugli'#347'cie'
         ParentFont = False
+        Visible = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
@@ -2939,6 +2943,7 @@ object SettingsForm: TSettingsForm
           CC0001B3CC5E01B3CC5E01B3CC0001B3CC0001B3CC0003753300056900000000
           000001525E00}
         Transparent = True
+        Visible = False
       end
       object StarWebLabel: TsWebLabel
         Tag = 22
@@ -2948,6 +2953,7 @@ object SettingsForm: TSettingsForm
         Height = 13
         Caption = 'Oce'#324' dodatek na forum AQQ'
         ParentFont = False
+        Visible = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
@@ -3074,14 +3080,6 @@ object SettingsForm: TSettingsForm
             BoundLabel.Active = True
             BoundLabel.Caption = 'Liczba zapami'#281'tywanych zak'#322'adek'
             BoundLabel.Indent = 2
-            BoundLabel.Font.Charset = DEFAULT_CHARSET
-            BoundLabel.Font.Color = clWindowText
-            BoundLabel.Font.Height = -11
-            BoundLabel.Font.Name = 'Tahoma'
-            BoundLabel.Font.Style = []
-            BoundLabel.Layout = sclLeft
-            BoundLabel.MaxWidth = 0
-            BoundLabel.UseSkinColor = True
             MaxValue = 30
             MinValue = 5
             Value = 5
@@ -3238,14 +3236,6 @@ object SettingsForm: TSettingsForm
             BoundLabel.Active = True
             BoundLabel.Caption = 'Ilo'#347#263' wy'#347'wietlanych element'#243'w'
             BoundLabel.Indent = 2
-            BoundLabel.Font.Charset = DEFAULT_CHARSET
-            BoundLabel.Font.Color = clWindowText
-            BoundLabel.Font.Height = -11
-            BoundLabel.Font.Name = 'Tahoma'
-            BoundLabel.Font.Style = []
-            BoundLabel.Layout = sclLeft
-            BoundLabel.MaxWidth = 0
-            BoundLabel.UseSkinColor = True
             MaxValue = 10
             MinValue = 5
             Value = 5
@@ -3278,14 +3268,7 @@ object SettingsForm: TSettingsForm
             BoundLabel.Active = True
             BoundLabel.Caption = 'Format daty'
             BoundLabel.Indent = 6
-            BoundLabel.Font.Charset = DEFAULT_CHARSET
-            BoundLabel.Font.Color = clWindowText
-            BoundLabel.Font.Height = -11
-            BoundLabel.Font.Name = 'Tahoma'
-            BoundLabel.Font.Style = []
             BoundLabel.Layout = sclTopLeft
-            BoundLabel.MaxWidth = 0
-            BoundLabel.UseSkinColor = True
           end
         end
       end
@@ -3296,10 +3279,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 2
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object RememberUnsentMsgGroupBox: TsGroupBox
         Tag = 42
         Left = 18
@@ -3437,10 +3416,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 3
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object TabsHotKeysGroupBox: TsGroupBox
         Tag = 54
         Left = 18
@@ -3543,10 +3518,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 4
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object RestoreTabsSessionGroupBox: TsGroupBox
         Tag = 58
         Left = 18
@@ -3759,15 +3730,6 @@ object SettingsForm: TSettingsForm
         Width = 76
         Height = 21
         Alignment = taLeftJustify
-        BoundLabel.Indent = 0
-        BoundLabel.Font.Charset = DEFAULT_CHARSET
-        BoundLabel.Font.Color = clWindowText
-        BoundLabel.Font.Height = -11
-        BoundLabel.Font.Name = 'Tahoma'
-        BoundLabel.Font.Style = []
-        BoundLabel.Layout = sclLeft
-        BoundLabel.MaxWidth = 0
-        BoundLabel.UseSkinColor = True
         SkinData.SkinSection = 'COMBOBOX'
         VerticalAlignment = taAlignTop
         Style = csDropDownList
@@ -3883,15 +3845,6 @@ object SettingsForm: TSettingsForm
           TextHint = 'Wpisz tutaj sw'#243'j tekst'
           OnChange = aTitlebarTweakChkExecute
           SkinData.SkinSection = 'EDIT'
-          BoundLabel.Indent = 0
-          BoundLabel.Font.Charset = DEFAULT_CHARSET
-          BoundLabel.Font.Color = clWindowText
-          BoundLabel.Font.Height = -11
-          BoundLabel.Font.Name = 'Tahoma'
-          BoundLabel.Font.Style = []
-          BoundLabel.Layout = sclLeft
-          BoundLabel.MaxWidth = 0
-          BoundLabel.UseSkinColor = True
         end
         object TweakFrmMainTitlebarMode2RadioButton: TsRadioButton
           Left = 10
@@ -3910,15 +3863,7 @@ object SettingsForm: TSettingsForm
           Height = 21
           Alignment = taLeftJustify
           BoundLabel.Caption = 'TweakFrmMainTitlebarModeExComboBox'
-          BoundLabel.Indent = 0
-          BoundLabel.Font.Charset = DEFAULT_CHARSET
-          BoundLabel.Font.Color = clWindowText
-          BoundLabel.Font.Height = -11
-          BoundLabel.Font.Name = 'Tahoma'
-          BoundLabel.Font.Style = []
           BoundLabel.Layout = sclLeftTop
-          BoundLabel.MaxWidth = 0
-          BoundLabel.UseSkinColor = True
           SkinData.SkinSection = 'COMBOBOX'
           VerticalAlignment = taAlignTop
           Style = csDropDownList
@@ -3996,10 +3941,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 7
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object ClipTabsGroupBox: TsGroupBox
         Tag = 79
         Left = 18
@@ -4140,10 +4081,6 @@ object SettingsForm: TSettingsForm
       ImageIndex = 8
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object FavouritesTabsGroupBox: TsGroupBox
         Tag = 87
         Left = 18
@@ -4276,14 +4213,7 @@ object SettingsForm: TSettingsForm
           BoundLabel.Active = True
           BoundLabel.Caption = 'Ulubione zak'#322'adki'
           BoundLabel.Indent = 6
-          BoundLabel.Font.Charset = DEFAULT_CHARSET
-          BoundLabel.Font.Color = clWindowText
-          BoundLabel.Font.Height = -11
-          BoundLabel.Font.Name = 'Tahoma'
-          BoundLabel.Font.Style = []
           BoundLabel.Layout = sclTopLeft
-          BoundLabel.MaxWidth = 0
-          BoundLabel.UseSkinColor = True
           SkinData.SkinSection = 'EDIT'
           Columns = <
             item
@@ -4403,15 +4333,6 @@ object SettingsForm: TSettingsForm
             SkinData.SkinSection = 'EDIT'
             BoundLabel.Active = True
             BoundLabel.Caption = 'Czas wysuwania okna (ms)'
-            BoundLabel.Indent = 0
-            BoundLabel.Font.Charset = DEFAULT_CHARSET
-            BoundLabel.Font.Color = clWindowText
-            BoundLabel.Font.Height = -11
-            BoundLabel.Font.Name = 'Tahoma'
-            BoundLabel.Font.Style = []
-            BoundLabel.Layout = sclLeft
-            BoundLabel.MaxWidth = 0
-            BoundLabel.UseSkinColor = True
             Increment = 10
             MaxValue = 1000
             MinValue = 30
@@ -4430,15 +4351,6 @@ object SettingsForm: TSettingsForm
             SkinData.SkinSection = 'EDIT'
             BoundLabel.Active = True
             BoundLabel.Caption = 'Czas chowania okna (ms)'
-            BoundLabel.Indent = 0
-            BoundLabel.Font.Charset = DEFAULT_CHARSET
-            BoundLabel.Font.Color = clWindowText
-            BoundLabel.Font.Height = -11
-            BoundLabel.Font.Name = 'Tahoma'
-            BoundLabel.Font.Style = []
-            BoundLabel.Layout = sclLeft
-            BoundLabel.MaxWidth = 0
-            BoundLabel.UseSkinColor = True
             Increment = 10
             MaxValue = 1000
             MinValue = 30
@@ -4457,15 +4369,6 @@ object SettingsForm: TSettingsForm
             SkinData.SkinSection = 'EDIT'
             BoundLabel.Active = True
             BoundLabel.Caption = 'Op'#243#378'nienie wysuwania okna (ms)'
-            BoundLabel.Indent = 0
-            BoundLabel.Font.Charset = DEFAULT_CHARSET
-            BoundLabel.Font.Color = clWindowText
-            BoundLabel.Font.Height = -11
-            BoundLabel.Font.Name = 'Tahoma'
-            BoundLabel.Font.Style = []
-            BoundLabel.Layout = sclLeft
-            BoundLabel.MaxWidth = 0
-            BoundLabel.UseSkinColor = True
             Increment = 10
             MaxValue = 3000
             MinValue = 1
@@ -4484,15 +4387,6 @@ object SettingsForm: TSettingsForm
             SkinData.SkinSection = 'EDIT'
             BoundLabel.Active = True
             BoundLabel.Caption = 'Op'#243#378'nienie chowania okna (ms)'
-            BoundLabel.Indent = 0
-            BoundLabel.Font.Charset = DEFAULT_CHARSET
-            BoundLabel.Font.Color = clWindowText
-            BoundLabel.Font.Height = -11
-            BoundLabel.Font.Name = 'Tahoma'
-            BoundLabel.Font.Style = []
-            BoundLabel.Layout = sclLeft
-            BoundLabel.MaxWidth = 0
-            BoundLabel.UseSkinColor = True
             Increment = 10
             MaxValue = 9000
             MinValue = 1
@@ -4523,15 +4417,6 @@ object SettingsForm: TSettingsForm
           Width = 66
           Height = 21
           Alignment = taLeftJustify
-          BoundLabel.Indent = 0
-          BoundLabel.Font.Charset = DEFAULT_CHARSET
-          BoundLabel.Font.Color = clWindowText
-          BoundLabel.Font.Height = -11
-          BoundLabel.Font.Name = 'Tahoma'
-          BoundLabel.Font.Style = []
-          BoundLabel.Layout = sclLeft
-          BoundLabel.MaxWidth = 0
-          BoundLabel.UseSkinColor = True
           SkinData.SkinSection = 'COMBOBOX'
           VerticalAlignment = taAlignTop
           Style = csDropDownList
@@ -4591,15 +4476,6 @@ object SettingsForm: TSettingsForm
             SkinData.SkinSection = 'EDIT'
             BoundLabel.Active = True
             BoundLabel.Caption = 'Czas wysuwania okna (ms)'
-            BoundLabel.Indent = 0
-            BoundLabel.Font.Charset = DEFAULT_CHARSET
-            BoundLabel.Font.Color = clWindowText
-            BoundLabel.Font.Height = -11
-            BoundLabel.Font.Name = 'Tahoma'
-            BoundLabel.Font.Style = []
-            BoundLabel.Layout = sclLeft
-            BoundLabel.MaxWidth = 0
-            BoundLabel.UseSkinColor = True
             Increment = 10
             MaxValue = 1000
             MinValue = 30
@@ -4618,15 +4494,6 @@ object SettingsForm: TSettingsForm
             SkinData.SkinSection = 'EDIT'
             BoundLabel.Active = True
             BoundLabel.Caption = 'Czas chowania okna (ms)'
-            BoundLabel.Indent = 0
-            BoundLabel.Font.Charset = DEFAULT_CHARSET
-            BoundLabel.Font.Color = clWindowText
-            BoundLabel.Font.Height = -11
-            BoundLabel.Font.Name = 'Tahoma'
-            BoundLabel.Font.Style = []
-            BoundLabel.Layout = sclLeft
-            BoundLabel.MaxWidth = 0
-            BoundLabel.UseSkinColor = True
             Increment = 10
             MaxValue = 1000
             MinValue = 30
@@ -4645,15 +4512,6 @@ object SettingsForm: TSettingsForm
             SkinData.SkinSection = 'EDIT'
             BoundLabel.Active = True
             BoundLabel.Caption = 'Op'#243#378'nienie wysuwania okna (ms)'
-            BoundLabel.Indent = 0
-            BoundLabel.Font.Charset = DEFAULT_CHARSET
-            BoundLabel.Font.Color = clWindowText
-            BoundLabel.Font.Height = -11
-            BoundLabel.Font.Name = 'Tahoma'
-            BoundLabel.Font.Style = []
-            BoundLabel.Layout = sclLeft
-            BoundLabel.MaxWidth = 0
-            BoundLabel.UseSkinColor = True
             Increment = 10
             MaxValue = 3000
             MinValue = 1
@@ -4672,15 +4530,6 @@ object SettingsForm: TSettingsForm
             SkinData.SkinSection = 'EDIT'
             BoundLabel.Active = True
             BoundLabel.Caption = 'Op'#243#378'nienie chowania okna (ms)'
-            BoundLabel.Indent = 0
-            BoundLabel.Font.Charset = DEFAULT_CHARSET
-            BoundLabel.Font.Color = clWindowText
-            BoundLabel.Font.Height = -11
-            BoundLabel.Font.Name = 'Tahoma'
-            BoundLabel.Font.Style = []
-            BoundLabel.Layout = sclLeft
-            BoundLabel.MaxWidth = 0
-            BoundLabel.UseSkinColor = True
             Increment = 10
             MaxValue = 9000
             MinValue = 1
@@ -4694,15 +4543,6 @@ object SettingsForm: TSettingsForm
           Width = 66
           Height = 21
           Alignment = taLeftJustify
-          BoundLabel.Indent = 0
-          BoundLabel.Font.Charset = DEFAULT_CHARSET
-          BoundLabel.Font.Color = clWindowText
-          BoundLabel.Font.Height = -11
-          BoundLabel.Font.Name = 'Tahoma'
-          BoundLabel.Font.Style = []
-          BoundLabel.Layout = sclLeft
-          BoundLabel.MaxWidth = 0
-          BoundLabel.UseSkinColor = True
           SkinData.SkinSection = 'COMBOBOX'
           VerticalAlignment = taAlignTop
           Style = csDropDownList
@@ -4976,15 +4816,6 @@ object SettingsForm: TSettingsForm
         Width = 76
         Height = 21
         Alignment = taLeftJustify
-        BoundLabel.Indent = 0
-        BoundLabel.Font.Charset = DEFAULT_CHARSET
-        BoundLabel.Font.Color = clWindowText
-        BoundLabel.Font.Height = -11
-        BoundLabel.Font.Name = 'Tahoma'
-        BoundLabel.Font.Style = []
-        BoundLabel.Layout = sclLeft
-        BoundLabel.MaxWidth = 0
-        BoundLabel.UseSkinColor = True
         SkinData.SkinSection = 'COMBOBOX'
         VerticalAlignment = taAlignTop
         Style = csDropDownList
@@ -5033,15 +4864,6 @@ object SettingsForm: TSettingsForm
           SkinData.SkinSection = 'EDIT'
           BoundLabel.Active = True
           BoundLabel.Caption = 'Czas wy'#347'wietlania (s)'
-          BoundLabel.Indent = 0
-          BoundLabel.Font.Charset = DEFAULT_CHARSET
-          BoundLabel.Font.Color = clWindowText
-          BoundLabel.Font.Height = -11
-          BoundLabel.Font.Name = 'Tahoma'
-          BoundLabel.Font.Style = []
-          BoundLabel.Layout = sclLeft
-          BoundLabel.MaxWidth = 0
-          BoundLabel.UseSkinColor = True
           MaxValue = 60
           MinValue = 1
           Value = 6
@@ -5053,15 +4875,6 @@ object SettingsForm: TSettingsForm
           Width = 44
           Height = 21
           Alignment = taLeftJustify
-          BoundLabel.Indent = 0
-          BoundLabel.Font.Charset = DEFAULT_CHARSET
-          BoundLabel.Font.Color = clWindowText
-          BoundLabel.Font.Height = -11
-          BoundLabel.Font.Name = 'Tahoma'
-          BoundLabel.Font.Style = []
-          BoundLabel.Layout = sclLeft
-          BoundLabel.MaxWidth = 0
-          BoundLabel.UseSkinColor = True
           SkinData.SkinSection = 'COMBOBOX'
           VerticalAlignment = taAlignTop
           Style = csDropDownList
@@ -5139,15 +4952,6 @@ object SettingsForm: TSettingsForm
         Width = 108
         Height = 21
         Alignment = taLeftJustify
-        BoundLabel.Indent = 0
-        BoundLabel.Font.Charset = DEFAULT_CHARSET
-        BoundLabel.Font.Color = clWindowText
-        BoundLabel.Font.Height = -11
-        BoundLabel.Font.Name = 'Tahoma'
-        BoundLabel.Font.Style = []
-        BoundLabel.Layout = sclLeft
-        BoundLabel.MaxWidth = 0
-        BoundLabel.UseSkinColor = True
         SkinData.SkinSection = 'COMBOBOX'
         VerticalAlignment = taAlignTop
         Style = csDropDownList
@@ -5171,15 +4975,6 @@ object SettingsForm: TSettingsForm
     TabOrder = 5
     Visible = False
     WordWrap = False
-    BoundLabel.Indent = 0
-    BoundLabel.Font.Charset = DEFAULT_CHARSET
-    BoundLabel.Font.Color = clWindowText
-    BoundLabel.Font.Height = -11
-    BoundLabel.Font.Name = 'Tahoma'
-    BoundLabel.Font.Style = []
-    BoundLabel.Layout = sclLeft
-    BoundLabel.MaxWidth = 0
-    BoundLabel.UseSkinColor = True
     SkinData.SkinSection = 'EDIT'
   end
   object UnsentMsgTrayIcon: TTrayIcon
