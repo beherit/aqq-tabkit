@@ -12192,7 +12192,7 @@ extern "C" PPluginInfo __declspec(dllexport) __stdcall AQQPluginInfo(DWORD AQQVe
 	PluginInfo.Version = PLUGIN_MAKE_VERSION(1,11,0,0);
 	PluginInfo.Description = L"Oferuje masê funkcjonalnoœci usprawniaj¹cych korzystanie z komunikatora np. zapamiêtywanie zamkniêtych zak³adek, inteligentne prze³¹czanie, zapamiêtywanie sesji.";
 	PluginInfo.Author = L"Krzysztof Grochocki";
-	PluginInfo.AuthorMail = L"kontakt@beherit.pl";
+	PluginInfo.AuthorMail = L"contact@beherit.pl";
 	PluginInfo.Copyright = L"Krzysztof Grochocki";
 	PluginInfo.Homepage = L"http://beherit.pl";
 	PluginInfo.Flag = 0;
