@@ -1102,34 +1102,37 @@ void StopPreFrmMainSlideIn()
 //Ustawienie fokusa na polu wpisywania wiadomosci
 void FocusRichEdit()
 {
-	//Blokada lokalnego hooka na myszke
-	BlockThreadMouseProc = true;
-	//Pobieranie pozycji kursora
-	SendMessage(hRichEdit, EM_EXGETSEL, NULL, (LPARAM)&hRichEditSelPos);
-	//Emulacja klikniecia
-	TRect RichEditRect;
-	GetWindowRect(hRichEdit,&RichEditRect);
-	POINT pCur;
-	GetCursorPos(&pCur);
-	SetCursorPos(RichEditRect.Right-5,RichEditRect.Bottom-5);
-	mouse_event(MOUSEEVENTF_LEFTDOWN|MOUSEEVENTF_LEFTUP,0,0,0,0);
-	SetCursorPos(pCur.x,pCur.y);
-	//Pobieranie tekstu z RichEdit
-	int iLength = GetWindowTextLengthW(hRichEdit)+1;
-	wchar_t* pBuff = new wchar_t[iLength];
-	GetWindowTextW(hRichEdit, pBuff, iLength);
-	UnicodeString Text = pBuff;
-	delete pBuff;
-	//Pozycja kursora inna niz na koncu tekstu
-	if(hRichEditSelPos.cpMin!=Text.Length())
+	if((GetFocus()!=hFrmSend)||(GetFocus()!=hRichEdit))
 	{
-		//Blokowanie lokalnego hooka na klawiature
-		BlockThreadKeyboardProc = true;
-		//Wlaczenie timera ustawiania starej pozycji kursora
-		SetTimer(hTimerFrm,TIMER_EXSETSEL,100,(TIMERPROC)TimerFrmProc);
+		//Blokada lokalnego hooka na myszke
+		BlockThreadMouseProc = true;
+		//Pobieranie pozycji kursora
+		SendMessage(hRichEdit, EM_EXGETSEL, NULL, (LPARAM)&hRichEditSelPos);
+		//Emulacja klikniecia
+		TRect RichEditRect;
+		GetWindowRect(hRichEdit,&RichEditRect);
+		POINT pCur;
+		GetCursorPos(&pCur);
+		SetCursorPos(RichEditRect.Right-5,RichEditRect.Bottom-5);
+		mouse_event(MOUSEEVENTF_LEFTDOWN|MOUSEEVENTF_LEFTUP,0,0,0,0);
+		SetCursorPos(pCur.x,pCur.y);
+		//Pobieranie tekstu z RichEdit
+		int iLength = GetWindowTextLengthW(hRichEdit)+1;
+		wchar_t* pBuff = new wchar_t[iLength];
+		GetWindowTextW(hRichEdit, pBuff, iLength);
+		UnicodeString Text = pBuff;
+		delete pBuff;
+		//Pozycja kursora inna niz na koncu tekstu
+		if(hRichEditSelPos.cpMin!=Text.Length())
+		{
+			//Blokowanie lokalnego hooka na klawiature
+			BlockThreadKeyboardProc = true;
+			//Wlaczenie timera ustawiania starej pozycji kursora
+			SetTimer(hTimerFrm,TIMER_EXSETSEL,100,(TIMERPROC)TimerFrmProc);
+		}
+		//Wlaczenie timera wylaczania blokady lokalnego hooka na myszke
+		SetTimer(hTimerFrm,TIMER_UNBLOCK_MOUSE_PROC,100,(TIMERPROC)TimerFrmProc);
 	}
-	//Wlaczenie timera wylaczania blokady lokalnego hooka na myszke
-	SetTimer(hTimerFrm,TIMER_UNBLOCK_MOUSE_PROC,100,(TIMERPROC)TimerFrmProc);
 }
 //---------------------------------------------------------------------------
 
