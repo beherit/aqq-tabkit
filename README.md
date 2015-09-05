@@ -10,10 +10,10 @@ Do skompilowania wtyczki TabKit potrzebne jest:
 * Opcjonalnie [UPX](http://upx.sourceforge.net/) dla zmniejszenia rozmiaru pliku wynikowego (w szczególności wersji x64)
 
 ### Błędy
-Znalezione błędy wtyczki należy zgłaszać na [tracekerze](http://forum.aqq.eu/tracker/project-121-tabkit/) znajdującym na oficjalnym forum komunikatora AQQ lub pisząc bezpośrednio do autora wtyczki (preferowany kontakt poprzez Jabber).
+Znalezione błędy wtyczki należy zgłaszać na [tracekerze](http://forum.aqq.eu/tracker/project-121-tabkit/) znajdującym na oficjalnym forum komunikatora AQQ lub pisząc bezpośrednio do autora wtyczki.
 
 ### Kontakt z autorem
-Autorem wtyczki TabKit jest Krzysztof Grochocki. Możesz skontaktować się z nim drogą mailową (kontakt@beherit.pl) lub poprzez Jabber (im@beherit.pl).
+Autorem wtyczki TabKit jest Krzysztof Grochocki. Możesz skontaktować się z nim poprzez XMPP pisząc na im@beherit.pl.
 
 ### Licencja
 Wtyczka TabKit objęta jest licencją [GNU General Public License 3](http://www.gnu.org/copyleft/gpl.html).
