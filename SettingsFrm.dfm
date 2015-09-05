@@ -2677,7 +2677,7 @@ object SettingsForm: TSettingsForm
         Top = 79
         Width = 92
         Height = 13
-        Caption = 'kontakt@beherit.pl'
+        Caption = 'contact@beherit.pl'
         ParentFont = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
