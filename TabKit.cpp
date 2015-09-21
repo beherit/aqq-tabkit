@@ -260,7 +260,7 @@ bool FrmPosExist = false;
 //Informacja o widocznym oknie dolaczania do konferencji
 bool FrmChatJoinExist = false;
 //Wersja systemu Windows
-UnicodeString WindowsVersion;
+bool IsWindows10 = false;
 //LOAD/UNLOAD-PLUGIN---------------------------------------------------------
 //Gdy zostalo uruchomione zaladowanie wtyczki
 bool LoadExecuted = false;
@@ -1373,8 +1373,8 @@ void ChkFullScreenMode()
 //Sprawdzanie czy okno jest na aktywnym wirtualnym pulpicie
 bool ChkWindowOnCurrentVirtualDesktop(HWND hWnd)
 {
-	//Windows 10
-	if(WindowsVersion.Pos("Windows 10"))
+	//Sprawdzanie tylko na Windows 10
+	if(IsWindows10)
 	{
 		CoInitializeEx(NULL, COINIT_MULTITHREADED);
 		IVirtualDesktopManager *pVirtualDesktopManager;
@@ -1388,7 +1388,7 @@ bool ChkWindowOnCurrentVirtualDesktop(HWND hWnd)
 		}
 		CoUninitialize();
 	}
-	//Pozostale wersje lub niedzialajace API
+	//Pozostale wersje Windowsa lub niedzialajace API
 	return true;
 }
 //---------------------------------------------------------------------------
@@ -11835,7 +11835,8 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Load(PPluginLink Link)
 	TRegistry *Registry = new TRegistry();
 	Registry->RootKey = HKEY_LOCAL_MACHINE;
 	Registry->OpenKeyReadOnly("\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion");
-	WindowsVersion = Registry->ReadString("ProductName");
+	UnicodeString ProductName = Registry->ReadString("ProductName");
+	if(ProductName.Pos("Windows 10")) IsWindows10 = true;
 	Registry->CloseKey();
 	delete Registry;
 	//Rejestowanie klasy okna timera
