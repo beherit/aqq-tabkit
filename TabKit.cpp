@@ -26,6 +26,7 @@
 #include <DateUtils.hpp>
 #include <IdHashMessageDigest.hpp>
 #include <boost/regex.hpp>
+#include <Registry.hpp>
 #include <PluginAPI.h>
 #include <LangAPI.hpp>
 #include "KeyboardLights.h"
@@ -258,6 +259,8 @@ bool FrmInstallAddonExist = false;
 bool FrmPosExist = false;
 //Informacja o widocznym oknie dolaczania do konferencji
 bool FrmChatJoinExist = false;
+//Wersja systemu Windows
+UnicodeString WindowsVersion;
 //LOAD/UNLOAD-PLUGIN---------------------------------------------------------
 //Gdy zostalo uruchomione zaladowanie wtyczki
 bool LoadExecuted = false;
@@ -1370,17 +1373,22 @@ void ChkFullScreenMode()
 //Sprawdzanie czy okno jest na aktywnym wirtualnym pulpicie
 bool ChkWindowOnCurrentVirtualDesktop(HWND hwnd)
 {
-	CoInitializeEx(NULL, COINIT_MULTITHREADED);
-	IVirtualDesktopManager *pVirtualDesktopManager;
-	HRESULT hr = CoCreateInstance(CLSID_VirtualDesktopManager, NULL, CLSCTX_INPROC, IID_PPV_ARGS(&pVirtualDesktopManager));
-	if(SUCCEEDED(hr))
+	//Windows 10
+	if(WindowsVersion.Pos("Windows 10"))
 	{
-		int OnCurrentDesktop;
-		pVirtualDesktopManager->IsWindowOnCurrentVirtualDesktop(hwnd, &OnCurrentDesktop);
-		pVirtualDesktopManager->Release();
-		return OnCurrentDesktop;
+		CoInitializeEx(NULL, COINIT_MULTITHREADED);
+		IVirtualDesktopManager *pVirtualDesktopManager;
+		HRESULT hr = CoCreateInstance(CLSID_VirtualDesktopManager, NULL, CLSCTX_INPROC, IID_PPV_ARGS(&pVirtualDesktopManager));
+		if(SUCCEEDED(hr))
+		{
+			int OnCurrentDesktop;
+			pVirtualDesktopManager->IsWindowOnCurrentVirtualDesktop(hwnd, &OnCurrentDesktop);
+			pVirtualDesktopManager->Release();
+			return OnCurrentDesktop;
+		}
+		CoUninitialize();
 	}
-	CoUninitialize();
+	//Pozostale wersje lub niedzialajace API
 	return true;
 }
 //---------------------------------------------------------------------------
@@ -4386,7 +4394,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				}
 			}
 			//Chowanie/pokazywanie okna kontaktow
-			if(FrmMainSlideChk)
+			if((FrmMainSlideChk)&&(hFrmMain))
 			{
 				//Pokazywanie okna kontaktow (gdy kursor zblizy sie do krawedzi ekranu)
 				if((!FrmMainVisible)&&(ChkWindowOnCurrentVirtualDesktop(hFrmMain))&&(!SecureMode)&&(!FrmMainSlideOut)&&(!FrmMainSlideIn)&&(!FrmMainBlockSlide))
@@ -11822,6 +11830,14 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Load(PPluginLink Link)
 		if((ShortenLinksChk)&&((ShortenLinksMode==1)||(ShortenLinksMode==3)))
 			RefreshList();
 	}
+	//Odczyt wersji systemu Windows z rejestru
+	//W normalny sposób nie idzie bo Win10 identyfikuje siê jako Win8
+	TRegistry *Registry = new TRegistry();
+	Registry->RootKey = HKEY_LOCAL_MACHINE;
+	Registry->OpenKeyReadOnly("\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion");
+	WindowsVersion = Registry->ReadString("ProductName");
+	Registry->CloseKey();
+	delete Registry;
 	//Rejestowanie klasy okna timera
 	WNDCLASSEX wincl;
 	wincl.cbSize = sizeof (WNDCLASSEX);
