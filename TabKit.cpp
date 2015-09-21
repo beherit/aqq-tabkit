@@ -28,9 +28,10 @@
 #include <boost/regex.hpp>
 #include <PluginAPI.h>
 #include <LangAPI.hpp>
+#include "KeyboardLights.h"
+#include "VirtualDesktopManager.h"
 #pragma hdrstop
 #include "SettingsFrm.h"
-#include "KeyboardLights.h"
 using namespace boost;
 using namespace std;
 #define RESOURCESCHANGER_SYSTEM_RESOURCECHANGED L"ResourcesChanger/System/ResourceChanged"
@@ -1363,6 +1364,24 @@ void ChkFullScreenMode()
 		else FullScreenMode = false;
 	}
 	else FullScreenMode = false;
+}
+//---------------------------------------------------------------------------
+
+//Sprawdzanie czy okno jest na aktywnym wirtualnym pulpicie
+bool ChkWindowOnCurrentVirtualDesktop(HWND hwnd)
+{
+	CoInitializeEx(NULL, COINIT_MULTITHREADED);
+	IVirtualDesktopManager *pVirtualDesktopManager;
+	HRESULT hr = CoCreateInstance(CLSID_VirtualDesktopManager, NULL, CLSCTX_INPROC, IID_PPV_ARGS(&pVirtualDesktopManager));
+	if(SUCCEEDED(hr))
+	{
+		int OnCurrentDesktop;
+		pVirtualDesktopManager->IsWindowOnCurrentVirtualDesktop(hwnd, &OnCurrentDesktop);
+		pVirtualDesktopManager->Release();
+		return OnCurrentDesktop;
+	}
+	CoUninitialize();
+	return true;
 }
 //---------------------------------------------------------------------------
 
@@ -4226,7 +4245,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			if((FrmSendSlideChk)&&(hFrmSend))
 			{
 				//Pokazywanie okna rozmowy (gdy kursor zblizy sie do krawedzi ekranu)
-				if((!FrmSendVisible)&&(!SecureMode)&&(!FrmSendSlideOut)&&(!FrmSendSlideIn)&&(!FrmSendBlockSlide))
+				if((!FrmSendVisible)&&(ChkWindowOnCurrentVirtualDesktop(hFrmSend))&&(!SecureMode)&&(!FrmSendSlideOut)&&(!FrmSendSlideIn)&&(!FrmSendBlockSlide))
 				{
 					//Blokada wysuwania okna przy wcisnietym klawiszu Ctrl/Alt/LPM/PPM
 					if((!SideSlideCtrlAndMouseBlockChk)||((SideSlideCtrlAndMouseBlockChk)&&(((GetKeyState(VK_LBUTTON)>=0)&&(GetKeyState(VK_RBUTTON)>=0)&&(GetKeyState(VK_CONTROL)>=0)&&(GetKeyState(VK_MENU)>=0))||((GetKeyState(VK_SHIFT)<0)))))
@@ -4370,7 +4389,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			if(FrmMainSlideChk)
 			{
 				//Pokazywanie okna kontaktow (gdy kursor zblizy sie do krawedzi ekranu)
-				if((!FrmMainVisible)&&(!SecureMode)&&(!FrmMainSlideOut)&&(!FrmMainSlideIn)&&(!FrmMainBlockSlide))
+				if((!FrmMainVisible)&&(ChkWindowOnCurrentVirtualDesktop(hFrmMain))&&(!SecureMode)&&(!FrmMainSlideOut)&&(!FrmMainSlideIn)&&(!FrmMainBlockSlide))
 				{
 					//Blokada wysuwania okna przy wcisnietym klawiszu Ctrl/Alt/LPM/PPM
 					if((!SideSlideCtrlAndMouseBlockChk)||((SideSlideCtrlAndMouseBlockChk)&&(((GetKeyState(VK_LBUTTON)>=0)&&(GetKeyState(VK_RBUTTON)>=0)&&(GetKeyState(VK_CONTROL)>=0)&&(GetKeyState(VK_MENU)>=0))||((GetKeyState(VK_SHIFT)<0)))))
