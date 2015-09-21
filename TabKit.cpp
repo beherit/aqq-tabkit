@@ -4229,10 +4229,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				if((!FrmSendVisible)&&(!SecureMode)&&(!FrmSendSlideOut)&&(!FrmSendSlideIn)&&(!FrmSendBlockSlide))
 				{
 					//Blokada wysuwania okna przy wcisnietym klawiszu Ctrl/Alt/LPM/PPM
-					//if((!SideSlideCtrlAndMouseBlockChk)||((SideSlideCtrlAndMouseBlockChk)&&(GetKeyState(VK_CONTROL)>=0)&&(GetKeyState(VK_LBUTTON)>=0)&&(GetKeyState(VK_RBUTTON)>=0))||((SideSlideCtrlAndMouseBlockChk)&&(GetKeyState(VK_CONTROL)<0)&&(GetKeyState(VK_LBUTTON)<0)))
 					if((!SideSlideCtrlAndMouseBlockChk)||((SideSlideCtrlAndMouseBlockChk)&&(((GetKeyState(VK_LBUTTON)>=0)&&(GetKeyState(VK_RBUTTON)>=0)&&(GetKeyState(VK_CONTROL)>=0)&&(GetKeyState(VK_MENU)>=0))||((GetKeyState(VK_SHIFT)<0)))))
-
-					//&&(GetKeyState(VK_CONTROL)>=0)&&(GetKeyState(VK_LBUTTON)>=0)&&(GetKeyState(VK_RBUTTON)>=0))||((SideSlideCtrlAndMouseBlockChk)&&(GetKeyState(VK_CONTROL)<0)&&(GetKeyState(VK_LBUTTON)<0)))
 					{
 						//Kursor znajduje sie przy krawedzi ekranu za ktora zostalo schowane okno
 						if(((FrmSendSlideEdge==1)&&(Mouse->CursorPos.x==0))
@@ -4278,7 +4275,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 						//Kursor nie znajduje sie przy krawedzi ekranu za ktora zostalo schowane okno
 						else if(PreFrmSendSlideIn) StopPreFrmSendSlideIn();
 					}
-					//Wcisniete klawisze Ctrl/LPM/PPM
+					//Wcisniete klawisze Ctrl/Alt/LPM/PPM
 					else
 					{
 						//Zatrzymanie procedury wysuwania okna
@@ -4376,7 +4373,6 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				if((!FrmMainVisible)&&(!SecureMode)&&(!FrmMainSlideOut)&&(!FrmMainSlideIn)&&(!FrmMainBlockSlide))
 				{
 					//Blokada wysuwania okna przy wcisnietym klawiszu Ctrl/Alt/LPM/PPM
-					//if((!SideSlideCtrlAndMouseBlockChk)||((SideSlideCtrlAndMouseBlockChk)&&(GetKeyState(VK_CONTROL)>=0)&&(GetKeyState(VK_LBUTTON)>=0)&&(GetKeyState(VK_RBUTTON)>=0))||((SideSlideCtrlAndMouseBlockChk)&&(GetKeyState(VK_CONTROL)<0)&&(GetKeyState(VK_LBUTTON)<0)))
 					if((!SideSlideCtrlAndMouseBlockChk)||((SideSlideCtrlAndMouseBlockChk)&&(((GetKeyState(VK_LBUTTON)>=0)&&(GetKeyState(VK_RBUTTON)>=0)&&(GetKeyState(VK_CONTROL)>=0)&&(GetKeyState(VK_MENU)>=0))||((GetKeyState(VK_SHIFT)<0)))))
 					{
 						//Kursor znajduje sie przy krawedzi ekranu za ktora zostalo schowane okno
@@ -4423,7 +4419,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 						//Kursor nie znajduje sie przy krawedzi ekranu za ktora zostalo schowane okno
 						else if(PreFrmMainSlideIn) StopPreFrmMainSlideIn();
 					}
-					//Wcisniete klawisze Ctrl/LPM/PPM
+					//Wcisniete klawisze Ctrl/Alt/LPM/PPM
 					else
 					{
 						//Zatrzymanie procedury wysuwania okna
