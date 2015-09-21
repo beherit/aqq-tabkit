@@ -10120,19 +10120,25 @@ INT_PTR __stdcall OnThemeChanged(WPARAM wParam, LPARAM lParam)
 INT_PTR __stdcall OnTrayClick(WPARAM wParam, LPARAM lParam)
 {
 	//Funkcjonalnosc chowania okna kontaktow jest wlaczona / komunikator nie jest zamykany
-	if((FrmMainSlideChk)&&(!ForceUnloadExecuted))
+	if((hFrmMain)&&(FrmMainSlideChk)&&(!ForceUnloadExecuted))
 	{
 		//Fizyczne kliniecie LPM w tray
 		if((lParam==0)&&(wParam==MB_LEFT))
 		{
-			//Jezeli w tray nie miga kopertka
-			if(UnOpenMsgList->Count==0)
+			//Okno kontaktow znajduje sie na aktywnym pulpicie
+			if(ChkWindowOnCurrentVirtualDesktop(hFrmMain))
 			{
-				//Minimalizacja / przywracanie okna kontaktow + otwieranie okna rozmowy z nowa wiadomoscia
-				MinimizeRestoreFrmMainExecute();
-				//Blokada domyslnych akcji AQQ
-				return 1;
+				//Jezeli w tray nie miga kopertka
+				if(UnOpenMsgList->Count==0)
+				{
+					//Minimalizacja / przywracanie okna kontaktow + otwieranie okna rozmowy z nowa wiadomoscia
+					MinimizeRestoreFrmMainExecute();
+					//Blokada domyslnych akcji AQQ
+					return 1;
+				}
 			}
+			//Blokada domyslnych akcji AQQ
+			else return 1;
 		}
 	}
 
