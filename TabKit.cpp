@@ -4746,7 +4746,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 					ActivateAndFocusFrmMain();
 				//Aktywacja poprzedniego okna
 				else {
-					if(IsWindowVisible(LastActiveWindow))
+					if((IsWindowVisible(LastActiveWindow))&&(ChkWindowOnCurrentVirtualDesktop(LastActiveWindow)))
 						SetForegroundWindow(LastActiveWindow);
 					else
 						SetForegroundWindow(WindowFromPoint(Mouse->CursorPos));
@@ -5106,7 +5106,7 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 					ActivateAndFocusFrmSend();
 				//Aktywacja poprzedniego okna
 				else {
-					if(IsWindowVisible(LastActiveWindow))
+					if((IsWindowVisible(LastActiveWindow))&&(ChkWindowOnCurrentVirtualDesktop(LastActiveWindow)))
 						SetForegroundWindow(LastActiveWindow);
 					else
 						SetForegroundWindow(WindowFromPoint(Mouse->CursorPos));
