@@ -538,10 +538,10 @@ INT_PTR __stdcall ServiceCollapseImagesItem(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall ServiceStayOnTopItem(WPARAM wParam, LPARAM lParam);
 INT_PTR __stdcall ServiceTabKitFastSettingsItem(WPARAM wParam, LPARAM lParam);
 //FORWARD-TIMER--------------------------------------------------------------
-LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK TimerFrmProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 //FORWARD-WINDOW-PROC--------------------------------------------------------
-LRESULT CALLBACK FrmMainProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK FrmMainProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK FrmSendProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 //FORWARD-OTHER-FUNCTION-----------------------------------------------------
 void CheckHideScrollTabButtons();
 void OpenNewTab(UnicodeString JID);
@@ -1371,7 +1371,7 @@ void ChkFullScreenMode()
 //---------------------------------------------------------------------------
 
 //Sprawdzanie czy okno jest na aktywnym wirtualnym pulpicie
-bool ChkWindowOnCurrentVirtualDesktop(HWND hwnd)
+bool ChkWindowOnCurrentVirtualDesktop(HWND hWnd)
 {
 	//Windows 10
 	if(WindowsVersion.Pos("Windows 10"))
@@ -1382,7 +1382,7 @@ bool ChkWindowOnCurrentVirtualDesktop(HWND hwnd)
 		if(SUCCEEDED(hr))
 		{
 			int OnCurrentDesktop;
-			pVirtualDesktopManager->IsWindowOnCurrentVirtualDesktop(hwnd, &OnCurrentDesktop);
+			pVirtualDesktopManager->IsWindowOnCurrentVirtualDesktop(hWnd, &OnCurrentDesktop);
 			pVirtualDesktopManager->Release();
 			return OnCurrentDesktop;
 		}
@@ -3950,7 +3950,7 @@ void BuildTabKitFastSettings()
 //---------------------------------------------------------------------------
 
 //Procka okna timera
-LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK TimerFrmProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	//Kompozycja nie jest zmieniana / komunikator nie jest zamykany
 	if((uMsg==WM_TIMER)&&(!ThemeChanging)&&(!ForceUnloadExecuted))
@@ -5305,12 +5305,12 @@ LRESULT CALLBACK TimerFrmProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		return 0;
 	}
 
-	return DefWindowProc(hwnd, uMsg, wParam, lParam);
+	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 //---------------------------------------------------------------------------
 
 //Procka okna kontaktow
-LRESULT CALLBACK FrmMainProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK FrmMainProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	//Kompozycja nie jest zmieniana / komunikator nie jest zamykany
 	if((!ThemeChanging)&&(!ForceUnloadExecuted))
@@ -5475,22 +5475,22 @@ LRESULT CALLBACK FrmMainProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		if(OldFrmMainProc)
 		{
 			//Przywrocenie wczesniej zapisanej procki
-			SetWindowLongPtrW(hwnd, GWLP_WNDPROC,(LONG_PTR)OldFrmMainProc);
+			SetWindowLongPtrW(hWnd, GWLP_WNDPROC,(LONG_PTR)OldFrmMainProc);
 			//Skopiowanie procki do zmiennej tymczasowej
 			WNDPROC tmpOldFrmMainProc = OldFrmMainProc;
 			//Skasowanie procki
 			OldFrmMainProc = NULL;
 			//Zwrot w funkcji
-			return CallWindowProc(tmpOldFrmMainProc, hwnd, uMsg, wParam, lParam);
+			return CallWindowProc(tmpOldFrmMainProc, hWnd, uMsg, wParam, lParam);
 		}
 	}
 
-	return CallWindowProc(OldFrmMainProc, hwnd, uMsg, wParam, lParam);
+	return CallWindowProc(OldFrmMainProc, hWnd, uMsg, wParam, lParam);
 }
 //---------------------------------------------------------------------------
 
 //Procka okna rozmowy
-LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK FrmSendProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	//Kompozycja nie jest zmieniana / komunikator nie jest zamykany
 	if((!ThemeChanging)&&(!ForceUnloadExecuted))
@@ -5859,22 +5859,22 @@ LRESULT CALLBACK FrmSendProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		if(OldFrmSendProc)
 		{
 			//Przywrocenie wczesniej zapisanej procki
-			SetWindowLongPtrW(hwnd, GWLP_WNDPROC,(LONG_PTR)OldFrmSendProc);
+			SetWindowLongPtrW(hWnd, GWLP_WNDPROC,(LONG_PTR)OldFrmSendProc);
 			//Skopiowanie procki do zmiennej tymczasowej
 			WNDPROC tmpOldFrmSendProc = OldFrmSendProc;
 			//Skasowanie procki
 			OldFrmSendProc = NULL;
 			//Zwrot w funkcji
-			return CallWindowProc(tmpOldFrmSendProc, hwnd, uMsg, wParam, lParam);
+			return CallWindowProc(tmpOldFrmSendProc, hWnd, uMsg, wParam, lParam);
 		}
 	}
 
-	return CallWindowProc(OldFrmSendProc, hwnd, uMsg, wParam, lParam);
+	return CallWindowProc(OldFrmSendProc, hWnd, uMsg, wParam, lParam);
 }
 //---------------------------------------------------------------------------
 
 //Procka okna wyszukiwarki
-LRESULT CALLBACK FrmSeekOnListProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK FrmSeekOnListProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	//Kompozycja nie jest zmieniana / komunikator nie jest zamykany
 	if((!ThemeChanging)&&(!ForceUnloadExecuted))
@@ -5895,17 +5895,17 @@ LRESULT CALLBACK FrmSeekOnListProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM l
 		if(OldFrmSeekOnListProc)
 		{
 			//Przywrocenie wczesniej zapisanej procki
-			SetWindowLongPtrW(hwnd, GWLP_WNDPROC,(LONG_PTR)OldFrmSeekOnListProc);
+			SetWindowLongPtrW(hWnd, GWLP_WNDPROC,(LONG_PTR)OldFrmSeekOnListProc);
 			//Skopiowanie procki do zmiennej tymczasowej
 			WNDPROC tmpOldFrmSeekOnListProc = OldFrmSeekOnListProc;
 			//Skasowanie procki
 			OldFrmSeekOnListProc = NULL;
 			//Zwrot w funkcji
-			return CallWindowProc(tmpOldFrmSeekOnListProc, hwnd, uMsg, wParam, lParam);
+			return CallWindowProc(tmpOldFrmSeekOnListProc, hWnd, uMsg, wParam, lParam);
 		}
 	}
 
-	return CallWindowProc(OldFrmSeekOnListProc, hwnd, uMsg, wParam, lParam);
+	return CallWindowProc(OldFrmSeekOnListProc, hWnd, uMsg, wParam, lParam);
 }
 //---------------------------------------------------------------------------
 
