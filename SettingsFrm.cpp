@@ -227,40 +227,6 @@ void __fastcall TSettingsForm::FormCreate(TObject *Sender)
 
 void __fastcall TSettingsForm::FormShow(TObject *Sender)
 {
-	//Aktywne skorkowanie AlphaControls
-	if(sSkinManager->Active)
-	{
-		//Kolor WebLabel'ow
-		EmailWebLabel->Font->Color = sSkinManager->GetGlobalFontColor();
-		EmailWebLabel->HoverFont->Color = sSkinManager->GetGlobalFontColor();
-		XMPPWebLabel->Font->Color = sSkinManager->GetGlobalFontColor();
-		XMPPWebLabel->HoverFont->Color = sSkinManager->GetGlobalFontColor();
-		URLWebLabel->Font->Color = sSkinManager->GetGlobalFontColor();
-		URLWebLabel->HoverFont->Color = sSkinManager->GetGlobalFontColor();
-		ForumWebLabel->Font->Color = sSkinManager->GetGlobalFontColor();
-		ForumWebLabel->HoverFont->Color = sSkinManager->GetGlobalFontColor();
-		BugWebLabel->Font->Color = sSkinManager->GetGlobalFontColor();
-		BugWebLabel->HoverFont->Color = sSkinManager->GetGlobalFontColor();
-		StarWebLabel->Font->Color = sSkinManager->GetGlobalFontColor();
-		StarWebLabel->HoverFont->Color = sSkinManager->GetGlobalFontColor();
-	}
-	//Nieaktywne skorkowanie AlphaControls
-	else
-	{
-		//Kolor WebLabel'ow
-		EmailWebLabel->Font->Color = clWindowText;
-		EmailWebLabel->HoverFont->Color = clWindowText;
-		XMPPWebLabel->Font->Color = clWindowText;
-		XMPPWebLabel->HoverFont->Color = clWindowText;
-		URLWebLabel->Font->Color = clWindowText;
-		URLWebLabel->HoverFont->Color = clWindowText;
-		ForumWebLabel->Font->Color = clWindowText;
-		ForumWebLabel->HoverFont->Color = clWindowText;
-		BugWebLabel->Font->Color = clWindowText;
-		BugWebLabel->HoverFont->Color = clWindowText;
-		StarWebLabel->Font->Color = clWindowText;
-		StarWebLabel->HoverFont->Color = clWindowText;
-	}
 	//Odczyt ikonek
 	FavouritesTabsAlphaImageList->Items->Clear();
 	FavouritesTabsAlphaImageList->LoadFromFile(GetIconPath(98));
@@ -273,7 +239,7 @@ void __fastcall TSettingsForm::FormShow(TObject *Sender)
 	TDateTime DateTime = TDateTime::CurrentDateTime();
 	DateFormatEdit->Hint = DateTime.FormatString(DateFormatEdit->Text);
 	//Ustawienie domyslnej zakladki
-	sPageControl->ActivePage = DefaultTabSheet;
+	sPageControl->ActivePage = ClosedTabsTabSheet;
 }
 //---------------------------------------------------------------------------
 

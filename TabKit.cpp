@@ -690,41 +690,6 @@ int GetBrightness()
 }
 //---------------------------------------------------------------------------
 
-//Pobieranie informacji o pliku
-UnicodeString GetFileInfo(wchar_t *ModulePath, String KeyName)
-{
-	LPVOID lpStr1 = NULL, lpStr2 = NULL;
-	WORD* wTmp;
-	DWORD dwHandlev = NULL;
-	UINT dwLength;
-	wchar_t sFileName[1024] = {0};
-	wchar_t sTmp[1024] = {0};
-	UnicodeString sInfo;
-	LPBYTE *pVersionInfo;
-
-	if(ModulePath==NULL) GetModuleFileName(NULL, sFileName, 1024);
-	else wcscpy(sFileName, ModulePath);
-
-	DWORD dwInfoSize = GetFileVersionInfoSize(sFileName, &dwHandlev);
-
-	if(dwInfoSize)
-	{
-		pVersionInfo = new LPBYTE[dwInfoSize];
-		if(GetFileVersionInfo(sFileName, dwHandlev, dwInfoSize, pVersionInfo))
-		{
-			if(VerQueryValue(pVersionInfo, L"\\VarFileInfo\\Translation", &lpStr1, &dwLength))
-			{
-				wTmp = (WORD*)lpStr1;
-				swprintf(sTmp, ("\\StringFileInfo\\%04x%04x\\" + KeyName).w_str(), *wTmp, *(wTmp + 1));
-				if(VerQueryValue(pVersionInfo, sTmp, &lpStr2, &dwLength)) sInfo = (LPCTSTR)lpStr2;
-			}
-		}
-		delete[] pVersionInfo;
-	}
-	return sInfo;
-}
-//---------------------------------------------------------------------------
-
 //Pobieranie sciezki procesu wskazanego okna
 UnicodeString GetPathOfProces(HWND hWnd)
 {
@@ -809,9 +774,7 @@ void OpenPluginSettings()
 	hSettingsForm->TweakFrmMainTitlebarModeExComboBox->Items->Add(ProfileName);
 	hSettingsForm->TweakFrmMainTitlebarModeExComboBox->Items->Add(ComputerName);
 	hSettingsForm->TweakFrmMainTitlebarModeExComboBox->Items->Add(ResourceName);
-	//Wstawienie wersji wtyczki do formy ustawien
-	hSettingsForm->VersionLabel->Caption = "TabKit " + GetFileInfo(GetPluginDir().w_str(), L"FileVersion");
-	//Pokaznie okna ustawien
+//Pokaznie okna ustawien
 	hSettingsForm->Show();
 }
 //---------------------------------------------------------------------------
@@ -9876,40 +9839,6 @@ INT_PTR __stdcall OnThemeChanged(WPARAM wParam, LPARAM lParam)
 		}
 		//Zaawansowana stylizacja okien wylaczona
 		else hSettingsForm->sSkinManager->Active = false;
-		//Aktywne skorkowanie AlphaControls
-		if(hSettingsForm->sSkinManager->Active)
-		{
-			//Kolor WebLabel'ow
-			hSettingsForm->EmailWebLabel->Font->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
-			hSettingsForm->EmailWebLabel->HoverFont->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
-			hSettingsForm->XMPPWebLabel->Font->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
-			hSettingsForm->XMPPWebLabel->HoverFont->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
-			hSettingsForm->URLWebLabel->Font->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
-			hSettingsForm->URLWebLabel->HoverFont->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
-			hSettingsForm->ForumWebLabel->Font->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
-			hSettingsForm->ForumWebLabel->HoverFont->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
-			hSettingsForm->BugWebLabel->Font->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
-			hSettingsForm->BugWebLabel->HoverFont->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
-			hSettingsForm->StarWebLabel->Font->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();
-			hSettingsForm->StarWebLabel->HoverFont->Color = hSettingsForm->sSkinManager->GetGlobalFontColor();;
-		}
-		//Nieaktywne skorkowanie AlphaControls
-		else
-		{
-			//Kolor WebLabel'ow
-			hSettingsForm->EmailWebLabel->Font->Color = clWindowText;
-			hSettingsForm->EmailWebLabel->HoverFont->Color = clWindowText;
-			hSettingsForm->XMPPWebLabel->Font->Color = clWindowText;
-			hSettingsForm->XMPPWebLabel->HoverFont->Color = clWindowText;
-			hSettingsForm->URLWebLabel->Font->Color = clWindowText;
-			hSettingsForm->URLWebLabel->HoverFont->Color = clWindowText;
-			hSettingsForm->ForumWebLabel->Font->Color = clWindowText;
-			hSettingsForm->ForumWebLabel->HoverFont->Color = clWindowText;
-			hSettingsForm->BugWebLabel->Font->Color = clWindowText;
-			hSettingsForm->BugWebLabel->HoverFont->Color = clWindowText;
-			hSettingsForm->StarWebLabel->Font->Color = clWindowText;
-			hSettingsForm->StarWebLabel->HoverFont->Color = clWindowText;
-		}
 		//Aktualizacja ikonek na formie
 		hSettingsForm->FavouritesTabsAlphaImageList->Clear();
 		hSettingsForm->FavouritesTabsAlphaImageList->LoadFromFile(GetIconPath(98));
@@ -11352,10 +11281,10 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Load(PPluginLink Link)
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\Const.lng").w_str(),L"EN_CONST",L"DATA");
 	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\Const.lng")!="D9D72C90B851171F8F4011A8932883A5")
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\Const.lng").w_str(),L"EN_CONST",L"DATA");
-	//51AEA113661C1C8C34B72F0DFA1E4082
+	//080F19003071D8C819A345BEC6848A60
 	if(!FileExists(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSettingsForm.lng"))
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSettingsForm.lng").w_str(),L"EN_SETTINGSFRM",L"DATA");
-	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSettingsForm.lng")!="E85D3DEF41F1D3826AC5990B5FA5D7DE")
+	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSettingsForm.lng")!="080F19003071D8C819A345BEC6848A60")
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSettingsForm.lng").w_str(),L"EN_SETTINGSFRM",L"DATA");
 	//324061A51B896B06E99EF1B88D062B2F
 	if(!FileExists(PluginUserDir+"\\\\Languages\\\\TabKit\\\\EN\\\\TSideSlideExceptionsForm.lng"))
@@ -11367,10 +11296,10 @@ extern "C" INT_PTR __declspec(dllexport) __stdcall Load(PPluginLink Link)
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\Const.lng").w_str(),L"PL_CONST",L"DATA");
 	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\Const.lng")!="1B19E6D7A2D8B85F27E1998271184E58")
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\Const.lng").w_str(),L"PL_CONST",L"DATA");
-	//5740BC4AB5EEA199DA6CCFA7250DA259
+	//4EFCA6DAB95ED58D96F3A70B4F317BFF
 	if(!FileExists(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSettingsForm.lng"))
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSettingsForm.lng").w_str(),L"PL_SETTINGSFRM",L"DATA");
-	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSettingsForm.lng")!="B418382FEA87BF6E1CFEBBB25261D578")
+	else if(MD5File(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSettingsForm.lng")!="4EFCA6DAB95ED58D96F3A70B4F317BFF")
 		ExtractRes((PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSettingsForm.lng").w_str(),L"PL_SETTINGSFRM",L"DATA");
 	//589F6BBC7D5CB448CBF9DDD2BC15D54C
 	if(!FileExists(PluginUserDir+"\\\\Languages\\\\TabKit\\\\PL\\\\TSideSlideExceptionsForm.lng"))
