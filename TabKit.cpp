@@ -4677,7 +4677,8 @@ LRESULT CALLBACK TimerFrmProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				//Okno rozmowy chowane za prawa krawedzia ekranu
 				else FrmSendSlideLeft = FrmSendSlideLeft + Steps;
 				//Zmiana pozycji okna rozmowy
-				SetWindowPos(hFrmSend,HWND_TOPMOST,FrmSendSlideLeft,FrmSendRect.Top,0,0,SWP_NOSIZE);
+				if(ChkWindowOnCurrentVirtualDesktop(hFrmSend)) SetWindowPos(hFrmSend,HWND_TOPMOST,FrmSendSlideLeft,FrmSendRect.Top,0,0,SWP_NOSIZE);
+				else SetWindowPos(hFrmSend,HWND_TOPMOST,FrmSendSlideLeft,FrmSendRect.Top,0,0,SWP_NOSIZE|SWP_NOACTIVATE);
 			}
 			//Okno rozmowy chowane za dolna/gorna krawedzia ekranu
 			else
@@ -4689,7 +4690,8 @@ LRESULT CALLBACK TimerFrmProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				//Okno rozmowy chowane za gorna krawedzia ekranu
 				else FrmSendSlideTop = FrmSendSlideTop - Steps;
 				//Zmiana pozycji okna rozmowy
-				SetWindowPos(hFrmSend,HWND_TOPMOST,FrmSendRect.Left,FrmSendSlideTop,0,0,SWP_NOSIZE);
+				if(ChkWindowOnCurrentVirtualDesktop(hFrmSend)) SetWindowPos(hFrmSend,HWND_TOPMOST,FrmSendRect.Left,FrmSendSlideTop,0,0,SWP_NOSIZE);
+				else SetWindowPos(hFrmSend,HWND_TOPMOST,FrmSendRect.Left,FrmSendSlideTop,0,0,SWP_NOSIZE|SWP_NOACTIVATE);
 			}
 			//Koncowy etap
 			if(((FrmSendSlideEdge==1)&&(FrmSendSlideLeft<(0-FrmSendRect.Right)))
@@ -4712,15 +4714,19 @@ LRESULT CALLBACK TimerFrmProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				FrmSendSlideOut = false;
 				//Stan widocznosci okna rozmowy
 				FrmSendVisible = false;
-				//Kursor znajduje sie nad oknem kontaktow
-				if((FrmMainVisible)&&(Mouse->CursorPos.y>FrmMainRect.Top)&&(FrmMainRect.Bottom>Mouse->CursorPos.y)&&(Mouse->CursorPos.x>FrmMainRect.Left)&&(FrmMainRect.Right>Mouse->CursorPos.x))
-					ActivateAndFocusFrmMain();
-				//Aktywacja poprzedniego okna
-				else {
-					if((IsWindowVisible(LastActiveWindow))&&(ChkWindowOnCurrentVirtualDesktop(LastActiveWindow)))
-						SetForegroundWindow(LastActiveWindow);
-					else
-						SetForegroundWindow(WindowFromPoint(Mouse->CursorPos));
+				//Okno rozmowy znajduje sie na aktywnym wirtualnym pulpicie
+				if(ChkWindowOnCurrentVirtualDesktop(hFrmSend))
+				{
+					//Kursor znajduje sie nad oknem kontaktow
+					if((FrmMainVisible)&&(Mouse->CursorPos.y>FrmMainRect.Top)&&(FrmMainRect.Bottom>Mouse->CursorPos.y)&&(Mouse->CursorPos.x>FrmMainRect.Left)&&(FrmMainRect.Right>Mouse->CursorPos.x))
+						ActivateAndFocusFrmMain();
+					//Aktywacja poprzedniego okna
+					else {
+						if((IsWindowVisible(LastActiveWindow))&&(ChkWindowOnCurrentVirtualDesktop(LastActiveWindow)))
+							SetForegroundWindow(LastActiveWindow);
+						else
+							SetForegroundWindow(WindowFromPoint(Mouse->CursorPos));
+					}
 				}
 			}
 		}
@@ -5039,7 +5045,8 @@ LRESULT CALLBACK TimerFrmProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				//Okno kontaktow chowane za prawa krawedzia ekranu
 				else FrmMainSlideLeft = FrmMainSlideLeft + Steps;
 				//Zmiana pozycji okna kontaktow
-				SetWindowPos(hFrmMain,HWND_TOPMOST,FrmMainSlideLeft,FrmMainRect.Top,0,0,SWP_NOSIZE);
+				if(ChkWindowOnCurrentVirtualDesktop(hFrmMain)) SetWindowPos(hFrmMain,HWND_TOPMOST,FrmMainSlideLeft,FrmMainRect.Top,0,0,SWP_NOSIZE);
+				else SetWindowPos(hFrmMain,HWND_TOPMOST,FrmMainSlideLeft,FrmMainRect.Top,0,0,SWP_NOSIZE|SWP_NOACTIVATE);
 			}
 			//Okno kontaktow chowane za dolna/gorna krawedzia ekranu
 			else
@@ -5051,7 +5058,8 @@ LRESULT CALLBACK TimerFrmProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				//Okno kontaktow chowane za gorna krawedzia ekranu
 				else FrmMainSlideTop = FrmMainSlideTop - Steps;
 				//Zmiana pozycji okna kontaktow
-				SetWindowPos(hFrmMain,HWND_TOPMOST,FrmMainRect.Left,FrmMainSlideTop,0,0,SWP_NOSIZE);
+				if(ChkWindowOnCurrentVirtualDesktop(hFrmMain)) SetWindowPos(hFrmMain,HWND_TOPMOST,FrmMainRect.Left,FrmMainSlideTop,0,0,SWP_NOSIZE);
+				else SetWindowPos(hFrmMain,HWND_TOPMOST,FrmMainRect.Left,FrmMainSlideTop,0,0,SWP_NOSIZE|SWP_NOACTIVATE);
 			}
 			//Koncowy etap
 			if(((FrmMainSlideEdge==1)&&(FrmMainSlideLeft<(0-FrmMainRect.Right)))
@@ -5059,6 +5067,8 @@ LRESULT CALLBACK TimerFrmProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			||((FrmMainSlideEdge==3)&&(FrmMainSlideTop>Screen->Height))
 			||((FrmMainSlideEdge==4)&&(FrmMainSlideTop<(0-FrmMainRect.Bottom))))
 			{
+				//Zatrzymanie timera
+				KillTimer(hTimerFrm,TIMER_FRMMAIN_SLIDEOUT);
 				//Aplikacja pelno ekranowa
 				if(FullScreenMode)
 				{
@@ -5072,18 +5082,20 @@ LRESULT CALLBACK TimerFrmProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				FrmMainSlideOut = false;
 				//Stan widocznosci okna kontaktow
 				FrmMainVisible = false;
-				//Kursor znajduje sie nad oknem rozmowy
-				if((FrmSendVisible)&&(Mouse->CursorPos.y>FrmSendRect.Top)&&(FrmSendRect.Bottom>Mouse->CursorPos.y)&&(Mouse->CursorPos.x>FrmSendRect.Left)&&(FrmSendRect.Right>Mouse->CursorPos.x))
-					ActivateAndFocusFrmSend();
-				//Aktywacja poprzedniego okna
-				else {
-					if((IsWindowVisible(LastActiveWindow))&&(ChkWindowOnCurrentVirtualDesktop(LastActiveWindow)))
-						SetForegroundWindow(LastActiveWindow);
-					else
-						SetForegroundWindow(WindowFromPoint(Mouse->CursorPos));
+				//Okno kontaktow znajduje sie na aktywnym wirtualnym pulpicie
+				if(ChkWindowOnCurrentVirtualDesktop(hFrmMain))
+				{
+					//Kursor znajduje sie nad oknem rozmowy
+					if((FrmSendVisible)&&(Mouse->CursorPos.y>FrmSendRect.Top)&&(FrmSendRect.Bottom>Mouse->CursorPos.y)&&(Mouse->CursorPos.x>FrmSendRect.Left)&&(FrmSendRect.Right>Mouse->CursorPos.x))
+						ActivateAndFocusFrmSend();
+					//Aktywacja poprzedniego okna
+					else {
+						if((IsWindowVisible(LastActiveWindow))&&(ChkWindowOnCurrentVirtualDesktop(LastActiveWindow)))
+							SetForegroundWindow(LastActiveWindow);
+						else
+							SetForegroundWindow(WindowFromPoint(Mouse->CursorPos));
+					}
 				}
-				//Zatrzymanie timera
-				KillTimer(hTimerFrm,TIMER_FRMMAIN_SLIDEOUT);
 			}
 		}
 		//Pokazywanie okna kontaktow (part I)
