@@ -5,7 +5,7 @@ object SettingsForm: TSettingsForm
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'TabKit - ustawienia'
-  ClientHeight = 428
+  ClientHeight = 422
   ClientWidth = 786
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -154,22 +154,23 @@ object SettingsForm: TSettingsForm
   OnShow = FormShow
   DesignSize = (
     786
-    428)
+    422)
   PixelsPerInch = 96
   TextHeight = 13
   object Bevel: TsBevel
     Left = 0
-    Top = 391
+    Top = 385
     Width = 786
     Height = 37
     Align = alBottom
     Shape = bsTopLine
+    ExplicitTop = 391
     ExplicitWidth = 776
   end
   object SaveButton: TsButton
     Tag = 2
     Left = 703
-    Top = 398
+    Top = 392
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
@@ -182,7 +183,7 @@ object SettingsForm: TSettingsForm
   object CancelButton: TsButton
     Tag = 3
     Left = 622
-    Top = 398
+    Top = 392
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
@@ -194,7 +195,7 @@ object SettingsForm: TSettingsForm
   object OkButton: TsButton
     Tag = 4
     Left = 541
-    Top = 398
+    Top = 392
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
@@ -218,7 +219,7 @@ object SettingsForm: TSettingsForm
     Left = 6
     Top = 6
     Width = 774
-    Height = 379
+    Height = 373
     Margins.Left = 6
     Margins.Top = 6
     Margins.Right = 6
@@ -551,6 +552,10 @@ object SettingsForm: TSettingsForm
       ImageIndex = 1
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 371
       object RememberUnsentMsgGroupBox: TsGroupBox
         Tag = 32
         Left = 18
@@ -688,6 +693,10 @@ object SettingsForm: TSettingsForm
       ImageIndex = 2
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 371
       object TabsHotKeysGroupBox: TsGroupBox
         Tag = 44
         Left = 18
@@ -790,6 +799,10 @@ object SettingsForm: TSettingsForm
       ImageIndex = 3
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 371
       object RestoreTabsSessionGroupBox: TsGroupBox
         Tag = 48
         Left = 18
@@ -857,6 +870,10 @@ object SettingsForm: TSettingsForm
       OnShow = NewMsgTabSheetShow
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 371
       object ChatStateNotiferNewMsgCheckBox: TsCheckBox
         Tag = 57
         Left = 12
@@ -1075,6 +1092,10 @@ object SettingsForm: TSettingsForm
       ImageIndex = 5
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 371
       object TweakFrmMainTitlebarGroupBox: TsGroupBox
         Tag = 67
         Left = 18
@@ -1213,6 +1234,10 @@ object SettingsForm: TSettingsForm
       ImageIndex = 6
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 371
       object ClipTabsGroupBox: TsGroupBox
         Tag = 69
         Left = 18
@@ -1357,8 +1382,8 @@ object SettingsForm: TSettingsForm
         Tag = 77
         Left = 18
         Top = 18
-        Width = 342
-        Height = 338
+        Width = 567
+        Height = 228
         Caption = 'W'#322#261'cz ulubione zak'#322'adki'
         TabOrder = 0
         TabStop = True
@@ -1367,8 +1392,8 @@ object SettingsForm: TSettingsForm
         Checked = True
         OnCheckBoxChanged = aFavouritesTabsChkExecute
         object RemoveFavouriteTabSpeedButton: TsSpeedButton
-          Left = 295
-          Top = 245
+          Left = 522
+          Top = 120
           Width = 30
           Height = 30
           Enabled = False
@@ -1380,8 +1405,8 @@ object SettingsForm: TSettingsForm
         end
         object AddChatsFavouriteTabSpeedButton: TsSpeedButton
           Tag = 83
-          Left = 295
-          Top = 281
+          Left = 522
+          Top = 156
           Width = 30
           Height = 30
           Hint = 'Dodaj do listy pokoje czatowe oznaczone gwiazdk'#261
@@ -1394,8 +1419,8 @@ object SettingsForm: TSettingsForm
           ShowCaption = False
         end
         object MoveDownFavouriteTabSpeedButton: TsSpeedButton
-          Left = 295
-          Top = 209
+          Left = 522
+          Top = 84
           Width = 30
           Height = 30
           Enabled = False
@@ -1406,8 +1431,8 @@ object SettingsForm: TSettingsForm
           ShowCaption = False
         end
         object MoveUpFavouriteTabSpeedButton: TsSpeedButton
-          Left = 295
-          Top = 173
+          Left = 522
+          Top = 48
           Width = 30
           Height = 30
           Enabled = False
@@ -1421,7 +1446,7 @@ object SettingsForm: TSettingsForm
           Tag = 78
           Left = 16
           Top = 22
-          Width = 271
+          Width = 241
           Height = 74
           Caption = 'Szybki dost'#281'p do ulubionych zak'#322'adek'
           TabOrder = 0
@@ -1478,20 +1503,20 @@ object SettingsForm: TSettingsForm
         end
         object FavouritesTabsListView: TsListView
           Tag = 82
-          Left = 18
-          Top = 155
-          Width = 271
+          Left = 275
+          Top = 30
+          Width = 241
           Height = 174
           BoundLabel.Active = True
           BoundLabel.Caption = 'Ulubione zak'#322'adki'
-          BoundLabel.Indent = 6
+          BoundLabel.Indent = 4
           BoundLabel.Layout = sclTopLeft
           SkinData.SkinSection = 'EDIT'
           Columns = <
             item
-              MaxWidth = 267
-              MinWidth = 267
-              Width = 267
+              MaxWidth = 236
+              MinWidth = 236
+              Width = 236
             end
             item
               Width = 0
@@ -1870,6 +1895,10 @@ object SettingsForm: TSettingsForm
       OnShow = OtherTabSheetShow
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 371
       object AntiSpimCheckBox: TsCheckBox
         Tag = 109
         Left = 12
@@ -2252,12 +2281,11 @@ object SettingsForm: TSettingsForm
   object UnsentMsgTrayIcon: TTrayIcon
     BalloonFlags = bfInfo
     OnClick = UnsentMsgTrayIconClick
-    Left = 40
-    Top = 400
+    Left = 32
+    Top = 392
   end
   object ActionList: TActionList
-    Left = 8
-    Top = 400
+    Top = 392
     object aExit: TAction
       Caption = 'aExit'
       ShortCut = 27
@@ -2372,8 +2400,8 @@ object SettingsForm: TSettingsForm
     ThirdParty.ThirdStaticText = ' '
     ThirdParty.ThirdNativePaint = ' '
     OnSysDlgInit = sSkinManagerSysDlgInit
-    Left = 72
-    Top = 400
+    Left = 64
+    Top = 392
   end
   object sSkinProvider: TsSkinProvider
     AddedTitle.Font.Charset = DEFAULT_CHARSET
@@ -2384,8 +2412,8 @@ object SettingsForm: TSettingsForm
     FormHeader.AdditionalHeight = 0
     SkinData.SkinSection = 'FORM'
     TitleButtons = <>
-    Left = 104
-    Top = 400
+    Left = 96
+    Top = 392
   end
   object sAlphaImageList: TsAlphaImageList
     DrawingStyle = dsTransparent
@@ -2829,8 +2857,8 @@ object SettingsForm: TSettingsForm
           33D7342EA367D470FD1A73827989798131191798B891A37DA9C57C2C65CAFE23
           F0BCC8E433596AC16FA0C39B00F0D5509E0000000049454E44AE426082}
       end>
-    Left = 136
-    Top = 400
+    Left = 128
+    Top = 392
     Bitmap = {
       494C010100000800080001000100FFFFFFFF0400FFFFFFFFFFFFFFFF424D7600
       0000000000007600000028000000040000000100000001000400000000000400
@@ -2854,8 +2882,8 @@ object SettingsForm: TSettingsForm
     Request.Ranges.Units = 'bytes'
     Request.Ranges = <>
     HTTPOptions = [hoForceEncodeParams]
-    Left = 200
-    Top = 400
+    Left = 192
+    Top = 392
   end
   object GetYouTubeTitleThread: TIdThreadComponent
     Active = False
@@ -2863,19 +2891,19 @@ object SettingsForm: TSettingsForm
     Priority = tpNormal
     StopMode = smTerminate
     OnRun = GetYouTubeTitleThreadRun
-    Left = 168
-    Top = 400
+    Left = 160
+    Top = 392
   end
   object RefreshTimer: TTimer
     Enabled = False
     Interval = 100
     OnTimer = RefreshTimerTimer
-    Left = 232
-    Top = 400
+    Left = 224
+    Top = 392
   end
   object FavouritesTabsAlphaImageList: TsAlphaImageList
     Items = <>
-    Left = 264
-    Top = 400
+    Left = 256
+    Top = 392
   end
 end
