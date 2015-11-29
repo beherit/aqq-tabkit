@@ -4,7 +4,7 @@ TabKit jest wtyczką do komunikatora [AQQ](http://www.aqq.eu/pl.php). Oferuje ma
 ### Wymagania
 Do skompilowania wtyczki TabKit potrzebne jest:
 
-* Embarcadero RAD Studio XE8 (C++Builder oraz Delphi, jeżeli chcemy kompilować wersję x64)
+* Embarcadero RAD Studio 10 Seattle (C++Builder oraz Delphi, jeżeli chcemy kompilować wersję x64)
 * Pełna wersja komponentów [AlphaControls](http://www.alphaskins.com/) (do kompilacji wersji x64 potrzebne jest Delphi)
 * [Plik nagłówkowy SDK komunikatora AQQ](https://bitbucket.org/beherit/pluginapi-for-aqq-im)
 * Opcjonalnie [UPX](http://upx.sourceforge.net/) dla zmniejszenia rozmiaru pliku wynikowego (w szczególności wersji x64)
