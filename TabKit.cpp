@@ -30,7 +30,6 @@
 #include <PluginAPI.h>
 #include <LangAPI.hpp>
 #include "KeyboardLights.h"
-#include "VirtualDesktopManager.h"
 #pragma hdrstop
 #include "SettingsFrm.h"
 using namespace boost;
