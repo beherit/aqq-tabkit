@@ -10218,6 +10218,8 @@ INT_PTR __stdcall OnWindowEvent(WPARAM wParam, LPARAM lParam)
 					}
 					//Status przywracania sesji
 					RestoringSession = false;
+					//Aktywcja okna rozmowy + nadanie fokusa na polu wpisywania wiadomosci
+					ActivateAndFocusFrmSend();
 				}
 				delete Session;
 				delete Ini;
