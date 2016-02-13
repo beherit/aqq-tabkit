@@ -1,3 +1,18 @@
+1.12.0.0
+-----
+* Poprawienie funkcjonalności chowania okien na Windows 10.
+* Wysuwanie okien jedynie, gdy znajdują się na aktywnym wirtualnym pulpicie. 
+* Poprawne identyfikowanie okna menu start.
+* Poprawa blokady wysuwania okien przy wciśniętym klawiszu Ctrl/Alt/LPM/PPM.
+* Usunięcie błędu z zapętloną aktywacją okna rozmowy przy przywracaniu sesji.
+* Nie zwijanie załączników dla kontaktów z sieci Facebook.
+* Odświeżanie nazwy czatu jedynie w przypadku jej faktycznej zmiany.
+* Usunięcie krytycznego błędu zawieszającego komunikator.
+* Usunięcie opcji chowania okien po utracie fokusu.
+* Usunięcie opcji wysuwania okna rozmowy po przyjściu nowej wiadomości.
+* Zmiany na formie ustawień.
+* Aktualizacja komponentów AlphaControls do nowszej wersji (10.24).
+
 1.11.0.0
 -----
 * Obsługa lokalizacji (polskiej i angielskiej).
