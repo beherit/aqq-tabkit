@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------------
-// Copyright (C) 2010-2015 Krzysztof Grochocki
+// Copyright (C) 2010-2016 Krzysztof Grochocki
 //
 // This file is part of TabKit
 //
@@ -1105,58 +1105,62 @@ void FocusRichEdit()
 //Aktywcja okna rozmowy + nadanie fokusa na polu wpisywania wiadomosci + usuniecie licznika nowych wiadomosci
 void ActivateAndFocusFrmSend()
 {
-	//Aktywacja okna
-	SetForegroundWindow(hFrmSend);
-	//Brak przeciagania na pole wpisywania wiadomosci
-	if((!DragDetect(hFrmSend,Mouse->CursorPos))&&(hRichEdit))
+	//Przywracanie sesji nie jest aktywne
+	if(!RestoringSession)
 	{
-		//Ustawianie fokusa
-		FocusRichEdit();
-	}
-	//Zmiana tekstu na belce okna
-	if((InactiveFrmNewMsgChk)&&(InactiveFrmNewMsgCount))
-	{
-		//Przywracanie poprzedniego stanu titlebara
-		if(!FrmSendTitlebar.IsEmpty())
+		//Aktywacja okna
+		SetForegroundWindow(hFrmSend);
+		//Brak przeciagania na pole wpisywania wiadomosci
+		if((!DragDetect(hFrmSend,Mouse->CursorPos))&&(hRichEdit))
 		{
-			SetWindowTextW(hFrmSend,FrmSendTitlebar.w_str());
-			FrmSendTitlebar = "";
+			//Ustawianie fokusa
+			FocusRichEdit();
 		}
-		//Kasowanie licznika nowych wiadomosci
-		InactiveFrmNewMsgCount = 0;
-	}
-	//Notyfikcja pisania wiadomosci
-	if(ChatStateNotiferNewMsgChk)
-	{
-		//Resetowanie poprzedniego stanu pisania wiadomosci
-		LastChatState = 0;
-		//Ustawienie oryginalnej malej ikonki
-		if(hIconSmall)
+		//Zmiana tekstu na belce okna
+		if((InactiveFrmNewMsgChk)&&(InactiveFrmNewMsgCount))
 		{
-			SendMessage(hFrmSend, WM_SETICON, ICON_SMALL, (LPARAM)hIconSmall);
-			hIconSmall = 0;
+			//Przywracanie poprzedniego stanu titlebara
+			if(!FrmSendTitlebar.IsEmpty())
+			{
+				SetWindowTextW(hFrmSend,FrmSendTitlebar.w_str());
+				FrmSendTitlebar = "";
+			}
+			//Kasowanie licznika nowych wiadomosci
+			InactiveFrmNewMsgCount = 0;
 		}
-		//Ustawienie oryginalnej duzej ikonki
-		if(hIconBig)
+		//Notyfikcja pisania wiadomosci
+		if(ChatStateNotiferNewMsgChk)
 		{
-			SendMessage(hFrmSend, WM_SETICON, ICON_BIG, (LPARAM)hIconBig);
-			hIconBig = 0;
+			//Resetowanie poprzedniego stanu pisania wiadomosci
+			LastChatState = 0;
+			//Ustawienie oryginalnej malej ikonki
+			if(hIconSmall)
+			{
+				SendMessage(hFrmSend, WM_SETICON, ICON_SMALL, (LPARAM)hIconSmall);
+				hIconSmall = 0;
+			}
+			//Ustawienie oryginalnej duzej ikonki
+			if(hIconBig)
+			{
+				SendMessage(hFrmSend, WM_SETICON, ICON_BIG, (LPARAM)hIconBig);
+				hIconBig = 0;
+			}
 		}
-	}
-	//Miganie diodami LED klawiatury - wylaczanie mrugania
-	if((KeyboardFlasherChk)&&(hFlasherThread)&&(hFlasherKeyboardThread))
-	{
-		//Usuwanie z listy nieprzeczytanych wiadomosci aktywnej zakladki
-		if(UnreadMsgList->IndexOf(ActiveTabJIDEx)!=-1)
-			UnreadMsgList->Delete(UnreadMsgList->IndexOf(ActiveTabJIDEx));
-		//Nie ma juz nieprzeczytanych wiadomosci
-		if(!UnreadMsgList->Count)
+		//Miganie diodami LED klawiatury - wylaczanie mrugania
+		if((KeyboardFlasherChk)&&(hFlasherThread)&&(hFlasherKeyboardThread))
 		{
-			SetEvent(hFlasherThread);
-			WaitForSingleObject(hFlasherKeyboardThread, 30000);
-			CloseHandle(hFlasherThread);
-			hFlasherThread = NULL;
-			hFlasherKeyboardThread = NULL;
+			//Usuwanie z listy nieprzeczytanych wiadomosci aktywnej zakladki
+			if(UnreadMsgList->IndexOf(ActiveTabJIDEx)!=-1)
+				UnreadMsgList->Delete(UnreadMsgList->IndexOf(ActiveTabJIDEx));
+			//Nie ma juz nieprzeczytanych wiadomosci
+			if(!UnreadMsgList->Count)
+			{
+				SetEvent(hFlasherThread);
+				WaitForSingleObject(hFlasherKeyboardThread, 30000);
+				CloseHandle(hFlasherThread);
+				hFlasherThread = NULL;
+				hFlasherKeyboardThread = NULL;
+			}
 		}
 	}
 }
